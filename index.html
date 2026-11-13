@@ -1,1 +1,775 @@
-[https://2cia-cloud.github.io/nomad/index.html](https://2cia-cloud.github.io/nomad/index.html)
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0d0e0b">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>AZIMUTE - PMMG</title>
+  <style>
+    :root {
+      --bg-dark: #0d0e0b;
+      --bg-card: #161813;
+      --bg-panel: #1f221b;
+      --khaki: #c2b280;
+      --khaki-bright: #d9c893;
+      --khaki-dim: #7d724f;
+      --text-main: #f0efe9;
+      --text-muted: #9fa396;
+      --danger: #e53935;
+      --success: #2e7d32;
+      --warning: #f57c00;
+      --border: #2c3026;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--bg-dark); color: var(--text-main); padding-bottom: 80px; overflow-x: hidden; }
+
+    /* TOPO E HUD DE SOBREVIVÊNCIA (GPS EM TEMPO REAL) */
+    header {
+      background: #080907;
+      border-bottom: 2px solid var(--khaki);
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .brand { font-size: 1.25rem; font-weight: 900; letter-spacing: 2px; color: var(--khaki); }
+    .brand span { font-size: 0.7rem; background: var(--khaki); color: #000; padding: 2px 6px; border-radius: 4px; margin-left: 6px; vertical-align: middle; }
+    .top-actions { display: flex; gap: 6px; }
+    .btn-sm {
+      background: var(--bg-panel);
+      color: var(--khaki);
+      border: 1px solid var(--khaki-dim);
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* HUD TÁTICO GPS */
+    .gps-hud {
+      background: linear-gradient(180deg, #191c15 0%, #11130e 100%);
+      border-bottom: 2px solid var(--border);
+      padding: 12px 14px;
+    }
+    .hud-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      gap: 8px;
+    }
+    .status-badge {
+      font-size: 0.72rem;
+      font-weight: 800;
+      padding: 4px 8px;
+      border-radius: 4px;
+      background: #2b2e26;
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .status-badge.active { background: rgba(46, 125, 50, 0.25); color: #81c784; border: 1px solid #2e7d32; }
+    .pulse-dot { width: 8px; height: 8px; border-radius: 50%; background: #777; display: inline-block; }
+    .status-badge.active .pulse-dot { background: #4caf50; box-shadow: 0 0 8px #4caf50; }
+
+    .hud-street-box {
+      background: #090a08;
+      border: 1px solid var(--khaki-dim);
+      border-left: 4px solid var(--khaki);
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+    }
+    .hud-label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1px; color: var(--khaki); font-weight: 700; }
+    .hud-street { font-size: 1.15rem; font-weight: 900; color: #fff; margin: 3px 0; line-height: 1.25; }
+    .hud-sub { font-size: 0.8rem; color: var(--text-muted); }
+
+    .hud-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .hud-mini-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 10px;
+    }
+    .hud-mini-card.hospital { border-left: 3px solid var(--danger); }
+    .hud-mini-card.radio { border-left: 3px solid var(--khaki); }
+    .hud-mini-value { font-size: 0.85rem; font-weight: 800; color: #fff; margin-top: 2px; }
+    .hud-mini-sub { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
+
+    .hud-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .btn-hud {
+      padding: 10px;
+      border-radius: 6px;
+      font-weight: 800;
+      font-size: 0.8rem;
+      border: none;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .btn-gps-start { background: var(--khaki); color: #000; }
+    .btn-priority { background: var(--danger); color: #fff; letter-spacing: 0.5px; }
+    .btn-hosp-route { background: #262922; color: #ff8a80; border: 1px solid var(--danger); grid-column: span 2; }
+
+    /* BUSCA E NAVEGAÇÃO */
+    .search-bar { padding: 10px 14px; background: var(--bg-dark); }
+    .search-input {
+      width: 100%;
+      padding: 11px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: #fff;
+      font-size: 0.9rem;
+    }
+
+    .nav-tabs {
+      display: flex;
+      overflow-x: auto;
+      gap: 6px;
+      padding: 4px 14px 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-tab {
+      background: var(--bg-card);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .nav-tab.active { background: var(--khaki); color: #000; border-color: var(--khaki); }
+
+    /* CONTEÚDO E CARDS */
+    .container { padding: 14px; }
+    .section-view { display: none; }
+    .section-view.active { display: block; }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+    .card-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--khaki);
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .card p { font-size: 0.84rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 8px; }
+    .badge { font-size: 0.7rem; padding: 3px 7px; border-radius: 4px; background: var(--bg-panel); color: var(--khaki); font-weight: 700; }
+    .badge-bepe { background: rgba(46, 125, 50, 0.3); color: #81c784; border: 1px solid #2e7d32; }
+
+    .sub-tabs { display: flex; gap: 6px; overflow-x: auto; margin-bottom: 12px; padding-bottom: 4px; }
+    .sub-tab {
+      background: var(--bg-panel);
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      padding: 6px 11px;
+      border-radius: 6px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .sub-tab.active { border-color: var(--khaki); color: var(--khaki); background: #262920; }
+
+    .link-btn {
+      display: inline-block;
+      background: var(--bg-panel);
+      color: var(--khaki-bright);
+      border: 1px solid var(--khaki-dim);
+      padding: 7px 11px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-decoration: none;
+      margin-top: 4px;
+      margin-right: 6px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 110px;
+      background: #090a08;
+      border: 1px solid var(--khaki-dim);
+      border-radius: 8px;
+      color: #fff;
+      padding: 10px;
+      font-size: 0.88rem;
+      margin-top: 6px;
+    }
+
+    /* MODAL DE PRIORIDADE (VISÃO EM TÚNEL / SOS) */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.96);
+      z-index: 999;
+      padding: 18px;
+      overflow-y: auto;
+    }
+    .modal-overlay.active { display: flex; flex-direction: column; justify-content: space-between; }
+    .sos-header {
+      background: var(--danger);
+      color: #fff;
+      padding: 12px;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: 900;
+      font-size: 1.1rem;
+      letter-spacing: 1px;
+    }
+    .sos-box {
+      background: #111;
+      border: 2px solid var(--khaki);
+      border-radius: 10px;
+      padding: 16px;
+      margin: 12px 0;
+    }
+    .sos-label { font-size: 0.85rem; color: var(--khaki); font-weight: 800; text-transform: uppercase; }
+    .sos-big { font-size: 1.75rem; font-weight: 900; color: #fff; line-height: 1.2; margin-top: 4px; }
+    .sos-med { font-size: 1.15rem; font-weight: 700; color: #ddd; margin-top: 6px; }
+    .btn-close-sos {
+      width: 100%;
+      padding: 16px;
+      background: #2b2e26;
+      color: #fff;
+      font-weight: 900;
+      font-size: 1rem;
+      border: 1px solid var(--khaki);
+      border-radius: 8px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- CABEÇALHO -->
+  <header>
+    <div class="brand">AZIMUTE <span>PMMG</span></div>
+    <div class="top-actions">
+      <button class="btn-sm" onclick="toggleWakeLock()" id="btnWake">🔒 Tela Normal</button>
+      <button class="btn-sm" onclick="openQModal()">Código Q</button>
+    </div>
+  </header>
+
+  <!-- HUD DE LOCALIZAÇÃO E PRIORIDADE EM TEMPO REAL -->
+  <section class="gps-hud">
+    <div class="hud-header">
+      <div class="status-badge" id="gpsBadge">
+        <span class="pulse-dot"></span>
+        <span id="gpsStatusText">GPS Aguardando Ativação</span>
+      </div>
+      <span style="font-size: 0.72rem; color: var(--text-muted);" id="gpsAccuracy">Precisão: --</span>
+    </div>
+
+    <div class="hud-street-box">
+      <div class="hud-label">📍 Logradouro Atual (Atualização Automática)</div>
+      <div class="hud-street" id="hudStreet">Toque em "Ativar GPS ao Vivo" abaixo</div>
+      <div class="hud-sub" id="hudNeighborhood">Bairro / Município • Coordenada aparecerá aqui</div>
+    </div>
+
+    <div class="hud-grid">
+      <div class="hud-mini-card radio">
+        <div class="hud-label">📻 Rede / Área Estimada</div>
+        <div class="hud-mini-value" id="hudRadio">Aguardando GPS</div>
+        <div class="hud-mini-sub" id="hudUnit">Cálculo offline por proximidade</div>
+      </div>
+      <div class="hud-mini-card hospital">
+        <div class="hud-label">🏥 Socorro Mais Próximo</div>
+        <div class="hud-mini-value" id="hudHospital">Aguardando GPS</div>
+        <div class="hud-mini-sub" id="hudHospitalDist">Distância em linha reta</div>
+      </div>
+    </div>
+
+    <div class="hud-buttons">
+      <button class="btn-hud btn-gps-start" onclick="startLiveGPS()" id="btnStartGPS">📡 ATIVAR GPS AO VIVO</button>
+      <button class="btn-hud btn-priority" onclick="openSOSModal()">🚨 MODO PRIORIDADE</button>
+      <a href="#" target="_blank" class="btn-hud btn-hosp-route" id="btnHospRoute" style="display:none;">
+        🚑 ABRIR ROTA DE EMERGÊNCIA PARA O HOSPITAL MAIS PRÓXIMO
+      </a>
+    </div>
+  </section>
+
+  <!-- BARRA DE BUSCA GLOBAL -->
+  <div class="search-bar">
+    <input type="text" class="search-input" id="searchInput" placeholder="🔎 Buscar BPM, Cia, Rua, Hospital, Sistema ou Estádio..." oninput="filterCards()">
+  </div>
+
+  <!-- ABAS PRINCIPAIS -->
+  <nav class="nav-tabs">
+    <button class="nav-tab active" onclick="switchTab('tab-2rpm', this)">2ª RPM (18º BPM)</button>
+    <button class="nav-tab" onclick="switchTab('tab-1rpm', this)">1ª RPM (BH)</button>
+    <button class="nav-tab" onclick="switchTab('tab-esp', this)">Especializadas</button>
+    <button class="nav-tab" onclick="switchTab('tab-estadios', this)">Estádios</button>
+    <button class="nav-tab" onclick="switchTab('tab-sistemas', this)">Sistemas & Drone</button>
+  </nav>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <main class="container">
+
+    <!-- ABA 1: 2ª RPM E PAINEL DO 18º BPM -->
+    <section id="tab-2rpm" class="section-view active">
+      <div class="card">
+        <div class="card-title">
+          <span>18º BPM - Contagem (Painel Operacional)</span>
+          <span class="badge">REDE: 2ª RPM / 18 BPM A</span>
+        </div>
+        <p>Unidade referência em Contagem. Selecione a categoria abaixo:</p>
+
+        <div class="sub-tabs">
+          <button class="sub-tab active" onclick="switchSubTab('sub-cias', this)">Companhias</button>
+          <button class="sub-tab" onclick="switchSubTab('sub-apoio', this)">Pontos de Apoio</button>
+          <button class="sub-tab" onclick="switchSubTab('sub-divisas', this)">Divisas</button>
+          <button class="sub-tab" onclick="switchSubTab('sub-saude', this)">Saúde / Integrados</button>
+          <button class="sub-tab" onclick="switchSubTab('sub-contatos', this)">SOU / Inteligência</button>
+          <button class="sub-tab" onclick="switchSubTab('sub-notas', this)">Bloco de Notas</button>
+        </div>
+
+        <!-- Sub-aba Companhias -->
+        <div id="sub-cias" class="sub-view">
+          <div class="card">
+            <div class="card-title">38ª Cia PM Esp. / Sede</div>
+            <p>Endereço: Rua Maria José Chiodi, 960 - Contagem.</p>
+            <a class="link-btn" target="_blank" href="https://www.google.com/maps/search/?api=1&query=Rua+Maria+Jose+Chiodi+960+Contagem+MG">📍 Abrir Mapa (38ª Cia)</a>
+          </div>
+          <div class="card">
+            <div class="card-title">131ª Cia PM • 133ª Cia PM • 283ª Cia PM • 39ª Cia PM</div>
+            <p>Recobrimento e setores operacionais do 18º BPM em Contagem.</p>
+          </div>
+        </div>
+
+        <!-- Sub-aba Pontos de Apoio -->
+        <div id="sub-apoio" class="sub-view" style="display:none;">
+          <div class="card">
+            <div class="card-title">Posto ALE (Padre Feijó / ZQC)</div>
+            <p>Av. João Gomes Cardoso, 1366 - Ponto estratégico de apoio e baseamento.</p>
+            <a class="link-btn" target="_blank" href="https://www.google.com/maps/search/?api=1&query=Av+Joao+Gomes+Cardoso+1366+Contagem+MG">📍 Rota Posto ALE</a>
+          </div>
+        </div>
+
+        <!-- Sub-aba Divisas -->
+        <div id="sub-divisas" class="sub-view" style="display:none;">
+          <div class="card">
+            <div class="card-title">Divisas Territoriais do 18º BPM</div>
+            <p><strong>Na 2ª RPM:</strong> Faz divisa direta com o <strong>66º BPM</strong> (Betim) e <strong>39º BPM</strong> (Contagem). <em>Atenção: O 33º BPM não faz divisa com o 18º BPM, apenas o 66º BPM.</em></p>
+            <p><strong>Com a 1ª RPM (BH):</strong> Divisa com o 5º BPM e 34º BPM.</p>
+          </div>
+        </div>
+
+        <!-- Sub-aba Saúde e Integrados -->
+        <div id="sub-saude" class="sub-view" style="display:none;">
+          <div class="card">
+            <div class="card-title">Hospital Municipal de Contagem (HMC)</div>
+            <p>Referência trauma/emergência na área. Av. Geraldo Rocha, 3220.</p>
+            <a class="link-btn" target="_blank" href="https://www.google.com/maps/search/?api=1&query=Hospital+Municipal+de+Contagem">🚑 Rota HMC</a>
+          </div>
+          <div class="card">
+            <div class="card-title">Órgãos Integrados Contagem</div>
+            <p>Guarda Municipal (GMC), Transcon, Defesa Civil e SAMU.</p>
+          </div>
+        </div>
+
+        <!-- Sub-aba Contatos -->
+        <div id="sub-contatos" class="sub-view" style="display:none;">
+          <div class="card">
+            <div class="card-title">SOU</div>
+            <p>Sala de Operações da Unidade - 18º BPM.</p>
+          </div>
+          <div class="card">
+            <div class="card-title">INTELIGÊNCIA - 18º BPM</div>
+            <p>Acionamento e difusão de informações operacionais do batalhão.</p>
+          </div>
+        </div>
+
+        <!-- Sub-aba Bloco de Notas -->
+        <div id="sub-notas" class="sub-view" style="display:none;">
+          <div class="card">
+            <div class="card-title">Bloco de Notas Operacional (Salvo Automaticamente)</div>
+            <textarea id="notes18" placeholder="Anote placas, nomes, horários ou QTH da ocorrência..." oninput="saveNote('notes18')"></textarea>
+            <button class="link-btn" onclick="copyText('notes18')">📋 Copiar Anotações</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Demais Unidades da 2ª RPM</div>
+        <p><strong>33º BPM</strong> (Betim) • <strong>39º BPM</strong> (Contagem) • <strong>40º BPM</strong> (Ribeirão das Neves) • <strong>48º BPM</strong> (Ibirité) • <strong>66º BPM</strong> (Betim) • <strong>6ª Cia PM Ind</strong> (Esmeraldas) • <strong>7ª Cia PM Ind</strong> (Igarapé).</p>
+      </div>
+    </section>
+
+    <!-- ABA 2: 1ª RPM (BELO HORIZONTE) -->
+    <section id="tab-1rpm" class="section-view">
+      <div class="card">
+        <div class="card-title">Batalhões da 1ª RPM (Capital)</div>
+        <p><strong>1º BPM</strong> (Centro/Sul) • <strong>5º BPM</strong> (Oeste/Gameleira) • <strong>13º BPM</strong> (Norte/Pampulha) • <strong>16º BPM</strong> (Leste) • <strong>22º BPM</strong> (Centro-Sul/Aglomerados) • <strong>34º BPM</strong> (Noroeste/Pampulha) • <strong>41º BPM</strong> (Barreiro) • <strong>49º BPM</strong> (Venda Nova).</p>
+      </div>
+      <div class="card">
+        <div class="card-title">Hospitais de Referência BH</div>
+        <p><strong>HPS João XXIII:</strong> Av. Prof. Alfredo Balena, 400 (Referência Trauma Estadual).</p>
+        <p><strong>Hospital Militar (HPM):</strong> Av. do Contorno, 2787 - Santa Efigênia.</p>
+        <p><strong>Hosp. Risoleta Neves:</strong> Rua das Gabirobas, 1 - Vila Clóris (Zona Norte/Venda Nova).</p>
+        <a class="link-btn" target="_blank" href="https://www.google.com/maps/search/?api=1&query=Hospital+Joao+XXIII+Belo+Horizonte">🚑 Rota João XXIII</a>
+        <a class="link-btn" target="_blank" href="https://www.google.com/maps/search/?api=1&query=Hospital+ da+Policia+Militar+Belo+Horizonte">🚑 Rota HPM</a>
+      </div>
+    </section>
+
+    <!-- ABA 3: UNIDADES ESPECIALIZADAS -->
+    <section id="tab-esp" class="section-view">
+      <div class="card" style="border-color:#2e7d32;">
+        <div class="card-title">
+          <span>BEPE - Batalhão Especializado de Policiamento de Eventos</span>
+          <span class="badge badge-bepe">DESTAQUE</span>
+        </div>
+        <p>Atuação especializada em praças desportivas e grandes eventos em MG.</p>
+      </div>
+      <div class="card">
+        <div class="card-title">CPE / CME - Tropas Especializadas</div>
+        <p><strong>BOPE</strong> (Operações Especiais) • <strong>BPChq</strong> (Choque) • <strong>ROTAM</strong> • <strong>GER</strong> • <strong>RCAT</strong> (Cavalaria) • <strong>ROCCA</strong> (Cães) • <strong>BPGd</strong> (Guardas) • <strong>BPM MAmb</strong> (Meio Ambiente) • <strong>BPMRv</strong> (Rodoviária).</p>
+      </div>
+    </section>
+
+    <!-- ABA 4: ESTÁDIOS -->
+    <section id="tab-estadios" class="section-view">
+      <div class="card" style="border-left: 4px solid #1e88e5;">
+        <div class="card-title">Mineirão (Pampulha - 34º BPM)</div>
+        <p>Esplanada, Anel Superior/Inferior, Portões A, B, C, D, E, F e Via de Integração.</p>
+        <a class="link-btn" target="_blank" href="https://www.google.com/maps/search/?api=1&query=Estadio+Mineirao+Belo+Horizonte">📍 Mapa Mineirão</a>
+      </div>
+      <div class="card" style="border-left: 4px solid #e0e0e0;">
+        <div class="card-title">Arena MRV (Califórnia - 5º BPM / Divisa 18º BPM)</div>
+        <p>Via Expressa, Esplanada, Setores Brahma Norte/Sul/Leste/Oeste e Portões de Acesso.</p>
+        <a class="link-btn" target="_blank" href="https://www.google.com/maps/search/?api=1&query=Arena+MRV+Belo+Horizonte">📍 Mapa Arena MRV</a>
+      </div>
+      <div class="card" style="border-left: 4px solid #43a047;">
+        <div class="card-title">Arena Independência (Horto - 16º BPM)</div>
+        <p>Rua Pitangui / Rua Ismênia Tunes - Setorização de entorno e escoltas.</p>
+        <a class="link-btn" target="_blank" href="https://www.google.com/maps/search/?api=1&query=Estadio+Independencia+Belo+Horizonte">📍 Mapa Independência</a>
+      </div>
+    </section>
+
+    <!-- ABA 5: SISTEMAS OPERACIONAIS E DRONE/SARPAS -->
+    <section id="tab-sistemas" class="section-view">
+      <div class="card">
+        <div class="card-title">Atalhos Operacionais PMMG</div>
+        <a class="link-btn" target="_blank" href="https://web.sids.mg.gov.br/reds">📄 REDS (SIDS)</a>
+        <a class="link-btn" target="_blank" href="https://intranet.policiamilitar.mg.gov.br">🛡️ Intranet PMMG</a>
+        <a class="link-btn" target="_blank" href="https://portalbnmp.cnj.jus.br">⚖️ BNMP (Mandados)</a>
+        <a class="link-btn" target="_blank" href="https://www.gov.br/anatel/pt-br/assuntos/celular-legal/consulte-sua-situacao">📱 Anatel IMEI (*#06#)</a>
+        <a class="link-btn" target="_blank" href="https://sarpas.decea.mil.br">🚁 Portal SARPAS</a>
+        <p style="margin-top:8px;">Outros sistemas: Sigop • Hélios • Stelecom • Ementário • DIAO.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🚁 Diário de Observações do Operador de Drone (ARP)</div>
+        <p>Registre protocolo SARPAS, AGL, bateria, horário de decolagem/pouso e observações táticas:</p>
+        <textarea id="notesDrone" placeholder="Ex: Voo 01 | SARPAS: ___ | Decolagem: __:__ | AGL Máx: 120m | QTH: ..." oninput="saveNote('notesDrone')"></textarea>
+        <button class="link-btn" onclick="stampDroneGPS()">📍 Inserir GPS e Hora Atual no Diário</button>
+        <button class="link-btn" onclick="copyText('notesDrone')">📋 Copiar Diário</button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL DE PRIORIDADE EM TELA CHEIA (VISÃO EM TÚNEL) -->
+  <div class="modal-overlay" id="sosModal">
+    <div>
+      <div class="sos-header">🚨 PAINEL DE PRIORIDADE / RÁDIO 🚨</div>
+
+      <div class="sos-box">
+        <div class="sos-label">1. Fale no Rádio (Sua Rua Atual):</div>
+        <div class="sos-big" id="sosStreet">Localizando...</div>
+        <div class="sos-med" id="sosNeighborhood">--</div>
+      </div>
+
+      <div class="sos-box">
+        <div class="sos-label">2. Canaleta / Rede da Área:</div>
+        <div class="sos-big" id="sosRadio" style="color: var(--khaki);">--</div>
+        <div class="sos-med" id="sosCoords">Lat/Lon: --</div>
+      </div>
+
+      <div class="sos-box" style="border-color: var(--danger);">
+        <div class="sos-label" style="color: #ff8a80;">3. Hospital de Trauma Mais Próximo:</div>
+        <div class="sos-big" id="sosHospital">--</div>
+        <a href="#" target="_blank" id="sosHospBtn" class="btn-hud btn-priority" style="margin-top:12px; width:100%; font-size:1.05rem; padding:14px;">
+          🚑 INICIAR ROTA IMEDIATA NO MAPA
+        </a>
+      </div>
+    </div>
+
+    <button class="btn-close-sos" onclick="closeSOSModal()">FECHAR MODO PRIORIDADE</button>
+  </div>
+
+  <!-- MODAL CÓDIGO Q E FONÉTICO -->
+  <div class="modal-overlay" id="qModal">
+    <div>
+      <div class="sos-header" style="background: var(--khaki); color:#000;">📻 CÓDIGO Q & ALFABETO FONÉTICO</div>
+      <div class="sos-box">
+        <p style="color:#fff; line-height:1.6; font-size:0.95rem;">
+          <strong>QAP:</strong> Na escuta • <strong>QSL:</strong> Entendido • <strong>QTH:</strong> Localização/Endereço • <strong>QTI:</strong> Destino/Rumo • <strong>QTA:</strong> Cancelar última mensagem • <strong>QRV:</strong> À disposição • <strong>Qks:</strong> Aguardar • <strong>TKS:</strong> Obrigado.<br><br>
+          <strong>Fonético:</strong> Alfa, Bravo, Charlie, Delta, Eco, Fox, Golf, Hotel, Índia,iet, Kilo, Lima, Mike, November, Oscar, Papa, Quebec, Romeu, Sierra, Tango, Uniform, Victor, Whiskey, X-Ray, Yankee, Zulu.
+        </p>
+      </div>
+    </div>
+    <button class="btn-close-sos" onclick="closeQModal()">FECHAR CONSULTA</button>
+  </div>
+
+  <script>
+    // BASE OFFLINE DE HOSPITAIS DE EMERGÊNCIA / TRAUMA NA RMBH
+    const HOSPITAIS_RMBH = [
+      { nome: "Hosp. Municipal de Contagem (HMC)", lat: -19.9322, lon: -44.0758 },
+      { nome: "HPS João XXIII (Trauma BH)", lat: -19.9267, lon: -43.9269 },
+      { nome: "Hospital da Polícia Militar (HPM)", lat: -19.9235, lon: -43.9182 },
+      { nome: "Hosp. Risoleta Neves (Venda Nova)", lat: -19.8195, lon: -43.9535 },
+      { nome: "Hosp. Regional de Betim", lat: -19.9567, lon: -44.1925 },
+      { nome: "UPA JK (Contagem)", lat: -19.9389, lon: -44.0365 },
+      { nome: "UPA Ressaca (Contagem)", lat: -19.8906, lon: -44.0419 },
+      { nome: "UPA Sede (Contagem)", lat: -19.9152, lon: -44.0841 }
+    ];
+
+    // BASE OFFLINE DE ÁREAS E REDES DE RÁDIO POR PROXIMIDADE
+    const AREAS_RPM = [
+      { unidade: "18º BPM (Contagem)", rede: "REDE: 2ª RPM / 18 BPM A", lat: -19.9162, lon: -44.0809 },
+      { unidade: "39º BPM (Contagem)", rede: "REDE: 2ª RPM / 39 BPM", lat: -19.9540, lon: -44.0320 },
+      { unidade: "66º BPM (Betim - Divisa 18º)", rede: "REDE: 2ª RPM / 66 BPM", lat: -19.9610, lon: -44.1350 },
+      { unidade: "33º BPM (Betim)", rede: "REDE: 2ª RPM / 33 BPM", lat: -19.9670, lon: -44.1980 },
+      { unidade: "40º BPM (Ribeirão das Neves)", rede: "REDE: 2ª RPM / 40 BPM", lat: -19.7670, lon: -44.0860 },
+      { unidade: "48º BPM (Ibirité)", rede: "REDE: 2ª RPM / 48 BPM", lat: -20.0210, lon: -44.0580 },
+      { unidade: "5º BPM (BH Oeste / Gameleira)", rede: "REDE: 1ª RPM / 5 BPM", lat: -19.9320, lon: -43.9930 },
+      { unidade: "34º BPM (BH Noroeste / Pampulha)", rede: "REDE: 1ª RPM / 34 BPM", lat: -19.8820, lon: -43.9980 },
+      { unidade: "22º BPM (BH Centro-Sul)", rede: "REDE: 1ª RPM / 22 BPM", lat: -19.9460, lon: -43.9300 },
+      { unidade: "1º BPM (BH Centro)", rede: "REDE: 1ª RPM / 1 BPM", lat: -19.9220, lon: -43.9350 }
+    ];
+
+    let watchId = null;
+    let lastGeocodedLat = null;
+    let lastGeocodedLon = null;
+    let lastLookupTime = 0;
+    let lastValidStreet = "Aguardando primeira leitura...";
+    let currentLat = null;
+    let currentLon = null;
+    let wakeLockObj = null;
+
+    // CÁLCULO MATEMÁTICO DE DISTÂNCIA (HAVERSINE - 100% OFFLINE)
+    function calcDistKm(lat1, lon1, lat2, lon2) {
+      const R = 6371;
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon/2) * Math.sin(dLon/2);
+      return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
+    }
+
+    // INICIAR RASTREAMENTO CONTÍNUO DE GPS
+    function startLiveGPS() {
+      if (!navigator.geolocation) {
+        alert("Seu navegador não suporta GPS.");
+        return;
+      }
+      document.getElementById("gpsStatusText").innerText = "Buscando Satélites...";
+      document.getElementById("btnStartGPS").innerText = "🔄 ATUALIZAR RUA AGORA";
+
+      if (watchId !== null) navigator.geolocation.clearWatch(watchId);
+
+      watchId = navigator.geolocation.watchPosition(onGPSUpdate, onGPSError, {
+        enableHighAccuracy: true,
+        maximumAge: 3000,
+        timeout: 15000
+      });
+    }
+
+    async function onGPSUpdate(pos) {
+      const lat = pos.coords.latitude;
+      const lon = pos.coords.longitude;
+      const acc = Math.round(pos.coords.accuracy);
+      currentLat = lat;
+      currentLon = lon;
+
+      const badge = document.getElementById("gpsBadge");
+      badge.classList.add("active");
+      document.getElementById("gpsStatusText").innerText = "GPS AO VIVO ATIVO";
+      document.getElementById("gpsAccuracy").innerText = "Precisão: ±" + acc + "m";
+
+      // 1. Calcular Hospital mais próximo (100% Offline)
+      let closestHosp = HOSPITAIS_RMBH[0];
+      let minHospDist = 9999;
+      HOSPITAIS_RMBH.forEach(h => {
+        const d = calcDistKm(lat, lon, h.lat, h.lon);
+        if (d < minHospDist) { minHospDist = d; closestHosp = h; }
+      });
+
+      const hospRouteUrl = "https://www.google.com/maps/dir/?api=1&destination=" + closestHosp.lat + "," + closestHosp.lon + "&travelmode=driving";
+      document.getElementById("hudHospital").innerText = closestHosp.nome;
+      document.getElementById("hudHospitalDist").innerText = "Aprox. " + minHospDist.toFixed(1) + " km daqui";
+      const routeBtn = document.getElementById("btnHospRoute");
+      routeBtn.style.display = "flex";
+      routeBtn.href = hospRouteUrl;
+
+      // 2. Calcular Batalhão e Canaleta de Rádio mais próxima (100% Offline)
+      let closestArea = AREAS_RPM[0];
+      let minAreaDist = 9999;
+      AREAS_RPM.forEach(a => {
+        const d = calcDistKm(lat, lon, a.lat, a.lon);
+        if (d < minAreaDist) { minAreaDist = d; closestArea = a; }
+      });
+      document.getElementById("hudRadio").innerText = closestArea.rede;
+      document.getElementById("hudUnit").innerText = closestArea.unidade;
+
+      // Atualizar Modal de Prioridade (SOS)
+      document.getElementById("sosRadio").innerText = closestArea.rede + " (" + closestArea.unidade + ")";
+      document.getElementById("sosCoords").innerText = "GPS: " + lat.toFixed(5) + ", " + lon.toFixed(5) + " (±" + acc + "m)";
+      document.getElementById("sosHospital").innerText = closestHosp.nome + " (" + minHospDist.toFixed(1) + " km)";
+      document.getElementById("sosHospBtn").href = hospRouteUrl;
+
+      // 3. Buscar Nome da Rua se andou mais de 15 metros ou se passaram 15 segundos
+      const now = Date.now();
+      let movedMeters = 999;
+      if (lastGeocodedLat !== null) {
+        movedMeters = calcDistKm(lat, lon, lastGeocodedLat, lastGeocodedLon) * 1000;
+      }
+
+      if (movedMeters >= 15 || (now - lastLookupTime) > 15000) {
+        lastGeocodedLat = lat;
+        lastGeocodedLon = lon;
+        lastLookupTime = now;
+        try {
+          const res = await fetch("https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=" + lat + "&lon=" + lon + "&accept-language=pt-BR");
+          const data = await res.json();
+          if (data && data.address) {
+            const road = data.address.road || data.address.pedestrian || data.address.footway || data.address.path || "Via / Beco sem nome oficial";
+            const num = data.address.house_number ? ", nº " + data.address.house_number : "";
+            const suburb = data.address.suburb || data.address.neighbourhood || data.address.city_district || "";
+            const city = data.address.city || data.address.town || data.address.municipality || "";
+
+            lastValidStreet = road + num;
+            const subInfo = [suburb, city].filter(Boolean).join(" • ") + " | GPS: " + lat.toFixed(5) + ", " + lon.toFixed(5);
+
+            document.getElementById("hudStreet").innerText = lastValidStreet;
+            document.getElementById("hudNeighborhood").innerText = subInfo;
+            document.getElementById("sosStreet").innerText = lastValidStreet;
+            document.getElementById("sosNeighborhood").innerText = [suburb, city].filter(Boolean).join(" • ");
+          }
+        } catch (err) {
+          // Fallback caso o 4G falhe dentro do beco
+          const distFromLast = Math.round(movedMeters);
+          document.getElementById("hudStreet").innerText = lastValidStreet + " (Sem 4G: +" + distFromLast + "m)";
+          document.getElementById("hudNeighborhood").innerText = "GPS Satélite Ativo: " + lat.toFixed(5) + ", " + lon.toFixed(5);
+        }
+      }
+    }
+
+    function onGPSError(err) {
+      document.getElementById("gpsStatusText").innerText = "Permita o GPS no navegador";
+      document.getElementById("hudStreet").innerText = "Ative a Localização do celular e permita no navegador";
+    }
+
+    // TRAVA DE TELA ACESA (WAKE LOCK PARA INCURSÃO EM AGLOMERADO)
+    async function toggleWakeLock() {
+      const btn = document.getElementById("btnWake");
+      if (!("wakeLock" in navigator)) {
+        alert("Seu navegador não suporta trava de tela automática.");
+        return;
+      }
+      try {
+        if (!wakeLockObj) {
+          wakeLockObj = await navigator.wakeLock.request("screen");
+          btn.innerText = "🔆 Tela Acesa!";
+          btn.style.borderColor = "#4caf50";
+          btn.style.color = "#81c784";
+        } else {
+          await wakeLockObj.release();
+          wakeLockObj = null;
+          btn.innerText = "🔒 Tela Normal";
+          btn.style.borderColor = "";
+          btn.style.color = "";
+        }
+      } catch (e) {
+        alert("Toque novamente para manter a tela acesa.");
+      }
+    }
+
+    // NAVEGAÇÃO ENTRE ABAS
+    function switchTab(id, btn) {
+      document.querySelectorAll(".section-view").forEach(s => s.classList.remove("active"));
+      document.querySelectorAll(".nav-tab").forEach(b => b.classList.remove("active"));
+      document.getElementById(id).classList.add("active");
+      btn.classList.add("active");
+    }
+
+    function switchSubTab(id, btn) {
+      document.querySelectorAll(".sub-view").forEach(s => s.style.display = "none");
+      document.querySelectorAll(".sub-tab").forEach(b => b.classList.remove("active"));
+      document.getElementById(id).style.display = "block";
+      btn.classList.add("active");
+    }
+
+    // MODAIS
+    function openSOSModal() { document.getElementById("sosModal").classList.add("active"); }
+    function closeSOSModal() { document.getElementById("sosModal").classList.remove("active"); }
+    function openQModal() { document.getElementById("qModal").classList.add("active"); }
+    function closeQModal() { document.getElementById("qModal").classList.remove("active"); }
+
+    // BLOCO DE NOTAS E DIÁRIO DE DRONE COM SALVAMENTO AUTOMÁTICO
+    function saveNote(id) {
+      localStorage.setItem("azimute_" + id, document.getElementById(id).value);
+    }
+    function copyText(id) {
+      const el = document.getElementById(id);
+      navigator.clipboard.writeText(el.value);
+      alert("Copiado para a área de transferência!");
+    }
+    function stampDroneGPS() {
+      const el = document.getElementById("notesDrone");
+      const now = new Date().toLocaleTimeString("pt-BR");
+      const gpsTxt = currentLat ? (currentLat.toFixed(5) + ", " + currentLon.toFixed(5)) : "GPS não ativado";
+      const ruaTxt = document.getElementById("hudStreet").innerText;
+      el.value += "\n[" + now + "] QTH: " + ruaTxt + " (" + gpsTxt + ")\n";
+      saveNote("notesDrone");
+    }
+
+    // BUSCA RÁPIDA
+    function filterCards() {
+      const q = document.getElementById("searchInput").value.toLowerCase();
+      document.querySelectorAll(".card").forEach(card => {
+        card.style.display = card.innerText.toLowerCase().includes(q) ? "block" : "none";
+      });
+    }
+
+    // CARREGAR NOTAS SALVAS AO ABRIR
+    window.addEventListener("DOMContentLoaded", () => {
+      ["notes18", "notesDrone"].forEach(id => {
+        const saved = localStorage.getItem("azimute_" + id);
+        if (saved) document.getElementById(id).value = saved;
+      });
+    });
+  </script>
+</body>
+</html>
