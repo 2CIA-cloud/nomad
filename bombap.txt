@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AZIMUTE - Sistema Geral de Consulta Rápida (PMMG)</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0F0F0F">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Teko:wght@600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        pmmg: {
+                            black: '#0F0F0F',
+                            dark: '#171717',
+                            card: '#24231f',
+                            cardHover: '#2d2b27',
+                            border: '#3d3a33',
+                            khaki: '#C2B280',
+                            khakiHover: '#d4c596',
+                            khakiDark: '#8B7E52',
+                            khakiLight: '#f4efe0',
+                            khakiBadge: '#3b382c',
+                            gold: '#D4AF37',
+                            red: '#dc2626'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        military: ['Teko', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0F0F0F; }
+        ::-webkit-scrollbar-thumb { background: #3d3a33; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #C2B280; }
+        .tactical-border { border: 1px solid rgba(194, 178, 128, 0.25); }
+        .tactical-card { transition: all 0.2s ease-in-out; }
+        .tactical-card:hover { border-color: rgba(194, 178, 128, 0.6); box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.7); }
+    </style>
+</head>
+<body class="bg-pmmg-black text-gray-200 font-sans min-h-screen pb-16 antialiased">
+
+    <!-- TELA DE LOGIN OBRIGATÓRIA -->
+    <div id="azimuteLoginModal" class="fixed inset-0 z-[9999] bg-pmmg-black flex items-center justify-center p-4">
+        <div class="bg-pmmg-card border-2 border-pmmg-khaki/80 rounded-2xl max-w-md w-full p-6 sm:p-8 space-y-6 shadow-2xl">
+            <div class="text-center space-y-2">
+                <h2 class="text-3xl font-military tracking-widest text-pmmg-khaki uppercase leading-none">AZIMUTE PMMG</h2>
+                <p class="text-xs text-gray-400">Autenticação Tática Operacional</p>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="text-[11px] font-bold uppercase tracking-wider text-pmmg-khaki">Usuário:</label>
+                    <input type="text" id="loginUser" placeholder="BEPE" class="w-full px-3 py-2.5 bg-pmmg-dark text-sm text-white rounded-xl border border-pmmg-border focus:outline-none focus:border-pmmg-khaki font-mono uppercase" value="BEPE">
+                </div>
+                <div>
+                    <label class="text-[11px] font-bold uppercase tracking-wider text-pmmg-khaki">Senha:</label>
+                    <input type="password" id="loginPass" placeholder="COLISEU" class="w-full px-3 py-2.5 bg-pmmg-dark text-sm text-white rounded-xl border border-pmmg-border focus:outline-none focus:border-pmmg-khaki font-mono uppercase" value="COLISEU">
+                </div>
+                <div id="loginErrorMsg" class="hidden text-xs text-red-400 font-bold bg-red-950/40 p-2 rounded border border-red-500/40 text-center">
+                    ❌ Credenciais incorretas. Utilize BEPE / COLISEU.
+                </div>
+                <button onclick="handleAzimuteLogin()" class="w-full py-3 bg-pmmg-khaki hover:bg-pmmg-khakiHover text-pmmg-black font-extrabold text-sm rounded-xl uppercase tracking-wider transition-all">
+                    ACESSAR SISTEMA AZIMUTE
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CABEÇALHO -->
+    <header class="bg-pmmg-dark border-b border-pmmg-khaki/40 py-3 px-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-military tracking-widest text-pmmg-khaki uppercase">AZIMUTE - SISTEMA TÁTICO PMMG</h1>
+            <span class="text-xs text-emerald-400 font-bold bg-emerald-950 px-2.5 py-1 rounded border border-emerald-500/40">ONLINE ✓</span>
+        </div>
+    </header>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="max-w-7xl mx-auto p-4 space-y-6">
+        <div class="bg-pmmg-card p-6 rounded-2xl tactical-border space-y-3">
+            <h2 class="text-3xl font-military text-pmmg-khaki uppercase">Painel Operacional Principal</h2>
+            <p class="text-xs text-gray-300">Autenticado com sucesso via BEPE / COLISEU. Sistema modular pronto para receber os dados dos batalhões.</p>
+        </div>
+    </main>
+
+    <script>
+        function handleAzimuteLogin() {
+            const u = document.getElementById('loginUser').value.trim().toUpperCase();
+            const p = document.getElementById('loginPass').value.trim().toUpperCase();
+            const errDiv = document.getElementById('loginErrorMsg');
+
+            if (u === 'BEPE' && p === 'COLISEU') {
+                localStorage.setItem('azimute_auth', 'authenticated');
+                document.getElementById('azimuteLoginModal').style.display = 'none';
+            } else {
+                errDiv.classList.remove('hidden');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('azimute_auth') === 'authenticated') {
+                const modal = document.getElementById('azimuteLoginModal');
+                if (modal) modal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
