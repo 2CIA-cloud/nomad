@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AZIMUTE - Sistema Geral de Consulta Rápida (PMMG)</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0F0F0F">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <!-- Tailwind CSS -->
-    <script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=XJXxG9dN6bVuv_-nSbiphixI6ClYvCc4XSx4kd-j7MY2ShYV2rsAyiOhAjDLJBKuYzjqMKOBfUyfapKawsXYxoS0pMSvaVZeRIWwt4RtwBGMcDSXuNQ5wflxYgYui2crkjlYN3GRyaoDumUk-jo2odTH1Bm9XK-BRrywsDO_sfd5TyECh0H5_MxPOs0B5rETT94qZDXyk1nwqeJRHAzmTSFOsz9rFMXehmyPCuc5KjdDazo6yY-wo9PkTfoDeuGpSSgLWyJblHnTx0STFKJ8XZhi-MKHWjMWcWUXC2ooYAfg_GVJE62vRNvKZFtv_jN7" charset="UTF-8"></script><script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- Fonts -->
@@ -104,6 +107,52 @@
     </style>
 </head>
 <body class="bg-pmmg-black text-gray-200 font-sans min-h-screen pb-16 antialiased selection:bg-pmmg-khaki selection:text-pmmg-black mode-app">
+    <!-- TELA DE AUTENTICAÇÃO TÁTICA (LOGIN AZIMUTE) -->
+    <div id="azimuteLoginModal" class="fixed inset-0 z-[9999] bg-pmmg-black flex items-center justify-center p-4">
+        <div class="bg-pmmg-card border-2 border-pmmg-khaki/80 rounded-2xl max-w-md w-full p-6 sm:p-8 space-y-6 shadow-2xl relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-pmmg-khaki/10 rounded-full blur-2xl pointer-events-none"></div>
+            
+            <div class="text-center space-y-2">
+                <div class="w-14 h-14 mx-auto rounded-2xl bg-pmmg-khaki/15 border border-pmmg-khaki/60 flex items-center justify-center text-pmmg-khaki shadow-inner">
+                    <i data-lucide="shield-check" class="w-8 h-8"></i>
+                </div>
+                <h2 class="text-3xl font-military tracking-widest text-pmmg-khaki uppercase leading-none">AZIMUTE PMMG</h2>
+                <p class="text-xs text-gray-400">Sistema Operacional Tático Restrito • Autenticação de Acesso</p>
+            </div>
+
+            <div class="space-y-4">
+                <div class="space-y-1.5">
+                    <label class="text-[11px] font-bold uppercase tracking-wider text-pmmg-khaki">Usuário / Unidade:</label>
+                    <div class="relative">
+                        <i data-lucide="user" class="absolute left-3.5 top-3 w-4 h-4 text-gray-400"></i>
+                        <input type="text" id="loginUser" placeholder="Ex: BEPE" class="w-full pl-10 pr-3 py-2.5 bg-pmmg-dark text-sm text-white rounded-xl border border-pmmg-border focus:outline-none focus:border-pmmg-khaki font-mono uppercase" autocomplete="off">
+                    </div>
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="text-[11px] font-bold uppercase tracking-wider text-pmmg-khaki">Senha Operacional:</label>
+                    <div class="relative">
+                        <i data-lucide="lock" class="absolute left-3.5 top-3 w-4 h-4 text-gray-400"></i>
+                        <input type="password" id="loginPass" placeholder="•••••••" class="w-full pl-10 pr-3 py-2.5 bg-pmmg-dark text-sm text-white rounded-xl border border-pmmg-border focus:outline-none focus:border-pmmg-khaki font-mono uppercase">
+                    </div>
+                </div>
+
+                <div id="loginErrorMsg" class="hidden text-xs text-red-400 font-bold bg-red-950/40 p-2.5 rounded-lg border border-red-500/40 text-center">
+                    ❌ Credenciais incorretas. Utilize BEPE / COLISEU.
+                </div>
+
+                <button onclick="handleAzimuteLogin()" class="w-full py-3 bg-pmmg-khaki hover:bg-pmmg-khakiHover text-pmmg-black font-extrabold text-sm rounded-xl shadow-lg uppercase tracking-wider transition-all flex items-center justify-center gap-2">
+                    <i data-lucide="key-round" class="w-4 h-4"></i> ACESSAR SISTEMA AZIMUTE
+                </button>
+            </div>
+
+            <div class="pt-2 border-t border-pmmg-border text-center">
+                <p class="text-[10px] text-gray-500">Polícia Militar de Minas Gerais • Região Metropolitana de Belo Horizonte</p>
+            </div>
+        </div>
+    </div>
+
+
 
     <!-- TOAST DE NOTIFICAÇÃO -->
     <div id="toast" class="fixed bottom-20 md:bottom-6 right-4 z-50 hidden bg-pmmg-khaki text-pmmg-black font-bold px-4 py-2.5 rounded-lg shadow-2xl flex items-center gap-2 border border-pmmg-gold">
@@ -279,6 +328,32 @@
                     <button onclick="openPrioritySosModal()" class="py-2.5 px-3 rounded-xl bg-red-600 hover:bg-red-500 text-white font-extrabold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-lg transition-all tracking-wide">
                         <span>🚨 MODO PRIORIDADE (SOS)</span>
                     </button>
+                </div>
+
+                <!-- Botões Extras: WhatsApp, Comando de Voz, Tela Bloqueada & Clima/Alagamento -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
+                    <button onclick="shareLocationViaWhatsApp()" class="py-2 px-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-[11px] flex items-center justify-center gap-1.5 shadow transition-all">
+                        <i data-lucide="share-2" class="w-3.5 h-3.5 shrink-0"></i> <span>WhatsApp QTH</span>
+                    </button>
+                    <button onclick="startVoiceCommand()" class="py-2 px-2.5 rounded-xl bg-pmmg-dark hover:bg-pmmg-border text-sky-400 border border-sky-500/40 font-bold text-[11px] flex items-center justify-center gap-1.5 shadow transition-all">
+                        <i data-lucide="mic" class="w-3.5 h-3.5 shrink-0"></i> <span>Voz</span>
+                    </button>
+                    <button onclick="toggleLockScreenStreetNotify()" id="btnLockScreenNotify" class="py-2 px-2.5 rounded-xl bg-pmmg-dark hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-khaki/40 font-bold text-[11px] flex items-center justify-center gap-1.5 shadow transition-all" title="Exibe o nome da rua na tela de bloqueio do celular">
+                        <i data-lucide="bell" class="w-3.5 h-3.5 shrink-0"></i> <span id="lblLockNotify">Rua na Tela Bloq.</span>
+                    </button>
+                    <button onclick="checkWeatherAndFloodRisk()" class="py-2 px-2.5 rounded-xl bg-pmmg-dark hover:bg-pmmg-border text-amber-400 border border-amber-500/40 font-bold text-[11px] flex items-center justify-center gap-1.5 shadow transition-all" title="Previsão do tempo nas próximas horas e alertas de alagamento">
+                        <i data-lucide="cloud-rain" class="w-3.5 h-3.5 shrink-0"></i> <span>Clima & Chuva</span>
+                    </button>
+                </div>
+
+                <!-- Painel Dinâmico de Clima e Vias de Alagamento (Aparece ao clicar em Clima & Chuva ou se houver alerta) -->
+                <div id="weatherFloodBanner" class="hidden bg-pmmg-black/95 border border-amber-500/60 rounded-xl p-3 text-xs space-y-2">
+                    <div class="flex items-center justify-between border-b border-pmmg-border pb-1.5">
+                        <span id="weatherSummaryTitle" class="font-bold text-amber-400 uppercase">🌦️ Monitoramento Meteorológico & Vias de Alagamento</span>
+                        <button onclick="document.getElementById('weatherFloodBanner').classList.add('hidden')" class="text-gray-400 hover:text-white text-[11px] font-bold">Fechar ✕</button>
+                    </div>
+                    <p id="weatherForecastText" class="text-gray-200">Consultando radar meteorológico da sua coordenada...</p>
+                    <div id="floodZonesList" class="space-y-1 pt-1"></div>
                 </div>
             </div>
         </div>
@@ -3364,26 +3439,50 @@
             </div>
         </section>
 
-        <!-- ================= VIEW 5: ESQUELETO DE BATALHÃO ================= -->
+        <!-- ================= VIEW 5: GAVETA DINÂMICA DE BATALHÃO (ALIMENTADA VIA DADOS.JSON) ================= -->
         <section id="view-skeleton" class="hidden space-y-6">
-            <div class="flex items-center justify-between border-b border-pmmg-border pb-3">
+            <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-pmmg-border pb-3 gap-3">
                 <div>
-                    <h2 id="skeletonTitle" class="text-4xl font-military text-pmmg-khaki uppercase leading-none">NOME DO BATALHÃO</h2>
+                    <div class="flex flex-wrap items-center gap-2 mb-1">
+                        <h2 id="skeletonTitle" class="text-3xl sm:text-4xl font-military text-pmmg-khaki uppercase leading-none">NOME DO BATALHÃO</h2>
+                        <span id="skeletonRadioBadge" class="bg-pmmg-khakiBadge text-pmmg-gold text-xs px-2.5 py-1 rounded font-bold font-mono border border-pmmg-gold/40">REDE: PMMG</span>
+                        <span id="skeletonStatusBadge" class="bg-pmmg-dark text-gray-300 text-[10px] px-2 py-0.5 rounded uppercase border border-pmmg-border">Gaveta Modular</span>
+                    </div>
                     <p id="skeletonSubtitle" class="text-xs text-gray-400 mt-1">Região • Endereço Sede</p>
                 </div>
-                <button onclick="showView('home')" class="text-xs text-pmmg-khaki hover:underline flex items-center gap-1"><i data-lucide="arrow-left" class="w-4 h-4"></i> Voltar ao Início</button>
-            </div>
-
-            <div class="bg-pmmg-card p-6 rounded-2xl tactical-border space-y-4">
-                <div class="bg-pmmg-dark p-4 rounded-xl border border-pmmg-border flex items-center justify-between">
-                    <div>
-                        <span class="text-xs bg-pmmg-khakiBadge text-pmmg-khaki px-2.5 py-1 rounded font-bold uppercase border border-pmmg-khaki/30">Padrão Tático Unificado</span>
-                        <h4 class="text-xl font-bold text-white mt-1">Estrutura Operacional em Alimentação de Dados</h4>
-                        <p id="skeletonDesc" class="text-xs text-gray-400 mt-1">Esta unidade usará a estrutura primária idêntica à página modelo do 18º BPM.</p>
-                    </div>
-                    <i data-lucide="compass" class="w-10 h-10 text-pmmg-khaki opacity-40"></i>
+                <div class="flex items-center gap-2">
+                    <a id="skeletonMapsBtn" href="#" target="_blank" class="px-3 py-1.5 bg-pmmg-dark text-pmmg-khaki border border-pmmg-border rounded-lg text-xs font-bold hover:bg-pmmg-border flex items-center gap-1">
+                        <i data-lucide="map-pin" class="w-3.5 h-3.5"></i> Mapa Sede
+                    </a>
+                    <button onclick="showView('home')" class="px-3 py-1.5 bg-pmmg-card text-pmmg-khaki border border-pmmg-khaki/40 rounded-lg text-xs font-bold hover:bg-pmmg-border flex items-center gap-1">
+                        <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i> Voltar
+                    </button>
                 </div>
             </div>
+
+            <!-- ABAS PADRONIZADAS DA GAVETA DO BATALHÃO (IDÊNTICAS AO 18º BPM) -->
+            <div class="bg-pmmg-card/90 border border-pmmg-border rounded-xl p-2 overflow-x-auto">
+                <div class="subtabs-bar flex items-center gap-2 text-xs min-w-max">
+                    <button onclick="switchDrawerTab('cias')" id="dtab-cias" class=" px-3.5 py-2 rounded-lg bg-pmmg-khaki text-pmmg-black font-bold flex items-center gap-1.5">
+                        <i data-lucide="shield" class="w-4 h-4 shrink-0"></i> <span>Companhias (CIAs)</span>
+                    </button>
+                    <button onclick="switchDrawerTab('apoio')" id="dtab-apoio" class="px-3.5 py-2 rounded-lg bg-pmmg-dark text-gray-300 border border-pmmg-border font-medium flex items-center gap-1.5">
+                        <i data-lucide="fuel" class="w-4 h-4 shrink-0"></i> <span>Apoio & Abastec.</span>
+                    </button>
+                    <button onclick="switchDrawerTab('divisas')" id="dtab-divisas" class="px-3.5 py-2 rounded-lg bg-pmmg-dark text-pmmg-gold border border-pmmg-border font-medium flex items-center gap-1.5">
+                        <i data-lucide="map" class="w-4 h-4 shrink-0"></i> <span>Divisas & Cerco</span>
+                    </button>
+                    <button onclick="switchDrawerTab('orgaos')" id="dtab-orgaos" class="px-3.5 py-2 rounded-lg bg-pmmg-dark text-gray-300 border border-pmmg-border font-medium flex items-center gap-1.5">
+                        <i data-lucide="building-2" class="w-4 h-4 shrink-0"></i> <span>Saúde & Delegacias</span>
+                    </button>
+                    <button onclick="switchDrawerTab('contatos')" id="dtab-contatos" class="px-3.5 py-2 rounded-lg bg-pmmg-dark text-gray-300 border border-pmmg-border font-medium flex items-center gap-1.5">
+                        <i data-lucide="book-user" class="w-4 h-4 shrink-0"></i> <span>SOU & Inteligência</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- CONTEÚDO DINÂMICO PREENCHIDO PELO ARQUIVO DADOS.JSON -->
+            <div id="drawerDynamicBody" class="space-y-4"></div>
         </section>
 
         <!-- ================= VIEW 6: 18º BPM (PÁGINA PRIMÁRIA COMPLETA COM AS TECLAS INTERNAS) ================= -->
@@ -5213,7 +5312,7 @@
                     const data = await res.json();
                     if (data && data.address) {
                         const road = data.address.road || data.address.pedestrian || data.address.footway || data.address.path || 'Via / Beco sem nome oficial';
-                        const num = data.address.house_number ? ', nº ' + data.address.house_number : '';
+                        const num = data.address.house_number ? ', altura do nº ' + data.address.house_number : ' (trecho sem nº cadastrado)';
                         const suburb = data.address.suburb || data.address.neighbourhood || data.address.city_district || '';
                         const city = data.address.city || data.address.town || data.address.municipality || '';
 
@@ -5224,6 +5323,7 @@
                         document.getElementById('hudCurrentSuburb').textContent = subText;
                         document.getElementById('sosBigStreet').textContent = azimuteLastStreet;
                         document.getElementById('sosBigSuburb').textContent = [suburb, city].filter(Boolean).join(' • ');
+                        if (typeof sendStreetLockNotification === 'function') sendStreetLockNotification();
                     }
                 } catch (err) {
                     const distMoved = Math.round(movedMeters);
@@ -6499,6 +6599,310 @@
                 }, 400);
             }
         };
+
+        
+        // LOGIN HANDLING (BEPE / COLISEU)
+        function handleAzimuteLogin() {
+            const u = document.getElementById('loginUser').value.trim().toUpperCase();
+            const p = document.getElementById('loginPass').value.trim().toUpperCase();
+            const errDiv = document.getElementById('loginErrorMsg');
+
+            if (u === 'BEPE' && p === 'COLISEU') {
+                localStorage.setItem('azimute_auth', 'authenticated');
+                document.getElementById('azimuteLoginModal').classList.add('hidden');
+                if (typeof showToast === 'function') showToast('🔓 Acesso liberado! Bem-vindo ao AZIMUTE.');
+            } else {
+                errDiv.classList.remove('hidden');
+                setTimeout(() => errDiv.classList.add('hidden'), 4000);
+            }
+        }
+
+        // Check auth on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const isAuth = localStorage.getItem('azimute_auth');
+            if (isAuth === 'authenticated') {
+                const modal = document.getElementById('azimuteLoginModal');
+                if (modal) modal.classList.add('hidden');
+            }
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        });
+
+        // WHATSAPP SHARE LOCATION BUTTON
+        function shareLocationViaWhatsApp() {
+            const street = document.getElementById('hudCurrentStreet') ? document.getElementById('hudCurrentStreet').textContent : 'Localização atual';
+            const sub = document.getElementById('hudCurrentSuburb') ? document.getElementById('hudCurrentSuburb').textContent : '';
+            const radio = document.getElementById('hudRadioChannel') ? document.getElementById('hudRadioChannel').textContent : '';
+            const hosp = document.getElementById('hudClosestHospital') ? document.getElementById('hudClosestHospital').textContent : '';
+
+            const text = `🚨 *STATUS OPERACIONAL - AZIMUTE PMMG*\n` +
+                         `📍 *QTH:* ${street}\n` +
+                         `📌 *Região:* ${sub}\n` +
+                         `📻 *Canaleta:* ${radio}\n` +
+                         `🏥 *Socorro Ref.:* ${hosp}\n` +
+                         `⚡ *Enviado via AZIMUTE Tático*`;
+
+            const url = `https://wa.me/?text=` + encodeURIComponent(text);
+            window.open(url, '_blank');
+        }
+
+        // VOICE COMMANDS (SPEECH RECOGNITION)
+        function startVoiceCommand() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                alert('Seu navegador não suporta comandos de voz.');
+                return;
+            }
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'pt-BR';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            if (typeof showToast === 'function') showToast('🎙️ Ouvindo comando de voz... Fale o batalhão ou rua.');
+
+            recognition.onresult = function(event) {
+                const speechResult = event.results[0][0].transcript.toLowerCase();
+                if (typeof showToast === 'function') showToast('🗣️ Comando: "' + speechResult + '"');
+
+                const searchInput = document.getElementById('globalSearch');
+                if (searchInput) {
+                    searchInput.value = speechResult;
+                    handleGlobalSearch();
+                }
+
+                if (speechResult.includes('estádio') || speechResult.includes('mineirão') || speechResult.includes('estadio')) {
+                    showView('estadios');
+                } else if (speechResult.includes('drone') || speechResult.includes('rpas')) {
+                    showView('rpas');
+                } else if (speechResult.includes('18') || speechResult.includes('batalhão 18')) {
+                    showView('18bpm');
+                } else if (speechResult.includes('atalho') || speechResult.includes('reds') || speechResult.includes('sistema')) {
+                    showView('atalhos');
+                }
+            };
+
+            recognition.onerror = function() {
+                if (typeof showToast === 'function') showToast('❌ Não foi possível reconhecer a voz.');
+            };
+
+            recognition.start();
+        }
+
+        
+        // ================= ARQUITETURA MODULAR (DADOS.JSON + SERVICE WORKER + CLIMA + TELA BLOQUEADA) =================
+        let AZIMUTE_DB = null;
+        let currentDrawerUnit = null;
+        let lockScreenNotifyEnabled = false;
+
+        // Registra o Service Worker (Modo Avião e Atualização Automática)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').catch(() => {});
+            });
+        }
+
+        // Carrega as "Gavetas" do arquivo externo dados.json
+        async function loadExternalDadosJson() {
+            try {
+                const res = await fetch('./dados.json?v=' + Date.now());
+                if (res.ok) {
+                    AZIMUTE_DB = await res.json();
+                }
+            } catch (e) {
+                console.log('Usando cache local para dados.json');
+            }
+        }
+        loadExternalDadosJson();
+
+        // Sobrescreve openBattalionPlaceholder para abrir a Gaveta Modular com os dados do dados.json
+        const originalOpenPlaceholder = window.openBattalionPlaceholder;
+        window.openBattalionPlaceholder = function(unitName, city, address) {
+            let foundUnit = null;
+            if (AZIMUTE_DB) {
+                const allUnits = [...(AZIMUTE_DB.rpm1 || []), ...(AZIMUTE_DB.rpm2 || [])];
+                foundUnit = allUnits.find(u => u.nome.toLowerCase() === unitName.toLowerCase());
+            }
+
+            currentDrawerUnit = foundUnit || {
+                nome: unitName,
+                cidade: city,
+                regiao: city,
+                rede_radio: 'REDE: ' + unitName,
+                endereco_sede: address,
+                telefone_sou: 'Em cadastramento',
+                status: 'Gaveta Pronta para Receber Dados',
+                companhias: [],
+                apoio_abastecimento: [],
+                divisas: 'Envie as divisas desta unidade no chat para preenchermos no arquivo dados.json.',
+                saude_delegacias: [],
+                contatos: [{ setor: 'SOU', telefone: 'Em cadastramento' }, { setor: 'INTELIGÊNCIA - ' + unitName, telefone: 'Em cadastramento' }]
+            };
+
+            document.getElementById('skeletonTitle').textContent = currentDrawerUnit.nome + ' • ' + currentDrawerUnit.cidade;
+            document.getElementById('skeletonSubtitle').textContent = 'Sede: ' + currentDrawerUnit.endereco_sede;
+            document.getElementById('skeletonRadioBadge').textContent = currentDrawerUnit.rede_radio || ('REDE: ' + currentDrawerUnit.nome);
+            document.getElementById('skeletonStatusBadge').textContent = currentDrawerUnit.status || 'Gaveta Modular';
+            document.getElementById('skeletonMapsBtn').href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(currentDrawerUnit.endereco_sede + ' ' + currentDrawerUnit.cidade);
+
+            showView('skeleton');
+            switchDrawerTab('cias');
+        };
+
+        function switchDrawerTab(tab) {
+            ['cias', 'apoio', 'divisas', 'orgaos', 'contatos'].forEach(t => {
+                const btn = document.getElementById('dtab-' + t);
+                if (btn) {
+                    btn.className = (t === tab)
+                        ? 'px-3.5 py-2 rounded-lg bg-pmmg-khaki text-pmmg-black font-bold flex items-center gap-1.5'
+                        : 'px-3.5 py-2 rounded-lg bg-pmmg-dark text-gray-300 border border-pmmg-border font-medium flex items-center gap-1.5';
+                }
+            });
+
+            const container = document.getElementById('drawerDynamicBody');
+            if (!currentDrawerUnit || !container) return;
+
+            if (tab === 'cias') {
+                const cias = currentDrawerUnit.companhias || [];
+                if (cias.length === 0) {
+                    container.innerHTML = `
+                        <div class="bg-pmmg-card p-5 rounded-xl tactical-border space-y-2">
+                            <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-khaki font-bold px-2.5 py-0.5 rounded uppercase">Gaveta de Companhias Pronta</span>
+                            <h4 class="text-lg font-bold text-white">Companhias do ${currentDrawerUnit.nome}</h4>
+                            <p class="text-xs text-gray-400">Esta gaveta já está estruturada! Basta enviar no chat as Companhias, Bairros e Vias do <strong>${currentDrawerUnit.nome}</strong> para atualizarmos apenas o arquivo <code>dados.json</code>.</p>
+                        </div>`;
+                } else {
+                    container.innerHTML = cias.map(c => `
+                        <div class="bg-pmmg-card p-4 rounded-xl tactical-border space-y-2">
+                            <div class="flex justify-between items-center border-b border-pmmg-border pb-2">
+                                <h4 class="text-2xl font-military text-pmmg-khaki uppercase">${c.nome} • ${c.setor || ''}</h4>
+                                <span class="text-xs font-mono font-bold text-white">${c.telefone || ''}</span>
+                            </div>
+                            <p class="text-xs text-gray-300"><strong>Endereço:</strong> ${c.endereco || ''}</p>
+                            <p class="text-xs text-gray-400"><strong>Bairros:</strong> ${(c.bairros || []).join(', ')}</p>
+                        </div>`).join('');
+                }
+            } else if (tab === 'apoio') {
+                const apoios = currentDrawerUnit.apoio_abastecimento || [];
+                container.innerHTML = apoios.length ? apoios.map(a => `
+                    <div class="bg-pmmg-card p-4 rounded-xl tactical-border flex justify-between items-center">
+                        <div>
+                            <h4 class="font-bold text-white text-sm">${a.nome}</h4>
+                            <p class="text-xs text-gray-400">${a.endereco}</p>
+                        </div>
+                        <a href="${a.maps_url || '#'}" target="_blank" class="px-3 py-1.5 bg-pmmg-dark text-pmmg-khaki border border-pmmg-border rounded text-xs font-bold">Mapa</a>
+                    </div>`).join('') : `
+                    <div class="bg-pmmg-card p-5 rounded-xl tactical-border">
+                        <h4 class="text-base font-bold text-white">Pontos de Apoio e Abastecimento (${currentDrawerUnit.nome})</h4>
+                        <p class="text-xs text-gray-400 mt-1">Gaveta pronta para receber os pontos de abastecimento e bases desta unidade via <code>dados.json</code>.</p>
+                    </div>`;
+            } else if (tab === 'divisas') {
+                container.innerHTML = `
+                    <div class="bg-pmmg-card p-5 rounded-xl tactical-border space-y-2">
+                        <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-gold font-bold px-2.5 py-0.5 rounded uppercase">Mapeamento Territorial</span>
+                        <h4 class="text-lg font-bold text-white">Divisas & Pontos de Cerco do ${currentDrawerUnit.nome}</h4>
+                        <p class="text-xs text-gray-200 leading-relaxed">${currentDrawerUnit.divisas || 'Em alimentação.'}</p>
+                    </div>`;
+            } else if (tab === 'orgaos') {
+                const orgaos = currentDrawerUnit.saude_delegacias || [];
+                container.innerHTML = orgaos.length ? orgaos.map(o => `
+                    <div class="bg-pmmg-card p-4 rounded-xl tactical-border">
+                        <span class="text-[10px] text-pmmg-khaki font-bold uppercase">${o.tipo}</span>
+                        <h4 class="text-base font-bold text-white">${o.nome}</h4>
+                        <p class="text-xs text-gray-300">${o.endereco} • Tel: ${o.telefone || '--'}</p>
+                    </div>`).join('') : `
+                    <div class="bg-pmmg-card p-5 rounded-xl tactical-border">
+                        <h4 class="text-base font-bold text-white">UPAs, Hospitais e CEFLAN (${currentDrawerUnit.nome})</h4>
+                        <p class="text-xs text-gray-400 mt-1">Gaveta pronta para receber as delegacias de plantão e hospitais de referência da área.</p>
+                    </div>`;
+            } else if (tab === 'contatos') {
+                const contatos = currentDrawerUnit.contatos || [];
+                container.innerHTML = `<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">` + contatos.map(ct => `
+                    <div class="bg-pmmg-card p-4 rounded-xl tactical-border flex justify-between items-center">
+                        <div>
+                            <h5 class="font-bold text-pmmg-khaki text-sm">${ct.setor}</h5>
+                            <p class="text-base font-mono text-white font-bold mt-0.5">${ct.telefone}</p>
+                        </div>
+                        <a href="tel:${(ct.telefone || '').replace(/\D/g,'')}" class="p-2.5 bg-pmmg-khaki text-pmmg-black rounded-lg font-bold text-xs">📞 Ligar</a>
+                    </div>`).join('') + `</div>`;
+            }
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        // NOTIFICAÇÃO DE RUA NA TELA BLOQUEADA DO CELULAR (LOCK SCREEN)
+        async function toggleLockScreenStreetNotify() {
+            if (!('Notification' in window)) {
+                alert('Seu navegador não suporta notificações na tela bloqueada.');
+                return;
+            }
+            if (!lockScreenNotifyEnabled) {
+                const perm = await Notification.requestPermission();
+                if (perm === 'granted') {
+                    lockScreenNotifyEnabled = true;
+                    document.getElementById('lblLockNotify').textContent = '🔔 Tela Bloq. ATIVA';
+                    document.getElementById('btnLockScreenNotify').className = 'py-2 px-2.5 rounded-xl bg-emerald-950 text-emerald-400 border border-emerald-500/60 font-bold text-[11px] flex items-center justify-center gap-1.5 shadow transition-all';
+                    sendStreetLockNotification();
+                    if (typeof showToast === 'function') showToast('🔔 Nome da rua aparecerá na tela de bloqueio!');
+                } else {
+                    alert('Permita as notificações no navegador para ver a rua na tela bloqueada.');
+                }
+            } else {
+                lockScreenNotifyEnabled = false;
+                document.getElementById('lblLockNotify').textContent = 'Rua na Tela Bloq.';
+                document.getElementById('btnLockScreenNotify').className = 'py-2 px-2.5 rounded-xl bg-pmmg-dark hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-khaki/40 font-bold text-[11px] flex items-center justify-center gap-1.5 shadow transition-all';
+            }
+        }
+
+        function sendStreetLockNotification() {
+            if (!lockScreenNotifyEnabled || Notification.permission !== 'granted') return;
+            const street = document.getElementById('hudCurrentStreet').textContent;
+            const radio = document.getElementById('hudRadioChannel').textContent;
+            const hosp = document.getElementById('hudClosestHospital').textContent;
+            if (navigator.serviceWorker && navigator.serviceWorker.ready) {
+                navigator.serviceWorker.ready.then(reg => {
+                    reg.showNotification('📍 ' + street, {
+                        body: radio + ' | Socorro: ' + hosp,
+                        tag: 'azimute-qth-live',
+                        renotify: false,
+                        silent: true
+                    });
+                });
+            }
+        }
+
+        // MONITORAMENTO DE CLIMA E ALERTA DE VIAS DE ALAGAMENTO (OPEN-METEO GRATUITO SEM CHAVE)
+        async function checkWeatherAndFloodRisk() {
+            const banner = document.getElementById('weatherFloodBanner');
+            const txt = document.getElementById('weatherForecastText');
+            const list = document.getElementById('floodZonesList');
+            banner.classList.remove('hidden');
+
+            const lat = azimuteLastGeoLat || -19.9162;
+            const lon = azimuteLastGeoLon || -44.0809;
+
+            try {
+                const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,precipitation,rain&hourly=precipitation_probability,rain&forecast_days=1&timezone=America%2FSao_Paulo`;
+                const res = await fetch(url);
+                const data = await res.json();
+                const temp = data.current ? data.current.temperature_2m : '--';
+                const rainNow = data.current ? data.current.precipitation : 0;
+                const probs = data.hourly ? data.hourly.precipitation_probability.slice(0, 6) : [];
+                const maxProb = probs.length ? Math.max(...probs) : 0;
+
+                txt.innerHTML = `<strong>Temperatura Atual:</strong> ${temp}°C • <strong>Chuva Agora:</strong> ${rainNow} mm • <strong>Probabilidade próx. horas:</strong> <span class="${maxProb >= 60 ? 'text-red-400 font-bold' : 'text-emerald-400 font-bold'}">${maxProb}%</span>`;
+
+                const zonas = (AZIMUTE_DB && AZIMUTE_DB.zonas_alagamento_chuva) ? AZIMUTE_DB.zonas_alagamento_chuva : [
+                    { via: "Av. Vilarinho / Av. Álvaro Camargos (49º BPM)", risco: "CRÍTICO", alternativa: "Evitar fundo de vale; usar Rua Padre Pedro Pinto." },
+                    { via: "Av. Tereza Cristina - Córrego Ferrugem/Arrudas (5º/39º BPM)", risco: "CRÍTICO", alternativa: "Desviar pela Via Expressa ou Av. Amazonas." },
+                    { via: "Av. General David Sarnoff / Praça da Cemig (39º BPM)", risco: "ALTO", alternativa: "Usar vias superiores do Eldorado." }
+                ];
+
+                list.innerHTML = `<strong class="text-amber-300 block mt-1">⚠️ Vias Críticas para Evitar em Chuva Forte:</strong>` +
+                    zonas.map(z => `<div class="bg-pmmg-dark p-2 rounded border border-red-500/30 text-[11px]">
+                        <strong class="text-red-400">${z.via} (${z.risco}):</strong> <span class="text-gray-300">${z.alternativa}</span>
+                    </div>`).join('');
+            } catch (e) {
+                txt.textContent = 'Modo Offline: Exibindo carta preventiva de pontos críticos de alagamento na RMBH.';
+            }
+        }
 
         initCloudPersistence();
     </script>

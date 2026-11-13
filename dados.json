@@ -1,0 +1,944 @@
+{
+  "meta": {
+    "sistema": "AZIMUTE",
+    "corporacao": "PMMG",
+    "versao": "3.0-modular",
+    "atualizado_em": "2026-11-13"
+  },
+  "hospitais_emergencia": [
+    {
+      "nome": "Hosp. Municipal de Contagem (HMC)",
+      "tipo": "Trauma / Referência Contagem",
+      "endereco": "Av. Geraldo Rocha, 3220 - Chácaras Cotia, Contagem",
+      "telefone": "(31) 3356-6000",
+      "lat": -19.9322,
+      "lon": -44.0758
+    },
+    {
+      "nome": "HPS João XXIII (Trauma BH)",
+      "tipo": "Referência Estadual Trauma / Baleado",
+      "endereco": "Av. Prof. Alfredo Balena, 400 - Santa Efigênia, BH",
+      "telefone": "(31) 3239-9200",
+      "lat": -19.9267,
+      "lon": -43.9269
+    },
+    {
+      "nome": "Hospital da Polícia Militar (HPM)",
+      "tipo": "Exclusivo Militares / Família Militar",
+      "endereco": "Av. do Contorno, 2787 - Santa Efigênia, BH",
+      "telefone": "(31) 2123-1000",
+      "lat": -19.9235,
+      "lon": -43.9182
+    },
+    {
+      "nome": "Hosp. Risoleta Tolentino Neves",
+      "tipo": "Referência Trauma Norte / Venda Nova",
+      "endereco": "Rua das Gabirobas, 1 - Vila Clóris, BH",
+      "telefone": "(31) 3459-3200",
+      "lat": -19.8195,
+      "lon": -43.9535
+    },
+    {
+      "nome": "Hosp. Regional de Betim",
+      "tipo": "Referência Trauma Betim",
+      "endereco": "Av. Edméia Mattos Lazzarotti, 3800 - Jardim Brasília, Betim",
+      "telefone": "(31) 3539-8100",
+      "lat": -19.9567,
+      "lon": -44.1925
+    },
+    {
+      "nome": "UPA JK (Contagem)",
+      "tipo": "Pronto Atendimento 24h",
+      "endereco": "Av. João César de Oliveira, 784 - Eldorado, Contagem",
+      "telefone": "(31) 3391-5520",
+      "lat": -19.9389,
+      "lon": -44.0365
+    },
+    {
+      "nome": "UPA Ressaca (Contagem)",
+      "tipo": "Pronto Atendimento 24h",
+      "endereco": "Praça 21 de Abril, s/n - Guanabara, Contagem",
+      "telefone": "(31) 3352-5591",
+      "lat": -19.8906,
+      "lon": -44.0419
+    },
+    {
+      "nome": "UPA Sede (Contagem)",
+      "tipo": "Pronto Atendimento 24h",
+      "endereco": "Av. Prefeito Gil Diniz, 401A - Arcadia, Contagem",
+      "telefone": "(31) 3398-3344",
+      "lat": -19.9152,
+      "lon": -44.0841
+    },
+    {
+      "nome": "UPA Vargem das Flores (Nova Contagem)",
+      "tipo": "Pronto Atendimento 24h",
+      "endereco": "Av. Retiro dos Imigrantes, 80 - Retiro, Contagem",
+      "telefone": "(31) 3352-5889",
+      "lat": -19.8398,
+      "lon": -44.1504
+    },
+    {
+      "nome": "UPA Petrolândia (Contagem)",
+      "tipo": "Pronto Atendimento 24h",
+      "endereco": "Rua Refinaria Gabriel Passos, 287 - Petrolândia, Contagem",
+      "telefone": "(31) 3352-5618",
+      "lat": -19.9365,
+      "lon": -44.1182
+    },
+    {
+      "nome": "UPA Industrial (Contagem)",
+      "tipo": "Pronto Atendimento 24h",
+      "endereco": "Av. Maria da Glória, 491 - Amazonas, Contagem",
+      "telefone": "(31) 3363-5959",
+      "lat": -19.9575,
+      "lon": -44.0221
+    },
+    {
+      "nome": "Hosp. Júlia Kubitschek (Barreiro)",
+      "tipo": "Referência Barreiro",
+      "endereco": "Av. Dr. Cristiano Rezende, 2745 - Milionários, BH",
+      "telefone": "(31) 3389-7800",
+      "lat": -19.9897,
+      "lon": -44.0114
+    }
+  ],
+  "zonas_alagamento_chuva": [
+    {
+      "via": "Av. Vilarinho / Av. Álvaro Camargos",
+      "regiao": "Venda Nova (49º BPM)",
+      "risco": "CRÍTICO",
+      "alternativa": "Evitar fundo de vale; utilizar Rua Padre Pedro Pinto ou parte alta do São João Batista."
+    },
+    {
+      "via": "Av. Tereza Cristina (Córrego Ferrugem / Arrudas)",
+      "regiao": "Oeste BH / Industrial Contagem (5º BPM / 39º BPM)",
+      "risco": "CRÍTICO",
+      "alternativa": "Utilizar Via Expressa ou Av. Amazonas."
+    },
+    {
+      "via": "Av. Francisco Sá / Av. Amazonas (Próx. Cefet)",
+      "regiao": "Oeste BH (5º BPM)",
+      "risco": "ALTO",
+      "alternativa": "Desviar pela Rua Platina ou parte alta do Prado/Nova Suíssa."
+    },
+    {
+      "via": "Av. General David Sarnoff / Praça da Cemig",
+      "regiao": "Cidade Industrial Contagem (39º BPM)",
+      "risco": "ALTO",
+      "alternativa": "Acessar BR-381 pelas vias superiores do Eldorado."
+    },
+    {
+      "via": "Av. João César de Oliveira (Baixada Trincheiras)",
+      "regiao": "Eldorado / Sede Contagem (18º BPM / 39º BPM)",
+      "risco": "MODERADO",
+      "alternativa": "Atenção ao escoamento pluvial nas trincheiras em chuva torrencial."
+    }
+  ],
+  "rpm1": [
+    {
+      "id": "1bpm",
+      "nome": "1º BPM",
+      "cidade": "Belo Horizonte",
+      "regiao": "Centro-Sul / Santa Efigênia",
+      "rede_radio": "REDE: 1ª RPM / 1º BPM",
+      "endereco_sede": "Praça Floriano Peixoto, s/n - Santa Efigênia, BH",
+      "telefone_sou": "(31) 2123-1400",
+      "lat": -19.922,
+      "lon": -43.924,
+      "status": "Em alimentação (Gaveta Pronta)",
+      "companhias": [],
+      "apoio_abastecimento": [],
+      "divisas": "Divisa com 16º BPM, 22º BPM, 5º BPM e 34º BPM.",
+      "saude_delegacias": [
+        {
+          "nome": "CEFLAN 2 / Sul-Centro",
+          "tipo": "Polícia Civil",
+          "endereco": "Rua Pouso Alegre, 417 - Floresta, BH",
+          "telefone": "(31) 3429-6000"
+        }
+      ],
+      "contatos": [
+        {
+          "setor": "SOU",
+          "telefone": "(31) 2123-1400"
+        },
+        {
+          "setor": "INTELIGÊNCIA - 1º BPM",
+          "telefone": "Inserir ramal"
+        }
+      ]
+    },
+    {
+      "id": "5bpm",
+      "nome": "5º BPM",
+      "cidade": "Belo Horizonte",
+      "regiao": "Oeste / Gameleira / Califórnia",
+      "rede_radio": "REDE: 1ª RPM / 5º BPM A",
+      "endereco_sede": "Avenida Amazonas, 6455 - Gameleira, BH",
+      "telefone_sou": "(31) 3071-2600",
+      "lat": -19.932,
+      "lon": -43.993,
+      "status": "Em alimentação (Gaveta Pronta)",
+      "companhias": [],
+      "apoio_abastecimento": [],
+      "divisas": "Divisa com 18º BPM (Contagem - Califórnia/Arena MRV), 39º BPM, 41º BPM, 22º BPM, 1º BPM e 34º BPM.",
+      "saude_delegacias": [
+        {
+          "nome": "CEFLAN 3 (Barreiro/Oeste)",
+          "tipo": "Polícia Civil",
+          "endereco": "Av. Sinfrônio Brochado, 1053 - Barreiro, BH",
+          "telefone": "(31) 3328-6100"
+        }
+      ],
+      "contatos": [
+        {
+          "setor": "SOU",
+          "telefone": "(31) 3071-2600"
+        },
+        {
+          "setor": "INTELIGÊNCIA - 5º BPM",
+          "telefone": "Inserir ramal"
+        }
+      ]
+    },
+    {
+      "id": "13bpm",
+      "nome": "13º BPM",
+      "cidade": "Belo Horizonte",
+      "regiao": "Norte / Planalto",
+      "rede_radio": "REDE: 1ª RPM / 13º BPM",
+      "endereco_sede": "Avenida Dr. Cristiano Guimarães, 2300 - Planalto, BH",
+      "telefone_sou": "(31) 3490-9500",
+      "lat": -19.832,
+      "lon": -43.945,
+      "status": "Em alimentação (Gaveta Pronta)",
+      "companhias": [],
+      "apoio_abastecimento": [],
+      "divisas": "Divisa com 49º BPM, 34º BPM e 16º BPM.",
+      "saude_delegacias": [],
+      "contatos": [
+        {
+          "setor": "SOU",
+          "telefone": "(31) 3490-9500"
+        }
+      ]
+    },
+    {
+      "id": "16bpm",
+      "nome": "16º BPM",
+      "cidade": "Belo Horizonte",
+      "regiao": "Leste / Santa Tereza / Horto",
+      "rede_radio": "REDE: 1ª RPM / 16º BPM A",
+      "endereco_sede": "Rua Tenente Vitorino, 71 - Santa Tereza, BH",
+      "telefone_sou": "(31) 3465-7500",
+      "lat": -19.9083,
+      "lon": -43.9178,
+      "status": "Em alimentação (Gaveta Pronta)",
+      "companhias": [],
+      "apoio_abastecimento": [],
+      "divisas": "Divisa com 1º BPM, 13º BPM e Sabará.",
+      "saude_delegacias": [],
+      "contatos": [
+        {
+          "setor": "SOU",
+          "telefone": "(31) 3465-7500"
+        }
+      ]
+    },
+    {
+      "id": "22bpm",
+      "nome": "22º BPM",
+      "cidade": "Belo Horizonte",
+      "regiao": "Centro-Sul / Santa Lúcia / Aglomerados",
+      "rede_radio": "REDE: 1ª RPM / 22º BPM",
+      "endereco_sede": "Avenida Arthur Bernardes, 1337 - Santa Lúcia, BH",
+      "telefone_sou": "(31) 3298-7200",
+      "lat": -19.946,
+      "lon": -43.93,
+      "status": "Em alimentação (Gaveta Pronta)",
+      "companhias": [],
+      "apoio_abastecimento": [],
+      "divisas": "Divisa com 1º BPM, 5º BPM, 41º BPM e Nova Lima.",
+      "saude_delegacias": [],
+      "contatos": [
+        {
+          "setor": "SOU",
+          "telefone": "(31) 3298-7200"
+        }
+      ]
+    },
+    {
+      "id": "34bpm",
+      "nome": "34º BPM",
+      "cidade": "Belo Horizonte",
+      "regiao": "Noroeste / Pampulha / Caiçara",
+      "rede_radio": "REDE: 1ª RPM / 34º BPM B",
+      "endereco_sede": "Avenida Américo Vespúcio, 2391 - Caiçara, BH",
+      "telefone_sou": "(31) 3419-6800",
+      "lat": -19.8658,
+      "lon": -43.9711,
+      "status": "Em alimentação (Gaveta Pronta)",
+      "companhias": [],
+      "apoio_abastecimento": [],
+      "divisas": "Divisa com 18º BPM (Contagem - Ressaca/Nacional), 40º BPM, 49º BPM, 13º BPM, 1º BPM e 5º BPM.",
+      "saude_delegacias": [],
+      "contatos": [
+        {
+          "setor": "SOU",
+          "telefone": "(31) 3419-6800"
+        }
+      ]
+    },
+    {
+      "id": "41bpm",
+      "nome": "41º BPM",
+      "cidade": "Belo Horizonte",
+      "regiao": "Barreiro",
+      "rede_radio": "REDE: 1ª RPM / 41º BPM",
+      "endereco_sede": "Avenida Afonso Vaz de Melo, 650 - Barreiro, BH",
+      "telefone_sou": "(31) 3389-8300",
+      "lat": -19.976,
+      "lon": -44.018,
+      "status": "Em alimentação (Gaveta Pronta)",
+      "companhias": [],
+      "apoio_abastecimento": [],
+      "divisas": "Divisa com 39º BPM (Contagem), 48º BPM (Ibirité), 5º BPM e 22º BPM.",
+      "saude_delegacias": [],
+      "contatos": [
+        {
+          "setor": "SOU",
+          "telefone": "(31) 3389-8300"
+        }
+      ]
+    },
+    {
+      "id": "49bpm",
+      "nome": "49º BPM",
+      "cidade": "Belo Horizonte",
+      "regiao": "Venda Nova",
+      "rede_radio": "REDE: 1ª RPM / 49º BPM",
+      "endereco_sede": "Avenida Érico Veríssimo, 561 - São João Batista, BH",
+      "telefone_sou": "(31) 3459-6900",
+      "lat": -19.814,
+      "lon": -43.968,
+      "status": "Em alimentação (Gaveta Pronta)",
+      "companhias": [],
+      "apoio_abastecimento": [],
+      "divisas": "Divisa com 40º BPM (Ribeirão das Neves), 34º BPM e 13º BPM.",
+      "saude_delegacias": [],
+      "contatos": [
+        {
+          "setor": "SOU",
+          "telefone": "(31) 3459-6900"
+        }
+      ]
+    },
+    {
+      "id": "bprtran",
+      "nome": "BPTran",
+      "cidade": "Belo Horizonte",
+      "regiao": "Policiamento de Trânsito Capital",
+      "rede_radio": "REDE: 1ª RPM / BPTRAN",
+      "endereco_sede": "Avenida Amazonas, 6227 - Gameleira, BH",
+      "telefone_sou": "(31) 2123-1800",
+      "lat": -19.931,
+      "lon": -43.991,
+      "status": "Em alimentação (Gaveta Pronta)",
+      "companhias": [],
+      "apoio_abastecimento": [],
+      "divisas": "Atuação em toda a malha viária da Capital.",
+      "saude_delegacias": [],
+      "contatos": [
+        {
+          "setor": "SOU",
+          "telefone": "(31) 2123-1800"
+        }
+      ]
+    }
+  ],
+  "rpm2": [
+    {
+      "id": "18bpm",
+      "nome": "18º BPM",
+      "cidade": "Contagem",
+      "regiao": "Sede / Ressaca / Nacional / Petrolândia / Nova Contagem",
+      "rede_radio": "REDE: 2ª RPM / 18º BPM A",
+      "endereco_sede": "Av. João César de Oliveira, 5400 - Beatriz, Contagem/MG",
+      "telefone_geral": "(31) 2191-6100",
+      "telefone_sou": "(31) 2191-6110",
+      "lat": -19.9162,
+      "lon": -44.0809,
+      "status": "Padrão Primário Completo",
+      "companhias": [
+        {
+          "nome": "131ª CIA PM",
+          "setor": "Região da Ressaca & ZQC Padre Feijó",
+          "endereco": "Rua Diamante, 950 – São Joaquim, Contagem",
+          "telefone": "(31) 3357-6111",
+          "maps_url": "https://maps.app.goo.gl/PjWM9fCvchnGEabs9",
+          "lat": -19.8885,
+          "lon": -44.0405,
+          "ponto_apoio": "ZQC Padre Feijó - Posto ALE: Av. João Gomes Cardoso, 1366 (Jd. Laguna)",
+          "bases": [
+            "BSC 18.131.1: Av. João Gomes Cardoso, 2244 – Praça do Divino, Jardim Laguna",
+            "BSC 18.131.3: Av. Severino Ballesteros, 850 – Shopping Contagem, São Joaquim"
+          ],
+          "bairros": [
+            "Jardim Laguna",
+            "São Joaquim",
+            "Ressaca",
+            "Cabral",
+            "Cândida Ferreira",
+            "Arvoredo",
+            "Novo Progresso",
+            "Nacional",
+            "Xangri-lá",
+            "Pedra Azul",
+            "São Gotardo",
+            "São Mateus",
+            "Tijuca",
+            "Morada Nova",
+            "Vila Pérola",
+            "Vila Renascer",
+            "Monte Castelo",
+            "Jardim Balneário"
+          ],
+          "vias": [
+            "Av. Severino Ballesteros Rodrigues",
+            "Av. João Gomes Cardoso",
+            "Av. das Américas",
+            "Av. Teleférico",
+            "Av. Princesa Isabel",
+            "Av. Fernão Dias",
+            "Av. Wilson Tavares Ribeiro",
+            "Av. Alterosa",
+            "Av. Geraldo Rocha",
+            "Av. Helena de Vasconcelos Costa",
+            "Av. Borba Gato",
+            "Rua Diamante",
+            "BR-040"
+          ]
+        },
+        {
+          "nome": "133ª CIA PM",
+          "setor": "Sede & Região Central de Contagem",
+          "endereco": "Av. João César de Oliveira, 5400 – Beatriz, Contagem",
+          "telefone": "(31) 2191-6110",
+          "maps_url": "https://maps.app.goo.gl/FbyCRKWhg4BrkaiTA",
+          "lat": -19.9162,
+          "lon": -44.0809,
+          "ponto_apoio": "Base Comunitária Histórica: Praça Silviano Brandão – Centro",
+          "bases": [
+            "Praça Silviano Brandão – Centro"
+          ],
+          "bairros": [
+            "Centro",
+            "Beatriz",
+            "Alvorada",
+            "Camilo Alves",
+            "N. Sra. de Fátima",
+            "Fonte Grande",
+            "Bernardo Monteiro",
+            "Jardim Marrocos",
+            "Santa Helena",
+            "Santa Edwiges",
+            "São Gonçalo",
+            "Três Barras",
+            "Europa",
+            "Colonial",
+            "Parque Maracanã",
+            "Central Park",
+            "Jardim Vera Cruz",
+            "N. Sra. do Carmo",
+            "Coração de Jesus",
+            "Maria da Conceição",
+            "Quintas Coloniais",
+            "Universitário"
+          ],
+          "vias": [
+            "Av. João César de Oliveira",
+            "Av. Prefeito Gil Diniz",
+            "Av. João de Deus Costa",
+            "Av. Padre Joaquim Martins",
+            "Av. José Luís da Cunha",
+            "Rua do Registro",
+            "Rua Bernardo Monteiro",
+            "Av. Carmelita Drumond Diniz",
+            "Av. Maracanã",
+            "Via Expressa",
+            "BR-040",
+            "BR-381",
+            "BR-262"
+          ]
+        },
+        {
+          "nome": "283ª CIA PM",
+          "setor": "Petrolândia & Entorno",
+          "endereco": "Av. João César de Oliveira, 5400 – Beatriz (Sede 18º BPM)",
+          "telefone": "(31) 2191-6110",
+          "maps_url": "https://maps.app.goo.gl/FbyCRKWhg4BrkaiTA",
+          "lat": -19.934,
+          "lon": -44.118,
+          "ponto_apoio": "Base Comunitária: Praça do Petrolândia",
+          "bases": [
+            "Praça do Petrolândia"
+          ],
+          "bairros": [
+            "Petrolândia",
+            "Tropical I e II",
+            "Campo Alto",
+            "Sapucaias I, II, III",
+            "Industrial São Luiz",
+            "Beija-Flor",
+            "Estância Imperial",
+            "São Caetano",
+            "Solar do Madeira",
+            "Vila União",
+            "Vila Universal",
+            "Vila Ipanema",
+            "Vila Morro Vermelho",
+            "Nascentes Imperiais"
+          ],
+          "vias": [
+            "Av. Durval Alves de Faria",
+            "Av. Tropical",
+            "Av. Imbiruçu",
+            "Av. Petrominas",
+            "Adutora Várzea das Flores",
+            "Estrada Renato Azeredo",
+            "R. Refinaria Duque de Caxias",
+            "Av. Fiscal João Militão",
+            "Viaduto Petrolândia",
+            "Rua Acetona"
+          ]
+        },
+        {
+          "nome": "38ª CIA ESPECIAL",
+          "setor": "Nova Contagem • 26ª AISP",
+          "endereco": "Rua Maria José Chiodi, 960 – Nova Contagem, Contagem/MG",
+          "telefone": "(31) 3911-5260",
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Rua+Maria+Jose+Chiodi+960+Nova+Contagem+Contagem+MG",
+          "lat": -19.835,
+          "lon": -44.148,
+          "ponto_apoio": "Base BSC (18.38.1): Av. VP-1, nº 1.375 – Nova Contagem",
+          "bases": [
+            "Av. VP-1, nº 1.375 – Nova Contagem"
+          ],
+          "bairros": [
+            "Nova Contagem",
+            "Vila Ipê Amarelo",
+            "Darcy Ribeiro",
+            "San Remo",
+            "Retiro",
+            "Vila Renascer",
+            "Vale do Bom Jesus",
+            "Icaivera",
+            "Tupã",
+            "Estâncias Imperiais"
+          ],
+          "vias": [
+            "LMG-808",
+            "Av. VP-1",
+            "Av. VP-2",
+            "Rua Maria José Chiodi",
+            "Av. Retiro dos Imigrantes",
+            "Rua do Registro",
+            "Rua Sema",
+            "Estrada Chico Mendes",
+            "Av. Jequitibás (Icaivera)",
+            "Praça ABC",
+            "Penitenciária Nelson Hungria"
+          ]
+        },
+        {
+          "nome": "39ª CIA PM",
+          "setor": "Kennedy • Nacional • Ceasa",
+          "endereco": "Av. Carandaí – Kennedy, Contagem",
+          "telefone": "(31) 3303-8120",
+          "maps_url": "https://maps.app.goo.gl/zvCCLBJwewazQw3j6",
+          "lat": -19.869,
+          "lon": -44.043,
+          "ponto_apoio": "Entreposto CEASA Minas (BR-040)",
+          "bases": [
+            "Posto CEASA"
+          ],
+          "bairros": [
+            "Ceasa",
+            "Nacional",
+            "Xangri-lá",
+            "Pedra Azul",
+            "Kennedy",
+            "Bom Jesus",
+            "Estrela Dalva",
+            "Carajás",
+            "Vale das Amendoeiras"
+          ],
+          "vias": [
+            "Av. Severino Ballesteros Rodrigues",
+            "Av. Nacional",
+            "Av. Washington Luís",
+            "Av. Vice-Pres. José Alencar (Ceasa)",
+            "BR-040"
+          ]
+        }
+      ],
+      "apoio_abastecimento": [
+        {
+          "nome": "18º BPM (Contagem) - Sede",
+          "regiao": "2ª RPM",
+          "endereco": "Av. João César de Oliveira, 5400 - Beatriz",
+          "telefone": "(31) 2191-6110",
+          "maps_url": "https://maps.app.goo.gl/FbyCRKWhg4BrkaiTA"
+        },
+        {
+          "nome": "40º BPM (Ribeirão das Neves)",
+          "regiao": "2ª RPM",
+          "endereco": "Rodovia LMG-806, KM 04 - Fazenda Castro",
+          "telefone": "(31) 3627-3825",
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=40+BPM+Ribeirao+das+Neves+MG"
+        },
+        {
+          "nome": "2º Batalhão de Bombeiros (2º BBM)",
+          "regiao": "2ª RPM",
+          "endereco": "Av. João César de Oliveira, 3744 - Eldorado, Contagem",
+          "telefone": "(31) 3359-6301",
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=2+Batalhao+de+Bombeiros+Contagem+MG"
+        },
+        {
+          "nome": "Posto ALE (ZQC Padre Feijó - Apoio)",
+          "regiao": "131ª Cia",
+          "endereco": "Av. João Gomes Cardoso, 1366 - Jardim Laguna",
+          "telefone": "(31) 3357-6111",
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Avenida+Joao+Gomes+Cardoso+1366+Contagem+MG"
+        },
+        {
+          "nome": "Batalhão ROTAM (Abastecimento 1ª RPM)",
+          "regiao": "1ª RPM",
+          "endereco": "Av. do Contorno, 777 - Centro, BH",
+          "telefone": "(31) 3307-0900",
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Avenida+do+Contorno+777+Centro+Belo+Horizonte+MG"
+        }
+      ],
+      "divisas": "Na 2ª RPM: Faz divisa direta com o 66º BPM (Betim - eixo BR-381/Petrovale/Imbiruçu), 39º BPM (Contagem - eixo Via Expressa/Eldorado), 40º BPM (Ribeirão das Neves - eixo BR-040/Ceasa) e 6ª Cia PM Ind (Esmeraldas). ATENÇÃO: O 33º BPM NÃO faz divisa com o 18º BPM, apenas o 66º BPM. Na 1ª RPM (BH): Faz divisa com o 34º BPM (Pampulha/Noroeste) e 5º BPM (Califórnia/Arena MRV).",
+      "saude_delegacias": [
+        {
+          "nome": "Central de Flagrantes / Plantão Digital Contagem",
+          "tipo": "Polícia Civil (CEFLAN)",
+          "endereco": "Av. João César de Oliveira, 2477 - Eldorado, Contagem",
+          "telefone": "(31) 3391-8900"
+        },
+        {
+          "nome": "6ª Delegacia de Polícia Civil (Nova Contagem)",
+          "tipo": "Polícia Civil (26ª AISP)",
+          "endereco": "Rua Maria José Chiodi, 960 - Nova Contagem",
+          "telefone": "(31) 3911-5260"
+        },
+        {
+          "nome": "DEAM (Delegacia da Mulher Contagem)",
+          "tipo": "Polícia Civil",
+          "endereco": "Rua Capitão Antônio Joaquim da Paixão, 622 - Centro, Contagem",
+          "telefone": "(31) 3398-9943"
+        },
+        {
+          "nome": "Hospital Municipal de Contagem (HMC)",
+          "tipo": "Hospital Trauma",
+          "endereco": "Av. Geraldo Rocha, 3220 - Chácaras Cotia, Contagem",
+          "telefone": "(31) 3356-6000"
+        },
+        {
+          "nome": "Guarda Civil de Contagem (GCC) / Transcon",
+          "tipo": "Órgão Integrado",
+          "endereco": "Av. João César de Oliveira, 1410 - Eldorado",
+          "telefone": "153"
+        }
+      ],
+      "contatos": [
+        {
+          "setor": "TEL 18º BPM (Recepção / Geral)",
+          "telefone": "(31) 2191-6100"
+        },
+        {
+          "setor": "SOU",
+          "telefone": "(31) 2191-6110"
+        },
+        {
+          "setor": "INTELIGÊNCIA - 18º BPM",
+          "telefone": "(31) 2191-6100"
+        },
+        {
+          "setor": "131ª Cia PM (Ressaca / Laguna)",
+          "telefone": "(31) 3357-6111"
+        },
+        {
+          "setor": "133ª Cia PM (Sede / Centro)",
+          "telefone": "(31) 2191-6110"
+        },
+        {
+          "setor": "283ª Cia PM (Petrolândia)",
+          "telefone": "(31) 2191-6110"
+        },
+        {
+          "setor": "38ª Cia PM Esp. (Nova Contagem)",
+          "telefone": "(31) 3911-5260"
+        },
+        {
+          "setor": "39ª Cia PM (Kennedy / Ceasa)",
+          "telefone": "(31) 3303-8120"
+        }
+      ]
+    },
+    {
+      "id": "33bpm",
+      "nome": "33º BPM",
+      "cidade": "Betim",
+      "regiao": "Centro / Angola / PTB / Citrolândia",
+      "rede_radio": "REDE: 2ª RPM / 33º BPM",
+      "endereco_sede": "Rua Conceição Rosa Lima, 455 - Angola, Betim/MG",
+      "telefone_sou": "(31) 3539-7500",
+      "lat": -19.967,
+      "lon": -44.198,
+      "status": "Em alimentação (Gaveta Pronta)",
+      "companhias": [],
+      "apoio_abastecimento": [],
+      "divisas": "Faz divisa com 66º BPM (Betim), 7ª Cia PM Ind (Igarapé/Juatuba) e 6ª Cia PM Ind (Esmeraldas). Não faz divisa com o 18º BPM.",
+      "saude_delegacias": [],
+      "contatos": [
+        {
+          "setor": "SOU",
+          "telefone": "(31) 3539-7500"
+        },
+        {
+          "setor": "INTELIGÊNCIA - 33º BPM",
+          "telefone": "Inserir ramal"
+        }
+      ]
+    },
+    {
+      "id": "39bpm",
+      "nome": "39º BPM",
+      "cidade": "Contagem",
+      "regiao": "Industrial / Eldorado / Riacho",
+      "rede_radio": "REDE: 2ª RPM / 39º BPM",
+      "endereco_sede": "Rua Tiradentes, 2750 - Industrial, Contagem/MG",
+      "telefone_sou": "(31) 3363-5400",
+      "lat": -19.954,
+      "lon": -44.032,
+      "status": "Em alimentação (Gaveta Pronta)",
+      "companhias": [],
+      "apoio_abastecimento": [],
+      "divisas": "Faz divisa com 18º BPM (Contagem), 66º BPM (Betim), 48º BPM (Ibirité), 41º BPM (Barreiro) e 5º BPM (Oeste BH).",
+      "saude_delegacias": [],
+      "contatos": [
+        {
+          "setor": "SOU",
+          "telefone": "(31) 3363-5400"
+        },
+        {
+          "setor": "INTELIGÊNCIA - 39º BPM",
+          "telefone": "Inserir ramal"
+        }
+      ]
+    },
+    {
+      "id": "40bpm",
+      "nome": "40º BPM",
+      "cidade": "Ribeirão das Neves",
+      "regiao": "Sede / Justinópolis / Veneza",
+      "rede_radio": "REDE: 2ª RPM / 40º BPM",
+      "endereco_sede": "Rodovia LMG-806, KM 04 - Fazenda Castro, Ribeirão das Neves/MG",
+      "telefone_sou": "(31) 3627-3825",
+      "lat": -19.767,
+      "lon": -44.086,
+      "status": "Em alimentação (Gaveta Pronta)",
+      "companhias": [],
+      "apoio_abastecimento": [],
+      "divisas": "Faz divisa com 18º BPM (Contagem), 6ª Cia PM Ind (Esmeraldas), 34º BPM e 49º BPM (Venda Nova).",
+      "saude_delegacias": [],
+      "contatos": [
+        {
+          "setor": "SOU",
+          "telefone": "(31) 3627-3825"
+        },
+        {
+          "setor": "INTELIGÊNCIA - 40º BPM",
+          "telefone": "Inserir ramal"
+        }
+      ]
+    },
+    {
+      "id": "48bpm",
+      "nome": "48º BPM",
+      "cidade": "Ibirité",
+      "regiao": "Ibirité / Sarzedo / Mário Campos",
+      "rede_radio": "REDE: 2ª RPM / 48º BPM",
+      "endereco_sede": "Avenida Marechal Hermes, 228 - Durval de Barros, Ibirité/MG",
+      "telefone_sou": "(31) 3521-9500",
+      "lat": -20.021,
+      "lon": -44.058,
+      "status": "Em alimentação (Gaveta Pronta)",
+      "companhias": [],
+      "apoio_abastecimento": [],
+      "divisas": "Faz divisa com 39º BPM (Contagem), 66º BPM (Betim), 41º BPM (Barreiro) e Brumadinho.",
+      "saude_delegacias": [],
+      "contatos": [
+        {
+          "setor": "SOU",
+          "telefone": "(31) 3521-9500"
+        }
+      ]
+    },
+    {
+      "id": "66bpm",
+      "nome": "66º BPM",
+      "cidade": "Betim",
+      "regiao": "Alterosas / Teresópolis / Imbiruçu / Petrovale",
+      "rede_radio": "REDE: 2ª RPM / 66º BPM",
+      "endereco_sede": "Rua Barão do Rio Branco, 235 - Centro, Betim/MG",
+      "telefone_sou": "(31) 3539-7550",
+      "lat": -19.961,
+      "lon": -44.135,
+      "status": "Em alimentação (Gaveta Pronta)",
+      "companhias": [],
+      "apoio_abastecimento": [],
+      "divisas": "Faz divisa direta com o 18º BPM (Contagem), 39º BPM (Contagem), 33º BPM (Betim) e 48º BPM (Ibirité).",
+      "saude_delegacias": [],
+      "contatos": [
+        {
+          "setor": "SOU",
+          "telefone": "(31) 3539-7550"
+        },
+        {
+          "setor": "INTELIGÊNCIA - 66º BPM",
+          "telefone": "Inserir ramal"
+        }
+      ]
+    },
+    {
+      "id": "6ciaind",
+      "nome": "6ª CIA PM IND",
+      "cidade": "Esmeraldas / Brumadinho",
+      "regiao": "Cia Independente",
+      "rede_radio": "REDE: 2ª RPM / 6ª CIA IND",
+      "endereco_sede": "Sede 6ª Cia PM Ind - 2ª RPM",
+      "telefone_sou": "(31) 3538-1500",
+      "lat": -19.762,
+      "lon": -44.313,
+      "status": "Em alimentação (Gaveta Pronta)",
+      "companhias": [],
+      "apoio_abastecimento": [],
+      "divisas": "Divisa com 18º BPM (Nova Contagem/Icaivera), 40º BPM e 33º BPM.",
+      "saude_delegacias": [],
+      "contatos": []
+    },
+    {
+      "id": "7ciaind",
+      "nome": "7ª CIA PM IND",
+      "cidade": "Igarapé",
+      "regiao": "Igarapé, São Joaquim de Bicas, Juatuba, Itatiaiuçu, Mateus Leme",
+      "rede_radio": "REDE: 2ª RPM / 7ª CIA IND",
+      "endereco_sede": "Sediada em Igarapé - MG",
+      "telefone_sou": "(31) 3534-1190",
+      "lat": -20.07,
+      "lon": -44.301,
+      "status": "Em alimentação (Gaveta Pronta)",
+      "companhias": [],
+      "apoio_abastecimento": [],
+      "divisas": "Divisa com 33º BPM (Betim) e 6ª Cia PM Ind.",
+      "saude_delegacias": [],
+      "contatos": []
+    }
+  ],
+  "especializadas": [
+    {
+      "sigla": "BATALHÃO GER",
+      "nome": "Grupo Especializado em Recobrimento (2ª RPM)",
+      "categoria": "Recobrimento 2ª RPM",
+      "endereco": "Rua Iguaçu, 233 – São Joaquim, Contagem/MG",
+      "telefone": "(31) 2191-6100",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=Rua+Iguacu+233+Sao+Joaquim+Contagem+MG",
+      "destaque": ""
+    },
+    {
+      "sigla": "Batalhão ROTAM",
+      "nome": "Rondas Táticas Metropolitanas (CME)",
+      "categoria": "CME • Patrulhamento Tático",
+      "endereco": "Av. do Contorno, 777 – Centro, Belo Horizonte/MG",
+      "telefone": "(31) 3307-0900",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=Avenida+do+Contorno+777+Centro+Belo+Horizonte+MG",
+      "destaque": "Possui Ponto de Abastecimento Oficial (1ª RPM)"
+    },
+    {
+      "sigla": "BOPE",
+      "nome": "Batalhão de Operações Policiais Especiais",
+      "categoria": "Operações Especiais",
+      "endereco": "Av. Amazonas, 6455 (Gameleira) / Rua Diabase, 200 – Prado, BH/MG",
+      "telefone": "(31) 3071-2516",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=Rua+Diabase+200+Prado+Belo+Horizonte+MG",
+      "destaque": ""
+    },
+    {
+      "sigla": "BPChq",
+      "nome": "Batalhão de Polícia de Choque (CDC / Recobrimento)",
+      "categoria": "Polícia de Choque",
+      "endereco": "Av. Amazonas, 6455 – Gameleira, Belo Horizonte/MG",
+      "telefone": "(31) 3071-2536",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=Avenida+Amazonas+6455+Gameleira+Belo+Horizonte+MG",
+      "destaque": ""
+    },
+    {
+      "sigla": "ROCCA",
+      "nome": "Rondas Ostensivas com Cães (Faro de Armas, Drogas e Busca)",
+      "categoria": "Operações com Cães",
+      "endereco": "Rua Diabase, 200 – Prado / Av. Amazonas, 6455 – Gameleira, BH/MG",
+      "telefone": "(31) 3071-2495",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=Rua+Diabase+200+Prado+Belo+Horizonte+MG",
+      "destaque": ""
+    },
+    {
+      "sigla": "BEPE",
+      "nome": "Batalhão Especializado em Policiamento de Eventos",
+      "categoria": "Grandes Eventos",
+      "endereco": "Av. Amazonas, 6455 – Gameleira, Belo Horizonte/MG",
+      "telefone": "(31) 3071-2500",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=Avenida+Amazonas+6455+Gameleira+Belo+Horizonte+MG",
+      "destaque": "Unidade Referência em Praças Desportivas e Grandes Eventos"
+    },
+    {
+      "sigla": "BPGd",
+      "nome": "Batalhão de Polícia de Guarda",
+      "categoria": "Polícia de Guarda",
+      "endereco": "Rua Nossa Senhora da Paz, 929 – Cachoeirinha, BH/MG",
+      "telefone": "(31) 3307-0650",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=Rua+Nossa+Senhora+da+Paz+929+Cachoeirinha+Belo+Horizonte+MG",
+      "destaque": ""
+    },
+    {
+      "sigla": "BPM MAmb",
+      "nome": "Batalhão de Polícia Militar de Meio Ambiente",
+      "categoria": "Meio Ambiente",
+      "endereco": "Rua Sete, 642 – Pampulha / Av. Amazonas, 6227 – Gameleira, BH/MG",
+      "telefone": "(31) 2123-1600",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=Rua+Sete+642+Pampulha+Belo+Horizonte+MG",
+      "destaque": ""
+    },
+    {
+      "sigla": "BPMRv",
+      "nome": "Batalhão de Polícia Militar Rodoviária",
+      "categoria": "Polícia Rodoviária Estadual",
+      "endereco": "Av. Amazonas, 6227 – Gameleira, Belo Horizonte/MG",
+      "telefone": "(31) 2123-1900",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=Avenida+Amazonas+6227+Gameleira+Belo+Horizonte+MG",
+      "destaque": ""
+    },
+    {
+      "sigla": "RCAT (Cavalaria)",
+      "nome": "Regimento de Cavalaria Alferes Tiradentes",
+      "categoria": "Policiamento Montado • Prado",
+      "endereco": "Rua Platina, 580 – Prado, Belo Horizonte/MG",
+      "telefone": "(31) 3071-2400",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=Rua+Platina+580+Prado+Belo+Horizonte+MG",
+      "destaque": ""
+    }
+  ]
+}

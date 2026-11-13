@@ -1,0 +1,17 @@
+{
+  "name": "AZIMUTE - Guia Tático PMMG",
+  "short_name": "AZIMUTE",
+  "description": "Sistema Geral de Consulta Rápida e Sobrevivência Operacional - PMMG",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0F0F0F",
+  "theme_color": "#0F0F0F",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/854/854878.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
