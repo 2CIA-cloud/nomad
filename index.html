@@ -100,7 +100,13 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        /* No Modo Web, mantém o layout largo tradicional */
+        /* No Modo Web (PC / Desktop), expande o container de forma ampla e confortável */
+        body.mode-web .app-main-container {
+            max-width: 1400px !important;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+        }
         body.mode-web #mobileBottomNav {
             display: none !important;
         }
@@ -281,7 +287,7 @@
         <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2.5">
             <div class="flex flex-col md:flex-row items-center justify-between gap-2.5">
                 
-                <!-- Logo AZIMUTE -->
+                <!-- Logo AZIMUTE + Frase Institucional + Alternador App/PC + Botão Tela Cheia -->
                 <div class="flex items-center justify-between w-full md:w-auto gap-2">
                     <div class="flex items-center gap-2.5 cursor-pointer" onclick="showView('home')">
                         <div class="w-10 h-10 rounded-xl bg-pmmg-khaki/15 border border-pmmg-khaki/60 flex items-center justify-center text-pmmg-khaki shadow-inner shrink-0">
@@ -291,8 +297,26 @@
                             <div class="flex items-center gap-1.5 flex-wrap">
                                 <h1 class="text-2xl sm:text-3xl font-military tracking-widest text-pmmg-khaki uppercase leading-none">AZIMUTE</h1>
                             </div>
-                            <p class="text-[10px] text-gray-400 hidden sm:block">Por todo o estado mineiro, com alma e espírito de guerreiro. O Coliseu.</p>
+                            <p class="text-[10px] sm:text-[11px] text-pmmg-khakiLight/90 font-medium leading-tight mt-0.5">Por todo o estado mineiro, com alma e espírito de guerreiro. O Coliseu.</p>
                         </div>
+                    </div>
+
+                    <!-- ALTERNADOR VERSÃO APP (MOBILE) / VERSÃO PC (DESKTOP) + TELA CHEIA -->
+                    <div class="flex items-center gap-1.5 shrink-0">
+                        <div class="flex items-center bg-pmmg-black p-1 rounded-lg border border-pmmg-border">
+                            <button type="button" onclick="setLayoutMode('app')" id="btn-mode-app" class="px-2.5 py-1 rounded-md text-[11px] font-bold flex items-center gap-1 bg-pmmg-khaki text-pmmg-black shadow transition-all" title="Versão App (Mobile)">
+                                <i data-lucide="smartphone" class="w-3.5 h-3.5"></i>
+                                <span>App</span>
+                            </button>
+                            <button type="button" onclick="setLayoutMode('web')" id="btn-mode-web" class="px-2.5 py-1 rounded-md text-[11px] font-medium flex items-center gap-1 text-gray-400 hover:text-white transition-all" title="Versão PC (Desktop)">
+                                <i data-lucide="monitor" class="w-3.5 h-3.5"></i>
+                                <span>PC</span>
+                            </button>
+                        </div>
+
+                        <button type="button" onclick="toggleAzimuteFullscreen()" id="btnFullscreen" class="p-2 bg-pmmg-black hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-border rounded-lg transition-all flex items-center justify-center" title="Expandir em Tela Cheia">
+                            <i data-lucide="maximize" id="iconFullscreen" class="w-4 h-4"></i>
+                        </button>
                     </div>
                 </div>
 
@@ -327,7 +351,7 @@
             </div>
         </div>
 
-        <!-- NAVEGAÇÃO PRINCIPAL (COM ABA UNIFICADA REGIÕES) -->
+        <!-- NAVEGAÇÃO PRINCIPAL (COM ABA EXCLUSIVA DE GEOLOCALIZAÇÃO E REGIÕES) -->
         <nav class="bg-pmmg-card/90 border-t border-pmmg-border px-3 py-2 overflow-x-auto">
             <div class="max-w-7xl mx-auto flex items-center justify-between text-xs font-medium gap-2">
                 <div id="topNavLinks" class="flex items-center gap-2 min-w-max">
@@ -336,6 +360,9 @@
                     </button>
                     <button onclick="showView('regioes')" id="nav-btn-regioes" class="px-3 py-1.5 rounded-md bg-pmmg-dark text-gray-300 border border-pmmg-border hover:bg-pmmg-border font-bold flex items-center gap-1.5">
                         <i data-lucide="shield" class="w-3.5 h-3.5 text-pmmg-khaki shrink-0"></i> <span>REGIÕES</span>
+                    </button>
+                    <button onclick="showView('gps')" id="nav-btn-gps" class="px-3 py-1.5 rounded-md bg-pmmg-dark text-emerald-400 border border-emerald-500/40 hover:bg-pmmg-border font-bold flex items-center gap-1.5">
+                        <i data-lucide="locate-fixed" class="w-3.5 h-3.5 text-emerald-400 shrink-0"></i> <span>Geolocalização</span>
                     </button>
                     <button onclick="showView('especializadas')" id="nav-btn-especializadas" class="px-3 py-1.5 rounded-md bg-pmmg-dark text-gray-300 border border-pmmg-border hover:bg-pmmg-border flex items-center gap-1.5">
                         <i data-lucide="crosshair" class="w-3.5 h-3.5 text-red-400 shrink-0"></i> <span>Especializadas</span>
@@ -351,7 +378,7 @@
                         </svg>
                         <span>Drones / RPAS</span>
                     </button>
-                    <button onclick="showView('atalhos')" id="nav-btn-atalhos" class="px-3 py-1.5 rounded-md bg-pmmg-dark text-pmmg-khaki border border-pmmg-khaki/40 hover:bg-pmmg-border font-bold flex items-center gap-1.5">
+                    <button onclick="showView('atalhos')" id="nav-btn-atalhos" class="px-3 py-1.5 rounded-md bg-pmmg-dark text-pmmg-khaki border border-pmmg-khaki/40 hover:bg-pmmg-border font-bold flex items-center gap-1.5 col-span-3 sm:col-span-1">
                         <i data-lucide="external-link" class="w-3.5 h-3.5 text-pmmg-gold shrink-0"></i> <span>Atalhos & Sistemas</span>
                     </button>
                 </div>
@@ -367,93 +394,174 @@
     <!-- CONTAINER PRINCIPAL -->
     <main id="mainContainer" class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-4 app-main-container">
 
-        <!-- ================= VIEW ISOLADA: GEOLOCALIZAÇÃO / GPS AO VIVO (OCULTA AO NAVEGAR ENTRE ABAS) ================= -->
+        <!-- ================= VIEW EXCLUSIVA: GEOLOCALIZAÇÃO (SEPARADA DE BATALHÕES E REGIÕES) ================= -->
         <section id="view-gps" class="hidden space-y-6">
             <div class="flex items-center justify-between border-b border-pmmg-border pb-3">
                 <div>
-                    <h2 class="text-3xl font-military text-pmmg-khaki uppercase tracking-wide">Geolocalização Operacional (GPS ao Vivo)</h2>
-                    <p class="text-xs text-gray-400">Localização em tempo real, canaleta de rádio da área e hospital de referência mais próximo</p>
+                    <div class="flex items-center gap-2">
+                        <span class="bg-emerald-950 text-emerald-400 text-[10px] px-2.5 py-0.5 rounded font-bold uppercase border border-emerald-500/30">Rastreamento Contínuo de Alta Precisão</span>
+                        <h2 class="text-3xl font-military text-pmmg-khaki uppercase tracking-wide">Geolocalização Operacional</h2>
+                    </div>
+                    <p class="text-xs text-gray-400">Monitoramento automático de QTH com número aproximado, cache offline, clima e socorro prioritário</p>
                 </div>
-                <button onclick="showView('home')" class="text-xs text-pmmg-khaki hover:underline flex items-center gap-1"><i data-lucide="arrow-left" class="w-4 h-4"></i> Voltar</button>
+                <button onclick="showView('home')" class="text-xs text-pmmg-khaki hover:underline flex items-center gap-1 font-bold"><i data-lucide="arrow-left" class="w-4 h-4"></i> Início</button>
             </div>
 
-            <div id="azimuteLiveGpsHud" class="w-full">
-                <div class="bg-pmmg-card border-2 border-pmmg-khaki/60 rounded-2xl p-3 sm:p-4 shadow-2xl space-y-2.5">
-                    <!-- Linha 1: Status GPS + Precisão + Botões de Controle -->
-                    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border pb-2">
-                        <div class="flex items-center gap-2">
-                            <span id="hudGpsDot" class="w-2.5 h-2.5 rounded-full bg-gray-500 inline-block"></span>
-                            <span id="hudGpsStatusText" class="text-[11px] font-bold uppercase tracking-wider text-gray-300">GPS Aguardando Ativação</span>
-                            <span id="hudGpsAccuracy" class="text-[10px] font-mono bg-pmmg-dark px-2 py-0.5 rounded border border-pmmg-border text-pmmg-khaki">Precisão: --</span>
+            <div id="azimuteLiveGpsHud" class="w-full space-y-5">
+                <div class="bg-pmmg-card border-2 border-pmmg-khaki/60 rounded-2xl p-4 sm:p-5 shadow-2xl space-y-4">
+                    <!-- Linha 1: Indicador claro de Status (GPS Online / GPS Offline) + Precisão + Timestamp do Cache -->
+                    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border pb-3">
+                        <div class="flex items-center gap-2.5 flex-wrap">
+                            <span id="hudGpsBadge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-extrabold uppercase bg-emerald-950 text-emerald-400 border border-emerald-500/50">
+                                <span id="hudGpsDot" class="w-2.5 h-2.5 rounded-full bg-emerald-400 inline-block shadow-[0_0_8px_#34d399]"></span>
+                                <span id="hudGpsStatusText">GPS Online (Contínuo)</span>
+                            </span>
+                            <span id="hudGpsAccuracy" class="text-xs font-mono bg-pmmg-dark px-2.5 py-1 rounded-lg border border-pmmg-border text-pmmg-khaki">Precisão: Sincronizando...</span>
                         </div>
-                        <div class="flex items-center gap-1.5">
-                            <button onclick="toggleHudCollapse()" id="btnHudCollapse" class="px-2 py-1 bg-pmmg-dark hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-border rounded-lg text-[11px] font-bold" title="Recolher / Expandir Painel GPS">
-                                Minimizar
+                        <div class="text-[11px] font-mono text-gray-400" id="hudLastSavedTimestamp">
+                            Último registro: --
+                        </div>
+                    </div>
+
+                    <!-- Caixa Principal: Endereço Completo + Número Aproximado + Ações Rápidas -->
+                    <div class="bg-pmmg-black/90 border border-pmmg-khaki/40 border-l-4 border-l-pmmg-khaki rounded-xl p-4 space-y-3">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                            <div class="space-y-1">
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-pmmg-khaki block">📍 Logradouro / QTH Atual (Com Número Aproximado e Cache Offline)</span>
+                                <h3 id="hudCurrentStreet" class="text-xl sm:text-2xl font-extrabold text-white leading-tight">Obtendo endereço automático via satélite...</h3>
+                                <p id="hudCurrentSuburb" class="text-xs sm:text-sm text-gray-300">Bairro • Município • CEP</p>
+                            </div>
+                        </div>
+
+                        <!-- Ações Rápidas: Copiar QTH Atual + Abrir no Google Maps + Botão Detalhes -->
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-2 border-t border-pmmg-border/60">
+                            <button type="button" onclick="copyCurrentQth()" class="py-2.5 px-3 bg-pmmg-khaki hover:bg-pmmg-khakiHover text-pmmg-black font-extrabold rounded-xl text-xs flex items-center justify-center gap-1.5 shadow transition-all">
+                                <i data-lucide="copy" class="w-4 h-4"></i> <span>Copiar QTH Atual</span>
+                            </button>
+                            <a id="btnOpenCurrentInMaps" href="https://www.google.com/maps" target="_blank" class="py-2.5 px-3 bg-pmmg-dark hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-khaki/50 font-extrabold rounded-xl text-xs flex items-center justify-center gap-1.5 shadow transition-all">
+                                <i data-lucide="map-pin" class="w-4 h-4 text-pmmg-gold"></i> <span>Abrir no Google Maps</span>
+                            </a>
+                            <button type="button" onclick="toggleGeoWeatherDetails()" id="btnGeoDetails" class="py-2.5 px-3 bg-pmmg-dark hover:bg-pmmg-border text-sky-400 border border-sky-500/50 font-extrabold rounded-xl text-xs flex items-center justify-center gap-1.5 shadow transition-all">
+                                <i data-lucide="sliders-horizontal" class="w-4 h-4"></i> <span>Detalhes (Clima & Coordenadas)</span>
                             </button>
                         </div>
                     </div>
 
-                    <!-- Corpo do HUD -->
-                    <div id="hudBodyContent" class="space-y-2.5">
-                        <!-- Caixa Principal: Nome da Rua / Beco em Destaque -->
-                        <div class="bg-pmmg-black/90 border border-pmmg-khaki/40 border-l-4 border-l-pmmg-khaki rounded-xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <!-- CARD EXPANSÍVEL / MODAL DE DETALHES CLIMÁTICOS E COORDENADAS EXATAS -->
+                    <div id="geoDetailsCard" class="hidden bg-pmmg-dark border-2 border-sky-500/50 rounded-xl p-4 space-y-4 app-screen-animate">
+                        <div class="flex items-center justify-between border-b border-pmmg-border pb-2">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="compass" class="w-5 h-5 text-sky-400"></i>
+                                <h4 class="text-lg font-military text-white uppercase tracking-wider">Detalhes Técnicos: Coordenadas Geográficas & Meteorologia em Tempo Real</h4>
+                            </div>
+                            <button type="button" onclick="toggleGeoWeatherDetails()" class="text-xs text-gray-400 hover:text-white font-bold px-2 py-1 rounded bg-pmmg-card border border-pmmg-border">Fechar ✕</button>
+                        </div>
+
+                        <!-- Coordenadas Geográficas Exatas + Botão Copiar Coordenadas -->
+                        <div class="bg-pmmg-card p-3.5 rounded-xl border border-pmmg-border flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                             <div>
-                                <span class="text-[10px] font-bold uppercase tracking-wider text-pmmg-khaki block">📍 Logradouro / QTH Atual (Atualização Automática)</span>
-                                <h3 id="hudCurrentStreet" class="text-lg sm:text-xl font-extrabold text-white leading-tight mt-0.5">Toque em "Ativar GPS ao Vivo" abaixo</h3>
-                                <p id="hudCurrentSuburb" class="text-xs text-gray-400 mt-0.5">Bairro • Município • Coordenada aparecerá aqui</p>
+                                <span class="text-[10px] font-bold uppercase text-pmmg-khaki block">🌐 Coordenadas Geográficas Exatas (Latitude / Longitude)</span>
+                                <strong id="detailExactCoords" class="text-base sm:text-lg font-mono text-white block mt-0.5">-19.916200, -44.080900</strong>
                             </div>
-                            <button onclick="copyCurrentQth()" class="self-start sm:self-center px-3 py-1.5 bg-pmmg-dark hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-khaki/40 rounded-lg text-xs font-bold flex items-center gap-1.5 shrink-0">
-                                <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copiar QTH
+                            <button type="button" onclick="copyExactCoordinates()" class="px-3.5 py-2 bg-pmmg-khaki hover:bg-pmmg-khakiHover text-pmmg-black font-bold rounded-lg text-xs flex items-center gap-1.5 shrink-0 self-start sm:self-center shadow">
+                                <i data-lucide="copy" class="w-3.5 h-3.5"></i> <span>Copiar Coordenadas</span>
                             </button>
                         </div>
 
-                        <!-- Grade Dupla: Canaleta de Rádio Estimada (Offline) + Hospital de Trauma Mais Próximo (Offline) -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                            <div class="bg-pmmg-dark p-2.5 rounded-xl border border-pmmg-border border-l-4 border-l-pmmg-gold flex items-center justify-between gap-2">
-                                <div>
-                                    <span class="text-[10px] uppercase font-bold text-pmmg-gold block">📻 Canaleta / Rede da Área (Offline)</span>
-                                    <strong id="hudRadioChannel" class="text-sm sm:text-base text-white font-mono block mt-0.5">Aguardando GPS...</strong>
-                                    <span id="hudUnitArea" class="text-[11px] text-gray-400 block">Cálculo automático por proximidade</span>
-                                </div>
+                        <!-- Grade de Dados Meteorológicos em Tempo Real (Open-Meteo) -->
+                        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 text-xs">
+                            <div class="bg-pmmg-card p-3 rounded-xl border border-pmmg-border">
+                                <span class="text-[10px] text-gray-400 uppercase font-bold block">⛰️ Altitude</span>
+                                <strong id="detAltitude" class="text-sm sm:text-base font-mono text-pmmg-gold block mt-1">-- m</strong>
                             </div>
+                            <div class="bg-pmmg-card p-3 rounded-xl border border-pmmg-border">
+                                <span class="text-[10px] text-gray-400 uppercase font-bold block">🌡️ Temperatura</span>
+                                <strong id="detTemp" class="text-sm sm:text-base font-mono text-white block mt-1">-- °C</strong>
+                            </div>
+                            <div class="bg-pmmg-card p-3 rounded-xl border border-pmmg-border">
+                                <span class="text-[10px] text-gray-400 uppercase font-bold block">⛅ Condição</span>
+                                <strong id="detCondition" class="text-xs sm:text-sm text-sky-300 block mt-1">--</strong>
+                            </div>
+                            <div class="bg-pmmg-card p-3 rounded-xl border border-pmmg-border">
+                                <span class="text-[10px] text-gray-400 uppercase font-bold block">🌧️ Chance Chuva</span>
+                                <strong id="detRainProb" class="text-sm sm:text-base font-mono text-amber-400 block mt-1">-- %</strong>
+                            </div>
+                            <div class="bg-pmmg-card p-3 rounded-xl border border-pmmg-border">
+                                <span class="text-[10px] text-gray-400 uppercase font-bold block">💨 Vento</span>
+                                <strong id="detWind" class="text-sm sm:text-base font-mono text-white block mt-1">-- km/h</strong>
+                            </div>
+                            <div class="bg-pmmg-card p-3 rounded-xl border border-pmmg-border">
+                                <span class="text-[10px] text-gray-400 uppercase font-bold block">💧 Umidade</span>
+                                <strong id="detHumidity" class="text-sm sm:text-base font-mono text-emerald-400 block mt-1">-- %</strong>
+                            </div>
+                        </div>
+                    </div>
 
-                            <div class="bg-pmmg-dark p-2.5 rounded-xl border border-pmmg-border border-l-4 border-l-red-500 flex items-center justify-between gap-2">
-                                <div>
-                                    <span class="text-[10px] uppercase font-bold text-red-400 block">🏥 Socorro / Hospital Mais Próximo</span>
-                                    <strong id="hudClosestHospital" class="text-sm sm:text-base text-white block mt-0.5">Aguardando GPS...</strong>
-                                    <span id="hudClosestHospitalDist" class="text-[11px] text-gray-400 block">Distância calculada via satélite</span>
-                                </div>
-                                <a id="hudBtnHospRouteMini" href="#" target="_blank" class="hidden px-2.5 py-1.5 bg-red-950/80 hover:bg-red-800 text-red-200 border border-red-500/50 rounded-lg text-xs font-bold shrink-0">
-                                    🚑 Rota
-                                </a>
+                    <!-- Grade Dupla: Canaleta de Rádio da Área + Socorro / Hospital Mais Próximo (Com Distância e Tempo Médio) -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div class="bg-pmmg-dark p-3.5 rounded-xl border border-pmmg-border border-l-4 border-l-pmmg-gold flex items-center justify-between gap-2">
+                            <div>
+                                <span class="text-[10px] uppercase font-bold text-pmmg-gold block">📻 Canaleta / Rede da Área (Offline)</span>
+                                <strong id="hudRadioChannel" class="text-sm sm:text-base text-white font-mono block mt-0.5">Calculando área...</strong>
+                                <span id="hudUnitArea" class="text-[11px] text-gray-400 block">Unidade territorial mais próxima</span>
                             </div>
                         </div>
 
-                        <!-- Botões de Ação Tática -->
-                        <div class="grid grid-cols-2 gap-2.5 pt-0.5">
-                            <button onclick="startAzimuteLiveGps()" id="btnStartAzimuteGps" class="py-2.5 px-3 rounded-xl bg-pmmg-khaki hover:bg-pmmg-khakiHover text-pmmg-black font-extrabold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-lg transition-all">
-                                <span>📡 ATIVAR GPS AO VIVO</span>
-                            </button>
-                            <button onclick="openPrioritySosModal()" class="py-2.5 px-3 rounded-xl bg-red-600 hover:bg-red-500 text-white font-extrabold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-lg transition-all tracking-wide">
-                                <span>🚨 MODO PRIORIDADE (SOS)</span>
-                            </button>
-                        </div>
-
-                        <!-- Botão Clima & Chuva -->
-                        <div class="pt-1">
-                            <button onclick="checkWeatherAndFloodRisk()" class="w-full py-2 px-2.5 rounded-xl bg-pmmg-dark hover:bg-pmmg-border text-amber-400 border border-amber-500/40 font-bold text-[11px] flex items-center justify-center gap-1.5 shadow transition-all" title="Previsão do tempo nas próximas horas e alertas de alagamento">
-                                <i data-lucide="cloud-rain" class="w-3.5 h-3.5 shrink-0"></i> <span>Monitoramento de Clima & Vias de Alagamento</span>
-                            </button>
-                        </div>
-
-                        <!-- Painel Dinâmico de Clima e Vias de Alagamento -->
-                        <div id="weatherFloodBanner" class="hidden bg-pmmg-black/95 border border-amber-500/60 rounded-xl p-3 text-xs space-y-2">
-                            <div class="flex items-center justify-between border-b border-pmmg-border pb-1.5">
-                                <span id="weatherSummaryTitle" class="font-bold text-amber-400 uppercase">🌦️ Monitoramento Meteorológico & Vias de Alagamento</span>
-                                <button onclick="document.getElementById('weatherFloodBanner').classList.add('hidden')" class="text-gray-400 hover:text-white text-[11px] font-bold">Fechar ✕</button>
+                        <div class="bg-pmmg-dark p-3.5 rounded-xl border border-pmmg-border border-l-4 border-l-red-500 flex items-center justify-between gap-2">
+                            <div>
+                                <span class="text-[10px] uppercase font-bold text-red-400 block">🏥 Socorro / Hospital Mais Próximo</span>
+                                <strong id="hudClosestHospital" class="text-sm sm:text-base text-white block mt-0.5">Calculando unidade...</strong>
+                                <span id="hudClosestHospitalDist" class="text-[11px] text-gray-300 font-medium block">Distância e tempo estimado via satélite</span>
                             </div>
-                            <p id="weatherForecastText" class="text-gray-200">Consultando radar meteorológico da sua coordenada...</p>
-                            <div id="floodZonesList" class="space-y-1 pt-1"></div>
+                            <a id="hudBtnHospRouteMini" href="#" target="_blank" class="hidden px-3 py-2 bg-red-950/80 hover:bg-red-800 text-red-200 border border-red-500/50 rounded-lg text-xs font-bold shrink-0">
+                                🚑 Rota
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Botão Modo Prioridade (SOS / Socorro) -->
+                    <div class="pt-1">
+                        <button type="button" onclick="openPrioritySosModal()" class="w-full py-3 px-4 rounded-xl bg-red-600 hover:bg-red-500 text-white font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg transition-all tracking-wide uppercase">
+                            <span>🚨 ABRIR TELA SOCORRO / MODO PRIORIDADE (SOS)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 4. GUIA DE MAPAS OFFLINE (PASSO A PASSO DIRETO LOGO ABAIXO DAS INFORMAÇÕES DE GEOLOCALIZAÇÃO) -->
+                <div class="bg-pmmg-card border border-pmmg-khaki/40 rounded-2xl p-4 sm:p-5 shadow-xl space-y-3">
+                    <div class="flex items-center justify-between border-b border-pmmg-border pb-2.5">
+                        <div class="flex items-center gap-2">
+                            <div class="p-2 rounded-lg bg-pmmg-khaki/15 border border-pmmg-khaki/40 text-pmmg-khaki">
+                                <i data-lucide="map" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-khaki font-bold px-2 py-0.5 rounded uppercase border border-pmmg-khaki/30">Prevenção Operacional Sem Sinal 4G</span>
+                                <h3 class="text-xl font-military text-white uppercase tracking-wide mt-0.5">Como Baixar Mapas Offline no Google Maps</h3>
+                            </div>
+                        </div>
+                        <a href="https://www.google.com/maps" target="_blank" class="px-3 py-1.5 bg-pmmg-dark hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-border rounded-lg text-xs font-bold flex items-center gap-1 shrink-0">
+                            <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Abrir Maps
+                        </a>
+                    </div>
+
+                    <p class="text-xs text-gray-300">Garanta a navegação por ruas e becos mesmo em zonas de sombra de rádio ou sem internet móvel seguindo estes 4 passos rápidos no seu celular:</p>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+                        <div class="bg-pmmg-dark p-3 rounded-xl border border-pmmg-border space-y-1">
+                            <span class="text-pmmg-khaki font-extrabold uppercase block">1º Passo • Perfil</span>
+                            <p class="text-gray-300">Abra o aplicativo do <strong>Google Maps</strong> no celular e toque na sua <strong>foto de perfil</strong> (no canto superior direito da tela).</p>
+                        </div>
+                        <div class="bg-pmmg-dark p-3 rounded-xl border border-pmmg-border space-y-1">
+                            <span class="text-pmmg-khaki font-extrabold uppercase block">2º Passo • Menu Offline</span>
+                            <p class="text-gray-300">No menu que abrir, toque na opção <strong>"Mapas off-line"</strong>.</p>
+                        </div>
+                        <div class="bg-pmmg-dark p-3 rounded-xl border border-pmmg-border space-y-1">
+                            <span class="text-pmmg-khaki font-extrabold uppercase block">3º Passo • Selecionar Área</span>
+                            <p class="text-gray-300">Toque em <strong>"Selecionar seu próprio mapa"</strong> e ajuste o retângulo azul cobrindo <strong>Belo Horizonte, Contagem, Betim e RMBH</strong>.</p>
+                        </div>
+                        <div class="bg-pmmg-dark p-3 rounded-xl border border-pmmg-border space-y-1">
+                            <span class="text-pmmg-khaki font-extrabold uppercase block">4º Passo • Download</span>
+                            <p class="text-gray-300">Toque em <strong>"Fazer o download"</strong>. Pronto! O GPS continuará traçando rotas e mostrando nomes de ruas mesmo em Modo Avião.</p>
                         </div>
                     </div>
                 </div>
@@ -464,7 +572,8 @@
         <section id="view-home" class="space-y-6">
             <div class="text-center max-w-2xl mx-auto space-y-2 py-4">
                 <h2 class="text-4xl font-military text-pmmg-khaki uppercase tracking-wider">Sistema Geral de Consulta Rápida</h2>
-                <p class="text-xs text-gray-400">Acesse instantaneamente as Regiões da PMMG, Unidades Especializadas, Estádios, RPAS/Drones e Sistemas Operacionais.</p>
+                <p class="text-xs text-pmmg-khaki font-semibold">Por todo o estado mineiro, com alma e espírito de guerreiro. O Coliseu.</p>
+                <p class="text-xs text-gray-400">Acesse instantaneamente as Regiões da PMMG, Geolocalização, Unidades Especializadas, Estádios, RPAS/Drones e Sistemas Operacionais.</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
@@ -5314,6 +5423,10 @@
                 <i data-lucide="shield" class="w-4 h-4 mb-0.5"></i>
                 <span>Regiões</span>
             </button>
+            <button onclick="showView('gps')" id="bnav-gps" class="flex flex-col items-center justify-center py-1 rounded-lg text-gray-400 hover:text-white">
+                <i data-lucide="locate-fixed" class="w-4 h-4 mb-0.5"></i>
+                <span>Geolocal.</span>
+            </button>
             <button onclick="showView('especializadas')" id="bnav-especializadas" class="flex flex-col items-center justify-center py-1 rounded-lg text-gray-400 hover:text-white">
                 <i data-lucide="crosshair" class="w-4 h-4 mb-0.5"></i>
                 <span>Especializ.</span>
@@ -5322,14 +5435,6 @@
                 <i data-lucide="trophy" class="w-4 h-4 mb-0.5"></i>
                 <span>Estádios</span>
             </button>
-            <button onclick="showView('rpas')" id="bnav-rpas" class="flex flex-col items-center justify-center py-1 rounded-lg text-gray-400 hover:text-white">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mb-0.5">
-                    <rect x="9" y="9" width="6" height="6" rx="1"/>
-                    <path d="M9 9 5.5 5.5"/><path d="M15 9l3.5-3.5"/><path d="M9 15l-3.5 3.5"/><path d="M15 15l3.5 3.5"/>
-                    <circle cx="4.5" cy="4.5" r="2.5"/><circle cx="19.5" cy="4.5" r="2.5"/><circle cx="4.5" cy="19.5" r="2.5"/><circle cx="19.5" cy="19.5" r="2.5"/>
-                </svg>
-                <span>Drones</span>
-            </button>
             <button onclick="showView('atalhos')" id="bnav-atalhos" class="flex flex-col items-center justify-center py-1 rounded-lg text-gray-400 hover:text-white">
                 <i data-lucide="external-link" class="w-4 h-4 mb-0.5"></i>
                 <span>Atalhos</span>
@@ -5337,17 +5442,17 @@
         </div>
     </nav>
 
-    <!-- MODAL MODO PRIORIDADE / VISÃO EM TÚNEL (LETRAS GIGANTES PARA EMERGÊNCIA NO RÁDIO) -->
+    <!-- MODAL MODO PRIORIDADE / TELA SOCORRO (COM DISTÂNCIA E TEMPO MÉDIO DE DESLOCAMENTO ESTIMADO) -->
     <div id="prioritySosModal" class="fixed inset-0 z-50 hidden bg-black/95 backdrop-blur-md flex flex-col justify-between p-4 overflow-y-auto">
         <div class="max-w-2xl mx-auto w-full space-y-4 my-auto">
             <div class="bg-red-600 text-white p-3.5 rounded-xl text-center font-extrabold text-lg sm:text-xl tracking-wider uppercase shadow-lg border-2 border-red-400">
-                🚨 PAINEL DE PRIORIDADE / PEDIDO DE APOIO 🚨
+                🚨 TELA SOCORRO • MODO PRIORIDADE (SOS) 🚨
             </div>
 
             <div class="bg-pmmg-dark border-2 border-pmmg-khaki rounded-2xl p-4 sm:p-5 space-y-1 shadow-2xl">
-                <span class="text-xs font-extrabold uppercase text-pmmg-khaki tracking-wider block">1. Fale no Rádio (Logradouro / Rua Atual):</span>
-                <div id="sosBigStreet" class="text-2xl sm:text-4xl font-extrabold text-white leading-tight">Ative o GPS para localizar...</div>
-                <div id="sosBigSuburb" class="text-base sm:text-lg font-bold text-gray-300 pt-1">--</div>
+                <span class="text-xs font-extrabold uppercase text-pmmg-khaki tracking-wider block">1. Fale no Rádio (Logradouro / QTH Atual com Número Aproximado):</span>
+                <div id="sosBigStreet" class="text-2xl sm:text-3xl font-extrabold text-white leading-tight">Sincronizando GPS...</div>
+                <div id="sosBigSuburb" class="text-sm sm:text-base font-bold text-gray-300 pt-1">--</div>
             </div>
 
             <div class="bg-pmmg-dark border-2 border-pmmg-gold rounded-2xl p-4 sm:p-5 space-y-1 shadow-2xl">
@@ -5360,6 +5465,16 @@
                 <div>
                     <span class="text-xs font-extrabold uppercase text-red-400 tracking-wider block">3. Socorro / Hospital Mais Próximo:</span>
                     <div id="sosBigHospital" class="text-xl sm:text-2xl font-extrabold text-white mt-0.5">--</div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2.5">
+                        <div class="bg-pmmg-card p-2.5 rounded-xl border border-red-500/40">
+                            <span class="text-[10px] uppercase font-bold text-gray-400 block">📏 Distância Estimada</span>
+                            <strong id="sosBigDistance" class="text-lg font-mono text-white">-- km</strong>
+                        </div>
+                        <div class="bg-pmmg-card p-2.5 rounded-xl border border-amber-500/50">
+                            <span class="text-[10px] uppercase font-bold text-amber-300 block">⏱️ Tempo Médio de Deslocamento</span>
+                            <strong id="sosBigEta" class="text-lg font-mono text-amber-400">-- min</strong>
+                        </div>
+                    </div>
                 </div>
                 <a id="sosBtnHospitalRoute" href="https://www.google.com/maps/search/?api=1&query=Hospital+Pronto+Socorro" target="_blank" class="w-full py-3.5 px-4 bg-red-600 hover:bg-red-500 text-white font-extrabold text-sm sm:text-base rounded-xl flex items-center justify-center gap-2 shadow-lg uppercase tracking-wide">
                     🚑 ABRIR ROTA DE EMERGÊNCIA NO MAPA AGORA
@@ -5372,7 +5487,7 @@
         </div>
     </div>
 
-    <!-- SCRIPT DO MÓDULO GPS AO VIVO, CANALETA DE RÁDIO E SOCORRO OFFLINE -->
+    <!-- SCRIPT DO MÓDULO DE GEOLOCALIZAÇÃO CONTÍNUA, CACHE OFFLINE, CLIMA E SOCORRO -->
     <script>
         const AZIMUTE_HOSPITAIS_RMBH = [
             { nome: "Hosp. Municipal de Contagem (HMC)", lat: -19.9322, lon: -44.0758 },
@@ -5414,9 +5529,8 @@
         let azimuteLastGeoLat = null;
         let azimuteLastGeoLon = null;
         let azimuteLastLookupTime = 0;
-        let azimuteLastStreet = "Aguardando leitura do satélite...";
-        let azimuteWakeLock = null;
-        let hudMinimized = false;
+        let azimuteLastWeatherTime = 0;
+        let azimuteLastStreet = "Sincronizando endereço via satélite...";
 
         function azimuteCalcDistKm(lat1, lon1, lat2, lon2) {
             const R = 6371;
@@ -5428,114 +5542,310 @@
             return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
         }
 
-        function startAzimuteLiveGps() {
-            if (!navigator.geolocation) {
-                if (typeof showToast === 'function') showToast('Seu navegador não suporta GPS.');
-                return;
-            }
-            document.getElementById('hudGpsStatusText').textContent = 'Buscando Satélites...';
-            document.getElementById('btnStartAzimuteGps').innerHTML = '<span>🔄 ATUALIZAR RUA AGORA</span>';
-            azimuteLastLookupTime = 0; // Força atualização imediata ao clicar
-
-            if (azimuteWatchId !== null) {
-                navigator.geolocation.clearWatch(azimuteWatchId);
-            }
-
-            azimuteWatchId = navigator.geolocation.watchPosition(onAzimuteGpsSuccess, onAzimuteGpsError, {
-                enableHighAccuracy: true,
-                maximumAge: 3000,
-                timeout: 15000
-            });
+        // Calcula o tempo médio de deslocamento (em minutos) considerando fator viário urbano (~1.3x a distância linear)
+        function calcEstimatedDriveMinutes(linearKm) {
+            const roadKm = linearKm * 1.3;
+            // Velocidade média estimada em deslocamento prioritário urbano: ~48 km/h (0.8 km/min)
+            const mins = Math.max(1, Math.round(roadKm / 0.8));
+            return { roadKm: roadKm.toFixed(1), mins: mins };
         }
 
-        async function onAzimuteGpsSuccess(pos) {
-            const lat = pos.coords.latitude;
-            const lon = pos.coords.longitude;
-            const acc = Math.round(pos.coords.accuracy);
-
+        function setGpsOnlineState(isOnline, customLabel) {
+            const badge = document.getElementById('hudGpsBadge');
             const dot = document.getElementById('hudGpsDot');
-            dot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-400 inline-block shadow-[0_0_8px_#34d399]';
-            document.getElementById('hudGpsStatusText').textContent = 'GPS AO VIVO ATIVO';
-            document.getElementById('hudGpsStatusText').className = 'text-[11px] font-bold uppercase tracking-wider text-emerald-400';
-            document.getElementById('hudGpsAccuracy').textContent = 'Precisão: ±' + acc + 'm';
+            const txt = document.getElementById('hudGpsStatusText');
+            if (!badge || !dot || !txt) return;
 
-            // 1. Hospital mais próximo (100% Offline)
+            if (isOnline && navigator.onLine !== false) {
+                badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-extrabold uppercase bg-emerald-950 text-emerald-400 border border-emerald-500/50';
+                dot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-400 inline-block shadow-[0_0_8px_#34d399]';
+                txt.textContent = customLabel || 'GPS Online';
+            } else {
+                badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-extrabold uppercase bg-amber-950 text-amber-300 border border-amber-500/50';
+                dot.className = 'w-2.5 h-2.5 rounded-full bg-amber-400 inline-block';
+                txt.textContent = customLabel || 'GPS Offline (Cache Local)';
+            }
+        }
+
+        // Salva e restaura o último QTH válido no LocalStorage
+        function saveLastValidQthToCache(qthObj) {
+            try {
+                localStorage.setItem('azimute_last_valid_qth', JSON.stringify(qthObj));
+            } catch (e) {}
+        }
+
+        function loadLastValidQthFromCache() {
+            try {
+                const raw = localStorage.getItem('azimute_last_valid_qth');
+                if (!raw) return null;
+                const saved = JSON.parse(raw);
+                if (saved && saved.street) {
+                    azimuteLastStreet = saved.street;
+                    azimuteLastGeoLat = saved.lat || -19.9162;
+                    azimuteLastGeoLon = saved.lon || -44.0809;
+
+                    const stEl = document.getElementById('hudCurrentStreet');
+                    const subEl = document.getElementById('hudCurrentSuburb');
+                    const tsEl = document.getElementById('hudLastSavedTimestamp');
+                    const coordsEl = document.getElementById('detailExactCoords');
+                    const mapsBtn = document.getElementById('btnOpenCurrentInMaps');
+
+                    if (stEl) stEl.textContent = saved.street;
+                    if (subEl) subEl.textContent = saved.suburb || '';
+                    if (tsEl && saved.timestamp) tsEl.textContent = 'Último QTH registrado: ' + saved.timestamp;
+                    if (coordsEl && saved.lat && saved.lon) coordsEl.textContent = saved.lat.toFixed(6) + ', ' + saved.lon.toFixed(6);
+                    if (mapsBtn && saved.lat && saved.lon) {
+                        mapsBtn.href = 'https://www.google.com/maps/search/?api=1&query=' + saved.lat + ',' + saved.lon;
+                    }
+                    updateOfflineProximityData(azimuteLastGeoLat, azimuteLastGeoLon, saved.acc || 15);
+                }
+                return saved;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function updateOfflineProximityData(lat, lon, acc) {
+            // 1. Hospital mais próximo + Distância + Tempo Médio de Deslocamento
             let closestHosp = AZIMUTE_HOSPITAIS_RMBH[0];
             let minHospDist = 99999;
             AZIMUTE_HOSPITAIS_RMBH.forEach(h => {
                 const d = azimuteCalcDistKm(lat, lon, h.lat, h.lon);
                 if (d < minHospDist) { minHospDist = d; closestHosp = h; }
             });
+            const driveEst = calcEstimatedDriveMinutes(minHospDist);
             const hospUrl = 'https://www.google.com/maps/dir/?api=1&destination=' + closestHosp.lat + ',' + closestHosp.lon + '&travelmode=driving';
-            document.getElementById('hudClosestHospital').textContent = closestHosp.nome;
-            document.getElementById('hudClosestHospitalDist').textContent = 'Aprox. ' + minHospDist.toFixed(1) + ' km da sua posição';
-            const miniBtn = document.getElementById('hudBtnHospRouteMini');
-            miniBtn.classList.remove('hidden');
-            miniBtn.href = hospUrl;
 
-            // 2. Canaleta de Rádio e Unidade mais próxima (100% Offline)
+            const hNameEl = document.getElementById('hudClosestHospital');
+            const hDistEl = document.getElementById('hudClosestHospitalDist');
+            const miniBtn = document.getElementById('hudBtnHospRouteMini');
+            if (hNameEl) hNameEl.textContent = closestHosp.nome;
+            if (hDistEl) hDistEl.textContent = 'Distância: ~' + driveEst.roadKm + ' km • Tempo médio: ~' + driveEst.mins + ' min';
+            if (miniBtn) {
+                miniBtn.classList.remove('hidden');
+                miniBtn.href = hospUrl;
+            }
+
+            // 2. Canaleta de Rádio e Unidade mais próxima
             let closestArea = AZIMUTE_AREAS_RADIO[0];
             let minAreaDist = 99999;
             AZIMUTE_AREAS_RADIO.forEach(a => {
                 const d = azimuteCalcDistKm(lat, lon, a.lat, a.lon);
                 if (d < minAreaDist) { minAreaDist = d; closestArea = a; }
             });
-            document.getElementById('hudRadioChannel').textContent = closestArea.rede;
-            document.getElementById('hudUnitArea').textContent = closestArea.unidade;
+            const rChanEl = document.getElementById('hudRadioChannel');
+            const rAreaEl = document.getElementById('hudUnitArea');
+            if (rChanEl) rChanEl.textContent = closestArea.rede;
+            if (rAreaEl) rAreaEl.textContent = closestArea.unidade;
 
-            // Atualiza também o Modal SOS de Prioridade
-            document.getElementById('sosBigRadio').textContent = closestArea.rede;
-            document.getElementById('sosBigCoords').textContent = closestArea.unidade + ' • GPS: ' + lat.toFixed(5) + ', ' + lon.toFixed(5) + ' (±' + acc + 'm)';
-            document.getElementById('sosBigHospital').textContent = closestHosp.nome + ' (' + minHospDist.toFixed(1) + ' km)';
-            document.getElementById('sosBtnHospitalRoute').href = hospUrl;
+            // 3. Atualiza Tela Socorro (Modo Prioridade) com Distância e Tempo Médio de Deslocamento
+            const sosRadio = document.getElementById('sosBigRadio');
+            const sosCoords = document.getElementById('sosBigCoords');
+            const sosHosp = document.getElementById('sosBigHospital');
+            const sosDist = document.getElementById('sosBigDistance');
+            const sosEta = document.getElementById('sosBigEta');
+            const sosRoute = document.getElementById('sosBtnHospitalRoute');
 
-            // 3. Geocodificação Reversa (Nome da Rua / Beco) a cada 15 metros ou 15 segundos
+            if (sosRadio) sosRadio.textContent = closestArea.rede;
+            if (sosCoords) sosCoords.textContent = closestArea.unidade + ' • GPS: ' + lat.toFixed(6) + ', ' + lon.toFixed(6) + ' (±' + acc + 'm)';
+            if (sosHosp) sosHosp.textContent = closestHosp.nome;
+            if (sosDist) sosDist.textContent = '~' + driveEst.roadKm + ' km (' + minHospDist.toFixed(1) + ' km linear)';
+            if (sosEta) sosEta.textContent = '~' + driveEst.mins + ' min (em prioridade)';
+            if (sosRoute) sosRoute.href = hospUrl;
+        }
+
+        // Inicia o watchPosition contínuo automaticamente sem exigir cliques em "Reconectar"
+        function startAzimuteLiveGps() {
+            loadLastValidQthFromCache();
+            if (!navigator.geolocation) {
+                setGpsOnlineState(false, 'GPS Indisponível');
+                return;
+            }
+            if (azimuteWatchId !== null) {
+                navigator.geolocation.clearWatch(azimuteWatchId);
+            }
+            azimuteWatchId = navigator.geolocation.watchPosition(onAzimuteGpsSuccess, onAzimuteGpsError, {
+                enableHighAccuracy: true,
+                maximumAge: 2000,
+                timeout: 20000
+            });
+        }
+
+        async function onAzimuteGpsSuccess(pos) {
+            const lat = pos.coords.latitude;
+            const lon = pos.coords.longitude;
+            const acc = Math.round(pos.coords.accuracy || 10);
+            const alt = pos.coords.altitude !== null && pos.coords.altitude !== undefined ? Math.round(pos.coords.altitude) : null;
+
+            setGpsOnlineState(navigator.onLine, navigator.onLine ? 'GPS Online' : 'GPS Offline (Satélite Ativo)');
+            const accEl = document.getElementById('hudGpsAccuracy');
+            if (accEl) accEl.textContent = 'Precisão: ±' + acc + 'm';
+
+            const coordsEl = document.getElementById('detailExactCoords');
+            if (coordsEl) coordsEl.textContent = lat.toFixed(6) + ', ' + lon.toFixed(6);
+
+            const mapsBtn = document.getElementById('btnOpenCurrentInMaps');
+            if (mapsBtn) mapsBtn.href = 'https://www.google.com/maps/search/?api=1&query=' + lat + ',' + lon;
+
+            if (alt !== null) {
+                const altEl = document.getElementById('detAltitude');
+                if (altEl) altEl.textContent = alt + ' m';
+            }
+
+            updateOfflineProximityData(lat, lon, acc);
+
+            // Geocodificação reversa automática (Nominatim + fallback BigDataCloud) buscando rua + número aproximado
             const now = Date.now();
             let movedMeters = 999;
-            if (azimuteLastGeoLat !== null) {
+            if (azimuteLastGeoLat !== null && azimuteLastGeoLon !== null) {
                 movedMeters = azimuteCalcDistKm(lat, lon, azimuteLastGeoLat, azimuteLastGeoLon) * 1000;
             }
 
-            if (movedMeters >= 15 || (now - azimuteLastLookupTime) > 15000) {
+            if (movedMeters >= 12 || (now - azimuteLastLookupTime) > 12000) {
                 azimuteLastGeoLat = lat;
                 azimuteLastGeoLon = lon;
                 azimuteLastLookupTime = now;
-                try {
-                    const res = await fetch('https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=' + lat + '&lon=' + lon + '&accept-language=pt-BR');
-                    const data = await res.json();
-                    if (data && data.address) {
-                        const road = data.address.road || data.address.pedestrian || data.address.footway || data.address.path || 'Via / Beco sem nome oficial';
-                        const num = data.address.house_number ? ', altura do nº ' + data.address.house_number : ' (trecho sem nº cadastrado)';
-                        const suburb = data.address.suburb || data.address.neighbourhood || data.address.city_district || '';
-                        const city = data.address.city || data.address.town || data.address.municipality || '';
 
-                        azimuteLastStreet = road + num;
-                        const subText = [suburb, city].filter(Boolean).join(' • ') + ' | GPS: ' + lat.toFixed(5) + ', ' + lon.toFixed(5);
+                if (navigator.onLine !== false) {
+                    try {
+                        const res = await fetch('https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=' + lat + '&lon=' + lon + '&zoom=18&addressdetails=1&accept-language=pt-BR');
+                        const data = await res.json();
+                        if (data && data.address) {
+                            const road = data.address.road || data.address.pedestrian || data.address.footway || data.address.path || data.name || 'Via / Logradouro local';
+                            const houseNum = data.address.house_number ? ', nº aprox. ' + data.address.house_number : ' (s/nº cadastrado no trecho)';
+                            const suburb = data.address.suburb || data.address.neighbourhood || data.address.quarter || data.address.city_district || '';
+                            const city = data.address.city || data.address.town || data.address.municipality || 'RMBH';
+                            const postcode = data.address.postcode ? ' • CEP: ' + data.address.postcode : '';
 
-                        document.getElementById('hudCurrentStreet').textContent = azimuteLastStreet;
-                        document.getElementById('hudCurrentSuburb').textContent = subText;
-                        document.getElementById('sosBigStreet').textContent = azimuteLastStreet;
-                        document.getElementById('sosBigSuburb').textContent = [suburb, city].filter(Boolean).join(' • ');
-                        if (typeof sendStreetLockNotification === 'function') sendStreetLockNotification();
+                            azimuteLastStreet = road + houseNum;
+                            const subText = [suburb, city].filter(Boolean).join(' • ') + postcode;
+                            const timeStr = new Date().toLocaleString('pt-BR');
+
+                            document.getElementById('hudCurrentStreet').textContent = azimuteLastStreet;
+                            document.getElementById('hudCurrentSuburb').textContent = subText;
+                            document.getElementById('hudLastSavedTimestamp').textContent = 'Último QTH registrado: ' + timeStr;
+                            document.getElementById('sosBigStreet').textContent = azimuteLastStreet;
+                            document.getElementById('sosBigSuburb').textContent = subText;
+
+                            saveLastValidQthToCache({
+                                street: azimuteLastStreet,
+                                suburb: subText,
+                                lat: lat,
+                                lon: lon,
+                                acc: acc,
+                                timestamp: timeStr
+                            });
+                        }
+                    } catch (err) {
+                        setGpsOnlineState(false, 'GPS Offline (Último QTH Salvo)');
                     }
-                } catch (err) {
-                    const distMoved = Math.round(movedMeters);
-                    document.getElementById('hudCurrentStreet').textContent = azimuteLastStreet + ' (Sem 4G: +' + distMoved + 'm)';
-                    document.getElementById('hudCurrentSuburb').textContent = 'Satélite Ativo: ' + lat.toFixed(5) + ', ' + lon.toFixed(5);
+                } else {
+                    setGpsOnlineState(false, 'GPS Offline (Último QTH Salvo)');
                 }
+            }
+
+            // Atualiza dados meteorológicos e altitude em tempo real a cada 60s
+            if ((now - azimuteLastWeatherTime) > 60000) {
+                azimuteLastWeatherTime = now;
+                fetchRealtimeWeatherDetails(lat, lon);
             }
         }
 
         function onAzimuteGpsError(err) {
-            document.getElementById('hudGpsStatusText').textContent = 'Permita a Localização no Navegador';
-            document.getElementById('hudCurrentStreet').textContent = 'Ative o GPS do celular e permita o acesso no Chrome';
+            setGpsOnlineState(false, 'GPS Offline (Cache Local)');
+            loadLastValidQthFromCache();
+            setTimeout(() => {
+                if (navigator.geolocation) {
+                    startAzimuteLiveGps();
+                }
+            }, 6000);
+        }
+
+        window.addEventListener('online', () => {
+            setGpsOnlineState(true, 'GPS Online');
+            azimuteLastLookupTime = 0;
+            startAzimuteLiveGps();
+        });
+
+        window.addEventListener('offline', () => {
+            setGpsOnlineState(false, 'GPS Offline (Cache Local)');
+            loadLastValidQthFromCache();
+        });
+
+        function decodeWmoWeather(code) {
+            const map = {
+                0: 'Céu Limpo ☀️',
+                1: 'Predom. Limpo 🌤️',
+                2: 'Parc. Nublado ⛅',
+                3: 'Encoberto ☁️',
+                45: 'Neblina 🌫️',
+                48: 'Nevoeiro 🌫️',
+                51: 'Garoa Leve 🌦️',
+                53: 'Garoa Moderada 🌦️',
+                55: 'Garoa Densa 🌧️',
+                61: 'Chuva Leve 🌧️',
+                63: 'Chuva Moderada 🌧️',
+                65: 'Chuva Forte ⛈️',
+                80: 'Pancadas de Chuva 🌦️',
+                81: 'Pancadas Fortes ⛈️',
+                82: 'Tempestade ⛈️',
+                95: 'Trovoadas ⛈️',
+                96: 'Trovoadas c/ Granizo ⛈️'
+            };
+            return map[code] || 'Instável ⛅';
+        }
+
+        async function fetchRealtimeWeatherDetails(lat, lon) {
+            const useLat = lat || azimuteLastGeoLat || -19.9162;
+            const useLon = lon || azimuteLastGeoLon || -44.0809;
+            try {
+                const url = `https://api.open-meteo.com/v1/forecast?latitude=${useLat}&longitude=${useLon}&current=temperature_2m,relative_humidity_2m,precipitation,weather_code,wind_speed_10m&hourly=precipitation_probability&forecast_days=1&timezone=America%2FSao_Paulo`;
+                const res = await fetch(url);
+                const data = await res.json();
+                if (data) {
+                    if (typeof data.elevation === 'number') {
+                        document.getElementById('detAltitude').textContent = Math.round(data.elevation) + ' m';
+                    }
+                    if (data.current) {
+                        document.getElementById('detTemp').textContent = data.current.temperature_2m + ' °C';
+                        document.getElementById('detHumidity').textContent = data.current.relative_humidity_2m + ' %';
+                        document.getElementById('detWind').textContent = data.current.wind_speed_10m + ' km/h';
+                        document.getElementById('detCondition').textContent = decodeWmoWeather(data.current.weather_code);
+                    }
+                    if (data.hourly && data.hourly.precipitation_probability) {
+                        const currentHour = new Date().getHours();
+                        const probs = data.hourly.precipitation_probability.slice(currentHour, currentHour + 4);
+                        const maxProb = probs.length ? Math.max(...probs) : data.hourly.precipitation_probability[0];
+                        document.getElementById('detRainProb').textContent = maxProb + ' %';
+                    }
+                }
+            } catch (e) {}
+        }
+
+        function toggleGeoWeatherDetails() {
+            const card = document.getElementById('geoDetailsCard');
+            if (!card) return;
+            card.classList.toggle('hidden');
+            if (!card.classList.contains('hidden')) {
+                fetchRealtimeWeatherDetails(azimuteLastGeoLat, azimuteLastGeoLon);
+            }
+        }
+
+        function copyExactCoordinates() {
+            const coords = document.getElementById('detailExactCoords') ? document.getElementById('detailExactCoords').textContent : '';
+            if (typeof copyToClipboard === 'function') {
+                copyToClipboard(coords);
+            } else {
+                navigator.clipboard.writeText(coords);
+            }
         }
 
         function copyCurrentQth() {
             const street = document.getElementById('hudCurrentStreet').textContent;
             const sub = document.getElementById('hudCurrentSuburb').textContent;
+            const coords = document.getElementById('detailExactCoords') ? document.getElementById('detailExactCoords').textContent : '';
             const radio = document.getElementById('hudRadioChannel').textContent;
-            const fullQth = '📍 QTH: ' + street + ' (' + sub + ') | ' + radio;
+            const fullQth = '📍 QTH: ' + street + ' (' + sub + ') | Coords: ' + coords + ' | ' + radio;
             if (typeof copyToClipboard === 'function') {
                 copyToClipboard(fullQth);
             } else {
@@ -5552,20 +5862,10 @@
             document.getElementById('prioritySosModal').classList.add('hidden');
         }
 
-        function toggleHudCollapse() {
-            const body = document.getElementById('hudBodyContent');
-            const btn = document.getElementById('btnHudCollapse');
-            hudMinimized = !hudMinimized;
-            if (hudMinimized) {
-                body.classList.add('hidden');
-                btn.textContent = 'Expandir GPS';
-            } else {
-                body.classList.remove('hidden');
-                btn.textContent = 'Minimizar';
-            }
-        }
-
-
+        // Inicia o GPS continuamente assim que o sistema carrega
+        document.addEventListener('DOMContentLoaded', () => {
+            startAzimuteLiveGps();
+        });
     </script>
 
     <!-- MODAL DE CÓDIGOS Q E ALFABETO FONÉTICO -->
@@ -5674,6 +5974,54 @@
             if (typeof showToast === 'function') showToast('📥 Mapa do ' + cfg.label + ' baixado para uso offline!');
         };
 
+        // ALTERNADOR RÁPIDO ENTRE VERSÃO APP (MOBILE) E VERSÃO PC (DESKTOP AMPLO)
+        window.setLayoutMode = function(mode, notify = true) {
+            const body = document.body;
+            const btnApp = document.getElementById('btn-mode-app');
+            const btnWeb = document.getElementById('btn-mode-web');
+
+            if (mode === 'web') {
+                body.classList.remove('mode-app');
+                body.classList.add('mode-web');
+                if (btnWeb) btnWeb.className = 'px-2.5 py-1 rounded-md text-[11px] font-bold flex items-center gap-1 bg-pmmg-khaki text-pmmg-black shadow transition-all';
+                if (btnApp) btnApp.className = 'px-2.5 py-1 rounded-md text-[11px] font-medium flex items-center gap-1 text-gray-400 hover:text-white transition-all';
+                if (notify && typeof showToast === 'function') showToast('💻 Versão PC (Desktop Amplo) ativada!');
+            } else {
+                body.classList.remove('mode-web');
+                body.classList.add('mode-app');
+                if (btnApp) btnApp.className = 'px-2.5 py-1 rounded-md text-[11px] font-bold flex items-center gap-1 bg-pmmg-khaki text-pmmg-black shadow transition-all';
+                if (btnWeb) btnWeb.className = 'px-2.5 py-1 rounded-md text-[11px] font-medium flex items-center gap-1 text-gray-400 hover:text-white transition-all';
+                if (notify && typeof showToast === 'function') showToast('📱 Versão App (Mobile) ativada!');
+            }
+            try { localStorage.setItem('azimute_layout_mode', mode); } catch (e) {}
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        };
+
+        // BOTÃO TELA CHEIA (FULLSCREEN API)
+        window.toggleAzimuteFullscreen = function() {
+            const docEl = document.documentElement;
+            const isFull = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
+            if (!isFull) {
+                if (docEl.requestFullscreen) {
+                    docEl.requestFullscreen().catch(() => {});
+                } else if (docEl.webkitRequestFullscreen) {
+                    docEl.webkitRequestFullscreen();
+                } else if (docEl.msRequestFullscreen) {
+                    docEl.msRequestFullscreen();
+                }
+                if (typeof showToast === 'function') showToast('⛶ Modo Tela Cheia ativado!');
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen().catch(() => {});
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+                if (typeof showToast === 'function') showToast('Tela Cheia desativada.');
+            }
+        };
+
         function showView(viewId) {
             const views = ['home', 'regioes', 'rpm1', 'rpm2', 'rpm3', 'especializadas', 'estadios', 'rpas', 'atalhos', 'skeleton', '18bpm', 'gps'];
             views.forEach(v => {
@@ -5684,7 +6032,7 @@
                 }
             });
 
-            // Garante que o HUD de GPS fique oculto em todas as abas exceto na aba exclusiva 'gps'
+            // Garante que o HUD de GPS apareça exclusivamente na aba 'gps'
             const gpsHud = document.getElementById('azimuteLiveGpsHud');
             if (gpsHud) {
                 if (viewId === 'gps') {
@@ -5703,6 +6051,7 @@
 
             const btnHome = document.getElementById('nav-btn-home');
             const btnRegioes = document.getElementById('nav-btn-regioes');
+            const btnGps = document.getElementById('nav-btn-gps');
             const btnEsp = document.getElementById('nav-btn-especializadas');
             const btnEstadios = document.getElementById('nav-btn-estadios');
             const btnRpas = document.getElementById('nav-btn-rpas');
@@ -5710,15 +6059,16 @@
 
             if (btnHome) btnHome.className = 'px-3 py-1.5 rounded-md bg-pmmg-dark text-gray-300 border border-pmmg-border hover:bg-pmmg-border flex items-center gap-1.5';
             if (btnRegioes) btnRegioes.className = 'px-3 py-1.5 rounded-md bg-pmmg-dark text-gray-300 border border-pmmg-border hover:bg-pmmg-border font-bold flex items-center gap-1.5';
+            if (btnGps) btnGps.className = 'px-3 py-1.5 rounded-md bg-pmmg-dark text-emerald-400 border border-emerald-500/40 hover:bg-pmmg-border font-bold flex items-center gap-1.5';
             if (btnEsp) btnEsp.className = 'px-3 py-1.5 rounded-md bg-pmmg-dark text-gray-300 border border-pmmg-border hover:bg-pmmg-border flex items-center gap-1.5';
             if (btnEstadios) btnEstadios.className = 'px-3 py-1.5 rounded-md bg-pmmg-dark text-emerald-400 border border-emerald-500/40 hover:bg-pmmg-border font-bold flex items-center gap-1.5';
             if (btnRpas) btnRpas.className = 'px-3 py-1.5 rounded-md bg-pmmg-dark text-sky-400 border border-sky-500/40 hover:bg-pmmg-border font-bold flex items-center gap-1.5';
-            if (btnAtalhos) btnAtalhos.className = 'px-3 py-1.5 rounded-md bg-pmmg-dark text-pmmg-khaki border border-pmmg-khaki/40 hover:bg-pmmg-border font-bold flex items-center gap-1.5';
+            if (btnAtalhos) btnAtalhos.className = 'px-3 py-1.5 rounded-md bg-pmmg-dark text-pmmg-khaki border border-pmmg-khaki/40 hover:bg-pmmg-border font-bold flex items-center gap-1.5 col-span-3 sm:col-span-1';
 
             const isRegiaoSub = ['regioes', 'rpm1', 'rpm2', 'rpm3', '18bpm', 'skeleton'].includes(viewId);
 
-            // Atualiza também a Barra Inferior
-            ['home', 'regioes', 'especializadas', 'estadios', 'rpas', 'atalhos'].forEach(id => {
+            // Atualiza também a Barra Inferior (Mobile)
+            ['home', 'regioes', 'gps', 'especializadas', 'estadios', 'atalhos'].forEach(id => {
                 const bBtn = document.getElementById(`bnav-${id}`);
                 if (bBtn) {
                     const isActive = (id === viewId) || (id === 'regioes' && isRegiaoSub);
@@ -5743,6 +6093,10 @@
                 } else {
                     if (activeBadge) activeBadge.classList.add('hidden');
                 }
+            } else if (viewId === 'gps') {
+                if (btnGps) btnGps.className = 'px-3 py-1.5 rounded-md bg-emerald-500 text-pmmg-black font-bold flex items-center gap-1.5';
+                if (activeBadge) activeBadge.classList.remove('hidden');
+                if (activeName) activeName.textContent = 'Geolocalização';
             } else if (viewId === 'especializadas') {
                 if (btnEsp) btnEsp.className = 'px-3 py-1.5 rounded-md bg-red-800 text-white font-bold flex items-center gap-1.5';
                 if (activeBadge) activeBadge.classList.add('hidden');
@@ -5756,7 +6110,7 @@
                 if (activeBadge) activeBadge.classList.remove('hidden');
                 if (activeName) activeName.textContent = 'Aeronaves Remotamente Pilotadas';
             } else if (viewId === 'atalhos') {
-                if (btnAtalhos) btnAtalhos.className = 'px-3 py-1.5 rounded-md bg-pmmg-khaki text-pmmg-black font-bold flex items-center gap-1.5';
+                if (btnAtalhos) btnAtalhos.className = 'px-3 py-1.5 rounded-md bg-pmmg-khaki text-pmmg-black font-bold flex items-center gap-1.5 col-span-3 sm:col-span-1';
                 if (activeBadge) activeBadge.classList.add('hidden');
             }
 
