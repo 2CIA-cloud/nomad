@@ -1,17 +1,18 @@
 {
-  "name": "AZIMUTE",
+  "name": "AZIMUTE - Guia Tático PMMG",
   "short_name": "AZIMUTE",
-  "description": "Sistema Geral de Consulta Rápida e Sobrevivência Operacional",
+  "description": "Guia Tático Operacional PMMG - RMBH",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#0F0F0F",
-  "theme_color": "#0F0F0F",
+  "background_color": "#0d0d0d",
+  "theme_color": "#0d0d0d",
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/854/854878.png",
-      "sizes": "512x512",
-      "type": "image/png"
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
     }
   ]
 }
