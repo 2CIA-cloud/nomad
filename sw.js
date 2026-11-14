@@ -1,52 +1,44 @@
-const CACHE_NAME = 'azimute-v4.2-base-recuperada';
-const ASSETS_TO_CACHE = [
+const CACHE_NAME = 'azimute-v2.0.2';
+const ASSETS = [
   './',
   './index.html',
-  './dados.json',
-  './manifest.json'
+  './manifest.json',
+  './icon.svg'
 ];
 
-// Instala e guarda os arquivos principais na memória do celular (Modo Avião)
 self.addEventListener('install', (event) => {
   self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE);
-    })
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
   );
 });
 
-// Limpa caches antigos automaticamente quando você sobe atualização no GitHub
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
-        keys.map((key) => {
-          if (key !== CACHE_NAME) {
-            return caches.delete(key);
-          }
-        })
-      );
-    }).then(() => self.clients.claim())
+    caches.keys().then((keys) =>
+      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
+    )
   );
+  self.clients.claim();
 });
 
-// Estratégia Network-First para dados.json e index.html (sempre busca a versão mais nova se tiver internet; se estiver sem sinal no beco/estádio, usa a memória offline)
 self.addEventListener('fetch', (event) => {
-  const req = event.request;
-  if (req.method !== 'GET') return;
+  if (event.request.method !== 'GET') return;
+  const url = new URL(event.request.url);
 
+  // Ignora cache para APIs externas em tempo real (Open-Meteo e Nominatim)
+  if (url.origin !== self.location.origin) {
+    return;
+  }
+
+  // Estratégia Network-First com fallback seguro para o cache estático
   event.respondWith(
-    fetch(req)
-      .then((networkRes) => {
-        const resClone = networkRes.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(req, resClone);
-        });
-        return networkRes;
+    fetch(event.request)
+      .then((response) => {
+        const clone = response.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+        return response;
       })
-      .catch(() => {
-        return caches.match(req);
-      })
+      .catch(() => caches.match(event.request).then((res) => res || caches.match('./index.html')))
   );
 });
