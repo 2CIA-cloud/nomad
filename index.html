@@ -1,27 +1,27 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="theme-color" content="#0d0d0d" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>AZIMUTE - Guia Tático Operacional PMMG</title>
-  <link rel="manifest" href="manifest.json" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0b0b0b">
+  <title>AZIMUTE - PAINEL OPERACIONAL</title>
+  <link rel="manifest" href="manifest.json">
   <style>
     :root {
-      --bg-dark: #0d0d0d;
-      --bg-card: #161616;
-      --bg-card-hover: #1f1f1f;
+      --bg-body: #0b0b0b;
+      --bg-card: #151515;
+      --bg-card-inner: #1c1c1c;
       --khaki: #c5b358;
-      --khaki-dark: #8b7d3a;
-      --khaki-glow: rgba(197, 179, 88, 0.18);
-      --text-light: #f2f2f2;
-      --text-muted: #9a9a9a;
-      --danger: #d32f2f;
-      --warning: #f57c00;
-      --success: #388e3c;
-      --border: #2a2a2a;
+      --khaki-border: rgba(197, 179, 88, 0.45);
+      --khaki-soft: rgba(197, 179, 88, 0.12);
+      --border-subtle: #262626;
+      --text-white: #f3f3f3;
+      --text-gray: #9a9a9a;
+      --danger: #e53935;
+      --warning: #fb8c00;
+      --success: #43a047;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: "Roboto Mono", "Courier New", monospace;
     }
 
     * {
@@ -32,1079 +32,1233 @@
     }
 
     body {
-      background-color: var(--bg-dark);
-      color: var(--text-light);
-      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      padding-bottom: 80px;
+      background-color: var(--bg-body);
+      color: var(--text-white);
+      font-family: var(--font-sans);
+      font-size: 14px;
+      line-height: 1.45;
+      padding-bottom: 74px;
       overflow-x: hidden;
     }
 
-    /* CABEÇALHO ORIGINAL */
+    /* CABEÇALHO EXATO DO AZIMUTE ORIGINAL */
     header {
-      background: linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 100%);
-      border-bottom: 2px solid var(--khaki);
-      padding: 14px 16px;
       position: sticky;
       top: 0;
       z-index: 100;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
-    }
-
-    .header-row {
+      background-color: #111111;
+      border-bottom: 2px solid var(--khaki);
+      padding: 12px 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
-    .app-title {
-      font-size: 1.25rem;
+    .header-left h1 {
+      font-size: 20px;
       font-weight: 800;
       color: var(--khaki);
       letter-spacing: 1.5px;
+      line-height: 1.1;
+    }
+
+    .header-left p {
+      font-size: 11px;
+      color: var(--text-gray);
       text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-top: 3px;
     }
 
-    .app-subtitle {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      margin-top: 2px;
-      font-weight: 600;
-    }
-
-    .badge-status {
-      background: rgba(197, 179, 88, 0.15);
-      border: 1px solid var(--khaki);
+    .btn-header-pill {
+      background: transparent;
+      border: 1px solid var(--khaki-border);
       color: var(--khaki);
-      font-size: 0.7rem;
+      font-size: 11px;
       font-weight: 700;
-      padding: 4px 8px;
+      padding: 6px 11px;
       border-radius: 6px;
       text-transform: uppercase;
+      cursor: pointer;
     }
 
-    /* CONTAINER PRINCIPAL */
-    .container {
-      padding: 12px 14px;
-      max-width: 720px;
+    /* BARRA DE PESQUISA (OMNIBOX) */
+    .search-container {
+      padding: 12px 14px 4px 14px;
+      max-width: 680px;
       margin: 0 auto;
     }
 
-    /* BUSCA OMNIBOX */
-    .omnibox-wrapper {
-      margin-bottom: 12px;
-      position: relative;
-    }
-
-    .omnibox-input {
+    .search-input {
       width: 100%;
       background-color: var(--bg-card);
-      border: 1px solid var(--khaki-dark);
+      border: 1px solid var(--khaki-border);
       border-radius: 8px;
-      padding: 11px 36px 11px 14px;
-      color: var(--text-light);
-      font-size: 0.9rem;
+      padding: 11px 14px;
+      color: var(--text-white);
+      font-size: 14px;
       outline: none;
     }
 
-    .omnibox-input:focus {
-      border-color: var(--khaki);
-      box-shadow: 0 0 8px var(--khaki-glow);
+    .search-input::placeholder {
+      color: #777777;
     }
 
-    .omnibox-clear {
-      position: absolute;
-      right: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: none;
-      border: none;
-      color: var(--khaki);
-      font-size: 1.2rem;
-      cursor: pointer;
+    main {
+      padding: 8px 14px 20px 14px;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    .tab-pane {
       display: none;
     }
 
-    /* PAINEIS TOPO (GPS E CLIMA) */
-    .top-widgets {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-
-    .widget-card {
-      background-color: var(--bg-card);
-      border: 1px solid var(--border);
-      border-left: 4px solid var(--khaki);
-      border-radius: 8px;
-      padding: 12px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
-    }
-
-    .widget-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 6px;
-    }
-
-    .widget-title {
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: var(--khaki);
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-    }
-
-    .gps-address {
-      font-size: 0.98rem;
-      font-weight: 700;
-      color: var(--text-light);
-      margin-bottom: 4px;
-      line-height: 1.35;
-    }
-
-    .gps-meta {
-      font-size: 0.78rem;
-      color: var(--text-muted);
-      font-family: monospace;
-    }
-
-    .widget-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 10px;
-    }
-
-    .btn-tactical {
-      background-color: #222;
-      color: var(--khaki);
-      border: 1px solid var(--khaki-dark);
-      border-radius: 6px;
-      padding: 8px 12px;
-      font-size: 0.78rem;
-      font-weight: 700;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      text-transform: uppercase;
-    }
-
-    .btn-tactical.active,
-    .btn-tactical:active {
-      background-color: var(--khaki);
-      color: #000;
-      border-color: var(--khaki);
-    }
-
-    .weather-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .weather-main {
-      font-size: 0.92rem;
-      font-weight: 700;
-      color: var(--text-light);
-    }
-
-    .weather-alert {
-      font-size: 0.75rem;
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-weight: 700;
-      background-color: #252525;
-      color: var(--text-muted);
-    }
-
-    .weather-alert.danger {
-      background-color: rgba(211, 47, 47, 0.25);
-      color: #ff6b6b;
-      border: 1px solid var(--danger);
-    }
-
-    /* ABAS INTERNAS E SEÇÕES */
-    .view-section {
-      display: none;
-    }
-
-    .view-section.active {
+    .tab-pane.active {
       display: block;
     }
 
-    .section-heading {
-      font-size: 0.85rem;
-      font-weight: 800;
-      color: var(--khaki);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin: 14px 0 8px;
-      padding-bottom: 4px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .grid-2col {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-    }
-
-    .shortcut-card {
+    /* CARDS ORIGINAIS COM BARRA LATERAL CÁQUI */
+    .az-card {
       background-color: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 12px 10px;
-      text-decoration: none;
-      color: var(--text-light);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      min-height: 70px;
-      cursor: pointer;
-      transition: border-color 0.15s;
+      border: 1px solid var(--border-subtle);
+      border-left: 4px solid var(--khaki);
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 12px;
     }
 
-    .shortcut-card:active {
-      border-color: var(--khaki);
-      background-color: var(--bg-card-hover);
-    }
-
-    .shortcut-title {
-      font-size: 0.85rem;
-      font-weight: 800;
-      color: var(--khaki);
-      margin-bottom: 4px;
-    }
-
-    .shortcut-desc {
-      font-size: 0.72rem;
-      color: var(--text-muted);
-    }
-
-    /* CARDS DE UNIDADES */
-    .unit-card {
-      background-color: var(--bg-card);
-      border: 1px solid var(--border);
-      border-left: 3px solid var(--khaki-dark);
-      border-radius: 8px;
-      padding: 12px;
-      margin-bottom: 10px;
-    }
-
-    .unit-header {
+    .az-card-header {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
       gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .az-card-title {
+      font-size: 12.5px;
+      font-weight: 800;
+      color: var(--khaki);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    .status-pill {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 5px;
+      border: 1px solid var(--khaki-border);
+      color: var(--khaki);
+      text-transform: uppercase;
+      white-space: nowrap;
+      background: rgba(0,0,0,0.35);
+    }
+
+    .status-pill.online {
+      border-color: var(--success);
+      color: #81c784;
+      background: rgba(67, 160, 71, 0.15);
+    }
+
+    .status-pill.offline {
+      border-color: var(--danger);
+      color: #ef9a9a;
+      background: rgba(229, 57, 53, 0.22);
+    }
+
+    .az-main-text {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-white);
       margin-bottom: 6px;
     }
 
-    .unit-name {
-      font-size: 0.92rem;
-      font-weight: 700;
-      color: var(--text-light);
-    }
-
-    .unit-tag {
-      font-size: 0.68rem;
-      font-weight: 700;
-      color: var(--khaki);
-      background: rgba(197, 179, 88, 0.12);
-      border: 1px solid var(--khaki-dark);
-      padding: 2px 6px;
-      border-radius: 4px;
-      white-space: nowrap;
-    }
-
-    .unit-info {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      line-height: 1.4;
-      margin-bottom: 8px;
-    }
-
-    /* SUB-TABS (18º BPM) */
-    .sub-tabs {
-      display: flex;
-      gap: 6px;
-      overflow-x: auto;
-      padding-bottom: 8px;
+    .az-mono-text {
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      color: var(--text-gray);
       margin-bottom: 10px;
     }
 
-    .sub-tab-btn {
-      background-color: var(--bg-card);
-      color: var(--text-muted);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 7px 12px;
-      font-size: 0.75rem;
+    .az-btn {
+      display: inline-block;
+      background-color: #1b1b1b;
+      border: 1px solid var(--khaki-border);
+      color: var(--khaki);
+      font-size: 12px;
       font-weight: 700;
-      white-space: nowrap;
+      padding: 9px 13px;
+      border-radius: 7px;
+      text-transform: uppercase;
+      text-decoration: none;
       cursor: pointer;
+      margin-right: 6px;
+      margin-top: 4px;
     }
 
-    .sub-tab-btn.active {
-      background-color: var(--khaki);
-      color: #000;
-      border-color: var(--khaki);
+    .az-btn:active {
+      background-color: var(--khaki-soft);
     }
 
-    .sub-content {
-      display: none;
+    .section-heading {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--khaki);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin: 16px 0 10px 2px;
     }
 
-    .sub-content.active {
-      display: block;
-    }
-
-    /* INPUTS E BLOCO DE NOTAS */
-    .input-field, .textarea-field {
-      width: 100%;
-      background-color: #101010;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 9px 10px;
-      color: var(--text-light);
-      font-size: 0.85rem;
-      margin-bottom: 8px;
-      outline: none;
-    }
-
-    .input-field:focus, .textarea-field:focus {
-      border-color: var(--khaki);
-    }
-
-    /* RODAPÉ FIXO */
-    .footer-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 64px;
-      background-color: #111111;
-      border-top: 2px solid var(--khaki-dark);
+    /* GRADE DE ATALHOS RÁPIDOS (2 COLUNAS IGUAL AO PRINT) */
+    .shortcuts-grid {
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      z-index: 200;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
     }
 
-    .footer-btn {
-      background: none;
-      border: none;
-      color: var(--text-muted);
+    .shortcut-box {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 9px;
+      padding: 13px 12px;
+      text-decoration: none;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      font-size: 0.68rem;
+      justify-content: space-between;
+      min-height: 82px;
+    }
+
+    .shortcut-box:active {
+      border-color: var(--khaki);
+      background-color: var(--khaki-soft);
+    }
+
+    .shortcut-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--khaki);
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+
+    .shortcut-desc {
+      font-size: 11.5px;
+      color: var(--text-gray);
+      line-height: 1.3;
+    }
+
+    /* SUB-ABAS INTERNAS (REGIÕES, 18º BPM, ESPECIALIZADAS) */
+    .sub-nav {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      margin-bottom: 12px;
+    }
+
+    .sub-nav-btn {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-gray);
+      font-size: 11.5px;
       font-weight: 700;
+      padding: 7px 12px;
+      border-radius: 6px;
+      white-space: nowrap;
       cursor: pointer;
       text-transform: uppercase;
     }
 
-    .footer-btn.active {
+    .sub-nav-btn.active {
+      border-color: var(--khaki);
       color: var(--khaki);
-      background-color: rgba(197, 179, 88, 0.08);
+      background-color: var(--khaki-soft);
     }
 
-    /* MODAIS */
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.85);
-      display: none;
+    /* PAINEL TECH / DISPOSITIVO MILITAR (DENTRO DE GEO / C2 E DRONES) */
+    .tech-device-panel {
+      background-color: #0e100d;
+      background-image:
+        linear-gradient(rgba(197, 179, 88, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(197, 179, 88, 0.05) 1px, transparent 1px);
+      background-size: 16px 16px;
+      border: 1px solid var(--khaki-border);
+      border-left: 4px solid var(--khaki);
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+
+    .details-mini-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+
+    .detail-cell {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      padding: 8px 10px;
+    }
+
+    .detail-label {
+      font-size: 10px;
+      color: var(--text-gray);
+      text-transform: uppercase;
+      font-family: var(--font-mono);
+    }
+
+    .detail-val {
+      font-family: var(--font-mono);
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text-white);
+      margin-top: 2px;
+    }
+
+    .compass-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(0,0,0,0.4);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 10px;
+      margin: 10px 0;
+    }
+
+    .compass-ring {
+      width: 58px;
+      height: 58px;
+      border: 2px solid var(--khaki);
+      border-radius: 50%;
+      position: relative;
+      display: flex;
       align-items: center;
       justify-content: center;
-      padding: 16px;
-      z-index: 300;
+      flex-shrink: 0;
     }
 
-    .modal-overlay.open {
-      display: flex;
+    .compass-pointer {
+      width: 4px;
+      height: 40px;
+      position: relative;
+      transition: transform 0.15s linear;
     }
 
-    .modal-card {
+    .compass-pointer::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -3px;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-bottom: 20px solid var(--danger);
+    }
+
+    .compass-pointer::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: -3px;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 20px solid var(--khaki);
+    }
+
+    .last-qth-alert {
+      display: none;
+      background: rgba(251, 140, 0, 0.15);
+      border: 1px dashed var(--warning);
+      border-radius: 6px;
+      padding: 8px 10px;
+      margin: 8px 0;
+      font-size: 12px;
+      color: #ffe082;
+    }
+
+    /* VEREDITO DE VOO DRONE */
+    .flight-status-banner {
+      padding: 10px;
+      border-radius: 7px;
+      font-weight: 800;
+      font-size: 12.5px;
+      text-align: center;
+      margin: 10px 0;
+    }
+    .flight-go { background: rgba(67,160,71,0.18); border: 1px solid var(--success); color: #a5d6a7; }
+    .flight-caution { background: rgba(251,140,0,0.18); border: 1px solid var(--warning); color: #ffe082; }
+    .flight-nogo { background: rgba(229,57,53,0.22); border: 1px solid var(--danger); color: #ffcdd2; }
+
+    /* DISPLAY DE RCP */
+    .rcp-metronome-card {
       background-color: var(--bg-card);
-      border: 1px solid var(--khaki);
-      border-radius: 8px;
-      width: 100%;
-      max-width: 430px;
-      max-height: 82vh;
-      overflow-y: auto;
-      padding: 16px;
+      border: 1px solid var(--danger);
+      border-left: 4px solid var(--danger);
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+
+    .rcp-visualizer {
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      border: 3px solid var(--danger);
+      margin: 10px auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      background: rgba(229, 57, 53, 0.1);
+      transition: transform 0.08s ease, background 0.08s ease;
+    }
+
+    .rcp-visualizer.pulse {
+      transform: scale(1.15);
+      background: rgba(229, 57, 53, 0.55);
+      box-shadow: 0 0 15px var(--danger);
+    }
+
+    /* RODAPÉ FIEL AO ORIGINAL DA IMAGEM */
+    nav.footer-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 200;
+      background-color: #111111;
+      border-top: 1px solid var(--khaki-border);
+      display: flex;
+      justify-content: space-around;
+      align-items: stretch;
+      height: 58px;
+    }
+
+    .footer-tab {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text-gray);
+      font-size: 10.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0 4px;
+      border-top: 3px solid transparent;
+    }
+
+    .footer-tab.active {
+      background-color: rgba(197, 179, 88, 0.14);
+      color: var(--khaki);
+      border-top: 3px solid var(--khaki);
     }
   </style>
 </head>
 <body>
 
-  <!-- CABEÇALHO -->
+  <!-- CABEÇALHO FIEL AO SCREENSHOT -->
   <header>
-    <div class="header-row">
-      <div>
-        <div class="app-title">AZIMUTE</div>
-        <div class="app-subtitle" id="headerSubtitle">PAINEL OPERACIONAL — INÍCIO</div>
-      </div>
-      <span class="badge-status" id="wakeLockBadge">TELA PADRÃO</span>
+    <div class="header-left">
+      <h1>AZIMUTE</h1>
+      <p id="headerSubtitle">PAINEL OPERACIONAL — INÍCIO</p>
     </div>
+    <button class="btn-header-pill" onclick="openTab('inicio', 'PAINEL OPERACIONAL — INÍCIO', document.querySelector('.footer-tab'))">TELA PADRÃO</button>
   </header>
 
-  <div class="container">
-
-    <!-- OMNIBOX DE BUSCA -->
-    <div class="omnibox-wrapper">
-      <input type="text" id="omniboxSearch" class="omnibox-input" placeholder="Pesquisar unidade, companhia, hospital, estádio ou atalho..." oninput="runOmniboxFilter()" />
-      <button class="omnibox-clear" id="omniboxClearBtn" onclick="clearOmniboxSearch()">×</button>
-    </div>
-
-    <!-- WIDGETS SUPERIORES (EXIBIDOS NA ABA INÍCIO PARA NÃO EMPURRAR AS OUTRAS ABAS PARA BAIXO) -->
-    <div class="top-widgets" id="topTelemetryWidgets">
-      <!-- CARD GPS / QTH -->
-      <div class="widget-card">
-        <div class="widget-header">
-          <span class="widget-title">QTH / Localização GPS em Tempo Real</span>
-          <span class="unit-tag" id="gpsStatusLabel">INATIVO</span>
-        </div>
-        <div class="gps-address" id="gpsStreetDisplay">Toque em "Ativar GPS" para obter Rua, Número e Bairro</div>
-        <div class="gps-meta" id="gpsCoordsDisplay">Coordenadas: --.-----, --.-----</div>
-        <div class="widget-actions">
-          <button class="btn-tactical" id="btnGpsControl" onclick="toggleGpsTracking()">ATIVAR GPS (MANTER TELA ACESA)</button>
-          <button class="btn-tactical" onclick="openCurrentLocationOnMap()">ABRIR MAPA DO QTH</button>
-        </div>
-      </div>
-
-      <!-- CARD CLIMA E ALERTA DE CHUVA (MANTIDO 100% INTACTO) -->
-      <div class="widget-card">
-        <div class="widget-header">
-          <span class="widget-title">Clima &amp; Monitoramento de Chuva (RMBH)</span>
-          <button class="btn-tactical" style="padding:3px 8px; font-size:0.68rem;" onclick="updateWeatherData()">ATUALIZAR</button>
-        </div>
-        <div class="weather-row">
-          <div class="weather-main" id="weatherSummaryText">Carregando dados meteorológicos...</div>
-          <div class="weather-alert" id="rainRiskBadge">Verificando precipitação...</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ==================== ABA 1: INÍCIO ==================== -->
-    <section id="tab-inicio" class="view-section active">
-      <div class="section-heading">Atalhos Rápidos</div>
-      <div class="grid-2col">
-        <a href="https://web.sids.mg.gov.br/reds" target="_blank" rel="noopener" class="shortcut-card searchable-item">
-          <div class="shortcut-title">REDS WEB</div>
-          <div class="shortcut-desc">Registro de Eventos de Defesa Social</div>
-        </a>
-
-        <a href="https://portalbnmp.cnj.jus.br/" target="_blank" rel="noopener" class="shortcut-card searchable-item">
-          <div class="shortcut-title">BNMP / CNJ</div>
-          <div class="shortcut-desc">Consulta Nacional de Mandados de Prisão</div>
-        </a>
-
-        <div onclick="openModalWindow('modalImei')" class="shortcut-card searchable-item">
-          <div class="shortcut-title">CONSULTAR IMEI</div>
-          <div class="shortcut-desc">Anatel Celular Legal (*#06#)</div>
-        </div>
-
-        <a href="https://sarpas.decea.mil.br/login" target="_blank" rel="noopener" class="shortcut-card searchable-item">
-          <div class="shortcut-title">SARPAS NG</div>
-          <div class="shortcut-desc">Solicitação de Espaço Aéreo (Drone)</div>
-        </a>
-
-        <div onclick="openModalWindow('modalCodigoQ')" class="shortcut-card searchable-item">
-          <div class="shortcut-title">CÓDIGO Q / FONÉTICO</div>
-          <div class="shortcut-desc">Consulta Rápida de Rádio Operador</div>
-        </div>
-
-        <div onclick="openGoogleMapsSearch('Hospital Pronto Socorro proximo')" class="shortcut-card searchable-item">
-          <div class="shortcut-title">SOCORRO MÉDICO</div>
-          <div class="shortcut-desc">Hospitais e UPAs mais próximos do QTH</div>
-        </div>
-      </div>
-
-      <div class="section-heading">Pontos Críticos de Alagamento (RMBH)</div>
-      <div class="unit-card searchable-item">
-        <div class="unit-header">
-          <span class="unit-name">Corredores Monitorados sob Chuva Forte</span>
-          <span class="unit-tag">DEFESA CIVIL</span>
-        </div>
-        <div class="unit-info">
-          • <strong>Belo Horizonte:</strong> Av. Tereza Cristina, Av. Vilarinho, Av. Cristiano Machado (São Gabriel/Primeiro de Maio), Av. Francisco Sá e Av. Heráclito Mourão.<br/>
-          • <strong>Contagem:</strong> Via Expressa, Trincheira do Itaú / Av. Babita Camargos, Av. General David Sarnoff e Córrego Ferrugem.
-        </div>
-      </div>
-
-      <div class="section-heading">Diário de Observações do Operador de Drone / Turno</div>
-      <div class="unit-card">
-        <input type="text" id="droneHeaderInput" class="input-field" placeholder="Aeronave / Bateria / Local de Decolagem" oninput="persistNotes()" />
-        <textarea id="shiftNotesInput" rows="3" class="textarea-field" placeholder="Anotações de turno, placas abordadas, QTH de ocorrências..." oninput="persistNotes()"></textarea>
-        <div class="widget-actions">
-          <button class="btn-tactical" onclick="stampQthInNotes()">GRAVAR QTH ATUAL NA NOTA</button>
-          <button class="btn-tactical" onclick="clearSavedNotes()">LIMPAR</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================== ABA 2: 18º BPM ==================== -->
-    <section id="tab-18bpm" class="view-section">
-      <div class="sub-tabs">
-        <button class="sub-tab-btn active" onclick="openSubTab18('cias', this)">Companhias</button>
-        <button class="sub-tab-btn" onclick="openSubTab18('apoio', this)">SOU / Inteligência</button>
-        <button class="sub-tab-btn" onclick="openSubTab18('divisas', this)">Divisas</button>
-        <button class="sub-tab-btn" onclick="openSubTab18('saude', this)">Saúde / Órgãos</button>
-      </div>
-
-      <div id="sub18-cias" class="sub-content active">
-        <div class="unit-card searchable-item">
-          <div class="unit-header">
-            <span class="unit-name">Sede do 18º BPM — Contagem</span>
-            <span class="unit-tag">COMANDO</span>
-          </div>
-          <div class="unit-info">Batalhão responsável pelo policiamento ostensivo nas áreas norte/central/sede e corredores comerciais de Contagem (2ª RPM).</div>
-          <div class="widget-actions">
-            <a href="https://www.google.com/maps/search/?api=1&query=18+BPM+PMMG+Contagem" target="_blank" class="btn-tactical">ROTA SEDE 18º BPM</a>
-          </div>
-        </div>
-
-        <div class="unit-card searchable-item">
-          <div class="unit-header">
-            <span class="unit-name">38ª Cia PM — 18º BPM</span>
-            <span class="unit-tag">OPERACIONAL</span>
-          </div>
-          <div class="unit-info">Companhia operacional integrante do 18º BPM em Contagem.</div>
-          <div class="widget-actions">
-            <a href="https://www.google.com/maps/search/?api=1&query=38+Companhia+PMMG+18+BPM+Contagem" target="_blank" class="btn-tactical">NAVEGAR 38ª CIA PM</a>
-          </div>
-        </div>
-
-        <div class="unit-card searchable-item">
-          <div class="unit-header">
-            <span class="unit-name">Demais Companhias e Tático Móvel — 18º BPM</span>
-            <span class="unit-tag">SETORES</span>
-          </div>
-          <div class="unit-info">Recobrimento tático, GEPAR e patrulhamento de setor na circunscrição do 18º BPM.</div>
-        </div>
-      </div>
-
-      <div id="sub18-apoio" class="sub-content">
-        <div class="unit-card searchable-item">
-          <div class="unit-header">
-            <span class="unit-name">SOU</span>
-            <span class="unit-tag">18º BPM</span>
-          </div>
-          <div class="unit-info">Sala de Operações da Unidade — coordenação de rede rádio, empenho e controle tático.</div>
-        </div>
-
-        <div class="unit-card searchable-item">
-          <div class="unit-header">
-            <span class="unit-name">INTELIGENCIA - 18º BPM</span>
-            <span class="unit-tag">AR / INT</span>
-          </div>
-          <div class="unit-info">Agência de Inteligência da Unidade — apoio informativo e levantamento de alvos.</div>
-        </div>
-      </div>
-
-      <div id="sub18-divisas" class="sub-content">
-        <div class="unit-card searchable-item">
-          <div class="unit-header">
-            <span class="unit-name">Divisas Territoriais do 18º BPM</span>
-            <span class="unit-tag">2ª RPM / 1ª RPM</span>
-          </div>
-          <div class="unit-info">
-            • <strong>66º BPM (Betim/Contagem):</strong> Faz divisa direta com o 18º BPM e com o 33º BPM.<br/>
-            • <strong>39º BPM (Contagem):</strong> Faz divisa direta com o 18º BPM.<br/>
-            • <strong>33º BPM (Betim):</strong> Faz divisa com o 66º BPM (não possui limite direto com o 18º BPM).<br/>
-            • <strong>1ª RPM (BH):</strong> Divisa com o 5º BPM e 34º BPM nos eixos BR-040 e Anel Rodoviário.
-          </div>
-        </div>
-      </div>
-
-      <div id="sub18-saude" class="sub-content">
-        <div class="unit-card searchable-item">
-          <div class="unit-header">
-            <span class="unit-name">Hospital Municipal de Contagem (HMC)</span>
-            <span class="unit-tag">HOSPITAL</span>
-          </div>
-          <div class="unit-info">Referência hospitalar de urgência e trauma no município de Contagem.</div>
-          <div class="widget-actions">
-            <a href="https://www.google.com/maps/search/?api=1&query=Hospital+Municipal+de+Contagem" target="_blank" class="btn-tactical">ROTA HMC</a>
-          </div>
-        </div>
-
-        <div class="unit-card searchable-item">
-          <div class="unit-header">
-            <span class="unit-name">UPAs de Contagem (JK, Ressaca, Sede, Petrolândia, Vargem das Flores)</span>
-            <span class="unit-tag">PRONTO ATENDIMENTO</span>
-          </div>
-          <div class="unit-info">Atendimento médico de urgência e encaminhamento operacional.</div>
-          <div class="widget-actions">
-            <button class="btn-tactical" onclick="openGoogleMapsSearch('UPA Contagem')">LOCALIZAR UPA PRÓXIMA</button>
-          </div>
-        </div>
-
-        <div class="unit-card searchable-item">
-          <div class="unit-header">
-            <span class="unit-name">Delegacia de Plantão / Central de Flagrantes Contagem</span>
-            <span class="unit-tag">PCMG</span>
-          </div>
-          <div class="unit-info">Recebimento de ocorrências policiais, conduzidos e materiais apreendidos na área de Contagem.</div>
-          <div class="widget-actions">
-            <a href="https://www.google.com/maps/search/?api=1&query=Delegacia+de+Plantao+Contagem+PCMG" target="_blank" class="btn-tactical">ROTA DELEGACIA PLANTÃO</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================== ABA 3: ESPECIALIZADAS / RPM ==================== -->
-    <section id="tab-especializadas" class="view-section">
-      <div class="section-heading">Unidades Especializadas (CPE / Apoio)</div>
-      <div class="unit-card searchable-item">
-        <div class="unit-header">
-          <span class="unit-name">BOPE • BPChq • BEPE • ROTAM • ROCCA</span>
-          <span class="unit-tag">CPE</span>
-        </div>
-        <div class="unit-info">Batalhão de Operações Policiais Especiais, Policiamento de Choque, Eventos, Rondas Táticas Metropolitanas e Rondas Ostensivas com Cães.</div>
-      </div>
-
-      <div class="unit-card searchable-item">
-        <div class="unit-header">
-          <span class="unit-name">GER (2ª RPM) • RCAT • BPMrv • BPM MAmb • BPGd • COMAVE</span>
-          <span class="unit-tag">APOIO ESPECIALIZADO</span>
-        </div>
-        <div class="unit-info">Grupo Especializado em Recobrimento da 2ª RPM, Cavalaria, Rodoviária, Meio Ambiente, Guarda e Comando de Aviação do Estado.</div>
-      </div>
-
-      <div class="section-heading">2ª RPM — Região Metropolitana</div>
-      <div class="unit-card searchable-item">
-        <div class="unit-header">
-          <span class="unit-name">18º BPM • 33º BPM • 39º BPM • 40º BPM • 48º BPM • 66º BPM</span>
-          <span class="unit-tag">2ª RPM</span>
-        </div>
-        <div class="unit-info">Inclui 6ª Cia PM Ind (Esmeraldas) e 7ª Cia PM Ind (Igarapé / São Joaquim de Bicas).</div>
-      </div>
-
-      <div class="section-heading">1ª RPM — Capital (Belo Horizonte)</div>
-      <div class="unit-card searchable-item">
-        <div class="unit-header">
-          <span class="unit-name">1º, 5º, 13º, 16º, 22º, 34º, 41º e 49º BPM</span>
-          <span class="unit-tag">1ª RPM</span>
-        </div>
-        <div class="unit-info">Batalhões de área responsáveis pelo policiamento ostensivo nas regionais de Belo Horizonte.</div>
-      </div>
-    </section>
-
-    <!-- ==================== ABA 4: ESTÁDIOS ==================== -->
-    <section id="tab-estadios" class="view-section">
-      <div class="section-heading">Operações em Praças Desportivas &amp; Parâmetros Drone</div>
-
-      <div class="unit-card searchable-item">
-        <div class="unit-header">
-          <span class="unit-name">Estádio Mineirão (Pampulha)</span>
-          <span class="unit-tag">34º BPM / BEPE</span>
-        </div>
-        <div class="unit-info">Av. Antônio Abrahão Caram, 1001. Atenção às restrições de voo próximas ao Aeroporto da Pampulha (SBBH) e coordenação SARPAS.</div>
-        <div class="widget-actions">
-          <a href="https://www.google.com/maps/search/?api=1&query=Estadio+Mineirao+Belo+Horizonte" target="_blank" class="btn-tactical">MAPA MINEIRÃO</a>
-        </div>
-      </div>
-
-      <div class="unit-card searchable-item">
-        <div class="unit-header">
-          <span class="unit-name">Arena MRV (Califórnia)</span>
-          <span class="unit-tag">5º BPM / DIVISA 18º BPM</span>
-        </div>
-        <div class="unit-info">Rua Cristina Maria de Assis, 202 — Califórnia. Monitoramento de acessos na Via Expressa, Anel Rodoviário e estação Eldorado/Vila Oeste.</div>
-        <div class="widget-actions">
-          <a href="https://www.google.com/maps/search/?api=1&query=Arena+MRV+Belo+Horizonte" target="_blank" class="btn-tactical">MAPA ARENA MRV</a>
-        </div>
-      </div>
-
-      <div class="unit-card searchable-item">
-        <div class="unit-header">
-          <span class="unit-name">Estádio Independência (Horto)</span>
-          <span class="unit-tag">16º BPM / BEPE</span>
-        </div>
-        <div class="unit-info">Rua Pitangui, 3230 — Horto. Vias residenciais estreitas; atenção a cabos aéreos e interferência urbana em operações de ARP.</div>
-        <div class="widget-actions">
-          <a href="https://www.google.com/maps/search/?api=1&query=Estadio+Independencia+Horto+Belo+Horizonte" target="_blank" class="btn-tactical">MAPA INDEPENDÊNCIA</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================== ABA 5: ATALHOS / SISTEMAS ==================== -->
-    <section id="tab-atalhos" class="view-section">
-      <div class="section-heading">Sistemas Institucionais e Ferramentas</div>
-      <div class="grid-2col">
-        <a href="https://web.sids.mg.gov.br/reds" target="_blank" rel="noopener" class="shortcut-card searchable-item">
-          <div class="shortcut-title">REDS WEB</div>
-          <div class="shortcut-desc">Portal SIDS MG</div>
-        </a>
-
-        <a href="https://chatgpt.com/g/g-68a72c60b49081918fe5a2dbb207baae-policial-assistente-reds-pmmg" target="_blank" rel="noopener" class="shortcut-card searchable-item">
-          <div class="shortcut-title">ASSISTENTE REDS</div>
-          <div class="shortcut-desc">Apoio Histórico de Ocorrência</div>
-        </a>
-
-        <a href="https://intranet.policiamilitar.mg.gov.br/" target="_blank" rel="noopener" class="shortcut-card searchable-item">
-          <div class="shortcut-title">INTRANET PMMG</div>
-          <div class="shortcut-desc">Acesso Institucional</div>
-        </a>
-
-        <a href="https://intranet.policiamilitar.mg.gov.br/lite/daop/web/" target="_blank" rel="noopener" class="shortcut-card searchable-item">
-          <div class="shortcut-title">SIGOP</div>
-          <div class="shortcut-desc">Sistema de Gestão Operacional</div>
-        </a>
-
-        <a href="https://helios.policiamilitar.mg.gov.br/#/principal" target="_blank" rel="noopener" class="shortcut-card searchable-item">
-          <div class="shortcut-title">HÉLIOS</div>
-          <div class="shortcut-desc">Monitoramento e Leitura de Placas</div>
-        </a>
-
-        <a href="https://portalbnmp.cnj.jus.br/" target="_blank" rel="noopener" class="shortcut-card searchable-item">
-          <div class="shortcut-title">BNMP</div>
-          <div class="shortcut-desc">Banco Nacional de Mandados</div>
-        </a>
-
-        <div onclick="openModalWindow('modalImei')" class="shortcut-card searchable-item">
-          <div class="shortcut-title">CONSULTAR IMEI</div>
-          <div class="shortcut-desc">Verificação Anatel (*#06#)</div>
-        </div>
-
-        <a href="https://diao.sids.mg.gov.br/" target="_blank" rel="noopener" class="shortcut-card searchable-item">
-          <div class="shortcut-title">DIAO</div>
-          <div class="shortcut-desc">Dicionário de Naturezas SIDS</div>
-        </a>
-
-        <a href="https://sarpas.decea.mil.br/login" target="_blank" rel="noopener" class="shortcut-card searchable-item">
-          <div class="shortcut-title">SARPAS NG</div>
-          <div class="shortcut-desc">Autorização de Voo DECEA</div>
-        </a>
-
-        <div onclick="openModalWindow('modalCodigoQ')" class="shortcut-card searchable-item">
-          <div class="shortcut-title">STELECOM / CÓDIGO Q</div>
-          <div class="shortcut-desc">Tabela Q e Alfabeto Fonético</div>
-        </div>
-      </div>
-    </section>
-
+  <!-- PESQUISA OMNIBOX -->
+  <div class="search-container">
+    <input type="text" class="search-input" placeholder="Pesquisar unidade, companhia, hospital, estádio" oninput="filterCards(this.value)">
   </div>
 
-  <!-- MODAL CONSULTAR IMEI -->
-  <div class="modal-overlay" id="modalImei" onclick="closeModalOutside(event, 'modalImei')">
-    <div class="modal-card">
-      <div class="unit-header">
-        <span class="unit-name">CONSULTAR IMEI — ANATEL</span>
-        <span class="unit-tag">*#06#</span>
-      </div>
-      <div class="unit-info" style="margin-bottom:14px;">
-        1. Digite <strong>*#06#</strong> no teclado de chamada do aparelho celular para visualizar o número IMEI na tela.<br/>
-        2. Toque no botão abaixo para abrir a consulta oficial da Anatel (Celular Legal) e verificar restrições de roubo ou furto.
-      </div>
-      <div class="widget-actions">
-        <a href="https://www.gov.br/anatel/pt-br/assuntos/celular-legal/consulte-sua-situacao" target="_blank" rel="noopener" class="btn-tactical active">ABRIR PORTAL ANATEL</a>
-        <button class="btn-tactical" onclick="closeModalWindow('modalImei')">FECHAR</button>
-      </div>
-    </div>
-  </div>
+  <main>
+    <!-- ==========================================
+         ABA 1: INÍCIO (FIEL AO PRINT + APUALIZAÇÕES SOLICITADAS)
+         ========================================== -->
+    <section id="tab-inicio" class="tab-pane active">
 
-  <!-- MODAL CÓDIGO Q -->
-  <div class="modal-overlay" id="modalCodigoQ" onclick="closeModalOutside(event, 'modalCodigoQ')">
-    <div class="modal-card">
-      <div class="unit-header">
-        <span class="unit-name">CÓDIGO Q &amp; ALFABETO FONÉTICO</span>
-        <span class="unit-tag">RÁDIO PMMG</span>
-      </div>
-      <div class="unit-info" style="font-family:monospace; line-height:1.65;">
-        <strong>QAP:</strong> Na escuta | <strong>QAR:</strong> Autorização para desligar<br/>
-        <strong>QRA:</strong> Nome do operador | <strong>QRL:</strong> Ocupado<br/>
-        <strong>QRM:</strong> Interferência | <strong>QRU:</strong> Ocorrência / Novidade<br/>
-        <strong>QRV:</strong> À disposição | <strong>QRX:</strong> Aguardar na frequência<br/>
-        <strong>QSL:</strong> Entendido / Confirmado | <strong>QSM:</strong> Repetir último câmbio<br/>
-        <strong>QSO:</strong> Contato direto | <strong>QTA:</strong> Cancelar mensagem<br/>
-        <strong>QTC:</strong> Mensagem / Comunicado | <strong>QTH:</strong> Local / Endereço<br/>
-        <strong>QTI:</strong> Rumo / Destino | <strong>QTR:</strong> Horário exato
-      </div>
-      <div class="widget-actions">
-        <button class="btn-tactical" onclick="closeModalWindow('modalCodigoQ')">FECHAR</button>
-      </div>
-    </div>
-  </div>
+      <!-- CARD QTH / LOCALIZAÇÃO GPS EM TEMPO REAL (SEM WAKE LOCK) -->
+      <div class="az-card searchable">
+        <div class="az-card-header">
+          <span class="az-card-title">QTH / LOCALIZAÇÃO GPS EM TEMPO REAL</span>
+          <span id="netQualityBadge" class="status-pill online">CONECTANDO...</span>
+        </div>
 
-  <!-- RODAPÉ DE NAVEGAÇÃO -->
-  <nav class="footer-nav">
-    <button class="footer-btn active" onclick="navigateTab('inicio', 'PAINEL OPERACIONAL — INÍCIO', this)">
-      <span>INÍCIO</span>
-    </button>
-    <button class="footer-btn" onclick="navigateTab('18bpm', '18º BPM — CONTAGEM', this)">
-      <span>18º BPM</span>
-    </button>
-    <button class="footer-btn" onclick="navigateTab('especializadas', 'ESPECIALIZADAS &amp; RPM', this)">
-      <span>ESPECIALIZADA</span>
-    </button>
-    <button class="footer-btn" onclick="navigateTab('estadios', 'OPERAÇÕES EM ESTÁDIOS', this)">
-      <span>ESTÁDIOS</span>
-    </button>
-    <button class="footer-btn" onclick="navigateTab('atalhos', 'SISTEMAS &amp; ATALHOS', this)">
-      <span>SISTEMAS</span>
-    </button>
+        <div class="az-main-text" id="mainQthAddress">
+          Localizando Rua, Número e Bairro automaticamente...
+        </div>
+
+        <div id="offlineLastQthBox" class="last-qth-alert">
+          <strong>SEM SINAL — ÚLTIMA LOCALIZAÇÃO REGISTRADA:</strong><br>
+          <span id="offlineLastQthText">--</span>
+        </div>
+
+        <div class="az-mono-text" id="mainQthSub">
+          Bairro / Município | Precisão: -- m
+        </div>
+
+        <div>
+          <a id="btnOpenQthMap" href="https://www.google.com/maps" target="_blank" class="az-btn">ABRIR MAPA DO QTH</a>
+          <button class="az-btn" onclick="openTab('geo', 'PAINEL OPERACIONAL — GEO / C2', document.getElementById('tabBtnGeo'))">PAINEL GEO / BÚSSOLA / DETALHES</button>
+        </div>
+      </div>
+
+      <!-- CARD CLIMA & MONITORAMENTO DE CHUVA (RMBH) -->
+      <div class="az-card searchable">
+        <div class="az-card-header">
+          <span class="az-card-title">CLIMA & MONITORAMENTO DE CHUVA (RMBH)</span>
+          <button class="status-pill" style="cursor:pointer;" onclick="fetchTelemetryWeather(true)">ATUALIZAR</button>
+        </div>
+
+        <div class="az-main-text" id="mainWeatherLine">
+          --°C | Chuva: 0 mm | Vento: -- km/h | Umidade: --%
+        </div>
+
+        <div>
+          <span class="status-pill" id="rainStatusBadge">SEM CHUVA NO MOMENTO</span>
+        </div>
+      </div>
+
+      <!-- ATALHOS RÁPIDOS (EXATAMENTE COMO NO PRINT) -->
+      <div class="section-heading">ATALHOS RÁPIDOS</div>
+      <div class="shortcuts-grid">
+        <a href="https://web.sids.mg.gov.br/reds" target="_blank" class="shortcut-box searchable">
+          <span class="shortcut-title">REDS WEB</span>
+          <span class="shortcut-desc">Registro de Eventos de Defesa Social</span>
+        </a>
+        <a href="https://portalbnmp.cnj.jus.br/" target="_blank" class="shortcut-box searchable">
+          <span class="shortcut-title">BNMP / CNJ</span>
+          <span class="shortcut-desc">Consulta Nacional de Mandados de Prisão</span>
+        </a>
+        <a href="https://www.gov.br/anatel/pt-br/assuntos/celular-legal/consulte-sua-situacao" target="_blank" class="shortcut-box searchable">
+          <span class="shortcut-title">CONSULTAR IMEI</span>
+          <span class="shortcut-desc">Anatel Celular Legal (*#06#)</span>
+        </a>
+        <a href="https://sarpas.decea.mil.br/login" target="_blank" class="shortcut-box searchable">
+          <span class="shortcut-title">SARPAS NG</span>
+          <span class="shortcut-desc">Solicitação de Espaço Aéreo (Drone)</span>
+        </a>
+        <a href="https://chatgpt.com/g/g-68a72c60b49081918fe5a2dbb207baae-policial-assistente-reds-pmmg" target="_blank" class="shortcut-box searchable">
+          <span class="shortcut-title">ASSISTENTE REDS</span>
+          <span class="shortcut-desc">IA de Apoio à Redação Operacional</span>
+        </a>
+        <a href="https://intranet.policiamilitar.mg.gov.br/lite/daop/web/" target="_blank" class="shortcut-box searchable">
+          <span class="shortcut-title">SIGOP / INTRANET</span>
+          <span class="shortcut-desc">Sistema de Gestão Operacional PMMG</span>
+        </a>
+        <a href="https://helios.policiamilitar.mg.gov.br/#/principal" target="_blank" class="shortcut-box searchable">
+          <span class="shortcut-title">HÉLIOS</span>
+          <span class="shortcut-desc">Monitoramento e Leitura de Placas</span>
+        </a>
+        <a href="https://diao.sids.mg.gov.br/" target="_blank" class="shortcut-box searchable">
+          <span class="shortcut-title">DIAO / EMENTÁRIO</span>
+          <span class="shortcut-desc">Consulta de Naturezas e Diretrizes</span>
+        </a>
+      </div>
+
+      <!-- DISPLAY DE RCP (COMPRESSÕES 100-120 BPM) -->
+      <div class="section-heading">APH TÁTICO & DISPLAY DE RCP</div>
+      <div class="rcp-metronome-card searchable">
+        <div class="az-card-title" style="color:#ef9a9a;">GUIA DE COMPRESSÕES RCP (DOUTRINA: 100 A 120 BPM)</div>
+        <p style="font-size:11.5px; color:var(--text-gray); margin-top:3px;">Ritmo Padrão: 110 BPM | Profundidade: 5–6 cm | Retorno Total do Tórax</p>
+
+        <div class="rcp-visualizer" id="rcpCircle">
+          <span id="rcpBpmDisplay" style="font-size:18px; font-weight:800; color:#fff;">110</span>
+          <span style="font-size:9px; color:#ef9a9a;">BPM</span>
+        </div>
+
+        <div class="az-mono-text" style="margin-bottom:8px;">
+          CICLO 2 MIN: <strong id="rcpTimerText" style="color:var(--khaki);">02:00</strong> | COMPRESSÕES: <strong id="rcpCounterText">0</strong>
+        </div>
+
+        <div>
+          <button class="az-btn" id="btnRcpStart" onclick="toggleRcp()">INICIAR METRÔNOMO RCP</button>
+          <button class="az-btn" onclick="measureTapRcp()">TESTAR MEU RITMO (TOQUE)</button>
+        </div>
+        <div id="rcpFeedbackMsg" style="font-size:11.5px; color:var(--khaki); margin-top:6px;"></div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         ABA 2: GEO / C2 (VISUAL DISPOSITIVO MILITAR + DETALHES + BÚSSOLA)
+         ========================================== -->
+    <section id="tab-geo" class="tab-pane">
+      <div class="tech-device-panel">
+        <div class="az-card-header">
+          <span class="az-card-title">DISPOSITIVO DE GEOLOCALIZAÇÃO E TELEMETRIA (C2)</span>
+          <span id="geoNetBadge" class="status-pill online">SINAL ONLINE</span>
+        </div>
+
+        <div class="az-main-text" id="geoFullStreet">Capturando satélites...</div>
+        <div class="az-mono-text" id="geoFullSub">Bairro / Cidade</div>
+
+        <!-- BÚSSOLA REAL + CALIBRAGEM -->
+        <div class="compass-row">
+          <div class="compass-ring">
+            <div class="compass-pointer" id="compassNeedle"></div>
+          </div>
+          <div>
+            <div class="detail-label">BÚSSOLA MAGNÉTICA REAL</div>
+            <div style="font-family:var(--font-mono); font-size:18px; font-weight:800; color:var(--khaki);" id="compassDegText">--° ---</div>
+            <div style="font-size:11px; color:var(--text-gray);" id="compassStatusMsg">Mova o celular em "8" para calibrar o sensor.</div>
+            <button class="az-btn" style="padding:5px 10px; font-size:10.5px; margin-top:5px;" onclick="activateCompass()">CALIBRAR / ATIVAR BÚSSOLA</button>
+          </div>
+        </div>
+
+        <!-- SUB-ABA DETALHES: ALTITUDE, TEMPERATURA, UMIDADE E COORDENADAS COPIÁVEIS -->
+        <div class="az-card-title" style="margin-top:8px;">DETALHES TOPOGRÁFICOS E CLIMÁTICOS</div>
+        <div class="details-mini-grid">
+          <div class="detail-cell">
+            <div class="detail-label">ALTITUDE (ELEVAÇÃO)</div>
+            <div class="detail-val" id="detAltitude">-- m</div>
+          </div>
+          <div class="detail-cell">
+            <div class="detail-label">TEMPERATURA</div>
+            <div class="detail-val" id="detTemp">-- °C</div>
+          </div>
+          <div class="detail-cell">
+            <div class="detail-label">UMIDADE DO AR</div>
+            <div class="detail-val" id="detHumidity">-- %</div>
+          </div>
+          <div class="detail-cell">
+            <div class="detail-label">PRECISÃO SATÉLITE</div>
+            <div class="detail-val" id="detAccuracy">-- m</div>
+          </div>
+        </div>
+
+        <div class="detail-cell" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <div>
+            <div class="detail-label">COORDENADAS GEOGRÁFICAS</div>
+            <div class="detail-val" style="color:var(--khaki);" id="detCoords">-19.91670, -43.93450</div>
+          </div>
+          <button class="az-btn" style="margin:0;" onclick="copyCoordsText()">COPIAR</button>
+        </div>
+
+        <div class="az-card" style="margin-top:10px; margin-bottom:0;">
+          <div class="az-card-title">MAPAS OFFLINE (GOOGLE MAPS)</div>
+          <p style="font-size:12px; color:var(--text-gray); margin-top:4px;">
+            No app Google Maps do celular: toque no seu Perfil &rarr; <strong>Mapas off-line</strong> &rarr; <strong>Selecionar seu próprio mapa</strong> e baixe a RMBH/Região. O botão "ABRIR MAPA DO QTH" funcionará mesmo sem internet.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         ABA 3: REGIÕES (2ª RPM / 18º BPM PILOTO, 1ª RPM c/ BPRTRAN, 3ª RPM)
+         ========================================== -->
+    <section id="tab-regioes" class="tab-pane">
+      <div class="sub-nav">
+        <button class="sub-nav-btn active" onclick="openRegionSub('r2', this)">2ª RPM (18º BPM PILOTO)</button>
+        <button class="sub-nav-btn" onclick="openRegionSub('r1', this)">1ª RPM (BH + BPRTRAN)</button>
+        <button class="sub-nav-btn" onclick="openRegionSub('r3', this)">3ª RPM</button>
+      </div>
+
+      <!-- 2ª RPM -->
+      <div id="reg-r2" class="reg-subpane">
+        <div class="az-card searchable">
+          <div class="az-card-header">
+            <span class="az-card-title">18º BPM — CONTAGEM (MODELO PILOTO)</span>
+            <span class="status-pill">2ª RPM</span>
+          </div>
+          <div class="sub-nav" style="margin-top:6px;">
+            <button class="sub-nav-btn active" onclick="open18Sub('c1', this)">COMPANHIAS</button>
+            <button class="sub-nav-btn" onclick="open18Sub('c2', this)">DIVISAS</button>
+            <button class="sub-nav-btn" onclick="open18Sub('c3', this)">SAÚDE / PA</button>
+            <button class="sub-nav-btn" onclick="open18Sub('c4', this)">SOU / INTELIGÊNCIA</button>
+          </div>
+
+          <div id="b18-c1" class="b18-box">
+            <p style="margin-bottom:6px;"><strong>27ª Cia PM:</strong> Eldorado / Industrial — <a href="https://www.google.com/maps/search/?api=1&query=27+Cia+PM+Contagem" target="_blank" style="color:var(--khaki);">Abrir Rota</a></p>
+            <p style="margin-bottom:6px;"><strong>38ª Cia PM:</strong> Ressaca / Nacional — <a href="https://www.google.com/maps/search/?api=1&query=38+Companhia+PMMG+Contagem" target="_blank" style="color:var(--khaki);">Abrir Rota</a></p>
+            <p style="margin-bottom:6px;"><strong>131ª Cia PM:</strong> Sede / Centro — <a href="https://www.google.com/maps/search/?api=1&query=18+BPM+Contagem" target="_blank" style="color:var(--khaki);">Abrir Rota</a></p>
+            <p><strong>285ª Cia Tático Móvel:</strong> Recobrimento 18º BPM.</p>
+          </div>
+          <div id="b18-c2" class="b18-box" style="display:none;">
+            <p>Limite direto com o <strong>66º BPM</strong> (Nova Contagem / Vargem das Flores) e <strong>39º BPM</strong> (Barreiro / Industrial / Ibirité).</p>
+          </div>
+          <div id="b18-c3" class="b18-box" style="display:none;">
+            <p>Hospital Municipal de Contagem (HMC), UPA JK, UPA Ressaca, UPA Vargem das Flores, UPA Industrial e DEPLAN Contagem.</p>
+          </div>
+          <div id="b18-c4" class="b18-box" style="display:none;">
+            <p><strong>SOU:</strong> Sala de Operações da Unidade (18º BPM).<br>
+               <strong>INTELIGÊNCIA - 18º BPM:</strong> Subseção de Inteligência.</p>
+          </div>
+        </div>
+
+        <div class="shortcuts-grid">
+          <div class="shortcut-box searchable"><span class="shortcut-title">33º BPM</span><span class="shortcut-desc">Betim</span></div>
+          <div class="shortcut-box searchable"><span class="shortcut-title">39º BPM</span><span class="shortcut-desc">Contagem / Ibirité</span></div>
+          <div class="shortcut-box searchable"><span class="shortcut-title">40º BPM</span><span class="shortcut-desc">Ribeirão das Neves</span></div>
+          <div class="shortcut-box searchable"><span class="shortcut-title">48º BPM</span><span class="shortcut-desc">Ibirité / Sarzedo</span></div>
+          <div class="shortcut-box searchable"><span class="shortcut-title">66º BPM</span><span class="shortcut-desc">Betim / Nova Contagem</span></div>
+          <div class="shortcut-box searchable"><span class="shortcut-title">BTL GER</span><span class="shortcut-desc">Recobrimento 2ª RPM</span></div>
+          <div class="shortcut-box searchable"><span class="shortcut-title">6ª CIA PM IND</span><span class="shortcut-desc">Esmeraldas</span></div>
+          <div class="shortcut-box searchable"><span class="shortcut-title">7ª CIA PM IND</span><span class="shortcut-desc">Igarapé</span></div>
+        </div>
+      </div>
+
+      <!-- 1ª RPM (COM BPRTRAN) -->
+      <div id="reg-r1" class="reg-subpane" style="display:none;">
+        <div class="az-card searchable">
+          <div class="az-card-header">
+            <span class="az-card-title">BPRTran — BATALHÃO DE RECOBRIMENTO E TRÂNSITO</span>
+            <span class="status-pill">1ª RPM</span>
+          </div>
+          <p style="font-size:13px; color:var(--text-gray);">Unidade subordinada à 1ª RPM (Belo Horizonte) responsável pelo recobrimento tático nos corredores viários e policiamento de trânsito urbano na Capital.</p>
+        </div>
+        <div class="shortcuts-grid">
+          <div class="shortcut-box searchable"><span class="shortcut-title">1º BPM</span><span class="shortcut-desc">Centro-Sul BH</span></div>
+          <div class="shortcut-box searchable"><span class="shortcut-title">5º BPM</span><span class="shortcut-desc">Oeste / Gameleira</span></div>
+          <div class="shortcut-box searchable"><span class="shortcut-title">13º BPM</span><span class="shortcut-desc">Norte / Pampulha</span></div>
+          <div class="shortcut-box searchable"><span class="shortcut-title">16º BPM</span><span class="shortcut-desc">Leste BH</span></div>
+          <div class="shortcut-box searchable"><span class="shortcut-title">22º BPM</span><span class="shortcut-desc">Centro-Sul / Serra</span></div>
+          <div class="shortcut-box searchable"><span class="shortcut-title">34º BPM</span><span class="shortcut-desc">Noroeste BH</span></div>
+          <div class="shortcut-box searchable"><span class="shortcut-title">41º BPM</span><span class="shortcut-desc">Barreiro</span></div>
+          <div class="shortcut-box searchable"><span class="shortcut-title">49º BPM</span><span class="shortcut-desc">Venda Nova</span></div>
+        </div>
+      </div>
+
+      <!-- 3ª RPM -->
+      <div id="reg-r3" class="reg-subpane" style="display:none;">
+        <div class="shortcuts-grid">
+          <div class="shortcut-box searchable"><span class="shortcut-title">35º BPM</span><span class="shortcut-desc">Santa Luzia</span></div>
+          <div class="shortcut-box searchable"><span class="shortcut-title">36º BPM</span><span class="shortcut-desc">Vespasiano / Pedro Leopoldo</span></div>
+          <div class="shortcut-box searchable"><span class="shortcut-title">52º BPM</span><span class="shortcut-desc">Ouro Preto / Mariana</span></div>
+          <div class="shortcut-box searchable"><span class="shortcut-title">61º BPM</span><span class="shortcut-desc">Sabará</span></div>
+          <div class="shortcut-box searchable"><span class="shortcut-title">1ª CIA PM IND</span><span class="shortcut-desc">Nova Lima</span></div>
+          <div class="shortcut-box searchable"><span class="shortcut-title">11ª CIA PM IND</span><span class="shortcut-desc">Matozinhos / Confins</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         ABA 4: ESPECIALIZADA (CME vs DOp vs CPE)
+         ========================================== -->
+    <section id="tab-especializada" class="tab-pane">
+      <div class="section-heading">CME — COMANDO DE MISSÕES ESPECIAIS</div>
+      <div class="shortcuts-grid">
+        <div class="shortcut-box searchable">
+          <span class="shortcut-title">BOPE</span>
+          <span class="shortcut-desc">Operações Policiais Especiais (CME)</span>
+        </div>
+        <div class="shortcut-box searchable">
+          <span class="shortcut-title">BTL ROTAM</span>
+          <span class="shortcut-desc">Rondas Táticas Metropolitanas (CME)</span>
+        </div>
+        <div class="shortcut-box searchable">
+          <span class="shortcut-title">BPCHQ</span>
+          <span class="shortcut-desc">Batalhão de Polícia de Choque (CME)</span>
+        </div>
+        <div class="shortcut-box searchable">
+          <span class="shortcut-title">ROCCA / RCAT</span>
+          <span class="shortcut-desc">Cães (ROCCA) e Cavalaria (RCAT) — CME</span>
+        </div>
+      </div>
+
+      <div class="section-heading">DOp — DIRETORIA DE OPERAÇÕES</div>
+      <div class="az-card searchable">
+        <div class="az-card-header">
+          <span class="az-card-title">BEPE — POLICIAMENTO DE EVENTOS</span>
+          <span class="status-pill">SUBORDINADO À DOp</span>
+        </div>
+        <p style="font-size:12.5px; color:var(--text-gray);">Quartel sediado na Gameleira (BH), subordinado operacionalmente à Diretoria de Operações (DOp).</p>
+      </div>
+
+      <div class="section-heading">CPE — COMANDO DE POLICIAMENTO ESPECIALIZADO</div>
+      <div class="shortcuts-grid">
+        <div class="shortcut-box searchable">
+          <span class="shortcut-title">BPMRV</span>
+          <span class="shortcut-desc">Polícia Militar Rodoviária (CPE)</span>
+        </div>
+        <div class="shortcut-box searchable">
+          <span class="shortcut-title">BPM MAMB</span>
+          <span class="shortcut-desc">Polícia de Meio Ambiente (CPE)</span>
+        </div>
+        <div class="shortcut-box searchable">
+          <span class="shortcut-title">BPGD</span>
+          <span class="shortcut-desc">Batalhão de Polícia de Guardas (CPE)</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         ABA 5: ESTÁDIOS (MINEIRÃO, ARENA MRV, INDEPENDÊNCIA)
+         ========================================== -->
+    <section id="tab-estadios" class="tab-pane">
+      <div class="az-card searchable">
+        <div class="az-card-header">
+          <span class="az-card-title">MINEIRÃO (PAMPULHA)</span>
+          <span class="status-pill">13º BPM / BEPE</span>
+        </div>
+        <p style="font-size:12.5px; color:var(--text-gray); margin-bottom:8px;">Esplanada, Setores Norte/Sul/Leste/Oeste. Atenção redobrada a voos de drone pela proximidade com o Aeroporto da Pampulha (SBBH).</p>
+        <a href="https://www.google.com/maps/search/?api=1&query=Estadio+Mineirao+BH" target="_blank" class="az-btn">ABRIR MAPA DO ESTÁDIO</a>
+      </div>
+
+      <div class="az-card searchable">
+        <div class="az-card-header">
+          <span class="az-card-title">ARENA MRV (CALIFÓRNIA)</span>
+          <span class="status-pill">5º BPM / BEPE</span>
+        </div>
+        <p style="font-size:12.5px; color:var(--text-gray); margin-bottom:8px;">Via Expressa / Anel Rodoviário (Divisa BH/Contagem). Platô sujeito a rajadas de vento laterais para RPAS/Drones.</p>
+        <a href="https://www.google.com/maps/search/?api=1&query=Arena+MRV+BH" target="_blank" class="az-btn">ABRIR MAPA DO ESTÁDIO</a>
+      </div>
+
+      <div class="az-card searchable">
+        <div class="az-card-header">
+          <span class="az-card-title">ARENA INDEPENDÊNCIA (HORTO)</span>
+          <span class="status-pill">16º BPM / BEPE</span>
+        </div>
+        <p style="font-size:12.5px; color:var(--text-gray); margin-bottom:8px;">Perímetro urbano estreito (Rua Pitangui / Ismênia Tunes). Controle de acesso e escolta de delegações.</p>
+        <a href="https://www.google.com/maps/search/?api=1&query=Estadio+Independencia+BH" target="_blank" class="az-btn">ABRIR MAPA DO ESTÁDIO</a>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         ABA 6: DRONES & SISTEMAS (METEOROLOGIA AERONÁUTICA + IAs)
+         ========================================== -->
+    <section id="tab-sistemas" class="tab-pane">
+      <div class="tech-device-panel">
+        <div class="az-card-header">
+          <span class="az-card-title">METEOROLOGIA AERONÁUTICA & TELEMETRIA DRONE</span>
+          <button class="status-pill" style="cursor:pointer;" onclick="fetchTelemetryWeather(true)">ATUALIZAR</button>
+        </div>
+
+        <div id="droneWeatherAlert" class="last-qth-alert" style="border-color:var(--danger); color:#ffcdd2; background:rgba(229,57,53,0.2);">
+          ⚠️ <strong>ALERTA METEOROLÓGICO:</strong> Mudança brusca nas condições climáticas (vento/chuva) detectada!
+        </div>
+
+        <div style="margin:8px 0;">
+          <label class="detail-label" style="display:block; margin-bottom:4px;">AERONAVE SELECIONADA:</label>
+          <select id="droneModelSelect" onchange="evaluateDroneSafety()" style="width:100%; background:#141414; color:var(--khaki); border:1px solid var(--khaki-border); border-radius:6px; padding:9px; font-weight:700; font-size:12.5px;">
+            <option value="mini" data-wind="38" data-ip="0">DJI Mini 3 / Mini 4 Pro (Limite Vento: 38 km/h | S/ Chuva)</option>
+            <option value="m3t" data-wind="43" data-ip="0" selected>DJI Mavic 3 Enterprise / Thermal (Limite Vento: 43 km/h | S/ Chuva)</option>
+            <option value="m30t" data-wind="54" data-ip="1">DJI Matrice 30T - M30T (Limite Vento: 54 km/h | IP55)</option>
+            <option value="autel" data-wind="43" data-ip="0">Autel EVO II Dual 640T (Limite Vento: 43 km/h | S/ Chuva)</option>
+          </select>
+        </div>
+
+        <div id="droneVerdictBanner" class="flight-status-banner flight-go">
+          AVALIANDO CONDIÇÕES DE VOO NO QTH...
+        </div>
+
+        <div class="details-mini-grid">
+          <div class="detail-cell">
+            <div class="detail-label">VENTO SUSTENTADO</div>
+            <div class="detail-val" id="drWind">-- km/h (-- kt)</div>
+          </div>
+          <div class="detail-cell">
+            <div class="detail-label">RAJADAS (GUSTS)</div>
+            <div class="detail-val" id="drGusts">-- km/h</div>
+          </div>
+          <div class="detail-cell">
+            <div class="detail-label">UMIDADE DO AR</div>
+            <div class="detail-val" id="drHumidity">-- %</div>
+          </div>
+          <div class="detail-cell">
+            <div class="detail-label">CHUVA / PROBABILIDADE</div>
+            <div class="detail-val" id="drRain">0 mm (--%)</div>
+          </div>
+          <div class="detail-cell">
+            <div class="detail-label">TEMPERATURA</div>
+            <div class="detail-val" id="drTemp">-- °C</div>
+          </div>
+          <div class="detail-cell">
+            <div class="detail-label">ALTITUDE QTH</div>
+            <div class="detail-val" id="drAlt">-- m</div>
+          </div>
+        </div>
+
+        <a href="https://sarpas.decea.mil.br/login" target="_blank" class="az-btn">SOLICITAR VOO NO SARPAS NG</a>
+      </div>
+
+      <div class="section-heading">CENTRAL DE IAs (NOTEBOOKLM)</div>
+      <div class="shortcuts-grid">
+        <a href="https://notebooklm.google.com/" target="_blank" class="shortcut-box searchable">
+          <span class="shortcut-title">IA APH TÁTICO</span>
+          <span class="shortcut-desc">Suporte em Urgência e Emergência</span>
+        </a>
+        <a href="https://notebooklm.google.com/" target="_blank" class="shortcut-box searchable">
+          <span class="shortcut-title">IA CANARINHO / HOLT</span>
+          <span class="shortcut-desc">Manuais de Drones e Regras DECEA</span>
+        </a>
+        <a href="https://notebooklm.google.com/" target="_blank" class="shortcut-box searchable">
+          <span class="shortcut-title">IA VIATURAS</span>
+          <span class="shortcut-desc">Panes e Soluções da Frota PMMG</span>
+        </a>
+        <a href="https://notebooklm.google.com/" target="_blank" class="shortcut-box searchable">
+          <span class="shortcut-title">IA ARMAMENTO</span>
+          <span class="shortcut-desc">Manuais, Balística e Manutenção</span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <!-- RODAPÉ FIEL AO SCREENSHOT -->
+  <nav class="footer-bar">
+    <button class="footer-tab active" onclick="openTab('inicio', 'PAINEL OPERACIONAL — INÍCIO', this)">INÍCIO</button>
+    <button class="footer-tab" id="tabBtnGeo" onclick="openTab('geo', 'PAINEL OPERACIONAL — GEO / C2', this)">GEO / C2</button>
+    <button class="footer-tab" onclick="openTab('regioes', 'PAINEL OPERACIONAL — REGIÕES', this)">REGIÕES</button>
+    <button class="footer-tab" onclick="openTab('especializada', 'PAINEL OPERACIONAL — ESPECIALIZADA', this)">ESPECIALIZADA</button>
+    <button class="footer-tab" onclick="openTab('estadios', 'PAINEL OPERACIONAL — ESTÁDIOS', this)">ESTÁDIOS</button>
+    <button class="footer-tab" onclick="openTab('sistemas', 'PAINEL OPERACIONAL — DRONES / IA', this)">DRONES</button>
   </nav>
 
   <script>
-    // =========================================================================
-    // 1. NAVEGAÇÃO DO RODAPÉ (CORREÇÃO DE ROLAGEM + ESCONDE CARDS DO TOPO FORA DO INÍCIO)
-    // =========================================================================
-    function navigateTab(tabKey, subtitleText, btnEl) {
-      document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
-      const targetSec = document.getElementById('tab-' + tabKey);
-      if (targetSec) targetSec.classList.add('active');
-
-      document.querySelectorAll('.footer-btn').forEach(b => b.classList.remove('active'));
+    // 1. TROCA DE ABAS COM ROLAGEM AUTOMÁTICA PARA O TOPO
+    function openTab(tabName, subtitle, btnEl) {
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+      document.getElementById('tab-' + tabName).classList.add('active');
+      document.querySelectorAll('.footer-tab').forEach(b => b.classList.remove('active'));
       if (btnEl) btnEl.classList.add('active');
-
-      const subEl = document.getElementById('headerSubtitle');
-      if (subEl) subEl.textContent = subtitleText;
-
-      // Esconde os cards superiores quando sair da aba Início para a tela escolhida aparecer imediatamente no topo
-      const topWidgets = document.getElementById('topTelemetryWidgets');
-      if (topWidgets) {
-        topWidgets.style.display = (tabKey === 'inicio') ? 'flex' : 'none';
-      }
-
-      // Rola suavemente para o topo da página
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      document.getElementById('headerSubtitle').textContent = subtitle;
+      window.scrollTo({ top: 0, behavior: 'instant' });
     }
 
-    function openSubTab18(subKey, btnEl) {
-      document.querySelectorAll('#tab-18bpm .sub-content').forEach(c => c.classList.remove('active'));
-      const target = document.getElementById('sub18-' + subKey);
-      if (target) target.classList.add('active');
-
-      document.querySelectorAll('#tab-18bpm .sub-tab-btn').forEach(b => b.classList.remove('active'));
-      if (btnEl) btnEl.classList.add('active');
-
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    // =========================================================================
-    // 2. GPS COM WAKE LOCK (TELA SEMPRE ATIVA) + CAPTURA DO HOUSE_NUMBER
-    // (Removida qualquer notificação de tela de bloqueio, voz e WhatsApp)
-    // =========================================================================
-    let gpsWatchHandle = null;
-    let wakeLockObj = null;
-    let lastCoordLat = -19.9320;
-    let lastCoordLon = -44.0537;
-    let lastReverseFetch = 0;
-
-    async function enableScreenWakeLock() {
-      const badge = document.getElementById('wakeLockBadge');
-      if ('wakeLock' in navigator) {
-        try {
-          wakeLockObj = await navigator.wakeLock.request('screen');
-          if (badge) badge.textContent = 'TELA SEMPRE ATIVA';
-          wakeLockObj.addEventListener('release', () => {
-            if (gpsWatchHandle === null && badge) {
-              badge.textContent = 'TELA PADRÃO';
-            }
-          });
-        } catch (err) {
-          if (badge) badge.textContent = 'GPS ATIVO';
-        }
-      }
-    }
-
-    async function disableScreenWakeLock() {
-      const badge = document.getElementById('wakeLockBadge');
-      if (wakeLockObj) {
-        try {
-          await wakeLockObj.release();
-          wakeLockObj = null;
-        } catch (e) {}
-      }
-      if (badge) badge.textContent = 'TELA PADRÃO';
-    }
-
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible' && gpsWatchHandle !== null) {
-        enableScreenWakeLock();
-      }
-    });
-
-    function toggleGpsTracking() {
-      const btn = document.getElementById('btnGpsControl');
-      const statusTag = document.getElementById('gpsStatusLabel');
-      const addrBox = document.getElementById('gpsStreetDisplay');
-
-      if (gpsWatchHandle !== null) {
-        navigator.geolocation.clearWatch(gpsWatchHandle);
-        gpsWatchHandle = null;
-        disableScreenWakeLock();
-        btn.textContent = 'ATIVAR GPS (MANTER TELA ACESA)';
-        btn.classList.remove('active');
-        statusTag.textContent = 'PAUSADO';
-        return;
-      }
-
-      if (!navigator.geolocation) {
-        addrBox.textContent = 'GPS não suportado neste navegador.';
-        return;
-      }
-
-      btn.textContent = 'DESATIVAR GPS';
+    function openRegionSub(id, btn) {
+      document.querySelectorAll('.reg-subpane').forEach(el => el.style.display = 'none');
+      document.getElementById('reg-' + id).style.display = 'block';
+      btn.parentElement.querySelectorAll('.sub-nav-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      statusTag.textContent = 'RASTREANDO';
-      addrBox.textContent = 'Sincronizando satélites GPS...';
-      enableScreenWakeLock();
-
-      gpsWatchHandle = navigator.geolocation.watchPosition(
-        async (position) => {
-          lastCoordLat = position.coords.latitude;
-          lastCoordLon = position.coords.longitude;
-          const accuracy = Math.round(position.coords.accuracy || 0);
-
-          document.getElementById('gpsCoordsDisplay').textContent =
-            `Coordenadas: ${lastCoordLat.toFixed(5)}, ${lastCoordLon.toFixed(5)} (±${accuracy}m)`;
-
-          const now = Date.now();
-          if (now - lastReverseFetch > 6500) {
-            lastReverseFetch = now;
-            await fetchStreetAndHouseNumber(lastCoordLat, lastCoordLon);
-          }
-        },
-        (error) => {
-          statusTag.textContent = 'ERRO SINAL';
-          addrBox.textContent = 'Permissão de localização negada ou sinal fraco.';
-        },
-        { enableHighAccuracy: true, maximumAge: 3000, timeout: 12000 }
-      );
     }
 
-    async function fetchStreetAndHouseNumber(lat, lon) {
-      const addrBox = document.getElementById('gpsStreetDisplay');
-      try {
-        const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}&addressdetails=1&zoom=18`;
-        const response = await fetch(url, { headers: { 'Accept-Language': 'pt-BR' } });
-        if (!response.ok) throw new Error('Falha Nominatim');
-        const data = await response.json();
-        const address = data.address || {};
+    function open18Sub(id, btn) {
+      document.querySelectorAll('.b18-box').forEach(el => el.style.display = 'none');
+      document.getElementById('b18-' + id).style.display = 'block';
+      btn.parentElement.querySelectorAll('.sub-nav-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
 
-        const road = address.road || address.pedestrian || address.highway || 'Logradouro não identificado';
-        const houseNumber = address.house_number ? `nº ${address.house_number}` : 'S/N (nº aprox. indisponível no mapa)';
-        const barrio = address.suburb || address.neighbourhood || address.city_district || address.quarter || 'Bairro não identificado';
-        const city = address.city || address.town || address.municipality || 'RMBH';
-
-        addrBox.textContent = `${road}, ${houseNumber} — ${barrio} (${city})`;
-      } catch (e) {
-        addrBox.textContent = `QTH em coordenadas: ${lat.toFixed(5)}, ${lon.toFixed(5)}`;
+    // 2. BUSCA OMNIBOX
+    function filterCards(val) {
+      const q = val.trim().toLowerCase();
+      if (!q) {
+        document.querySelectorAll('.searchable').forEach(el => el.style.display = '');
+        return;
       }
-    }
-
-    function openCurrentLocationOnMap() {
-      const url = `https://www.google.com/maps/search/?api=1&query=${lastCoordLat},${lastCoordLon}`;
-      window.open(url, '_blank');
-    }
-
-    // =========================================================================
-    // 3. CLIMA E ALERTA DE CHUVA (MANTIDO 100% INTACTO)
-    // =========================================================================
-    async function updateWeatherData() {
-      const summaryEl = document.getElementById('weatherSummaryText');
-      const badgeEl = document.getElementById('rainRiskBadge');
-      try {
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lastCoordLat}&longitude=${lastCoordLon}&current=temperature_2m,precipitation,rain,wind_speed_10m&timezone=America%2FSao_Paulo`;
-        const res = await fetch(url);
-        const data = await res.json();
-        if (data && data.current) {
-          const temp = Math.round(data.current.temperature_2m);
-          const rain = data.current.precipitation || data.current.rain || 0;
-          const wind = Math.round(data.current.wind_speed_10m || 0);
-
-          summaryEl.textContent = `${temp}°C | Chuva: ${rain} mm | Vento: ${wind} km/h`;
-
-          if (rain >= 2.0) {
-            badgeEl.textContent = 'ALERTA DE CHUVA / RISCO DE ALAGAMENTO';
-            badgeEl.classList.add('danger');
-          } else if (rain > 0) {
-            badgeEl.textContent = 'CHUVA LEVE NA REGIÃO';
-            badgeEl.classList.remove('danger');
-          } else {
-            badgeEl.textContent = 'SEM CHUVA NO MOMENTO';
-            badgeEl.classList.remove('danger');
-          }
-        }
-      } catch (e) {
-        summaryEl.textContent = 'Clima indisponível (verifique conexão)';
-      }
-    }
-
-    // =========================================================================
-    // 4. OMNIBOX, MODAIS E BLOCO DE NOTAS
-    // =========================================================================
-    function runOmniboxFilter() {
-      const q = document.getElementById('omniboxSearch').value.trim().toLowerCase();
-      document.getElementById('omniboxClearBtn').style.display = q ? 'block' : 'none';
-      document.querySelectorAll('.searchable-item').forEach(item => {
-        const match = item.textContent.toLowerCase().includes(q);
-        item.style.display = (!q || match) ? '' : 'none';
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.add('active'));
+      document.querySelectorAll('.reg-subpane').forEach(p => p.style.display = 'block');
+      document.querySelectorAll('.searchable').forEach(el => {
+        el.style.display = el.textContent.toLowerCase().includes(q) ? '' : 'none';
       });
     }
 
-    function clearOmniboxSearch() {
-      document.getElementById('omniboxSearch').value = '';
-      runOmniboxFilter();
-    }
+    // 3. MONITORAMENTO DE SINAL E ÚLTIMA LOCALIZAÇÃO SALVA
+    function refreshNetQuality() {
+      const b1 = document.getElementById('netQualityBadge');
+      const b2 = document.getElementById('geoNetBadge');
+      const offlineBox = document.getElementById('offlineLastQthBox');
 
-    function openModalWindow(id) {
-      document.getElementById(id).classList.add('open');
+      if (!navigator.onLine) {
+        b1.className = 'status-pill offline';
+        b1.textContent = 'SEM SINAL';
+        b2.className = 'status-pill offline';
+        b2.textContent = 'SEM SINAL (OFFLINE)';
+        loadLastKnownQth();
+      } else {
+        const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        const netType = (conn && conn.effectiveType) ? conn.effectiveType.toUpperCase() : 'ONLINE';
+        b1.className = 'status-pill online';
+        b1.textContent = 'SINAL ' + netType;
+        b2.className = 'status-pill online';
+        b2.textContent = 'SINAL ' + netType;
+        offlineBox.style.display = 'none';
+      }
     }
+    window.addEventListener('online', () => { refreshNetQuality(); initAutoGps(); });
+    window.addEventListener('offline', refreshNetQuality);
 
-    function closeModalWindow(id) {
-      document.getElementById(id).classList.remove('open');
-    }
-
-    function closeModalOutside(e, id) {
-      if (e.target.id === id) closeModalWindow(id);
-    }
-
-    function openGoogleMapsSearch(query) {
-      window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`, '_blank');
-    }
-
-    function persistNotes() {
-      localStorage.setItem('azimute_drone_hdr', document.getElementById('droneHeaderInput').value);
-      localStorage.setItem('azimute_shift_notes', document.getElementById('shiftNotesInput').value);
-    }
-
-    function restoreNotes() {
-      document.getElementById('droneHeaderInput').value = localStorage.getItem('azimute_drone_hdr') || '';
-      document.getElementById('shiftNotesInput').value = localStorage.getItem('azimute_shift_notes') || '';
-    }
-
-    function stampQthInNotes() {
-      const notesEl = document.getElementById('shiftNotesInput');
-      const timeStr = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-      const addrStr = document.getElementById('gpsStreetDisplay').textContent;
-      notesEl.value = (notesEl.value ? notesEl.value + '\n' : '') + `[${timeStr}] ${addrStr}`;
-      persistNotes();
-    }
-
-    function clearSavedNotes() {
-      if (confirm('Deseja limpar as anotações do turno?')) {
-        document.getElementById('shiftNotesInput').value = '';
-        persistNotes();
+    function loadLastKnownQth() {
+      const raw = localStorage.getItem('azimute_saved_qth');
+      if (raw) {
+        const d = JSON.parse(raw);
+        document.getElementById('offlineLastQthBox').style.display = 'block';
+        document.getElementById('offlineLastQthText').textContent = `${d.address} (${d.sub}) — ${d.coords} às ${d.time}`;
       }
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
-      restoreNotes();
-      updateWeatherData();
+    // 4. GEOLOCALIZAÇÃO CONTÍNUA AUTOMÁTICA (SEM TER QUE CLICAR TODA HORA)
+    let curLat = -19.9167;
+    let curLon = -43.9345;
+    let watchId = null;
+
+    async function lookupAddress(lat, lon, acc) {
+      if (!navigator.onLine) {
+        loadLastKnownQth();
+        return;
+      }
+      try {
+        const r = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}&addressdetails=1`);
+        const d = await r.json();
+        const a = d.address || {};
+        const road = a.road || a.pedestrian || 'Via não catalogada';
+        const num = a.house_number ? `, nº ${a.house_number}` : ' (s/ nº exato na base)';
+        const bairro = a.suburb || a.neighbourhood || a.city_district || '';
+        const city = a.city || a.town || a.municipality || 'MG';
+
+        const fullAddr = `${road}${num}`;
+        const fullSub = `${bairro ? bairro + ' — ' : ''}${city} | Precisão: ±${Math.round(acc)}m`;
+
+        document.getElementById('mainQthAddress').textContent = fullAddr;
+        document.getElementById('mainQthSub').textContent = fullSub;
+        document.getElementById('geoFullStreet').textContent = fullAddr;
+        document.getElementById('geoFullSub').textContent = fullSub;
+
+        const nowStr = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        localStorage.setItem('azimute_saved_qth', JSON.stringify({
+          address: fullAddr,
+          sub: `${bairro} - ${city}`,
+          coords: `${lat.toFixed(5)}, ${lon.toFixed(5)}`,
+          time: nowStr
+        }));
+      } catch (err) {
+        loadLastKnownQth();
+      }
+    }
+
+    function initAutoGps() {
+      if (!navigator.geolocation) return;
+      if (watchId !== null) navigator.geolocation.clearWatch(watchId);
+      watchId = navigator.geolocation.watchPosition(
+        (pos) => {
+          curLat = pos.coords.latitude;
+          curLon = pos.coords.longitude;
+          const acc = pos.coords.accuracy || 0;
+          const alt = pos.coords.altitude;
+
+          const coordFormatted = `${curLat.toFixed(5)}, ${curLon.toFixed(5)}`;
+          document.getElementById('detCoords').textContent = coordFormatted;
+          document.getElementById('detAccuracy').textContent = `±${Math.round(acc)} m`;
+
+          if (alt !== null && alt !== undefined) {
+            const altRounded = `${Math.round(alt)} m`;
+            document.getElementById('detAltitude').textContent = altRounded;
+            document.getElementById('drAlt').textContent = altRounded;
+          }
+
+          document.getElementById('btnOpenQthMap').href = `https://www.google.com/maps/search/?api=1&query=${curLat},${curLon}`;
+
+          lookupAddress(curLat, curLon, acc);
+          fetchTelemetryWeather(false);
+        },
+        () => { loadLastKnownQth(); },
+        { enableHighAccuracy: true, maximumAge: 5000, timeout: 15000 }
+      );
+    }
+
+    function copyCoordsText() {
+      const c = document.getElementById('detCoords').textContent;
+      navigator.clipboard.writeText(c);
+      alert('Coordenadas copiadas: ' + c);
+    }
+
+    // 5. BÚSSOLA MAGNÉTICA REAL
+    function onDeviceOrientation(e) {
+      let heading = null;
+      if (e.webkitCompassHeading !== undefined) heading = e.webkitCompassHeading;
+      else if (e.alpha !== null) heading = 360 - e.alpha;
+
+      if (heading !== null) {
+        const deg = Math.round(heading % 360);
+        const pts = ['N', 'NE', 'L', 'SE', 'S', 'SO', 'O', 'NO'];
+        const dir = pts[Math.round(deg / 45) % 8];
+        document.getElementById('compassDegText').textContent = `${deg}° ${dir}`;
+        document.getElementById('compassNeedle').style.transform = `rotate(${deg}deg)`;
+      }
+    }
+
+    function activateCompass() {
+      if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+        DeviceOrientationEvent.requestPermission().then(res => {
+          if (res === 'granted') {
+            window.addEventListener('deviceorientation', onDeviceOrientation, true);
+            document.getElementById('compassStatusMsg').textContent = 'Bússola ativa!';
+          }
+        }).catch(() => {});
+      } else {
+        window.addEventListener('deviceorientationabsolute', onDeviceOrientation, true);
+        window.addEventListener('deviceorientation', onDeviceOrientation, true);
+        document.getElementById('compassStatusMsg').textContent = 'Leitura magnética ativa.';
+      }
+    }
+
+    // 6. METEOROLOGIA + UMIDADE DO AR + AVALIADOR DE VOO DRONE
+    let prevWeather = null;
+    let weatherState = { temp: 0, rain: 0, wind: 0, gusts: 0, hum: 0, prob: 0, elev: null };
+
+    async function fetchTelemetryWeather(force) {
+      if (!navigator.onLine) return;
+      try {
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${curLat}&longitude=${curLon}&current=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m,wind_gusts_10m&hourly=precipitation_probability&forecast_days=1`;
+        const r = await fetch(url);
+        const d = await r.json();
+        const c = d.current || {};
+        const prob = (d.hourly && d.hourly.precipitation_probability) ? (d.hourly.precipitation_probability[new Date().getHours()] || 0) : 0;
+
+        weatherState = {
+          temp: Math.round(c.temperature_2m || 0),
+          rain: c.precipitation || 0,
+          wind: Math.round(c.wind_speed_10m || 0),
+          gusts: Math.round(c.wind_gusts_10m || 0),
+          hum: Math.round(c.relative_humidity_2m || 0),
+          prob: prob,
+          elev: d.elevation || null
+        };
+
+        // Card Clima da Tela Inicial
+        document.getElementById('mainWeatherLine').textContent =
+          `${weatherState.temp}°C | Chuva: ${weatherState.rain} mm | Vento: ${weatherState.wind} km/h | Umidade: ${weatherState.hum}%`;
+
+        const rainBadge = document.getElementById('rainStatusBadge');
+        if (weatherState.rain > 0) {
+          rainBadge.className = 'status-pill offline';
+          rainBadge.textContent = `ALERTA DE CHUVA ATIVA (${weatherState.rain} mm)`;
+        } else if (weatherState.prob >= 60) {
+          rainBadge.className = 'status-pill';
+          rainBadge.textContent = `RISCO DE CHUVA (${weatherState.prob}%)`;
+        } else {
+          rainBadge.className = 'status-pill';
+          rainBadge.textContent = 'SEM CHUVA NO MOMENTO';
+        }
+
+        // Detalhes na aba GEO / C2
+        document.getElementById('detTemp').textContent = `${weatherState.temp} °C`;
+        document.getElementById('detHumidity').textContent = `${weatherState.hum} %`;
+        if (weatherState.elev !== null && document.getElementById('detAltitude').textContent === '-- m') {
+          document.getElementById('detAltitude').textContent = `${Math.round(weatherState.elev)} m`;
+          document.getElementById('drAlt').textContent = `${Math.round(weatherState.elev)} m`;
+        }
+
+        // Aba Drones
+        const kt = (weatherState.wind * 0.539957).toFixed(1);
+        document.getElementById('drWind').textContent = `${weatherState.wind} km/h (${kt} kt)`;
+        document.getElementById('drGusts').textContent = `${weatherState.gusts} km/h`;
+        document.getElementById('drHumidity').textContent = `${weatherState.hum} %`;
+        document.getElementById('drRain').textContent = `${weatherState.rain} mm (${weatherState.prob}%)`;
+        document.getElementById('drTemp').textContent = `${weatherState.temp} °C`;
+
+        if (prevWeather) {
+          if ((weatherState.gusts - prevWeather.gusts >= 10) || (weatherState.rain > 0 && prevWeather.rain === 0)) {
+            document.getElementById('droneWeatherAlert').style.display = 'block';
+          }
+        }
+        prevWeather = { ...weatherState };
+
+        evaluateDroneSafety();
+      } catch (e) {}
+    }
+
+    function evaluateDroneSafety() {
+      const sel = document.getElementById('droneModelSelect');
+      const opt = sel.options[sel.selectedIndex];
+      const maxW = parseFloat(opt.getAttribute('data-wind'));
+      const ip = opt.getAttribute('data-ip') === '1';
+      const banner = document.getElementById('droneVerdictBanner');
+
+      if ((weatherState.rain > 0 && !ip) || weatherState.gusts >= maxW || weatherState.wind >= maxW * 0.85) {
+        banner.className = 'flight-status-banner flight-nogo';
+        banner.innerHTML = `🔴 VOO NÃO RECOMENDADO (NO-GO)<br><span style="font-weight:400; font-size:11px;">Rajadas (${weatherState.gusts} km/h) ou Chuva (${weatherState.rain} mm) acima do limite seguro (${maxW} km/h).</span>`;
+      } else if (weatherState.gusts >= maxW * 0.7 || weatherState.prob >= 60 || weatherState.hum >= 88) {
+        banner.className = 'flight-status-banner flight-caution';
+        banner.innerHTML = `🟡 VOO COM CAUTELA / ALERTA ⚠️<br><span style="font-weight:400; font-size:11px;">Rajadas em ${weatherState.gusts} km/h | Umidade: ${weatherState.hum}% | Chuva: ${weatherState.prob}%.</span>`;
+      } else {
+        banner.className = 'flight-status-banner flight-go';
+        banner.innerHTML = `🟢 CONDIÇÃO FAVORÁVEL PARA VOO (GO)<br><span style="font-weight:400; font-size:11px;">Vento (${weatherState.wind} km/h) e Umidade (${weatherState.hum}%) dentro dos parâmetros.</span>`;
+      }
+    }
+
+    // 7. DISPLAY E METRÔNOMO DE RCP (110 BPM)
+    let rcpTimerId = null;
+    let rcpSecId = null;
+    let rcpSecLeft = 120;
+    let rcpBeats = 0;
+    let audioCtx = null;
+    let taps = [];
+
+    function beepRcp() {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const o = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        o.frequency.setValueAtTime(880, audioCtx.currentTime);
+        g.gain.setValueAtTime(0.15, audioCtx.currentTime);
+        o.connect(g);
+        g.connect(audioCtx.destination);
+        o.start();
+        o.stop(audioCtx.currentTime + 0.06);
+      } catch (e) {}
+    }
+
+    function toggleRcp() {
+      const btn = document.getElementById('btnRcpStart');
+      const vis = document.getElementById('rcpCircle');
+      if (rcpTimerId) {
+        clearInterval(rcpTimerId);
+        clearInterval(rcpSecId);
+        rcpTimerId = null;
+        btn.textContent = 'INICIAR METRÔNOMO RCP';
+        vis.classList.remove('pulse');
+        return;
+      }
+      rcpSecLeft = 120;
+      rcpBeats = 0;
+      btn.textContent = 'PARAR METRÔNOMO RCP';
+      rcpTimerId = setInterval(() => {
+        rcpBeats++;
+        document.getElementById('rcpCounterText').textContent = rcpBeats;
+        vis.classList.add('pulse');
+        beepRcp();
+        setTimeout(() => vis.classList.remove('pulse'), 130);
+      }, Math.round(60000 / 110));
+
+      rcpSecId = setInterval(() => {
+        if (rcpSecLeft > 0) rcpSecLeft--;
+        const m = String(Math.floor(rcpSecLeft / 60)).padStart(2, '0');
+        const s = String(rcpSecLeft % 60).padStart(2, '0');
+        document.getElementById('rcpTimerText').textContent = `${m}:${s}`;
+        if (rcpSecLeft === 0) rcpSecLeft = 120;
+      }, 1000);
+    }
+
+    function measureTapRcp() {
+      const now = Date.now();
+      taps.push(now);
+      if (taps.length > 5) taps.shift();
+      if (taps.length >= 2) {
+        let total = 0;
+        for (let i = 1; i < taps.length; i++) total += (taps[i] - taps[i - 1]);
+        const bpm = Math.round(60000 / (total / (taps.length - 1)));
+        document.getElementById('rcpBpmDisplay').textContent = bpm;
+        const msg = document.getElementById('rcpFeedbackMsg');
+        if (bpm < 100) msg.textContent = `${bpm} BPM — Lento! Acelere (Padrão: 100-120 BPM)`;
+        else if (bpm > 120) msg.textContent = `${bpm} BPM — Rápido demais! Reduza (Padrão: 100-120 BPM)`;
+        else msg.textContent = `✅ ${bpm} BPM — Velocidade ideal dentro da doutrina!`;
+      }
+    }
+
+    // LIMPEZA AUTOMÁTICA DE CACHES ANTIGOS E INICIALIZAÇÃO
+    window.addEventListener('load', () => {
+      refreshNetQuality();
+      initAutoGps();
+      activateCompass();
+      fetchTelemetryWeather(false);
+      setInterval(() => fetchTelemetryWeather(false), 180000);
+
       if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js').catch(() => {});
+        navigator.serviceWorker.getRegistrations().then(regs => {
+          for (let reg of regs) reg.update();
+        });
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
       }
     });
   </script>
