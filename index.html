@@ -125,7 +125,7 @@
                     <label class="text-[11px] font-bold uppercase tracking-wider text-pmmg-khaki">Usuário / Unidade:</label>
                     <div class="relative">
                         <i data-lucide="user" class="absolute left-3.5 top-3 w-4 h-4 text-gray-400"></i>
-                        <input type="text" id="loginUser" placeholder="Ex: BEPE" class="w-full pl-10 pr-3 py-2.5 bg-pmmg-dark text-sm text-white rounded-xl border border-pmmg-border focus:outline-none focus:border-pmmg-khaki font-mono uppercase" autocomplete="off">
+                        <input type="text" id="loginUser" placeholder="Digite seu usuário" class="w-full pl-10 pr-3 py-2.5 bg-pmmg-dark text-sm text-white rounded-xl border border-pmmg-border focus:outline-none focus:border-pmmg-khaki font-mono uppercase" autocomplete="username">
                     </div>
                 </div>
 
@@ -133,15 +133,34 @@
                     <label class="text-[11px] font-bold uppercase tracking-wider text-pmmg-khaki">Senha Operacional:</label>
                     <div class="relative">
                         <i data-lucide="lock" class="absolute left-3.5 top-3 w-4 h-4 text-gray-400"></i>
-                        <input type="password" id="loginPass" placeholder="•••••••" class="w-full pl-10 pr-3 py-2.5 bg-pmmg-dark text-sm text-white rounded-xl border border-pmmg-border focus:outline-none focus:border-pmmg-khaki font-mono uppercase">
+                        <input type="password" id="loginPass" placeholder="•••••••" class="w-full pl-10 pr-10 py-2.5 bg-pmmg-dark text-sm text-white rounded-xl border border-pmmg-border focus:outline-none focus:border-pmmg-khaki font-mono uppercase" autocomplete="current-password">
+                        <button type="button" id="btnTogglePassEye" onclick="window.toggleAzimutePasswordEye()" class="absolute right-3 top-2.5 text-gray-400 hover:text-pmmg-khaki p-0.5 transition-colors" title="Mostrar / Ocultar senha">
+                            <svg id="svgEyeOpen" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4">
+                                <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                            <svg id="svgEyeClosed" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 hidden">
+                                <path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"/>
+                                <path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"/>
+                                <path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"/>
+                                <path d="m2 2 20 20"/>
+                            </svg>
+                        </button>
                     </div>
                 </div>
 
-                <div id="loginErrorMsg" class="hidden text-xs text-red-400 font-bold bg-red-950/40 p-2.5 rounded-lg border border-red-500/40 text-center">
-                    ❌ Credenciais incorretas. Utilize BEPE / COLISEU.
+                <div class="flex items-center justify-between pt-0.5">
+                    <label for="loginRememberMe" class="flex items-center gap-2 cursor-pointer select-none">
+                        <input type="checkbox" id="loginRememberMe" checked class="w-4 h-4 rounded border-pmmg-border bg-pmmg-dark text-pmmg-khaki focus:ring-pmmg-khaki accent-[#C2B280] cursor-pointer">
+                        <span class="text-xs text-gray-300 font-medium">Salvar senha / Manter conectado</span>
+                    </label>
                 </div>
 
-                <button type="button" id="btnAzimuteLogin" onclick="handleAzimuteLogin()" class="w-full py-3 bg-pmmg-khaki hover:bg-pmmg-khakiHover text-pmmg-black font-extrabold text-sm rounded-xl shadow-lg uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98]">
+                <div id="loginErrorMsg" class="hidden text-xs text-red-400 font-bold bg-red-950/40 p-2.5 rounded-lg border border-red-500/40 text-center">
+                    ❌ Credenciais de acesso incorretas. Verifique usuário e senha.
+                </div>
+
+                <button type="button" id="btnAzimuteLogin" onclick="window.handleAzimuteLogin()" class="w-full py-3 bg-pmmg-khaki hover:bg-pmmg-khakiHover text-pmmg-black font-extrabold text-sm rounded-xl shadow-lg uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98]">
                     <i data-lucide="key-round" class="w-4 h-4"></i> ACESSAR SISTEMA AZIMUTE
                 </button>
             </div>
@@ -152,17 +171,50 @@
         </div>
     </div>
     <script>
+        window.toggleAzimutePasswordEye = function() {
+            const pEl = document.getElementById('loginPass');
+            const eyeOpen = document.getElementById('svgEyeOpen');
+            const eyeClosed = document.getElementById('svgEyeClosed');
+            if (!pEl) return;
+            if (pEl.type === 'password') {
+                pEl.type = 'text';
+                if (eyeOpen) eyeOpen.classList.add('hidden');
+                if (eyeClosed) eyeClosed.classList.remove('hidden');
+            } else {
+                pEl.type = 'password';
+                if (eyeOpen) eyeOpen.classList.remove('hidden');
+                if (eyeClosed) eyeClosed.classList.add('hidden');
+            }
+        };
+
         window.handleAzimuteLogin = function() {
             const uEl = document.getElementById('loginUser');
             const pEl = document.getElementById('loginPass');
+            const remEl = document.getElementById('loginRememberMe');
             const errDiv = document.getElementById('loginErrorMsg');
             const modal = document.getElementById('azimuteLoginModal');
 
             const u = (uEl ? uEl.value : '').trim().toUpperCase();
             const p = (pEl ? pEl.value : '').trim().toUpperCase();
+            const remember = remEl ? remEl.checked : true;
 
-            if (u === 'BEPE' && p === 'COLISEU') {
-                try { localStorage.setItem('azimute_auth', 'authenticated'); } catch (e) {}
+            if ((u === 'BEPE' || u === 'PMMG' || u === 'AZIMUTE') && p === 'COLISEU') {
+                try {
+                    sessionStorage.setItem('azimute_session_auth', 'authenticated');
+                    if (remember) {
+                        localStorage.setItem('azimute_auth', 'authenticated');
+                        localStorage.setItem('azimute_saved_user', u);
+                        localStorage.setItem('azimute_saved_pass', p);
+                        localStorage.setItem('azimute_remember', 'true');
+                        document.cookie = "azimute_auth=authenticated; max-age=31536000; path=/; SameSite=Lax";
+                    } else {
+                        localStorage.removeItem('azimute_auth');
+                        localStorage.removeItem('azimute_saved_user');
+                        localStorage.removeItem('azimute_saved_pass');
+                        localStorage.setItem('azimute_remember', 'false');
+                        document.cookie = "azimute_auth=; max-age=0; path=/; SameSite=Lax";
+                    }
+                } catch (e) {}
                 if (errDiv) errDiv.classList.add('hidden');
                 if (modal) {
                     modal.classList.remove('flex');
@@ -179,8 +231,22 @@
         };
 
         (function() {
+            const uEl = document.getElementById('loginUser');
+            const pEl = document.getElementById('loginPass');
+            const remEl = document.getElementById('loginRememberMe');
             try {
-                if (localStorage.getItem('azimute_auth') === 'authenticated') {
+                const savedUser = localStorage.getItem('azimute_saved_user');
+                const savedPass = localStorage.getItem('azimute_saved_pass');
+                const savedRem = localStorage.getItem('azimute_remember');
+                if (savedUser && uEl) uEl.value = savedUser;
+                if (savedPass && pEl) pEl.value = savedPass;
+                if (savedRem === 'false' && remEl) remEl.checked = false;
+
+                const hasCookieAuth = document.cookie.split(';').some(c => c.trim().startsWith('azimute_auth=authenticated'));
+                const isRemembered = localStorage.getItem('azimute_auth') === 'authenticated' || hasCookieAuth;
+                const isSessionAuth = sessionStorage.getItem('azimute_session_auth') === 'authenticated';
+
+                if (isRemembered || isSessionAuth) {
                     const modal = document.getElementById('azimuteLoginModal');
                     if (modal) {
                         modal.classList.remove('flex');
@@ -189,8 +255,6 @@
                     }
                 }
             } catch (e) {}
-            const uEl = document.getElementById('loginUser');
-            const pEl = document.getElementById('loginPass');
             [uEl, pEl].forEach(el => {
                 if (el) {
                     el.addEventListener('keydown', function(ev) {
@@ -217,7 +281,7 @@
         <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2.5">
             <div class="flex flex-col md:flex-row items-center justify-between gap-2.5">
                 
-                <!-- Logo AZIMUTE + Seletor de Modo (App vs Web) -->
+                <!-- Logo AZIMUTE -->
                 <div class="flex items-center justify-between w-full md:w-auto gap-2">
                     <div class="flex items-center gap-2.5 cursor-pointer" onclick="showView('home')">
                         <div class="w-10 h-10 rounded-xl bg-pmmg-khaki/15 border border-pmmg-khaki/60 flex items-center justify-center text-pmmg-khaki shadow-inner shrink-0">
@@ -226,22 +290,9 @@
                         <div>
                             <div class="flex items-center gap-1.5 flex-wrap">
                                 <h1 class="text-2xl sm:text-3xl font-military tracking-widest text-pmmg-khaki uppercase leading-none">AZIMUTE</h1>
-                                <span id="activeModeBadge" class="bg-emerald-950 text-emerald-400 text-[9px] px-1.5 py-0.5 rounded font-bold uppercase border border-emerald-500/40">Modo App</span>
                             </div>
                             <p class="text-[10px] text-gray-400 hidden sm:block">Por todo o estado mineiro, com alma e espírito de guerreiro. O Coliseu.</p>
                         </div>
-                    </div>
-
-                    <!-- BOTÃO SELETOR DE VERSÃO: APP SMARTPHONE vs WEB PC -->
-                    <div class="flex items-center bg-pmmg-black p-1 rounded-lg border border-pmmg-border shrink-0">
-                        <button onclick="setLayoutMode('app')" id="btn-mode-app" class="px-2.5 py-1 rounded-md text-[11px] font-bold flex items-center gap-1 bg-pmmg-khaki text-pmmg-black shadow transition-all" title="Formato Otimizado para Celular (App)">
-                            <i data-lucide="smartphone" class="w-3.5 h-3.5"></i>
-                            <span>App</span>
-                        </button>
-                        <button onclick="setLayoutMode('web')" id="btn-mode-web" class="px-2.5 py-1 rounded-md text-[11px] font-medium flex items-center gap-1 text-gray-400 hover:text-white transition-all" title="Formato Tradicional Desktop / Web">
-                            <i data-lucide="monitor" class="w-3.5 h-3.5"></i>
-                            <span>Web</span>
-                        </button>
                     </div>
                 </div>
 
@@ -276,18 +327,15 @@
             </div>
         </div>
 
-        <!-- NAVEGAÇÃO ENTRE REGIÕES E ATALHOS (GRADE SEM ROLAGEM NO MODO APP / BARRA NO MODO WEB) -->
+        <!-- NAVEGAÇÃO PRINCIPAL (COM ABA UNIFICADA REGIÕES) -->
         <nav class="bg-pmmg-card/90 border-t border-pmmg-border px-3 py-2 overflow-x-auto">
             <div class="max-w-7xl mx-auto flex items-center justify-between text-xs font-medium gap-2">
                 <div id="topNavLinks" class="flex items-center gap-2 min-w-max">
                     <button onclick="showView('home')" id="nav-btn-home" class="px-3 py-1.5 rounded-md bg-pmmg-khaki text-pmmg-black font-bold flex items-center gap-1.5">
                         <i data-lucide="home" class="w-3.5 h-3.5 shrink-0"></i> <span>Início</span>
                     </button>
-                    <button onclick="showView('rpm1')" id="nav-btn-rpm1" class="px-3 py-1.5 rounded-md bg-pmmg-dark text-gray-300 border border-pmmg-border hover:bg-pmmg-border flex items-center gap-1.5">
-                        <i data-lucide="shield" class="w-3.5 h-3.5 text-pmmg-khaki shrink-0"></i> <span>1ª RPM (BH)</span>
-                    </button>
-                    <button onclick="showView('rpm2')" id="nav-btn-rpm2" class="px-3 py-1.5 rounded-md bg-pmmg-dark text-gray-300 border border-pmmg-border hover:bg-pmmg-border flex items-center gap-1.5">
-                        <i data-lucide="shield-alert" class="w-3.5 h-3.5 text-pmmg-gold shrink-0"></i> <span>2ª RPM</span>
+                    <button onclick="showView('regioes')" id="nav-btn-regioes" class="px-3 py-1.5 rounded-md bg-pmmg-dark text-gray-300 border border-pmmg-border hover:bg-pmmg-border font-bold flex items-center gap-1.5">
+                        <i data-lucide="shield" class="w-3.5 h-3.5 text-pmmg-khaki shrink-0"></i> <span>REGIÕES</span>
                     </button>
                     <button onclick="showView('especializadas')" id="nav-btn-especializadas" class="px-3 py-1.5 rounded-md bg-pmmg-dark text-gray-300 border border-pmmg-border hover:bg-pmmg-border flex items-center gap-1.5">
                         <i data-lucide="crosshair" class="w-3.5 h-3.5 text-red-400 shrink-0"></i> <span>Especializadas</span>
@@ -303,7 +351,7 @@
                         </svg>
                         <span>Drones / RPAS</span>
                     </button>
-                    <button onclick="showView('atalhos')" id="nav-btn-atalhos" class="px-3 py-1.5 rounded-md bg-pmmg-dark text-pmmg-khaki border border-pmmg-khaki/40 hover:bg-pmmg-border font-bold flex items-center gap-1.5 col-span-3 sm:col-span-1">
+                    <button onclick="showView('atalhos')" id="nav-btn-atalhos" class="px-3 py-1.5 rounded-md bg-pmmg-dark text-pmmg-khaki border border-pmmg-khaki/40 hover:bg-pmmg-border font-bold flex items-center gap-1.5">
                         <i data-lucide="external-link" class="w-3.5 h-3.5 text-pmmg-gold shrink-0"></i> <span>Atalhos & Sistemas</span>
                     </button>
                 </div>
@@ -316,141 +364,123 @@
         </nav>
     </header>
 
-    <!-- HUD TÁTICO DE SOBREVIVÊNCIA E LOCALIZAÇÃO EM TEMPO REAL (GPS AO VIVO) -->
-    <div id="azimuteLiveGpsHud" class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-3 app-main-container">
-        <div class="bg-pmmg-card border-2 border-pmmg-khaki/60 rounded-2xl p-3 sm:p-4 shadow-2xl space-y-2.5">
-            <!-- Linha 1: Status GPS + Precisão + Botões de Controle -->
-            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border pb-2">
-                <div class="flex items-center gap-2">
-                    <span id="hudGpsDot" class="w-2.5 h-2.5 rounded-full bg-gray-500 inline-block"></span>
-                    <span id="hudGpsStatusText" class="text-[11px] font-bold uppercase tracking-wider text-gray-300">GPS Aguardando Ativação</span>
-                    <span id="hudGpsAccuracy" class="text-[10px] font-mono bg-pmmg-dark px-2 py-0.5 rounded border border-pmmg-border text-pmmg-khaki">Precisão: --</span>
-                </div>
-                <div class="flex items-center gap-1.5">
-                    <button onclick="toggleAzimuteWakeLock()" id="btnAzimuteWake" class="px-2.5 py-1 bg-pmmg-dark hover:bg-pmmg-border text-gray-300 border border-pmmg-border rounded-lg text-[11px] font-bold flex items-center gap-1 transition-all" title="Impede a tela de apagar durante incursão">
-                        <span>🔒 Tela Normal</span>
-                    </button>
-                    <button onclick="toggleHudCollapse()" id="btnHudCollapse" class="px-2 py-1 bg-pmmg-dark hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-border rounded-lg text-[11px] font-bold" title="Recolher / Expandir Painel GPS">
-                        Minimizar
-                    </button>
-                </div>
-            </div>
-
-            <!-- Corpo do HUD (Pode ser minimizado se desejar) -->
-            <div id="hudBodyContent" class="space-y-2.5">
-                <!-- Caixa Principal: Nome da Rua / Beco em Destaque -->
-                <div class="bg-pmmg-black/90 border border-pmmg-khaki/40 border-l-4 border-l-pmmg-khaki rounded-xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                    <div>
-                        <span class="text-[10px] font-bold uppercase tracking-wider text-pmmg-khaki block">📍 Logradouro / QTH Atual (Atualização Automática)</span>
-                        <h3 id="hudCurrentStreet" class="text-lg sm:text-xl font-extrabold text-white leading-tight mt-0.5">Toque em "Ativar GPS ao Vivo" abaixo</h3>
-                        <p id="hudCurrentSuburb" class="text-xs text-gray-400 mt-0.5">Bairro • Município • Coordenada aparecerá aqui</p>
-                    </div>
-                    <button onclick="copyCurrentQth()" class="self-start sm:self-center px-3 py-1.5 bg-pmmg-dark hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-khaki/40 rounded-lg text-xs font-bold flex items-center gap-1.5 shrink-0">
-                        <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copiar QTH
-                    </button>
-                </div>
-
-                <!-- Grade Dupla: Canaleta de Rádio Estimada (Offline) + Hospital de Trauma Mais Próximo (Offline) -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                    <div class="bg-pmmg-dark p-2.5 rounded-xl border border-pmmg-border border-l-4 border-l-pmmg-gold flex items-center justify-between gap-2">
-                        <div>
-                            <span class="text-[10px] uppercase font-bold text-pmmg-gold block">📻 Canaleta / Rede da Área (Offline)</span>
-                            <strong id="hudRadioChannel" class="text-sm sm:text-base text-white font-mono block mt-0.5">Aguardando GPS...</strong>
-                            <span id="hudUnitArea" class="text-[11px] text-gray-400 block">Cálculo automático por proximidade</span>
-                        </div>
-                    </div>
-
-                    <div class="bg-pmmg-dark p-2.5 rounded-xl border border-pmmg-border border-l-4 border-l-red-500 flex items-center justify-between gap-2">
-                        <div>
-                            <span class="text-[10px] uppercase font-bold text-red-400 block">🏥 Socorro / Hospital Mais Próximo</span>
-                            <strong id="hudClosestHospital" class="text-sm sm:text-base text-white block mt-0.5">Aguardando GPS...</strong>
-                            <span id="hudClosestHospitalDist" class="text-[11px] text-gray-400 block">Distância calculada via satélite</span>
-                        </div>
-                        <a id="hudBtnHospRouteMini" href="#" target="_blank" class="hidden px-2.5 py-1.5 bg-red-950/80 hover:bg-red-800 text-red-200 border border-red-500/50 rounded-lg text-xs font-bold shrink-0">
-                            🚑 Rota
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Botões de Ação Tática -->
-                <div class="grid grid-cols-2 gap-2.5 pt-0.5">
-                    <button onclick="startAzimuteLiveGps()" id="btnStartAzimuteGps" class="py-2.5 px-3 rounded-xl bg-pmmg-khaki hover:bg-pmmg-khakiHover text-pmmg-black font-extrabold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-lg transition-all">
-                        <span>📡 ATIVAR GPS AO VIVO</span>
-                    </button>
-                    <button onclick="openPrioritySosModal()" class="py-2.5 px-3 rounded-xl bg-red-600 hover:bg-red-500 text-white font-extrabold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-lg transition-all tracking-wide">
-                        <span>🚨 MODO PRIORIDADE (SOS)</span>
-                    </button>
-                </div>
-
-                <!-- Botões Extras: WhatsApp, Comando de Voz, Tela Bloqueada & Clima/Alagamento -->
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
-                    <button onclick="shareLocationViaWhatsApp()" class="py-2 px-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-[11px] flex items-center justify-center gap-1.5 shadow transition-all">
-                        <i data-lucide="share-2" class="w-3.5 h-3.5 shrink-0"></i> <span>WhatsApp QTH</span>
-                    </button>
-                    <button onclick="startVoiceCommand()" class="py-2 px-2.5 rounded-xl bg-pmmg-dark hover:bg-pmmg-border text-sky-400 border border-sky-500/40 font-bold text-[11px] flex items-center justify-center gap-1.5 shadow transition-all">
-                        <i data-lucide="mic" class="w-3.5 h-3.5 shrink-0"></i> <span>Voz</span>
-                    </button>
-                    <button onclick="toggleLockScreenStreetNotify()" id="btnLockScreenNotify" class="py-2 px-2.5 rounded-xl bg-pmmg-dark hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-khaki/40 font-bold text-[11px] flex items-center justify-center gap-1.5 shadow transition-all" title="Exibe o nome da rua na tela de bloqueio do celular">
-                        <i data-lucide="bell" class="w-3.5 h-3.5 shrink-0"></i> <span id="lblLockNotify">Rua na Tela Bloq.</span>
-                    </button>
-                    <button onclick="checkWeatherAndFloodRisk()" class="py-2 px-2.5 rounded-xl bg-pmmg-dark hover:bg-pmmg-border text-amber-400 border border-amber-500/40 font-bold text-[11px] flex items-center justify-center gap-1.5 shadow transition-all" title="Previsão do tempo nas próximas horas e alertas de alagamento">
-                        <i data-lucide="cloud-rain" class="w-3.5 h-3.5 shrink-0"></i> <span>Clima & Chuva</span>
-                    </button>
-                </div>
-
-                <!-- Painel Dinâmico de Clima e Vias de Alagamento (Aparece ao clicar em Clima & Chuva ou se houver alerta) -->
-                <div id="weatherFloodBanner" class="hidden bg-pmmg-black/95 border border-amber-500/60 rounded-xl p-3 text-xs space-y-2">
-                    <div class="flex items-center justify-between border-b border-pmmg-border pb-1.5">
-                        <span id="weatherSummaryTitle" class="font-bold text-amber-400 uppercase">🌦️ Monitoramento Meteorológico & Vias de Alagamento</span>
-                        <button onclick="document.getElementById('weatherFloodBanner').classList.add('hidden')" class="text-gray-400 hover:text-white text-[11px] font-bold">Fechar ✕</button>
-                    </div>
-                    <p id="weatherForecastText" class="text-gray-200">Consultando radar meteorológico da sua coordenada...</p>
-                    <div id="floodZonesList" class="space-y-1 pt-1"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- CONTAINER PRINCIPAL -->
     <main id="mainContainer" class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-4 app-main-container">
 
-        <!-- ================= VIEW 1: HOME (SELEÇÃO DE REGIÕES) ================= -->
+        <!-- ================= VIEW ISOLADA: GEOLOCALIZAÇÃO / GPS AO VIVO (OCULTA AO NAVEGAR ENTRE ABAS) ================= -->
+        <section id="view-gps" class="hidden space-y-6">
+            <div class="flex items-center justify-between border-b border-pmmg-border pb-3">
+                <div>
+                    <h2 class="text-3xl font-military text-pmmg-khaki uppercase tracking-wide">Geolocalização Operacional (GPS ao Vivo)</h2>
+                    <p class="text-xs text-gray-400">Localização em tempo real, canaleta de rádio da área e hospital de referência mais próximo</p>
+                </div>
+                <button onclick="showView('home')" class="text-xs text-pmmg-khaki hover:underline flex items-center gap-1"><i data-lucide="arrow-left" class="w-4 h-4"></i> Voltar</button>
+            </div>
+
+            <div id="azimuteLiveGpsHud" class="w-full">
+                <div class="bg-pmmg-card border-2 border-pmmg-khaki/60 rounded-2xl p-3 sm:p-4 shadow-2xl space-y-2.5">
+                    <!-- Linha 1: Status GPS + Precisão + Botões de Controle -->
+                    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border pb-2">
+                        <div class="flex items-center gap-2">
+                            <span id="hudGpsDot" class="w-2.5 h-2.5 rounded-full bg-gray-500 inline-block"></span>
+                            <span id="hudGpsStatusText" class="text-[11px] font-bold uppercase tracking-wider text-gray-300">GPS Aguardando Ativação</span>
+                            <span id="hudGpsAccuracy" class="text-[10px] font-mono bg-pmmg-dark px-2 py-0.5 rounded border border-pmmg-border text-pmmg-khaki">Precisão: --</span>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <button onclick="toggleHudCollapse()" id="btnHudCollapse" class="px-2 py-1 bg-pmmg-dark hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-border rounded-lg text-[11px] font-bold" title="Recolher / Expandir Painel GPS">
+                                Minimizar
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Corpo do HUD -->
+                    <div id="hudBodyContent" class="space-y-2.5">
+                        <!-- Caixa Principal: Nome da Rua / Beco em Destaque -->
+                        <div class="bg-pmmg-black/90 border border-pmmg-khaki/40 border-l-4 border-l-pmmg-khaki rounded-xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <div>
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-pmmg-khaki block">📍 Logradouro / QTH Atual (Atualização Automática)</span>
+                                <h3 id="hudCurrentStreet" class="text-lg sm:text-xl font-extrabold text-white leading-tight mt-0.5">Toque em "Ativar GPS ao Vivo" abaixo</h3>
+                                <p id="hudCurrentSuburb" class="text-xs text-gray-400 mt-0.5">Bairro • Município • Coordenada aparecerá aqui</p>
+                            </div>
+                            <button onclick="copyCurrentQth()" class="self-start sm:self-center px-3 py-1.5 bg-pmmg-dark hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-khaki/40 rounded-lg text-xs font-bold flex items-center gap-1.5 shrink-0">
+                                <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copiar QTH
+                            </button>
+                        </div>
+
+                        <!-- Grade Dupla: Canaleta de Rádio Estimada (Offline) + Hospital de Trauma Mais Próximo (Offline) -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                            <div class="bg-pmmg-dark p-2.5 rounded-xl border border-pmmg-border border-l-4 border-l-pmmg-gold flex items-center justify-between gap-2">
+                                <div>
+                                    <span class="text-[10px] uppercase font-bold text-pmmg-gold block">📻 Canaleta / Rede da Área (Offline)</span>
+                                    <strong id="hudRadioChannel" class="text-sm sm:text-base text-white font-mono block mt-0.5">Aguardando GPS...</strong>
+                                    <span id="hudUnitArea" class="text-[11px] text-gray-400 block">Cálculo automático por proximidade</span>
+                                </div>
+                            </div>
+
+                            <div class="bg-pmmg-dark p-2.5 rounded-xl border border-pmmg-border border-l-4 border-l-red-500 flex items-center justify-between gap-2">
+                                <div>
+                                    <span class="text-[10px] uppercase font-bold text-red-400 block">🏥 Socorro / Hospital Mais Próximo</span>
+                                    <strong id="hudClosestHospital" class="text-sm sm:text-base text-white block mt-0.5">Aguardando GPS...</strong>
+                                    <span id="hudClosestHospitalDist" class="text-[11px] text-gray-400 block">Distância calculada via satélite</span>
+                                </div>
+                                <a id="hudBtnHospRouteMini" href="#" target="_blank" class="hidden px-2.5 py-1.5 bg-red-950/80 hover:bg-red-800 text-red-200 border border-red-500/50 rounded-lg text-xs font-bold shrink-0">
+                                    🚑 Rota
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Botões de Ação Tática -->
+                        <div class="grid grid-cols-2 gap-2.5 pt-0.5">
+                            <button onclick="startAzimuteLiveGps()" id="btnStartAzimuteGps" class="py-2.5 px-3 rounded-xl bg-pmmg-khaki hover:bg-pmmg-khakiHover text-pmmg-black font-extrabold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-lg transition-all">
+                                <span>📡 ATIVAR GPS AO VIVO</span>
+                            </button>
+                            <button onclick="openPrioritySosModal()" class="py-2.5 px-3 rounded-xl bg-red-600 hover:bg-red-500 text-white font-extrabold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-lg transition-all tracking-wide">
+                                <span>🚨 MODO PRIORIDADE (SOS)</span>
+                            </button>
+                        </div>
+
+                        <!-- Botão Clima & Chuva -->
+                        <div class="pt-1">
+                            <button onclick="checkWeatherAndFloodRisk()" class="w-full py-2 px-2.5 rounded-xl bg-pmmg-dark hover:bg-pmmg-border text-amber-400 border border-amber-500/40 font-bold text-[11px] flex items-center justify-center gap-1.5 shadow transition-all" title="Previsão do tempo nas próximas horas e alertas de alagamento">
+                                <i data-lucide="cloud-rain" class="w-3.5 h-3.5 shrink-0"></i> <span>Monitoramento de Clima & Vias de Alagamento</span>
+                            </button>
+                        </div>
+
+                        <!-- Painel Dinâmico de Clima e Vias de Alagamento -->
+                        <div id="weatherFloodBanner" class="hidden bg-pmmg-black/95 border border-amber-500/60 rounded-xl p-3 text-xs space-y-2">
+                            <div class="flex items-center justify-between border-b border-pmmg-border pb-1.5">
+                                <span id="weatherSummaryTitle" class="font-bold text-amber-400 uppercase">🌦️ Monitoramento Meteorológico & Vias de Alagamento</span>
+                                <button onclick="document.getElementById('weatherFloodBanner').classList.add('hidden')" class="text-gray-400 hover:text-white text-[11px] font-bold">Fechar ✕</button>
+                            </div>
+                            <p id="weatherForecastText" class="text-gray-200">Consultando radar meteorológico da sua coordenada...</p>
+                            <div id="floodZonesList" class="space-y-1 pt-1"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= VIEW 1: HOME (PAINEL INICIAL) ================= -->
         <section id="view-home" class="space-y-6">
             <div class="text-center max-w-2xl mx-auto space-y-2 py-4">
-                <h2 class="text-4xl font-military text-pmmg-khaki uppercase tracking-wider">Selecione a Região de Polícia Militar</h2>
-                <p class="text-xs text-gray-400">Acesse instantaneamente a estrutura territorial, companhias, pontos de apoio, abastecimento e contatos operacionais das Regiões Metropolitanas, Unidades Especializadas e Estádios.</p>
+                <h2 class="text-4xl font-military text-pmmg-khaki uppercase tracking-wider">Sistema Geral de Consulta Rápida</h2>
+                <p class="text-xs text-gray-400">Acesse instantaneamente as Regiões da PMMG, Unidades Especializadas, Estádios, RPAS/Drones e Sistemas Operacionais.</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
-                <!-- SELETOR 1ª RPM -->
-                <div onclick="showView('rpm1')" class="bg-pmmg-card p-6 rounded-2xl tactical-border tactical-card cursor-pointer group flex flex-col justify-between space-y-4">
+                <!-- SELETOR REGIÕES (AGRUPA 1ª REGIÃO, 2ª REGIÃO, 3ª REGIÃO...) -->
+                <div onclick="showView('regioes')" class="bg-pmmg-card p-6 rounded-2xl tactical-border tactical-card cursor-pointer group flex flex-col justify-between space-y-4">
                     <div class="space-y-3">
                         <div class="flex justify-between items-start">
-                            <span class="text-xs bg-pmmg-khakiBadge text-pmmg-khaki font-bold px-3 py-1 rounded-full border border-pmmg-khaki/30 uppercase">Capital</span>
+                            <span class="text-xs bg-pmmg-khakiBadge text-pmmg-khaki font-bold px-3 py-1 rounded-full border border-pmmg-khaki/30 uppercase">Territorial • PMMG</span>
                             <i data-lucide="chevron-right" class="w-6 h-6 text-gray-500 group-hover:text-pmmg-khaki transition-colors"></i>
                         </div>
-                        <h3 class="text-3xl font-military text-pmmg-khaki uppercase font-bold leading-none">1ª RPM • Belo Horizonte</h3>
-                        <p class="text-xs text-gray-400">Abrange os Batalhões da Capital (1º, 5º, 13º, 16º, 22º, 34º, 41º, 49º BPM e BPRTRAN).</p>
+                        <h3 class="text-3xl font-military text-pmmg-khaki uppercase font-bold leading-none">REGIÕES (1ª e 2ª RPM)</h3>
+                        <p class="text-xs text-gray-400">Acesse a 1ª Região (Capital BH) e a 2ª Região (Contagem, Betim, Neves, Ibirité...) em uma estrutura unificada.</p>
                     </div>
                     <div class="pt-4 border-t border-pmmg-border flex justify-between items-center text-xs font-bold text-pmmg-khaki">
-                        <span>9 Unidades Operacionais</span>
-                        <span class="flex items-center gap-1">Acessar Batalhões <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
-                    </div>
-                </div>
-
-                <!-- SELETOR 2ª RPM -->
-                <div onclick="showView('rpm2')" class="bg-pmmg-card p-6 rounded-2xl tactical-border tactical-card cursor-pointer group flex flex-col justify-between space-y-4">
-                    <div class="space-y-3">
-                        <div class="flex justify-between items-start">
-                            <span class="text-xs bg-pmmg-khakiBadge text-pmmg-gold font-bold px-3 py-1 rounded-full border border-pmmg-gold/30 uppercase">Região Metropolitana</span>
-                            <i data-lucide="chevron-right" class="w-6 h-6 text-gray-500 group-hover:text-pmmg-gold transition-colors"></i>
-                        </div>
-                        <h3 class="text-3xl font-military text-pmmg-gold uppercase font-bold leading-none">2ª RPM • Contagem, Betim, Neves...</h3>
-                        <p class="text-xs text-gray-400">Abrange 18º BPM, 33º BPM, 39º BPM, 40º BPM, 48º BPM, 66º BPM, 6ª Cia Ind e 7ª Cia Ind.</p>
-                    </div>
-                    <div class="pt-4 border-t border-pmmg-border flex justify-between items-center text-xs font-bold text-pmmg-gold">
-                        <span>8 Unidades • 18º BPM Completo</span>
-                        <span class="flex items-center gap-1">Acessar Batalhões <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
+                        <span>1ª Região • 2ª Região</span>
+                        <span class="flex items-center gap-1">Abrir Regiões <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
                     </div>
                 </div>
 
@@ -483,6 +513,22 @@
                     <div class="pt-4 border-t border-pmmg-border flex justify-between items-center text-xs font-bold text-emerald-400">
                         <span>3 Praças Esportivas</span>
                         <span class="flex items-center gap-1">Acessar Estádios <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
+                    </div>
+                </div>
+
+                <!-- SELETOR DRONES / RPAS -->
+                <div onclick="showView('rpas')" class="bg-pmmg-card p-6 rounded-2xl border border-sky-500/40 hover:border-sky-400 tactical-card cursor-pointer group flex flex-col justify-between space-y-4">
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-start">
+                            <span class="text-xs bg-sky-950 text-sky-400 font-bold px-3 py-1 rounded-full border border-sky-500/30 uppercase">Apoio Aéreo • RPAS</span>
+                            <i data-lucide="chevron-right" class="w-6 h-6 text-gray-500 group-hover:text-sky-400 transition-colors"></i>
+                        </div>
+                        <h3 class="text-3xl font-military text-sky-400 uppercase font-bold leading-none">Drones / RPAS</h3>
+                        <p class="text-xs text-gray-400">Manuais Técnicos DJI Mavic 3 Enterprise, Materiais Restritos para Pilotos (EAD) e Acesso SARPAS.</p>
+                    </div>
+                    <div class="pt-4 border-t border-pmmg-border flex justify-between items-center text-xs font-bold text-sky-400">
+                        <span>Manuais & SARPAS</span>
+                        <span class="flex items-center gap-1">Acessar RPAS <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
                     </div>
                 </div>
             </div>
@@ -597,7 +643,7 @@
                     </button>
                 </div>
 
-                <!-- SELETORES DOS 3 ESTÁDIOS COM CONTORNOS PERSONALIZADOS -->
+                <!-- SELETORES DOS 3 ESTÁDIOS COM CONTORNOS PERSONALIZADOS E BOTÃO BAIXAR MAPA -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <!-- MINEIRÃO (CONTORNO AZUL CRUZEIRO) -->
                     <div onclick="openStadiumScreen('mineirao')" id="card-estadio-mineirao" class="bg-pmmg-card p-5 rounded-2xl border-2 border-blue-600 hover:bg-pmmg-cardHover cursor-pointer transition-all shadow-lg flex flex-col justify-between space-y-4 active:scale-[0.98]">
@@ -610,9 +656,11 @@
                             <p class="text-xs text-gray-300">Estádio Governador Magalhães Pinto</p>
                             <p class="text-[11px] text-gray-400 mt-1">Acessos Mandante x Visitante, Portões A-F, Camarotes, Croqui e RPAS.</p>
                         </div>
-                        <div class="pt-3 border-t border-pmmg-border flex items-center justify-between text-xs">
-                            <span class="text-blue-400 font-bold">Abrir Painel do Mineirão</span>
-                            <span class="px-2.5 py-1 bg-blue-600 text-white rounded-lg font-bold flex items-center gap-1">Entrar <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
+                        <div class="pt-3 border-t border-pmmg-border flex flex-wrap items-center justify-between gap-2 text-xs">
+                            <button type="button" onclick="event.stopPropagation(); downloadStadiumMap('mineirao')" class="px-2.5 py-1.5 bg-pmmg-dark hover:bg-pmmg-border text-pmmg-gold border border-pmmg-gold/50 rounded-lg font-bold flex items-center gap-1.5 transition-colors" title="Baixar Mapa Tático Offline do Mineirão">
+                                <i data-lucide="download" class="w-3.5 h-3.5"></i> <span>Baixar Mapa</span>
+                            </button>
+                            <span class="px-2.5 py-1.5 bg-blue-600 text-white rounded-lg font-bold flex items-center gap-1">Entrar <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
                         </div>
                     </div>
 
@@ -627,9 +675,11 @@
                             <p class="text-xs text-gray-300">Bairro Califórnia - Belo Horizonte/MG</p>
                             <p class="text-[11px] text-gray-400 mt-1">3 Barreiras, Portarias A-H, Portões 1-20, Visitante (Acesso F), Croqui e RPAS.</p>
                         </div>
-                        <div class="pt-3 border-t border-pmmg-border flex items-center justify-between text-xs">
-                            <span class="text-white font-bold">Abrir Painel Arena MRV</span>
-                            <span class="px-2.5 py-1 bg-white text-pmmg-black rounded-lg font-bold flex items-center gap-1">Entrar <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
+                        <div class="pt-3 border-t border-pmmg-border flex flex-wrap items-center justify-between gap-2 text-xs">
+                            <button type="button" onclick="event.stopPropagation(); downloadStadiumMap('arenamrv')" class="px-2.5 py-1.5 bg-pmmg-dark hover:bg-pmmg-border text-pmmg-gold border border-pmmg-gold/50 rounded-lg font-bold flex items-center gap-1.5 transition-colors" title="Baixar Mapa Tático Offline da Arena MRV">
+                                <i data-lucide="download" class="w-3.5 h-3.5"></i> <span>Baixar Mapa</span>
+                            </button>
+                            <span class="px-2.5 py-1.5 bg-white text-pmmg-black rounded-lg font-bold flex items-center gap-1">Entrar <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
                         </div>
                     </div>
 
@@ -644,9 +694,11 @@
                             <p class="text-xs text-gray-300">Arena Independência - Bairro Horto</p>
                             <p class="text-[11px] text-gray-400 mt-1">Rua Pitangui x Rua Ismênia Tunes, Portões 01 a 10, Croqui e RPAS.</p>
                         </div>
-                        <div class="pt-3 border-t border-pmmg-border flex items-center justify-between text-xs">
-                            <span class="text-emerald-400 font-bold">Abrir Painel Independência</span>
-                            <span class="px-2.5 py-1 bg-emerald-500 text-pmmg-black rounded-lg font-bold flex items-center gap-1">Entrar <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
+                        <div class="pt-3 border-t border-pmmg-border flex flex-wrap items-center justify-between gap-2 text-xs">
+                            <button type="button" onclick="event.stopPropagation(); downloadStadiumMap('independencia')" class="px-2.5 py-1.5 bg-pmmg-dark hover:bg-pmmg-border text-pmmg-gold border border-pmmg-gold/50 rounded-lg font-bold flex items-center gap-1.5 transition-colors" title="Baixar Mapa Tático Offline do Independência">
+                                <i data-lucide="download" class="w-3.5 h-3.5"></i> <span>Baixar Mapa</span>
+                            </button>
+                            <span class="px-2.5 py-1.5 bg-emerald-500 text-pmmg-black rounded-lg font-bold flex items-center gap-1">Entrar <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
                         </div>
                     </div>
                 </div>
@@ -680,6 +732,9 @@
                             <p class="text-xs text-gray-400 mt-1.5">Av. Antônio Abrahão Caram, 1001 – São José / Pampulha, Belo Horizonte/MG</p>
                         </div>
                         <div class="flex flex-wrap gap-2">
+                            <button type="button" onclick="downloadStadiumMap('mineirao')" class="px-3 py-2 bg-pmmg-dark text-pmmg-gold border border-pmmg-gold/50 rounded-lg text-xs font-bold hover:bg-pmmg-border flex items-center gap-1.5">
+                                <i data-lucide="download" class="w-4 h-4"></i> Baixar Mapa
+                            </button>
                             <a href="https://www.google.com/maps/search/?api=1&query=Estadio+Mineirao+Belo+Horizonte+MG" target="_blank" class="px-3 py-2 bg-pmmg-dark text-pmmg-khaki border border-pmmg-border rounded-lg text-xs font-bold hover:bg-pmmg-border flex items-center gap-1.5">
                                 <i data-lucide="map-pin" class="w-4 h-4"></i> Abrir no Maps
                             </a>
@@ -1610,6 +1665,9 @@
                             <p class="text-xs text-gray-400 mt-1.5">Rua Cristina Maria de Assis, 202 / 410 – Bairro Califórnia (Eixo Via Expressa / BR-040), Belo Horizonte/MG</p>
                         </div>
                         <div class="flex flex-wrap gap-2">
+                            <button type="button" onclick="downloadStadiumMap('arenamrv')" class="px-3 py-2 bg-pmmg-dark text-pmmg-gold border border-pmmg-gold/50 rounded-lg text-xs font-bold hover:bg-pmmg-border flex items-center gap-1.5">
+                                <i data-lucide="download" class="w-4 h-4"></i> Baixar Mapa
+                            </button>
                             <a href="https://www.google.com/maps/search/?api=1&query=Arena+MRV+Rua+Cristina+Maria+de+Assis+Belo+Horizonte+MG" target="_blank" class="px-3 py-2 bg-pmmg-dark text-pmmg-khaki border border-pmmg-border rounded-lg text-xs font-bold hover:bg-pmmg-border flex items-center gap-1.5">
                                 <i data-lucide="map-pin" class="w-4 h-4"></i> Abrir no Maps
                             </a>
@@ -2242,6 +2300,9 @@
                             </a>
                             <button onclick="copyToClipboard('(31) 3431-8150')" class="p-2 bg-pmmg-dark text-gray-300 border border-pmmg-border rounded-lg hover:bg-pmmg-border" title="Copiar Telefone">
                                 <i data-lucide="copy" class="w-4 h-4"></i>
+                            </button>
+                            <button type="button" onclick="downloadStadiumMap('independencia')" class="px-3 py-2 bg-pmmg-dark text-pmmg-gold border border-pmmg-gold/50 rounded-lg text-xs font-bold hover:bg-pmmg-border flex items-center gap-1.5">
+                                <i data-lucide="download" class="w-4 h-4"></i> Baixar Mapa
                             </button>
                             <a href="https://www.google.com/maps/search/?api=1&query=Arena+Independencia+Rua+Pitangui+3230+Horto+Belo+Horizonte+MG" target="_blank" class="px-3 py-2 bg-pmmg-dark text-pmmg-khaki border border-pmmg-border rounded-lg text-xs font-bold hover:bg-pmmg-border flex items-center gap-1.5">
                                 <i data-lucide="map-pin" class="w-4 h-4"></i> Abrir no Maps
@@ -3061,6 +3122,86 @@
             </div>
         </section>
 
+        <!-- ================= VIEW REGIÕES (AGRUPADOR ESCALÁVEL: 1ª REGIÃO, 2ª REGIÃO, 3ª REGIÃO...) ================= -->
+        <section id="view-regioes" class="hidden space-y-6">
+            <div class="flex items-center justify-between border-b border-pmmg-border pb-3">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="bg-pmmg-khakiBadge text-pmmg-khaki text-[10px] px-2.5 py-0.5 rounded font-bold uppercase border border-pmmg-khaki/30">Estrutura Territorial PMMG</span>
+                        <h2 class="text-3xl font-military text-pmmg-khaki uppercase tracking-wide">Regiões da Polícia Militar (RPM)</h2>
+                    </div>
+                    <p class="text-xs text-gray-400">Selecione a Região para acessar seus Batalhões e Companhias Independentes.</p>
+                </div>
+                <button onclick="showView('home')" class="text-xs text-pmmg-khaki hover:underline flex items-center gap-1"><i data-lucide="arrow-left" class="w-4 h-4"></i> Início</button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- 1ª REGIÃO (1ª RPM) -->
+                <div onclick="showView('rpm1')" class="bg-pmmg-card p-6 rounded-2xl tactical-border tactical-card cursor-pointer group flex flex-col justify-between space-y-4">
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-start">
+                            <span class="text-xs bg-pmmg-khakiBadge text-pmmg-khaki font-bold px-3 py-1 rounded-full border border-pmmg-khaki/30 uppercase">1ª Região • Capital</span>
+                            <i data-lucide="chevron-right" class="w-6 h-6 text-gray-500 group-hover:text-pmmg-khaki transition-colors"></i>
+                        </div>
+                        <h3 class="text-3xl font-military text-pmmg-khaki uppercase font-bold leading-none">1ª Região (1ª RPM • BH)</h3>
+                        <p class="text-xs text-gray-400">Abrange os Batalhões da Capital: 1º, 5º, 13º, 16º, 22º, 34º, 41º, 49º BPM e BPTran.</p>
+                    </div>
+                    <div class="pt-4 border-t border-pmmg-border flex justify-between items-center text-xs font-bold text-pmmg-khaki">
+                        <span>9 Unidades Operacionais</span>
+                        <span class="flex items-center gap-1">Acessar 1ª Região <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
+                    </div>
+                </div>
+
+                <!-- 2ª REGIÃO (2ª RPM) -->
+                <div onclick="showView('rpm2')" class="bg-pmmg-card p-6 rounded-2xl border-2 border-pmmg-gold/70 tactical-card cursor-pointer group flex flex-col justify-between space-y-4">
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-start">
+                            <span class="text-xs bg-pmmg-khakiBadge text-pmmg-gold font-bold px-3 py-1 rounded-full border border-pmmg-gold/30 uppercase">2ª Região • RMBH</span>
+                            <i data-lucide="chevron-right" class="w-6 h-6 text-gray-500 group-hover:text-pmmg-gold transition-colors"></i>
+                        </div>
+                        <h3 class="text-3xl font-military text-pmmg-gold uppercase font-bold leading-none">2ª Região (2ª RPM • RMBH)</h3>
+                        <p class="text-xs text-gray-400">Abrange 18º BPM (Completo), 33º BPM, 39º BPM, 40º BPM, 48º BPM, 66º BPM, 6ª Cia Ind e 7ª Cia Ind.</p>
+                    </div>
+                    <div class="pt-4 border-t border-pmmg-border flex justify-between items-center text-xs font-bold text-pmmg-gold">
+                        <span>8 Unidades • 18º BPM Ativo</span>
+                        <span class="flex items-center gap-1">Acessar 2ª Região <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
+                    </div>
+                </div>
+
+                <!-- 3ª REGIÃO (3ª RPM - ESTRUTURA PRONTA E ESCALÁVEL) -->
+                <div onclick="showView('rpm3')" class="bg-pmmg-card p-6 rounded-2xl tactical-border tactical-card cursor-pointer group flex flex-col justify-between space-y-4 opacity-90 hover:opacity-100">
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-start">
+                            <span class="text-xs bg-pmmg-dark text-gray-300 font-bold px-3 py-1 rounded-full border border-pmmg-border uppercase">3ª Região • RMBH / Expansão</span>
+                            <i data-lucide="chevron-right" class="w-6 h-6 text-gray-500 group-hover:text-pmmg-khaki transition-colors"></i>
+                        </div>
+                        <h3 class="text-3xl font-military text-white uppercase font-bold leading-none">3ª Região (3ª RPM)</h3>
+                        <p class="text-xs text-gray-400">Estrutura pronta e escalável para alimentação dos Batalhões e Companhias da 3ª RPM (Santa Luzia, Vespasiano, Lagoa Santa, Sabará...).</p>
+                    </div>
+                    <div class="pt-4 border-t border-pmmg-border flex justify-between items-center text-xs font-bold text-pmmg-khaki">
+                        <span>Gaveta Regional Pronta</span>
+                        <span class="flex items-center gap-1">Acessar 3ª Região <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= VIEW 3ª REGIÃO (ESTRUTURA ESCALÁVEL PRONTA) ================= -->
+        <section id="view-rpm3" class="hidden space-y-6">
+            <div class="flex items-center justify-between border-b border-pmmg-border pb-3">
+                <div>
+                    <h2 class="text-3xl font-military text-pmmg-khaki uppercase tracking-wide">3ª Região de Polícia Militar (3ª RPM)</h2>
+                    <p class="text-xs text-gray-400">Estrutura pronta e escalável para cadastramento de unidades da 3ª Região</p>
+                </div>
+                <button onclick="showView('regioes')" class="text-xs text-pmmg-khaki hover:underline flex items-center gap-1"><i data-lucide="arrow-left" class="w-4 h-4"></i> Voltar às Regiões</button>
+            </div>
+            <div class="bg-pmmg-card p-6 rounded-2xl tactical-border space-y-2">
+                <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-khaki font-bold px-2.5 py-0.5 rounded uppercase border border-pmmg-khaki/30">Módulo Escalável Ativo</span>
+                <h3 class="text-2xl font-military text-white uppercase">Gaveta da 3ª Região Pronta para Receber Unidades</h3>
+                <p class="text-xs text-gray-400">Envie os dados ou PDFs das unidades da 3ª RPM quando desejar para listarmos os batalhões aqui seguindo o padrão do 18º BPM.</p>
+            </div>
+        </section>
+
         <!-- ================= VIEW 2: LISTA DA 1ª RPM ================= -->
         <section id="view-rpm1" class="hidden space-y-6">
             <div class="flex items-center justify-between border-b border-pmmg-border pb-3">
@@ -3068,7 +3209,7 @@
                     <h2 class="text-3xl font-military text-pmmg-khaki uppercase tracking-wide">1ª Região de Polícia Militar (1ª RPM)</h2>
                     <p class="text-xs text-gray-400">Batalhões da Capital - Belo Horizonte/MG</p>
                 </div>
-                <button onclick="showView('home')" class="text-xs text-pmmg-khaki hover:underline flex items-center gap-1"><i data-lucide="arrow-left" class="w-4 h-4"></i> Voltar</button>
+                <button onclick="showView('regioes')" class="text-xs text-pmmg-khaki hover:underline flex items-center gap-1"><i data-lucide="arrow-left" class="w-4 h-4"></i> Voltar às Regiões</button>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -3171,7 +3312,7 @@
                     <h2 class="text-3xl font-military text-pmmg-gold uppercase tracking-wide">2ª Região de Polícia Militar (2ª RPM)</h2>
                     <p class="text-xs text-gray-400">Contagem, Betim, Ribeirão das Neves, Ibirité, Brumadinho, Igarapé...</p>
                 </div>
-                <button onclick="showView('home')" class="text-xs text-pmmg-khaki hover:underline flex items-center gap-1"><i data-lucide="arrow-left" class="w-4 h-4"></i> Voltar</button>
+                <button onclick="showView('regioes')" class="text-xs text-pmmg-khaki hover:underline flex items-center gap-1"><i data-lucide="arrow-left" class="w-4 h-4"></i> Voltar às Regiões</button>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -5169,9 +5310,9 @@
                 <i data-lucide="home" class="w-4 h-4 mb-0.5"></i>
                 <span>Início</span>
             </button>
-            <button onclick="showView('18bpm')" id="bnav-18bpm" class="flex flex-col items-center justify-center py-1 rounded-lg text-gray-400 hover:text-white">
+            <button onclick="showView('regioes')" id="bnav-regioes" class="flex flex-col items-center justify-center py-1 rounded-lg text-gray-400 hover:text-white">
                 <i data-lucide="shield" class="w-4 h-4 mb-0.5"></i>
-                <span>18º BPM</span>
+                <span>Regiões</span>
             </button>
             <button onclick="showView('especializadas')" id="bnav-especializadas" class="flex flex-col items-center justify-center py-1 rounded-lg text-gray-400 hover:text-white">
                 <i data-lucide="crosshair" class="w-4 h-4 mb-0.5"></i>
@@ -5424,29 +5565,7 @@
             }
         }
 
-        async function toggleAzimuteWakeLock() {
-            const btn = document.getElementById('btnAzimuteWake');
-            if (!('wakeLock' in navigator)) {
-                if (typeof showToast === 'function') showToast('Seu navegador não suporta trava de tela.');
-                return;
-            }
-            try {
-                if (!azimuteWakeLock) {
-                    azimuteWakeLock = await navigator.wakeLock.request('screen');
-                    btn.innerHTML = '<span>🔆 Tela Sempre Acesa</span>';
-                    btn.className = 'px-2.5 py-1 bg-emerald-950 text-emerald-400 border border-emerald-500/50 rounded-lg text-[11px] font-bold flex items-center gap-1 transition-all';
-                    if (typeof showToast === 'function') showToast('🔆 Tela travada acesa para incursão!');
-                } else {
-                    await azimuteWakeLock.release();
-                    azimuteWakeLock = null;
-                    btn.innerHTML = '<span>🔒 Tela Normal</span>';
-                    btn.className = 'px-2.5 py-1 bg-pmmg-dark hover:bg-pmmg-border text-gray-300 border border-pmmg-border rounded-lg text-[11px] font-bold flex items-center gap-1 transition-all';
-                    if (typeof showToast === 'function') showToast('🔒 Trava de tela desativada.');
-                }
-            } catch (e) {
-                if (typeof showToast === 'function') showToast('Toque novamente para ativar a trava de tela.');
-            }
-        }
+
     </script>
 
     <!-- MODAL DE CÓDIGOS Q E ALFABETO FONÉTICO -->
@@ -5525,40 +5644,38 @@
             }
         });
 
-        // ALTERNADOR ENTRE VERSÃO APP (SMARTPHONE) E VERSÃO WEB (DESKTOP)
-        function setLayoutMode(mode, notify = true) {
-            const body = document.body;
-            const btnApp = document.getElementById('btn-mode-app');
-            const btnWeb = document.getElementById('btn-mode-web');
-            const badge = document.getElementById('activeModeBadge');
-
-            if (mode === 'web') {
-                body.classList.remove('mode-app');
-                body.classList.add('mode-web');
-                if (btnWeb) btnWeb.className = 'px-2.5 py-1 rounded-md text-[11px] font-bold flex items-center gap-1 bg-pmmg-khaki text-pmmg-black shadow transition-all';
-                if (btnApp) btnApp.className = 'px-2.5 py-1 rounded-md text-[11px] font-medium flex items-center gap-1 text-gray-400 hover:text-white transition-all';
-                if (badge) {
-                    badge.textContent = 'Modo Web';
-                    badge.className = 'bg-pmmg-khakiBadge text-pmmg-khaki text-[9px] px-1.5 py-0.5 rounded font-bold uppercase border border-pmmg-khaki/40';
-                }
-                if (notify) showToast('💻 Versão Web (PC) ativada!');
-            } else {
-                body.classList.remove('mode-web');
-                body.classList.add('mode-app');
-                if (btnApp) btnApp.className = 'px-2.5 py-1 rounded-md text-[11px] font-bold flex items-center gap-1 bg-pmmg-khaki text-pmmg-black shadow transition-all';
-                if (btnWeb) btnWeb.className = 'px-2.5 py-1 rounded-md text-[11px] font-medium flex items-center gap-1 text-gray-400 hover:text-white transition-all';
-                if (badge) {
-                    badge.textContent = 'Modo App';
-                    badge.className = 'bg-emerald-950 text-emerald-400 text-[9px] px-1.5 py-0.5 rounded font-bold uppercase border border-emerald-500/40';
-                }
-                if (notify) showToast('📱 Versão App Smartphone ativada!');
+        // FUNÇÃO PARA BAIXAR MAPA TÁTICO OFFLINE DE CADA ESTÁDIO (SVG/IMAGEM OFFLINE)
+        window.downloadStadiumMap = function(stadiumId) {
+            const mapMeta = {
+                mineirao: { containerId: 'sub-min-mapa', filename: 'Mapa-Tatico-Mineirao-AZIMUTE.svg', label: 'Mineirão' },
+                arenamrv: { containerId: 'sub-mrv-mapa', filename: 'Mapa-Tatico-ArenaMRV-AZIMUTE.svg', label: 'Arena MRV' },
+                independencia: { containerId: 'sub-ind-mapa', filename: 'Mapa-Tatico-Independencia-AZIMUTE.svg', label: 'Independência' }
+            };
+            const cfg = mapMeta[stadiumId];
+            if (!cfg) return;
+            const container = document.getElementById(cfg.containerId);
+            const svgEl = container ? container.querySelector('svg') : null;
+            if (!svgEl) {
+                if (typeof showToast === 'function') showToast('Mapa não encontrado.');
+                return;
             }
-            localStorage.setItem('azimute_layout_mode', mode);
-            if (typeof lucide !== 'undefined') lucide.createIcons();
-        }
+            const clone = svgEl.cloneNode(true);
+            clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+            const svgData = '<?xml version="1.0" encoding="UTF-8"?>\n' + clone.outerHTML;
+            const blob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = cfg.filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setTimeout(() => URL.revokeObjectURL(url), 1500);
+            if (typeof showToast === 'function') showToast('📥 Mapa do ' + cfg.label + ' baixado para uso offline!');
+        };
 
         function showView(viewId) {
-            const views = ['home', 'rpm1', 'rpm2', 'especializadas', 'estadios', 'rpas', 'atalhos', 'skeleton', '18bpm'];
+            const views = ['home', 'regioes', 'rpm1', 'rpm2', 'rpm3', 'especializadas', 'estadios', 'rpas', 'atalhos', 'skeleton', '18bpm', 'gps'];
             views.forEach(v => {
                 const el = document.getElementById(`view-${v}`);
                 if (el) {
@@ -5566,6 +5683,16 @@
                     el.classList.remove('app-screen-animate');
                 }
             });
+
+            // Garante que o HUD de GPS fique oculto em todas as abas exceto na aba exclusiva 'gps'
+            const gpsHud = document.getElementById('azimuteLiveGpsHud');
+            if (gpsHud) {
+                if (viewId === 'gps') {
+                    gpsHud.classList.remove('hidden');
+                } else {
+                    gpsHud.classList.add('hidden');
+                }
+            }
 
             const target = document.getElementById(`view-${viewId}`);
             if (target) {
@@ -5575,26 +5702,27 @@
             }
 
             const btnHome = document.getElementById('nav-btn-home');
-            const btnRpm1 = document.getElementById('nav-btn-rpm1');
-            const btnRpm2 = document.getElementById('nav-btn-rpm2');
+            const btnRegioes = document.getElementById('nav-btn-regioes');
             const btnEsp = document.getElementById('nav-btn-especializadas');
             const btnEstadios = document.getElementById('nav-btn-estadios');
             const btnRpas = document.getElementById('nav-btn-rpas');
             const btnAtalhos = document.getElementById('nav-btn-atalhos');
 
             if (btnHome) btnHome.className = 'px-3 py-1.5 rounded-md bg-pmmg-dark text-gray-300 border border-pmmg-border hover:bg-pmmg-border flex items-center gap-1.5';
-            if (btnRpm1) btnRpm1.className = 'px-3 py-1.5 rounded-md bg-pmmg-dark text-gray-300 border border-pmmg-border hover:bg-pmmg-border flex items-center gap-1.5';
-            if (btnRpm2) btnRpm2.className = 'px-3 py-1.5 rounded-md bg-pmmg-dark text-gray-300 border border-pmmg-border hover:bg-pmmg-border flex items-center gap-1.5';
+            if (btnRegioes) btnRegioes.className = 'px-3 py-1.5 rounded-md bg-pmmg-dark text-gray-300 border border-pmmg-border hover:bg-pmmg-border font-bold flex items-center gap-1.5';
             if (btnEsp) btnEsp.className = 'px-3 py-1.5 rounded-md bg-pmmg-dark text-gray-300 border border-pmmg-border hover:bg-pmmg-border flex items-center gap-1.5';
             if (btnEstadios) btnEstadios.className = 'px-3 py-1.5 rounded-md bg-pmmg-dark text-emerald-400 border border-emerald-500/40 hover:bg-pmmg-border font-bold flex items-center gap-1.5';
             if (btnRpas) btnRpas.className = 'px-3 py-1.5 rounded-md bg-pmmg-dark text-sky-400 border border-sky-500/40 hover:bg-pmmg-border font-bold flex items-center gap-1.5';
-            if (btnAtalhos) btnAtalhos.className = 'px-3 py-1.5 rounded-md bg-pmmg-dark text-pmmg-khaki border border-pmmg-khaki/40 hover:bg-pmmg-border font-bold flex items-center gap-1.5 col-span-3 sm:col-span-1';
+            if (btnAtalhos) btnAtalhos.className = 'px-3 py-1.5 rounded-md bg-pmmg-dark text-pmmg-khaki border border-pmmg-khaki/40 hover:bg-pmmg-border font-bold flex items-center gap-1.5';
 
-            // Atualiza também a Barra Inferior do Modo App
-            ['home', '18bpm', 'especializadas', 'estadios', 'rpas', 'atalhos'].forEach(id => {
+            const isRegiaoSub = ['regioes', 'rpm1', 'rpm2', 'rpm3', '18bpm', 'skeleton'].includes(viewId);
+
+            // Atualiza também a Barra Inferior
+            ['home', 'regioes', 'especializadas', 'estadios', 'rpas', 'atalhos'].forEach(id => {
                 const bBtn = document.getElementById(`bnav-${id}`);
                 if (bBtn) {
-                    bBtn.className = (id === viewId)
+                    const isActive = (id === viewId) || (id === 'regioes' && isRegiaoSub);
+                    bBtn.className = isActive
                         ? 'flex flex-col items-center justify-center py-1 rounded-lg text-pmmg-black bg-pmmg-khaki font-bold shadow'
                         : 'flex flex-col items-center justify-center py-1 rounded-lg text-gray-400 hover:text-white';
                 }
@@ -5606,12 +5734,15 @@
             if (viewId === 'home') {
                 if (btnHome) btnHome.className = 'px-3 py-1.5 rounded-md bg-pmmg-khaki text-pmmg-black font-bold flex items-center gap-1.5';
                 if (activeBadge) activeBadge.classList.add('hidden');
-            } else if (viewId === 'rpm1') {
-                if (btnRpm1) btnRpm1.className = 'px-3 py-1.5 rounded-md bg-pmmg-khaki text-pmmg-black font-bold flex items-center gap-1.5';
-                if (activeBadge) activeBadge.classList.add('hidden');
-            } else if (viewId === 'rpm2') {
-                if (btnRpm2) btnRpm2.className = 'px-3 py-1.5 rounded-md bg-pmmg-gold text-pmmg-black font-bold flex items-center gap-1.5';
-                if (activeBadge) activeBadge.classList.add('hidden');
+            } else if (isRegiaoSub) {
+                if (btnRegioes) btnRegioes.className = 'px-3 py-1.5 rounded-md bg-pmmg-khaki text-pmmg-black font-bold flex items-center gap-1.5';
+                if (viewId === '18bpm') {
+                    if (activeBadge) activeBadge.classList.remove('hidden');
+                    if (activeName) activeName.textContent = '18º BPM (Contagem)';
+                    switch18Tab('cias');
+                } else {
+                    if (activeBadge) activeBadge.classList.add('hidden');
+                }
             } else if (viewId === 'especializadas') {
                 if (btnEsp) btnEsp.className = 'px-3 py-1.5 rounded-md bg-red-800 text-white font-bold flex items-center gap-1.5';
                 if (activeBadge) activeBadge.classList.add('hidden');
@@ -5625,12 +5756,8 @@
                 if (activeBadge) activeBadge.classList.remove('hidden');
                 if (activeName) activeName.textContent = 'Aeronaves Remotamente Pilotadas';
             } else if (viewId === 'atalhos') {
-                if (btnAtalhos) btnAtalhos.className = 'px-3 py-1.5 rounded-md bg-pmmg-khaki text-pmmg-black font-bold flex items-center gap-1.5 col-span-3 sm:col-span-1';
+                if (btnAtalhos) btnAtalhos.className = 'px-3 py-1.5 rounded-md bg-pmmg-khaki text-pmmg-black font-bold flex items-center gap-1.5';
                 if (activeBadge) activeBadge.classList.add('hidden');
-            } else if (viewId === '18bpm') {
-                if (activeBadge) activeBadge.classList.remove('hidden');
-                if (activeName) activeName.textContent = '18º BPM (Contagem)';
-                switch18Tab('cias');
             }
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
