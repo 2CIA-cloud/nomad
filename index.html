@@ -141,7 +141,7 @@
                     ❌ Credenciais incorretas. Utilize BEPE / COLISEU.
                 </div>
 
-                <button onclick="handleAzimuteLogin()" class="w-full py-3 bg-pmmg-khaki hover:bg-pmmg-khakiHover text-pmmg-black font-extrabold text-sm rounded-xl shadow-lg uppercase tracking-wider transition-all flex items-center justify-center gap-2">
+                <button type="button" id="btnAzimuteLogin" onclick="handleAzimuteLogin()" class="w-full py-3 bg-pmmg-khaki hover:bg-pmmg-khakiHover text-pmmg-black font-extrabold text-sm rounded-xl shadow-lg uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98]">
                     <i data-lucide="key-round" class="w-4 h-4"></i> ACESSAR SISTEMA AZIMUTE
                 </button>
             </div>
@@ -151,6 +151,58 @@
             </div>
         </div>
     </div>
+    <script>
+        window.handleAzimuteLogin = function() {
+            const uEl = document.getElementById('loginUser');
+            const pEl = document.getElementById('loginPass');
+            const errDiv = document.getElementById('loginErrorMsg');
+            const modal = document.getElementById('azimuteLoginModal');
+
+            const u = (uEl ? uEl.value : '').trim().toUpperCase();
+            const p = (pEl ? pEl.value : '').trim().toUpperCase();
+
+            if (u === 'BEPE' && p === 'COLISEU') {
+                try { localStorage.setItem('azimute_auth', 'authenticated'); } catch (e) {}
+                if (errDiv) errDiv.classList.add('hidden');
+                if (modal) {
+                    modal.classList.remove('flex');
+                    modal.classList.add('hidden');
+                    modal.style.setProperty('display', 'none', 'important');
+                }
+                if (typeof showToast === 'function') showToast('🔓 Acesso liberado! Bem-vindo ao AZIMUTE.');
+            } else {
+                if (errDiv) {
+                    errDiv.classList.remove('hidden');
+                    setTimeout(() => errDiv.classList.add('hidden'), 4000);
+                }
+            }
+        };
+
+        (function() {
+            try {
+                if (localStorage.getItem('azimute_auth') === 'authenticated') {
+                    const modal = document.getElementById('azimuteLoginModal');
+                    if (modal) {
+                        modal.classList.remove('flex');
+                        modal.classList.add('hidden');
+                        modal.style.setProperty('display', 'none', 'important');
+                    }
+                }
+            } catch (e) {}
+            const uEl = document.getElementById('loginUser');
+            const pEl = document.getElementById('loginPass');
+            [uEl, pEl].forEach(el => {
+                if (el) {
+                    el.addEventListener('keydown', function(ev) {
+                        if (ev.key === 'Enter') {
+                            ev.preventDefault();
+                            window.handleAzimuteLogin();
+                        }
+                    });
+                }
+            });
+        })();
+    </script>
 
 
 
@@ -6601,21 +6653,26 @@
         };
 
         
-        // LOGIN HANDLING (BEPE / COLISEU)
-        function handleAzimuteLogin() {
+        // LOGIN HANDLING (BEPE / COLISEU) - Exposto no escopo global window
+        window.handleAzimuteLogin = window.handleAzimuteLogin || function() {
             const u = document.getElementById('loginUser').value.trim().toUpperCase();
             const p = document.getElementById('loginPass').value.trim().toUpperCase();
             const errDiv = document.getElementById('loginErrorMsg');
+            const modal = document.getElementById('azimuteLoginModal');
 
             if (u === 'BEPE' && p === 'COLISEU') {
                 localStorage.setItem('azimute_auth', 'authenticated');
-                document.getElementById('azimuteLoginModal').classList.add('hidden');
+                if (modal) {
+                    modal.classList.remove('flex');
+                    modal.classList.add('hidden');
+                    modal.style.setProperty('display', 'none', 'important');
+                }
                 if (typeof showToast === 'function') showToast('🔓 Acesso liberado! Bem-vindo ao AZIMUTE.');
             } else {
                 errDiv.classList.remove('hidden');
                 setTimeout(() => errDiv.classList.add('hidden'), 4000);
             }
-        }
+        };
 
         // Check auth on load
         document.addEventListener('DOMContentLoaded', () => {
@@ -6628,7 +6685,7 @@
         });
 
         // WHATSAPP SHARE LOCATION BUTTON
-        function shareLocationViaWhatsApp() {
+        window.shareLocationViaWhatsApp = function shareLocationViaWhatsApp() {
             const street = document.getElementById('hudCurrentStreet') ? document.getElementById('hudCurrentStreet').textContent : 'Localização atual';
             const sub = document.getElementById('hudCurrentSuburb') ? document.getElementById('hudCurrentSuburb').textContent : '';
             const radio = document.getElementById('hudRadioChannel') ? document.getElementById('hudRadioChannel').textContent : '';
@@ -6646,7 +6703,7 @@
         }
 
         // VOICE COMMANDS (SPEECH RECOGNITION)
-        function startVoiceCommand() {
+        window.startVoiceCommand = function startVoiceCommand() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRecognition) {
                 alert('Seu navegador não suporta comandos de voz.');
@@ -6747,7 +6804,7 @@
             switchDrawerTab('cias');
         };
 
-        function switchDrawerTab(tab) {
+        window.switchDrawerTab = function switchDrawerTab(tab) {
             ['cias', 'apoio', 'divisas', 'orgaos', 'contatos'].forEach(t => {
                 const btn = document.getElementById('dtab-' + t);
                 if (btn) {
@@ -6828,7 +6885,7 @@
         }
 
         // NOTIFICAÇÃO DE RUA NA TELA BLOQUEADA DO CELULAR (LOCK SCREEN)
-        async function toggleLockScreenStreetNotify() {
+        window.toggleLockScreenStreetNotify = async function toggleLockScreenStreetNotify() {
             if (!('Notification' in window)) {
                 alert('Seu navegador não suporta notificações na tela bloqueada.');
                 return;
@@ -6869,7 +6926,7 @@
         }
 
         // MONITORAMENTO DE CLIMA E ALERTA DE VIAS DE ALAGAMENTO (OPEN-METEO GRATUITO SEM CHAVE)
-        async function checkWeatherAndFloodRisk() {
+        window.checkWeatherAndFloodRisk = async function checkWeatherAndFloodRisk() {
             const banner = document.getElementById('weatherFloodBanner');
             const txt = document.getElementById('weatherForecastText');
             const list = document.getElementById('floodZonesList');
