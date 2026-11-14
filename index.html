@@ -110,6 +110,12 @@
         body.mode-web #mobileBottomNav {
             display: none !important;
         }
+        /* Ajuste automático para Celular na Horizontal (Landscape): evita que o cabeçalho tampe a tela */
+        @media (orientation: landscape) and (max-height: 600px) {
+            header.sticky {
+                position: relative !important;
+            }
+        }
     </style>
 </head>
 <body class="bg-pmmg-black text-gray-200 font-sans min-h-screen pb-16 antialiased selection:bg-pmmg-khaki selection:text-pmmg-black mode-app">
@@ -570,7 +576,63 @@
 
         <!-- ================= VIEW 1: HOME (PAINEL INICIAL) ================= -->
         <section id="view-home" class="space-y-6">
-            <div class="text-center max-w-2xl mx-auto space-y-2 py-4">
+            <!-- SEÇÃO COMPACTA NO TOPO DA TELA INICIAL: STATUS RÁPIDO & HOSPITAL DE REFERÊNCIA -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-7xl mx-auto pt-1">
+                <!-- Quadro Esquerdo (Status Rápido) -->
+                <div class="bg-pmmg-card p-4 rounded-2xl tactical-border border-l-4 border-l-pmmg-khaki shadow-lg flex flex-col justify-between space-y-2.5">
+                    <div class="flex items-center justify-between border-b border-pmmg-border pb-2 gap-2">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-pmmg-khaki flex items-center gap-1">
+                            <i data-lucide="compass" class="w-3.5 h-3.5"></i> Status Operacional Rápido
+                        </span>
+                        <span id="homeGpsBadge" class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-emerald-950 text-emerald-400 border border-emerald-500/50">
+                            <span id="homeGpsDot" class="w-2 h-2 rounded-full bg-emerald-400 inline-block shadow-[0_0_6px_#34d399]"></span>
+                            <span id="homeGpsStatusText">GPS Online</span>
+                        </span>
+                    </div>
+                    <div class="space-y-1">
+                        <div class="text-[10px] uppercase font-bold text-gray-400">📍 QTH Atual:</div>
+                        <div id="homeQuickQth" class="text-sm sm:text-base font-extrabold text-white leading-snug truncate" title="Logradouro atual">Sincronizando localização via satélite...</div>
+                        <div id="homeQuickSuburb" class="text-[11px] text-gray-400 truncate">Aguardando leitura de coordenadas...</div>
+                    </div>
+                    <div class="pt-2 border-t border-pmmg-border/60 flex flex-wrap items-center justify-between gap-2 text-xs">
+                        <div>
+                            <span class="text-[10px] text-pmmg-gold font-bold uppercase block">📻 Rede de Rádio</span>
+                            <strong id="homeQuickRadio" class="font-mono text-white text-xs">REDE: 2ª RPM / 18º BPM A</strong>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-[10px] text-pmmg-khaki font-bold uppercase block">🛡️ Área / Batalhão & Cia</span>
+                            <strong id="homeQuickArea" class="text-gray-200 text-xs">Calculando área...</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quadro Direito (Hospital de Referência Mais Próximo) -->
+                <div class="bg-pmmg-card p-4 rounded-2xl tactical-border border-l-4 border-l-red-500 shadow-lg flex flex-col justify-between space-y-2.5">
+                    <div class="flex items-center justify-between border-b border-pmmg-border pb-2 gap-2">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-red-400 flex items-center gap-1">
+                            <i data-lucide="heart-pulse" class="w-3.5 h-3.5"></i> Hospital de Referência Mais Próximo
+                        </span>
+                        <span id="homeHospDistBadge" class="text-[10px] font-mono font-bold bg-pmmg-dark text-pmmg-khaki px-2 py-0.5 rounded border border-pmmg-border">
+                            Distância: -- km
+                        </span>
+                    </div>
+                    <div class="space-y-1">
+                        <div class="text-[10px] uppercase font-bold text-gray-400">🏥 Unidade Hospitalar / Pronto Socorro:</div>
+                        <div id="homeQuickHospName" class="text-base sm:text-lg font-extrabold text-white leading-snug">Calculando hospital mais próximo...</div>
+                        <div id="homeQuickHospEta" class="text-xs text-gray-300 font-medium">Aguardando coordenadas do GPS...</div>
+                    </div>
+                    <div class="pt-2 border-t border-pmmg-border/60 flex items-center justify-between gap-2">
+                        <button type="button" onclick="showView('gps')" class="px-3 py-2 bg-pmmg-dark hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-border rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all">
+                            <i data-lucide="locate-fixed" class="w-3.5 h-3.5"></i> <span>Painel GPS</span>
+                        </button>
+                        <a id="homeBtnHospRoute" href="https://www.google.com/maps/search/?api=1&query=Hospital+Pronto+Socorro" target="_blank" class="px-4 py-2 bg-red-600 hover:bg-red-500 text-white font-extrabold rounded-xl text-xs flex items-center gap-1.5 shadow-lg transition-all uppercase tracking-wider">
+                            <i data-lucide="navigation" class="w-3.5 h-3.5"></i> <span>Gerar Rota</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center max-w-2xl mx-auto space-y-2 py-2">
                 <h2 class="text-4xl font-military text-pmmg-khaki uppercase tracking-wider">Sistema Geral de Consulta Rápida</h2>
                 <p class="text-xs text-pmmg-khaki font-semibold">Por todo o estado mineiro, com alma e espírito de guerreiro. O Coliseu.</p>
                 <p class="text-xs text-gray-400">Acesse instantaneamente as Regiões da PMMG, Geolocalização, Unidades Especializadas, Estádios, RPAS/Drones e Sistemas Operacionais.</p>
@@ -5554,16 +5616,24 @@
             const badge = document.getElementById('hudGpsBadge');
             const dot = document.getElementById('hudGpsDot');
             const txt = document.getElementById('hudGpsStatusText');
-            if (!badge || !dot || !txt) return;
+            const hBadge = document.getElementById('homeGpsBadge');
+            const hDot = document.getElementById('homeGpsDot');
+            const hTxt = document.getElementById('homeGpsStatusText');
 
             if (isOnline && navigator.onLine !== false) {
-                badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-extrabold uppercase bg-emerald-950 text-emerald-400 border border-emerald-500/50';
-                dot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-400 inline-block shadow-[0_0_8px_#34d399]';
-                txt.textContent = customLabel || 'GPS Online';
+                if (badge) badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-extrabold uppercase bg-emerald-950 text-emerald-400 border border-emerald-500/50';
+                if (dot) dot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-400 inline-block shadow-[0_0_8px_#34d399]';
+                if (txt) txt.textContent = customLabel || 'GPS Online';
+                if (hBadge) hBadge.className = 'inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-emerald-950 text-emerald-400 border border-emerald-500/50';
+                if (hDot) hDot.className = 'w-2 h-2 rounded-full bg-emerald-400 inline-block shadow-[0_0_6px_#34d399]';
+                if (hTxt) hTxt.textContent = 'GPS Online';
             } else {
-                badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-extrabold uppercase bg-amber-950 text-amber-300 border border-amber-500/50';
-                dot.className = 'w-2.5 h-2.5 rounded-full bg-amber-400 inline-block';
-                txt.textContent = customLabel || 'GPS Offline (Cache Local)';
+                if (badge) badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-extrabold uppercase bg-amber-950 text-amber-300 border border-amber-500/50';
+                if (dot) dot.className = 'w-2.5 h-2.5 rounded-full bg-amber-400 inline-block';
+                if (txt) txt.textContent = customLabel || 'GPS Offline (Cache Local)';
+                if (hBadge) hBadge.className = 'inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-amber-950 text-amber-300 border border-amber-500/50';
+                if (hDot) hDot.className = 'w-2 h-2 rounded-full bg-amber-400 inline-block';
+                if (hTxt) hTxt.textContent = 'GPS Offline';
             }
         }
 
@@ -5592,6 +5662,10 @@
 
                     if (stEl) stEl.textContent = saved.street;
                     if (subEl) subEl.textContent = saved.suburb || '';
+                    const hQth = document.getElementById('homeQuickQth');
+                    const hSub = document.getElementById('homeQuickSuburb');
+                    if (hQth) hQth.textContent = saved.street;
+                    if (hSub) hSub.textContent = saved.suburb || '';
                     if (tsEl && saved.timestamp) tsEl.textContent = 'Último QTH registrado: ' + saved.timestamp;
                     if (coordsEl && saved.lat && saved.lon) coordsEl.textContent = saved.lat.toFixed(6) + ', ' + saved.lon.toFixed(6);
                     if (mapsBtn && saved.lat && saved.lon) {
@@ -5637,6 +5711,21 @@
             const rAreaEl = document.getElementById('hudUnitArea');
             if (rChanEl) rChanEl.textContent = closestArea.rede;
             if (rAreaEl) rAreaEl.textContent = closestArea.unidade;
+
+            // Atualiza também os 2 Quadros de Resumo no Topo da Tela Inicial
+            const homeRadio = document.getElementById('homeQuickRadio');
+            const homeArea = document.getElementById('homeQuickArea');
+            const homeHospName = document.getElementById('homeQuickHospName');
+            const homeHospDist = document.getElementById('homeHospDistBadge');
+            const homeHospEta = document.getElementById('homeQuickHospEta');
+            const homeHospBtn = document.getElementById('homeBtnHospRoute');
+
+            if (homeRadio) homeRadio.textContent = closestArea.rede;
+            if (homeArea) homeArea.textContent = closestArea.unidade;
+            if (homeHospName) homeHospName.textContent = closestHosp.nome;
+            if (homeHospDist) homeHospDist.textContent = 'Distância: ~' + driveEst.roadKm + ' km';
+            if (homeHospEta) homeHospEta.textContent = 'Distância linear: ' + minHospDist.toFixed(1) + ' km • Tempo estimado: ~' + driveEst.mins + ' min';
+            if (homeHospBtn) homeHospBtn.href = hospUrl;
 
             // 3. Atualiza Tela Socorro (Modo Prioridade) com Distância e Tempo Médio de Deslocamento
             const sosRadio = document.getElementById('sosBigRadio');
@@ -5723,6 +5812,10 @@
 
                             document.getElementById('hudCurrentStreet').textContent = azimuteLastStreet;
                             document.getElementById('hudCurrentSuburb').textContent = subText;
+                            const hQth = document.getElementById('homeQuickQth');
+                            const hSub = document.getElementById('homeQuickSuburb');
+                            if (hQth) hQth.textContent = azimuteLastStreet;
+                            if (hSub) hSub.textContent = subText;
                             document.getElementById('hudLastSavedTimestamp').textContent = 'Último QTH registrado: ' + timeStr;
                             document.getElementById('sosBigStreet').textContent = azimuteLastStreet;
                             document.getElementById('sosBigSuburb').textContent = subText;
@@ -5975,7 +6068,7 @@
         };
 
         // ALTERNADOR RÁPIDO ENTRE VERSÃO APP (MOBILE) E VERSÃO PC (DESKTOP AMPLO)
-        window.setLayoutMode = function(mode, notify = true) {
+        window.setLayoutMode = function(mode, notify = true, savePreference = true) {
             const body = document.body;
             const btnApp = document.getElementById('btn-mode-app');
             const btnWeb = document.getElementById('btn-mode-web');
@@ -5993,9 +6086,23 @@
                 if (btnWeb) btnWeb.className = 'px-2.5 py-1 rounded-md text-[11px] font-medium flex items-center gap-1 text-gray-400 hover:text-white transition-all';
                 if (notify && typeof showToast === 'function') showToast('📱 Versão App (Mobile) ativada!');
             }
-            try { localStorage.setItem('azimute_layout_mode', mode); } catch (e) {}
+            if (savePreference) {
+                try { localStorage.setItem('azimute_layout_mode', mode); } catch (e) {}
+            }
             if (typeof lucide !== 'undefined') lucide.createIcons();
         };
+
+        // DETECÇÃO AUTOMÁTICA DE TELA HORIZONTAL (LARGURA > ALTURA -> MODO PC | VERTICAL -> MODO APP)
+        function handleAutoOrientationMode() {
+            if (window.innerWidth > window.innerHeight) {
+                window.setLayoutMode('web', false, false);
+            } else {
+                window.setLayoutMode('app', false, false);
+            }
+        }
+        window.addEventListener('resize', handleAutoOrientationMode);
+        window.addEventListener('orientationchange', () => setTimeout(handleAutoOrientationMode, 120));
+        document.addEventListener('DOMContentLoaded', handleAutoOrientationMode);
 
         // BOTÃO TELA CHEIA (FULLSCREEN API)
         window.toggleAzimuteFullscreen = function() {
@@ -6989,10 +7096,8 @@
         }
 
         window.onload = function() {
-            let savedMode = 'app';
-            try { savedMode = localStorage.getItem('azimute_layout_mode') || 'app'; } catch (e) {}
-            if (typeof setLayoutMode === 'function') {
-                setLayoutMode(savedMode, false);
+            if (typeof handleAutoOrientationMode === 'function') {
+                handleAutoOrientationMode();
             }
             loadNotepadContent();
             loadDroneNotes();
