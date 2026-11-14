@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AZIMUTE - Sistema Geral de Consulta Rápida (PMMG)</title>
+    <title>AZIMUTE - Sistema Geral de Consulta Rápida</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0F0F0F">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -107,52 +107,67 @@
     </style>
 </head>
 <body class="bg-pmmg-black text-gray-200 font-sans min-h-screen pb-16 antialiased selection:bg-pmmg-khaki selection:text-pmmg-black mode-app">
-    <!-- TELA DE AUTENTICAÇÃO TÁTICA (LOGIN AZIMUTE) -->
+        <!-- TELA DE AUTENTICAÇÃO TÁTICA (LOGIN AZIMUTE) -->
     <div id="azimuteLoginModal" class="fixed inset-0 z-[9999] bg-pmmg-black flex items-center justify-center p-4">
         <div class="bg-pmmg-card border-2 border-pmmg-khaki/80 rounded-2xl max-w-md w-full p-6 sm:p-8 space-y-6 shadow-2xl relative overflow-hidden">
             <div class="absolute -top-10 -right-10 w-32 h-32 bg-pmmg-khaki/10 rounded-full blur-2xl pointer-events-none"></div>
             
             <div class="text-center space-y-2">
                 <div class="w-14 h-14 mx-auto rounded-2xl bg-pmmg-khaki/15 border border-pmmg-khaki/60 flex items-center justify-center text-pmmg-khaki shadow-inner">
-                    <i data-lucide="shield-check" class="w-8 h-8"></i>
+                    <i data-lucide="compass" class="w-8 h-8"></i>
                 </div>
-                <h2 class="text-3xl font-military tracking-widest text-pmmg-khaki uppercase leading-none">AZIMUTE PMMG</h2>
-                <p class="text-xs text-gray-400">Sistema Operacional Tático Restrito • Autenticação de Acesso</p>
+                <h2 class="text-4xl font-military tracking-widest text-pmmg-khaki uppercase leading-none">AZIMUTE</h2>
+                <p class="text-xs text-gray-400">Sistema Operacional Tático • Controle de Acesso</p>
             </div>
 
-            <div class="space-y-4">
+            <form onsubmit="event.preventDefault(); window.handleAzimuteLogin();" class="space-y-4">
                 <div class="space-y-1.5">
-                    <label class="text-[11px] font-bold uppercase tracking-wider text-pmmg-khaki">Usuário / Unidade:</label>
+                    <label for="loginUser" class="text-[11px] font-bold uppercase tracking-wider text-pmmg-khaki">Usuário:</label>
                     <div class="relative">
-                        <i data-lucide="user" class="absolute left-3.5 top-3 w-4 h-4 text-gray-400"></i>
-                        <input type="text" id="loginUser" placeholder="Ex: BEPE" class="w-full pl-10 pr-3 py-2.5 bg-pmmg-dark text-sm text-white rounded-xl border border-pmmg-border focus:outline-none focus:border-pmmg-khaki font-mono uppercase" autocomplete="off">
+                        <i data-lucide="user" class="absolute left-3.5 top-3 w-4 h-4 text-gray-400 pointer-events-none"></i>
+                        <input type="text" id="loginUser" placeholder="Digite seu usuário" class="w-full pl-10 pr-3 py-2.5 bg-pmmg-dark text-sm text-white rounded-xl border border-pmmg-border focus:outline-none focus:border-pmmg-khaki font-mono uppercase" autocomplete="username" autocapitalize="characters">
                     </div>
                 </div>
 
                 <div class="space-y-1.5">
-                    <label class="text-[11px] font-bold uppercase tracking-wider text-pmmg-khaki">Senha Operacional:</label>
+                    <label for="loginPass" class="text-[11px] font-bold uppercase tracking-wider text-pmmg-khaki">Senha:</label>
                     <div class="relative">
-                        <i data-lucide="lock" class="absolute left-3.5 top-3 w-4 h-4 text-gray-400"></i>
-                        <input type="password" id="loginPass" placeholder="•••••••" class="w-full pl-10 pr-3 py-2.5 bg-pmmg-dark text-sm text-white rounded-xl border border-pmmg-border focus:outline-none focus:border-pmmg-khaki font-mono uppercase">
+                        <i data-lucide="lock" class="absolute left-3.5 top-3 w-4 h-4 text-gray-400 pointer-events-none"></i>
+                        <input type="password" id="loginPass" placeholder="Digite sua senha" class="w-full pl-10 pr-11 py-2.5 bg-pmmg-dark text-sm text-white rounded-xl border border-pmmg-border focus:outline-none focus:border-pmmg-khaki font-mono uppercase" autocomplete="current-password">
+                        <button type="button" onclick="window.togglePasswordVisibility()" id="btnToggleEye" class="absolute right-2.5 top-2 p-1.5 text-gray-400 hover:text-pmmg-khaki rounded-lg transition-colors" title="Mostrar / Ocultar Senha">
+                            <svg id="eyeIconOpen" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4">
+                                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                            <svg id="eyeIconClosed" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 hidden">
+                                <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/>
+                                <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/>
+                                <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/>
+                                <line x1="2" x2="22" y1="2" y2="22"/>
+                            </svg>
+                        </button>
                     </div>
                 </div>
 
-                <div id="loginErrorMsg" class="hidden text-xs text-red-400 font-bold bg-red-950/40 p-2.5 rounded-lg border border-red-500/40 text-center">
-                    ❌ Credenciais incorretas. Utilize BEPE / COLISEU.
+                <div class="flex items-center gap-2.5 pt-1">
+                    <input type="checkbox" id="trustDevice" checked class="w-4 h-4 rounded bg-pmmg-dark border-pmmg-border text-pmmg-khaki focus:ring-pmmg-khaki accent-[#C2B280] cursor-pointer">
+                    <label for="trustDevice" class="text-xs text-gray-300 cursor-pointer select-none font-medium">Confio neste dispositivo (Salvar senha)</label>
                 </div>
 
-                <button onclick="handleAzimuteLogin()" class="w-full py-3 bg-pmmg-khaki hover:bg-pmmg-khakiHover text-pmmg-black font-extrabold text-sm rounded-xl shadow-lg uppercase tracking-wider transition-all flex items-center justify-center gap-2">
-                    <i data-lucide="key-round" class="w-4 h-4"></i> ACESSAR SISTEMA AZIMUTE
+                <div id="loginErrorMsg" class="hidden text-xs text-red-400 font-bold bg-red-950/60 p-2.5 rounded-lg border border-red-500/50 text-center">
+                    ❌ Usuário ou senha incorretos. Tente novamente.
+                </div>
+
+                <button type="submit" onclick="window.handleAzimuteLogin()" class="w-full py-3 bg-pmmg-khaki hover:bg-pmmg-khakiHover active:scale-[0.99] text-pmmg-black font-extrabold text-sm rounded-xl shadow-lg uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer">
+                    <i data-lucide="key-round" class="w-4 h-4"></i> ENTRAR NO AZIMUTE
                 </button>
-            </div>
+            </form>
 
             <div class="pt-2 border-t border-pmmg-border text-center">
-                <p class="text-[10px] text-gray-500">Polícia Militar de Minas Gerais • Região Metropolitana de Belo Horizonte</p>
+                <p class="text-[10px] text-gray-500">AZIMUTE • Consulta Operacional Rápida</p>
             </div>
         </div>
     </div>
-
-
 
     <!-- TOAST DE NOTIFICAÇÃO -->
     <div id="toast" class="fixed bottom-20 md:bottom-6 right-4 z-50 hidden bg-pmmg-khaki text-pmmg-black font-bold px-4 py-2.5 rounded-lg shadow-2xl flex items-center gap-2 border border-pmmg-gold">
@@ -6468,185 +6483,99 @@
         };
     </script>
 
-    <!-- SINCRONIZAÇÃO EM NUVEM AUTOMÁTICA (IMPEDE PERDA DE DADOS AO ATUALIZAR O CÓDIGO) -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        <!-- SCRIPT GLOBAL DE AUTENTICAÇÃO, ARQUITETURA MODULAR E FUNÇÕES TÁTICAS -->
+    <script>
+        // 1. VISIBILIDADE DA SENHA ("OLINHO" COM SVG NATIVO INDEPENDENTE DE BIBLIOTECA EXTERNA)
+        window.togglePasswordVisibility = function() {
+            const passInput = document.getElementById('loginPass');
+            const eyeOpen = document.getElementById('eyeIconOpen');
+            const eyeClosed = document.getElementById('eyeIconClosed');
+            if (!passInput) return;
 
-        const ALL_PERSISTENT_FIELD_IDS = [
-            'projectIdeasInput',
-            'notepad18',
-            'droneNotepadMineirao',
-            'droneHeightMineirao',
-            'droneSignalMineirao',
-            'droneCollisionMineirao',
-            'droneDifficultiesMineirao',
-            'droneNotepadArenaMrv',
-            'droneHeightArenaMrv',
-            'droneSignalArenaMrv',
-            'droneCollisionArenaMrv',
-            'droneDifficultiesArenaMrv',
-            'droneNotepadIndependencia',
-            'droneHeightIndependencia',
-            'droneSignalIndependencia',
-            'droneCollisionIndependencia',
-            'droneDifficultiesIndependencia'
-        ];
-
-        let db = null;
-        let auth = null;
-        let currentUser = null;
-        let saveTimeout = null;
-        let isApplyingRemote = false;
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'azimute-pmmg-app';
-
-        async function initCloudPersistence() {
-            try {
-                if (typeof __firebase_config === 'undefined' || !__firebase_config) return;
-                const firebaseConfig = JSON.parse(__firebase_config);
-                const app = initializeApp(firebaseConfig);
-                db = getFirestore(app);
-                auth = getAuth(app);
-
-                // REGRA 3: Autenticar ANTES de qualquer consulta
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
-                currentUser = auth.currentUser;
-                if (!currentUser) return;
-
-                // REGRA 1: Caminho estrito para persistência contínua entre recarregamentos da Prévia
-                const sharedDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'azimute_workspace_data', 'main_state');
-
-                // Busca imediata ao abrir a pré-visualização
-                const snap = await getDoc(sharedDocRef);
-                if (snap.exists()) {
-                    applyCloudDataToFields(snap.data());
-                } else {
-                    // Se ainda não existe na nuvem, salva o que estiver preenchido localmente
-                    await pushFieldsToCloud(false);
-                }
-
-                // Escuta em tempo real com callback de erro obrigatório
-                onSnapshot(
-                    sharedDocRef,
-                    (docSnap) => {
-                        if (docSnap.exists()) {
-                            applyCloudDataToFields(docSnap.data());
-                        }
-                    },
-                    (err) => {
-                        console.warn('Aviso de leitura em nuvem:', err);
-                    }
-                );
-            } catch (e) {
-                console.warn(' Persistência local ativa:', e);
-            }
-        }
-
-        function applyCloudDataToFields(data) {
-            if (!data) return;
-            isApplyingRemote = true;
-            ALL_PERSISTENT_FIELD_IDS.forEach(fieldId => {
-                const el = document.getElementById(fieldId);
-                if (el && typeof data[fieldId] === 'string') {
-                    // Não sobrescreve se o usuário estiver digitando neste exato campo agora
-                    if (document.activeElement !== el || !el.value) {
-                        el.value = data[fieldId];
-                    }
-                }
-            });
-            const statusEl = document.getElementById('ideasSaveStatus');
-            if (statusEl) statusEl.textContent = 'Sincronizado na Nuvem';
-            isApplyingRemote = false;
-        }
-
-        async function pushFieldsToCloud(notifyUser = false) {
-            if (!db || !currentUser || isApplyingRemote) return;
-            try {
-                const payload = { updatedAt: Date.now() };
-                ALL_PERSISTENT_FIELD_IDS.forEach(fieldId => {
-                    const el = document.getElementById(fieldId);
-                    if (el) {
-                        payload[fieldId] = el.value || '';
-                    }
-                });
-
-                const sharedDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'azimute_workspace_data', 'main_state');
-                await setDoc(sharedDocRef, payload, { merge: true });
-
-                const statusEl = document.getElementById('ideasSaveStatus');
-                if (statusEl) statusEl.textContent = 'Salvo na Nuvem ✓';
-                if (notifyUser && typeof showToast === 'function') {
-                    showToast('Salvo na nuvem! Não será apagado nas próximas atualizações.');
-                }
-            } catch (err) {
-                const statusEl = document.getElementById('ideasSaveStatus');
-                if (statusEl) statusEl.textContent = 'Salvo no navegador';
-            }
-        }
-
-        window.syncAllNotesToCloud = function(immediateNotify = false) {
-            if (saveTimeout) clearTimeout(saveTimeout);
-            if (immediateNotify) {
-                pushFieldsToCloud(true);
+            if (passInput.type === 'password') {
+                passInput.type = 'text';
+                if (eyeOpen) eyeOpen.classList.add('hidden');
+                if (eyeClosed) eyeClosed.classList.remove('hidden');
             } else {
-                saveTimeout = setTimeout(() => {
-                    pushFieldsToCloud(false);
-                }, 400);
+                passInput.type = 'password';
+                if (eyeOpen) eyeOpen.classList.remove('hidden');
+                if (eyeClosed) eyeClosed.classList.add('hidden');
             }
         };
 
-        
-        // LOGIN HANDLING (BEPE / COLISEU)
-        function handleAzimuteLogin() {
-            const u = document.getElementById('loginUser').value.trim().toUpperCase();
-            const p = document.getElementById('loginPass').value.trim().toUpperCase();
+        // 2. LOGIN TÁTICO (CREDENCIAIS INTERNAS: BEPE / COLISEU)
+        window.handleAzimuteLogin = function() {
+            const userEl = document.getElementById('loginUser');
+            const passEl = document.getElementById('loginPass');
+            const trustEl = document.getElementById('trustDevice');
             const errDiv = document.getElementById('loginErrorMsg');
+            const modal = document.getElementById('azimuteLoginModal');
+
+            const u = (userEl ? userEl.value : '').trim().toUpperCase();
+            const p = (passEl ? passEl.value : '').trim().toUpperCase();
+            const trust = trustEl ? trustEl.checked : false;
 
             if (u === 'BEPE' && p === 'COLISEU') {
-                localStorage.setItem('azimute_auth', 'authenticated');
-                document.getElementById('azimuteLoginModal').classList.add('hidden');
-                if (typeof showToast === 'function') showToast('🔓 Acesso liberado! Bem-vindo ao AZIMUTE.');
+                try {
+                    sessionStorage.setItem('azimute_session_auth', 'authenticated');
+                    if (trust) {
+                        localStorage.setItem('azimute_trusted_device', 'authenticated');
+                    } else {
+                        localStorage.removeItem('azimute_trusted_device');
+                    }
+                } catch (e) {}
+
+                if (modal) {
+                    modal.classList.add('hidden');
+                    modal.style.display = 'none';
+                }
+                if (errDiv) errDiv.classList.add('hidden');
+                if (typeof showToast === 'function') showToast('🔓 Acesso autorizado! Bem-vindo ao AZIMUTE.');
             } else {
-                errDiv.classList.remove('hidden');
-                setTimeout(() => errDiv.classList.add('hidden'), 4000);
+                if (errDiv) {
+                    errDiv.classList.remove('hidden');
+                    setTimeout(() => errDiv.classList.add('hidden'), 4000);
+                }
             }
+        };
+
+        // Verifica se o dispositivo já foi marcado como confiável ("Confio neste dispositivo")
+        function checkSavedDeviceTrust() {
+            try {
+                const isTrusted = localStorage.getItem('azimute_trusted_device') === 'authenticated';
+                const isSession = sessionStorage.getItem('azimute_session_auth') === 'authenticated';
+                if (isTrusted || isSession) {
+                    const modal = document.getElementById('azimuteLoginModal');
+                    if (modal) {
+                        modal.classList.add('hidden');
+                        modal.style.display = 'none';
+                    }
+                }
+            } catch (e) {}
         }
+        checkSavedDeviceTrust();
+        document.addEventListener('DOMContentLoaded', checkSavedDeviceTrust);
 
-        // Check auth on load
-        document.addEventListener('DOMContentLoaded', () => {
-            const isAuth = localStorage.getItem('azimute_auth');
-            if (isAuth === 'authenticated') {
-                const modal = document.getElementById('azimuteLoginModal');
-                if (modal) modal.classList.add('hidden');
-            }
-            if (typeof lucide !== 'undefined') lucide.createIcons();
-        });
-
-        // WHATSAPP SHARE LOCATION BUTTON
-        function shareLocationViaWhatsApp() {
+        // 3. COMPARTILHAMENTO RÁPIDO DE QTH NO WHATSAPP
+        window.shareLocationViaWhatsApp = function() {
             const street = document.getElementById('hudCurrentStreet') ? document.getElementById('hudCurrentStreet').textContent : 'Localização atual';
             const sub = document.getElementById('hudCurrentSuburb') ? document.getElementById('hudCurrentSuburb').textContent : '';
             const radio = document.getElementById('hudRadioChannel') ? document.getElementById('hudRadioChannel').textContent : '';
             const hosp = document.getElementById('hudClosestHospital') ? document.getElementById('hudClosestHospital').textContent : '';
 
-            const text = `🚨 *STATUS OPERACIONAL - AZIMUTE PMMG*\n` +
+            const text = `🚨 *STATUS OPERACIONAL - AZIMUTE*\n` +
                          `📍 *QTH:* ${street}\n` +
                          `📌 *Região:* ${sub}\n` +
                          `📻 *Canaleta:* ${radio}\n` +
                          `🏥 *Socorro Ref.:* ${hosp}\n` +
-                         `⚡ *Enviado via AZIMUTE Tático*`;
+                         `⚡ *Enviado via AZIMUTE*`;
 
             const url = `https://wa.me/?text=` + encodeURIComponent(text);
             window.open(url, '_blank');
-        }
+        };
 
-        // VOICE COMMANDS (SPEECH RECOGNITION)
-        function startVoiceCommand() {
+        // 4. COMANDOS DE VOZ (SPEECH RECOGNITION)
+        window.startVoiceCommand = function() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRecognition) {
                 alert('Seu navegador não suporta comandos de voz.');
@@ -6666,7 +6595,7 @@
                 const searchInput = document.getElementById('globalSearch');
                 if (searchInput) {
                     searchInput.value = speechResult;
-                    handleGlobalSearch();
+                    if (typeof handleGlobalSearch === 'function') handleGlobalSearch();
                 }
 
                 if (speechResult.includes('estádio') || speechResult.includes('mineirão') || speechResult.includes('estadio')) {
@@ -6685,22 +6614,19 @@
             };
 
             recognition.start();
-        }
+        };
 
-        
-        // ================= ARQUITETURA MODULAR (DADOS.JSON + SERVICE WORKER + CLIMA + TELA BLOQUEADA) =================
+        // 5. ARQUITETURA MODULAR (DADOS.JSON + SERVICE WORKER + CLIMA + TELA BLOQUEADA)
         let AZIMUTE_DB = null;
         let currentDrawerUnit = null;
         let lockScreenNotifyEnabled = false;
 
-        // Registra o Service Worker (Modo Avião e Atualização Automática)
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js').catch(() => {});
             });
         }
 
-        // Carrega as "Gavetas" do arquivo externo dados.json
         async function loadExternalDadosJson() {
             try {
                 const res = await fetch('./dados.json?v=' + Date.now());
@@ -6713,8 +6639,6 @@
         }
         loadExternalDadosJson();
 
-        // Sobrescreve openBattalionPlaceholder para abrir a Gaveta Modular com os dados do dados.json
-        const originalOpenPlaceholder = window.openBattalionPlaceholder;
         window.openBattalionPlaceholder = function(unitName, city, address) {
             let foundUnit = null;
             if (AZIMUTE_DB) {
@@ -6744,10 +6668,10 @@
             document.getElementById('skeletonMapsBtn').href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(currentDrawerUnit.endereco_sede + ' ' + currentDrawerUnit.cidade);
 
             showView('skeleton');
-            switchDrawerTab('cias');
+            window.switchDrawerTab('cias');
         };
 
-        function switchDrawerTab(tab) {
+        window.switchDrawerTab = function(tab) {
             ['cias', 'apoio', 'divisas', 'orgaos', 'contatos'].forEach(t => {
                 const btn = document.getElementById('dtab-' + t);
                 if (btn) {
@@ -6825,10 +6749,9 @@
                     </div>`).join('') + `</div>`;
             }
             if (typeof lucide !== 'undefined') lucide.createIcons();
-        }
+        };
 
-        // NOTIFICAÇÃO DE RUA NA TELA BLOQUEADA DO CELULAR (LOCK SCREEN)
-        async function toggleLockScreenStreetNotify() {
+        window.toggleLockScreenStreetNotify = async function() {
             if (!('Notification' in window)) {
                 alert('Seu navegador não suporta notificações na tela bloqueada.');
                 return;
@@ -6839,7 +6762,7 @@
                     lockScreenNotifyEnabled = true;
                     document.getElementById('lblLockNotify').textContent = '🔔 Tela Bloq. ATIVA';
                     document.getElementById('btnLockScreenNotify').className = 'py-2 px-2.5 rounded-xl bg-emerald-950 text-emerald-400 border border-emerald-500/60 font-bold text-[11px] flex items-center justify-center gap-1.5 shadow transition-all';
-                    sendStreetLockNotification();
+                    window.sendStreetLockNotification();
                     if (typeof showToast === 'function') showToast('🔔 Nome da rua aparecerá na tela de bloqueio!');
                 } else {
                     alert('Permita as notificações no navegador para ver a rua na tela bloqueada.');
@@ -6849,9 +6772,9 @@
                 document.getElementById('lblLockNotify').textContent = 'Rua na Tela Bloq.';
                 document.getElementById('btnLockScreenNotify').className = 'py-2 px-2.5 rounded-xl bg-pmmg-dark hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-khaki/40 font-bold text-[11px] flex items-center justify-center gap-1.5 shadow transition-all';
             }
-        }
+        };
 
-        function sendStreetLockNotification() {
+        window.sendStreetLockNotification = function() {
             if (!lockScreenNotifyEnabled || Notification.permission !== 'granted') return;
             const street = document.getElementById('hudCurrentStreet').textContent;
             const radio = document.getElementById('hudRadioChannel').textContent;
@@ -6866,17 +6789,16 @@
                     });
                 });
             }
-        }
+        };
 
-        // MONITORAMENTO DE CLIMA E ALERTA DE VIAS DE ALAGAMENTO (OPEN-METEO GRATUITO SEM CHAVE)
-        async function checkWeatherAndFloodRisk() {
+        window.checkWeatherAndFloodRisk = async function() {
             const banner = document.getElementById('weatherFloodBanner');
             const txt = document.getElementById('weatherForecastText');
             const list = document.getElementById('floodZonesList');
             banner.classList.remove('hidden');
 
-            const lat = azimuteLastGeoLat || -19.9162;
-            const lon = azimuteLastGeoLon || -44.0809;
+            const lat = (typeof azimuteLastGeoLat !== 'undefined' && azimuteLastGeoLat) ? azimuteLastGeoLat : -19.9162;
+            const lon = (typeof azimuteLastGeoLon !== 'undefined' && azimuteLastGeoLon) ? azimuteLastGeoLon : -44.0809;
 
             try {
                 const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,precipitation,rain&hourly=precipitation_probability,rain&forecast_days=1&timezone=America%2FSao_Paulo`;
@@ -6902,9 +6824,7 @@
             } catch (e) {
                 txt.textContent = 'Modo Offline: Exibindo carta preventiva de pontos críticos de alagamento na RMBH.';
             }
-        }
-
-        initCloudPersistence();
+        };
     </script>
 </body>
 </html>

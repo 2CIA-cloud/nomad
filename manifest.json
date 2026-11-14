@@ -1,7 +1,7 @@
 {
-  "name": "AZIMUTE - Guia Tático PMMG",
+  "name": "AZIMUTE",
   "short_name": "AZIMUTE",
-  "description": "Sistema Geral de Consulta Rápida e Sobrevivência Operacional - PMMG",
+  "description": "Sistema Geral de Consulta Rápida e Sobrevivência Operacional",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0F0F0F",
