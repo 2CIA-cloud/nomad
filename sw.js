@@ -1,34 +1,52 @@
-const CACHE_NAME = 'azimute-pmmg-v955-clean';
-const ASSETS = [
+const CACHE_NAME = 'azimute-v4.2-base-recuperada';
+const ASSETS_TO_CACHE = [
   './',
   './index.html',
+  './dados.json',
   './manifest.json'
 ];
 
-self.addEventListener('install', (e) => {
+// Instala e guarda os arquivos principais na memória do celular (Modo Avião)
+self.addEventListener('install', (event) => {
   self.skipWaiting();
-  e.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(ASSETS_TO_CACHE);
+    })
   );
 });
 
-self.addEventListener('activate', (e) => {
-  e.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(keys.map((k) => k !== CACHE_NAME && caches.delete(k)))
-    ).then(() => self.clients.claim())
+// Limpa caches antigos automaticamente quando você sobe atualização no GitHub
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((keys) => {
+      return Promise.all(
+        keys.map((key) => {
+          if (key !== CACHE_NAME) {
+            return caches.delete(key);
+          }
+        })
+      );
+    }).then(() => self.clients.claim())
   );
 });
 
-// Network-First strategy: sempre busca o código atualizado no GitHub e usa o cache apenas quando estiver SEM SINAL
-self.addEventListener('fetch', (e) => {
-  e.respondWith(
-    fetch(e.request)
-      .then((res) => {
-        const resClone = res.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(e.request, resClone));
-        return res;
+// Estratégia Network-First para dados.json e index.html (sempre busca a versão mais nova se tiver internet; se estiver sem sinal no beco/estádio, usa a memória offline)
+self.addEventListener('fetch', (event) => {
+  const req = event.request;
+  if (req.method !== 'GET') return;
+
+  event.respondWith(
+    fetch(req)
+      .then((networkRes) => {
+        const resClone = networkRes.clone();
+        caches.open(CACHE_NAME).then((cache) => {
+          cache.put(req, resClone);
+        });
+        return networkRes;
       })
-      .catch(() => caches.match(e.request))
+      .catch(() => {
+        return caches.match(req);
+      })
   );
 });
