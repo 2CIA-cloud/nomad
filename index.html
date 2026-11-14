@@ -8,6 +8,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <title>AZIMUTE</title>
   <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
     :root {
       --bg-base: #0a0a0a;
@@ -49,7 +50,7 @@
     .app-header {
       position: sticky;
       top: 0;
-      z-index: 100;
+      z-index: 1000;
       background-color: rgba(10, 10, 10, 0.96);
       backdrop-filter: blur(8px);
       border-bottom: 1px solid var(--border-subtle);
@@ -125,6 +126,7 @@
       gap: 8px;
       flex: 1;
       min-width: 0;
+      cursor: pointer;
     }
 
     .status-dot {
@@ -488,7 +490,53 @@
       border-color: var(--khaki-muted);
     }
 
-    /* RODAPÉ FIXO */
+    /* ABA GEOLOCALIZAÇÃO E MAPA TÁTICO */
+    .geo-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .geo-metric {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 5px;
+      padding: 9px 10px;
+    }
+
+    .geo-metric-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .geo-metric-value {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--khaki-primary);
+      word-break: break-all;
+    }
+
+    #tacticalMap {
+      width: 100%;
+      height: 250px;
+      background-color: #0e0e0e;
+      border: 1px solid var(--border-focus);
+      border-radius: 6px;
+      margin-bottom: 10px;
+      z-index: 10;
+    }
+
+    .leaflet-tile-pane {
+      filter: invert(100%) hue-rotate(180deg) brightness(92%) contrast(90%);
+    }
+
+    /* RODAPÉ FIXO (6 ABAS COMPACTAS) */
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -498,8 +546,8 @@
       background-color: #0c0c0c;
       border-top: 1px solid var(--border-subtle);
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      z-index: 200;
+      grid-template-columns: repeat(6, 1fr);
+      z-index: 1000;
     }
 
     .nav-btn {
@@ -513,20 +561,22 @@
       gap: 4px;
       cursor: pointer;
       position: relative;
+      padding: 0 2px;
     }
 
     .nav-btn svg {
-      width: 18px;
-      height: 18px;
+      width: 17px;
+      height: 17px;
       stroke: currentColor;
       stroke-width: 1.8;
       fill: none;
     }
 
     .nav-btn span {
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 700;
-      letter-spacing: 0.4px;
+      letter-spacing: 0.2px;
+      white-space: nowrap;
     }
 
     .nav-btn.active {
@@ -537,8 +587,8 @@
       content: "";
       position: absolute;
       top: 0;
-      left: 20%;
-      right: 20%;
+      left: 16%;
+      right: 16%;
       height: 2px;
       background-color: var(--khaki-primary);
     }
@@ -548,7 +598,7 @@
       position: fixed;
       inset: 0;
       background: rgba(0, 0, 0, 0.82);
-      z-index: 300;
+      z-index: 1200;
       display: none;
       align-items: center;
       justify-content: center;
@@ -580,14 +630,14 @@
       <div class="brand">
         <div class="brand-mark"></div>
         <span class="brand-title">AZIMUTE</span>
-        <span class="brand-version">v2.0.2</span>
+        <span class="brand-version">v2.2.0</span>
       </div>
       <span class="section-indicator" id="headerSectionLabel">INÍCIO</span>
     </div>
 
     <div class="telemetry-bar">
       <div class="telemetry-row">
-        <div class="qth-box">
+        <div class="qth-box" onclick="switchMainTab('geo', 'GEOLOCALIZAÇÃO', document.getElementById('navBtnGeo'))">
           <span class="status-dot" id="gpsStatusDot"></span>
           <div style="min-width:0; flex:1;">
             <div class="qth-text" id="qthStreet">GPS INATIVO — TOQUE EM ATIVAR QTH</div>
@@ -615,7 +665,7 @@
         <circle cx="11" cy="11" r="8"></circle>
         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
       </svg>
-      <input type="text" id="omniboxInput" class="search-input" placeholder="Buscar unidade, cia, hospital, estádio ou sistema..." oninput="filterOmnibox()" />
+      <input type="text" id="omniboxInput" class="search-input" placeholder="Buscar unidade, cia, hospital, estádio, rua ou sistema..." oninput="filterOmnibox()" />
       <button class="search-clear" id="btnClearSearch" onclick="clearOmnibox()">×</button>
     </div>
   </div>
@@ -654,7 +704,7 @@
             <span class="card-tag">ANATEL</span>
           </div>
           <span class="sys-btn-sub">Celular Legal (*#06#)</span>
-        </a>
+        </div>
 
         <a href="https://sarpas.decea.mil.br/login" target="_blank" rel="noopener" class="sys-btn searchable">
           <div class="sys-btn-top">
@@ -678,7 +728,8 @@
           </div>
           <p class="card-desc">Atenção redobrada sob chuva &gt; 5 mm/h: Av. Tereza Cristina, Av. Vilarinho, Via Expressa (Contagem/BH) e Ribeirão Pampulha.</p>
           <div class="card-actions">
-            <button class="btn-action" onclick="openMapsQuery('Hospitais de Pronto Socorro proximos')">Hospitais Próximos (GPS)</button>
+            <button class="btn-action" onclick="switchMainTab('geo', 'GEOLOCALIZAÇÃO', document.getElementById('navBtnGeo'))">Abrir Painel QTH / Mapa</button>
+            <button class="btn-action" onclick="openMapsQuery('Hospitais de Pronto Socorro proximos')">Hospitais Próximos</button>
             <button class="btn-action" onclick="openModal('modalCodigoQ')">Código Q / Fonético</button>
           </div>
         </div>
@@ -699,7 +750,107 @@
       </div>
     </section>
 
-    <!-- ABA 2: 18º BPM -->
+    <!-- ABA 2: GEOLOCALIZAÇÃO (QTH TÁTICO & MAPA) -->
+    <section id="view-geo" class="tab-view">
+      <div class="section-header">
+        <span class="section-title">Telemetria GPS &amp; QTH Exato</span>
+        <span class="section-meta">TEMPO REAL</span>
+      </div>
+
+      <div class="tactical-card" style="margin-bottom:10px;">
+        <div class="card-top">
+          <span class="card-title" id="geoFullAddress">Aguardando ativação do GPS...</span>
+          <span class="card-tag" id="geoStatusBadge">INATIVO</span>
+        </div>
+        <p class="card-desc" id="geoSubAddress">Toque em "ATIVAR QTH" no topo para iniciar o rastreamento contínuo com tela acesa (Wake Lock) e número aproximado da via.</p>
+        <div class="card-actions">
+          <button class="btn-action" onclick="copyCurrentQTH()" style="border-color:var(--khaki-primary); color:var(--khaki-primary);">Copiar QTH Completo</button>
+          <button class="btn-action" onclick="shareCurrentQTH()">Compartilhar QTH</button>
+          <button class="btn-action" onclick="openCurrentCoordsInMaps()">Abrir no Google Maps</button>
+          <button class="btn-action" onclick="openCurrentCoordsInWaze()">Abrir no Waze</button>
+        </div>
+      </div>
+
+      <div class="geo-grid">
+        <div class="geo-metric">
+          <span class="geo-metric-label">LATITUDE / LONGITUDE</span>
+          <span class="geo-metric-value" id="geoLatLon">--.-----, --.-----</span>
+        </div>
+        <div class="geo-metric">
+          <span class="geo-metric-label">PRECISÃO / ALTITUDE</span>
+          <span class="geo-metric-value" id="geoAccAlt">±-- m | Alt: -- m</span>
+        </div>
+        <div class="geo-metric">
+          <span class="geo-metric-label">VELOCIDADE / RUMO</span>
+          <span class="geo-metric-value" id="geoSpeedHead">0 km/h | ---°</span>
+        </div>
+        <div class="geo-metric">
+          <span class="geo-metric-label">UNIDADE / ÁREA ESTIMADA</span>
+          <span class="geo-metric-value" id="geoEstimatedUnit">RMBH / PMMG</span>
+        </div>
+      </div>
+
+      <div class="section-header">
+        <span class="section-title">Mapa Tático de Posição</span>
+        <span class="section-meta">OPENSTREETMAP DARK</span>
+      </div>
+
+      <div id="tacticalMap"></div>
+
+      <div class="section-header">
+        <span class="section-title">Varredura Rápida de Entorno (Raio GPS)</span>
+        <span class="section-meta">APOIO IMEDIATO</span>
+      </div>
+
+      <div class="systems-grid" style="margin-bottom:12px;">
+        <div onclick="openMapsNearMe('Hospitais e UPA Pronto Socorro')" class="sys-btn searchable">
+          <div class="sys-btn-top">
+            <span class="sys-btn-title">HOSPITAIS / UPA</span>
+            <span class="card-tag">SAÚDE</span>
+          </div>
+          <span class="sys-btn-sub">Socorro Médico Próximo</span>
+        </div>
+
+        <div onclick="openMapsNearMe('Delegacia de Policia Civil Plantao')" class="sys-btn searchable">
+          <div class="sys-btn-top">
+            <span class="sys-btn-title">DELEGACIA / CEFLAN</span>
+            <span class="card-tag">PCMG</span>
+          </div>
+          <span class="sys-btn-sub">Plantão Policial Próximo</span>
+        </div>
+
+        <div onclick="openMapsNearMe('Batalhao Companhia Policia Militar PMMG')" class="sys-btn searchable">
+          <div class="sys-btn-top">
+            <span class="sys-btn-title">UNIDADES PMMG</span>
+            <span class="card-tag">APOIO</span>
+          </div>
+          <span class="sys-btn-sub">Bases e Cias no Entorno</span>
+        </div>
+
+        <div onclick="openMapsNearMe('Posto de Combustivel 24 horas')" class="sys-btn searchable">
+          <div class="sys-btn-top">
+            <span class="sys-btn-title">ABASTECIMENTO</span>
+            <span class="card-tag">LOGÍSTICA</span>
+          </div>
+          <span class="sys-btn-sub">Postos no Entorno</span>
+        </div>
+      </div>
+
+      <div class="section-header">
+        <span class="section-title">Histórico de QTHs Fixados no Turno</span>
+        <span class="section-meta">MEMÓRIA LOCAL</span>
+      </div>
+
+      <div class="tactical-card">
+        <div class="card-actions" style="margin-bottom:8px; margin-top:0;">
+          <button class="btn-action" onclick="logCurrentQthMark()" style="border-color:var(--khaki-primary); color:var(--khaki-primary);">Fixar Posição Atual no Histórico</button>
+          <button class="btn-action" onclick="clearQthHistory()">Limpar Histórico</button>
+        </div>
+        <div id="qthHistoryList" class="card-list"></div>
+      </div>
+    </section>
+
+    <!-- ABA 3: 18º BPM -->
     <section id="view-18bpm" class="tab-view">
       <div class="subnav-scroll">
         <button class="subnav-pill active" onclick="switchSubTab('18bpm', 'cias', this)">Companhias</button>
@@ -820,7 +971,7 @@
       </div>
     </section>
 
-    <!-- ABA 3: RPM & ESPECIALIZADAS -->
+    <!-- ABA 4: RPM & ESPECIALIZADAS -->
     <section id="view-rpm" class="tab-view">
       <div class="section-header">
         <span class="section-title">2ª RPM — Região Metropolitana</span>
@@ -886,7 +1037,7 @@
       </div>
     </section>
 
-    <!-- ABA 4: ESTÁDIOS -->
+    <!-- ABA 5: ESTÁDIOS -->
     <section id="view-estadios" class="tab-view">
       <div class="section-header">
         <span class="section-title">Setorização de Praças Desportivas</span>
@@ -929,7 +1080,7 @@
       </div>
     </section>
 
-    <!-- ABA 5: SISTEMAS -->
+    <!-- ABA 6: SISTEMAS -->
     <section id="view-sistemas" class="tab-view">
       <div class="section-header">
         <span class="section-title">Central de Sistemas Operacionais</span>
@@ -1063,11 +1214,15 @@
     </div>
   </div>
 
-  <!-- RODAPÉ DE NAVEGAÇÃO (5 ABAS) -->
+  <!-- RODAPÉ DE NAVEGAÇÃO (6 ABAS COM GEOLOCALIZAÇÃO) -->
   <nav class="bottom-nav">
     <button class="nav-btn active" onclick="switchMainTab('inicio', 'INÍCIO', this)">
       <svg viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9.5z"/></svg>
       <span>INÍCIO</span>
+    </button>
+    <button class="nav-btn" id="navBtnGeo" onclick="switchMainTab('geo', 'GEOLOCALIZAÇÃO', this)">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="8"/><line x1="12" y1="1" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="23"/><line x1="1" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="23" y2="12"/></svg>
+      <span>QTH / GEO</span>
     </button>
     <button class="nav-btn" onclick="switchMainTab('18bpm', '18º BPM', this)">
       <svg viewBox="0 0 24 24"><path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3z"/></svg>
@@ -1087,8 +1242,50 @@
     </button>
   </nav>
 
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
-    // 1. NAVEGAÇÃO DO RODAPÉ COM SCROLL INSTANTÂNEO AO TOPO E LIMPEZA DE BUSCA
+    // 1. NAVEGAÇÃO DO RODAPÉ COM SCROLL INSTANTÂNEO AO TOPO E MAPA
+    let mapInstance = null;
+    let mapMarker = null;
+    let mapCircle = null;
+    let currentLat = -19.9320;
+    let currentLon = -44.0537;
+
+    function initTacticalMap() {
+      if (mapInstance || typeof L === 'undefined') return;
+      mapInstance = L.map('tacticalMap', { zoomControl: true }).setView([currentLat, currentLon], 15);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OSM'
+      }).addTo(mapInstance);
+
+      mapMarker = L.circleMarker([currentLat, currentLon], {
+        radius: 7,
+        fillColor: '#c5b358',
+        color: '#000',
+        weight: 2,
+        opacity: 1,
+        fillOpacity: 1
+      }).addTo(mapInstance);
+
+      mapCircle = L.circle([currentLat, currentLon], {
+        radius: 30,
+        color: '#c5b358',
+        fillColor: '#c5b358',
+        fillOpacity: 0.15,
+        weight: 1
+      }).addTo(mapInstance);
+    }
+
+    function updateTacticalMap(lat, lon, acc) {
+      if (!mapInstance) initTacticalMap();
+      if (!mapInstance) return;
+      mapMarker.setLatLng([lat, lon]);
+      mapCircle.setLatLng([lat, lon]);
+      mapCircle.setRadius(Math.max(acc || 15, 10));
+      mapInstance.setView([lat, lon], 17);
+    }
+
     function switchMainTab(tabId, labelText, btnElement) {
       const searchInput = document.getElementById('omniboxInput');
       if (searchInput && searchInput.value.trim() !== '') {
@@ -1105,6 +1302,13 @@
 
       const headerLabel = document.getElementById('headerSectionLabel');
       if (headerLabel) headerLabel.textContent = labelText;
+
+      if (tabId === 'geo') {
+        setTimeout(() => {
+          initTacticalMap();
+          if (mapInstance) mapInstance.invalidateSize();
+        }, 120);
+      }
 
       window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
       document.documentElement.scrollTop = 0;
@@ -1123,7 +1327,7 @@
       window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
     }
 
-    // 3. GPS (QTH COM NÚMERO DE RUA APROXIMADO) + WAKE LOCK (TELA ACESA)
+    // 3. GPS (QTH COM NÚMERO DE RUA APROXIMADO) + WAKE LOCK + ABA GEOLOCALIZAÇÃO
     let gpsWatchId = null;
     let wakeLockSentinel = null;
     let lastGeoLookupTime = 0;
@@ -1152,10 +1356,27 @@
       }
     });
 
+    function estimateJurisdiction(city, suburb, lat, lon) {
+      const c = (city || '').toLowerCase();
+      const s = (suburb || '').toLowerCase();
+      if (c.includes('contagem')) {
+        if (s.includes('nacional') || s.includes('ressaca') || s.includes('ceasa') || s.includes('cabral') || s.includes('kennedy') || s.includes('agua branca') || s.includes('água branca') || s.includes('eldorado') || s.includes('jardim laguna') || s.includes('guanabara')) {
+          return '18º BPM (2ª RPM)';
+        }
+        return '18º BPM / 39º BPM (Contagem)';
+      }
+      if (c.includes('betim')) return '33º BPM / 66º BPM (Betim)';
+      if (c.includes('belo horizonte')) return '1ª RPM (Capital BH)';
+      if (c.includes('ribeirão das neves') || c.includes('ribeirao das neves')) return '40º BPM (2ª RPM)';
+      if (c.includes('ibirité') || c.includes('ibirite')) return '48º BPM (2ª RPM)';
+      return 'RMBH / PMMG';
+    }
+
     function toggleGPS() {
       const btn = document.getElementById('btnToggleGps');
       const dot = document.getElementById('gpsStatusDot');
       const streetEl = document.getElementById('qthStreet');
+      const geoBadge = document.getElementById('geoStatusBadge');
 
       if (gpsWatchId !== null) {
         navigator.geolocation.clearWatch(gpsWatchId);
@@ -1165,6 +1386,7 @@
         btn.classList.remove('active');
         dot.classList.remove('active');
         streetEl.textContent = 'GPS PAUSADO — TOQUE EM ATIVAR QTH';
+        if (geoBadge) geoBadge.textContent = 'PAUSADO';
         return;
       }
 
@@ -1177,25 +1399,36 @@
       btn.classList.add('active');
       dot.classList.add('active');
       streetEl.textContent = 'OBTENDO SATÉLITES GPS...';
+      if (geoBadge) geoBadge.textContent = 'RASTREANDO';
       requestWakeLock();
 
       gpsWatchId = navigator.geolocation.watchPosition(
         async (pos) => {
-          const lat = pos.coords.latitude;
-          const lon = pos.coords.longitude;
+          currentLat = pos.coords.latitude;
+          currentLon = pos.coords.longitude;
           const acc = Math.round(pos.coords.accuracy || 0);
-          document.getElementById('qthCoords').textContent = `${lat.toFixed(5)}, ${lon.toFixed(5)} (±${acc}m)`;
+          const alt = pos.coords.altitude ? Math.round(pos.coords.altitude) + ' m' : 'N/D';
+          const spd = pos.coords.speed ? Math.round(pos.coords.speed * 3.6) : 0;
+          const head = pos.coords.heading ? Math.round(pos.coords.heading) + '°' : '---°';
+
+          document.getElementById('qthCoords').textContent = `${currentLat.toFixed(5)}, ${currentLon.toFixed(5)} (±${acc}m)`;
+          document.getElementById('geoLatLon').textContent = `${currentLat.toFixed(5)}, ${currentLon.toFixed(5)}`;
+          document.getElementById('geoAccAlt').textContent = `±${acc} m | Alt: ${alt}`;
+          document.getElementById('geoSpeedHead').textContent = `${spd} km/h | ${head}`;
+
+          updateTacticalMap(currentLat, currentLon, acc);
 
           const now = Date.now();
           if (now - lastGeoLookupTime > 7000) {
             lastGeoLookupTime = now;
-            await reverseGeocodeQTH(lat, lon);
-            fetchWeather(lat, lon);
+            await reverseGeocodeQTH(currentLat, currentLon);
+            fetchWeather(currentLat, currentLon);
           }
         },
         (err) => {
           streetEl.textContent = 'SINAL GPS INDISPONÍVEL (VERIFIQUE PERMISSÃO)';
           dot.classList.remove('active');
+          if (geoBadge) geoBadge.textContent = 'SEM SINAL';
         },
         { enableHighAccuracy: true, maximumAge: 3000, timeout: 12000 }
       );
@@ -1204,6 +1437,10 @@
     async function reverseGeocodeQTH(lat, lon) {
       const streetEl = document.getElementById('qthStreet');
       const neighEl = document.getElementById('qthNeighborhood');
+      const geoFull = document.getElementById('geoFullAddress');
+      const geoSub = document.getElementById('geoSubAddress');
+      const geoUnit = document.getElementById('geoEstimatedUnit');
+
       try {
         const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}&addressdetails=1&zoom=18`;
         const res = await fetch(url, { headers: { 'Accept-Language': 'pt-BR' } });
@@ -1222,12 +1459,88 @@
         const numDisplay = houseNumber ? `, nº ${houseNumber.replace(/^nº\s*/i, '')}` : ' (S/Nº na base)';
         const suburb = addr.suburb || addr.neighbourhood || addr.city_district || addr.quarter || 'Bairro N/D';
         const city = addr.city || addr.town || addr.municipality || 'RMBH';
+        const postcode = addr.postcode ? ` • CEP: ${addr.postcode}` : '';
 
         streetEl.textContent = `${road}${numDisplay}`;
         neighEl.textContent = `${suburb} — ${city}`;
+
+        geoFull.textContent = `${road}${numDisplay}`;
+        geoSub.textContent = `Bairro: ${suburb} — Município: ${city}${postcode}`;
+        geoUnit.textContent = estimateJurisdiction(city, suburb, lat, lon);
+
         lastKnownQthText = `${road}${numDisplay} - ${suburb}, ${city} (${lat.toFixed(5)}, ${lon.toFixed(5)})`;
       } catch (e) {
         streetEl.textContent = `COORDENADAS ATIVAS (${lat.toFixed(5)}, ${lon.toFixed(5)})`;
+        geoFull.textContent = `Coordenadas: ${lat.toFixed(5)}, ${lon.toFixed(5)}`;
+      }
+    }
+
+    // FUNÇÕES DE AÇÃO DA ABA GEOLOCALIZAÇÃO
+    function copyCurrentQTH() {
+      const text = lastKnownQthText || `${currentLat.toFixed(5)}, ${currentLon.toFixed(5)}`;
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(() => alert('QTH copiado: ' + text));
+      } else {
+        alert('QTH atual: ' + text);
+      }
+    }
+
+    function shareCurrentQTH() {
+      const text = `QTH Operacional AZIMUTE: ${lastKnownQthText || (currentLat.toFixed(5) + ', ' + currentLon.toFixed(5))} https://www.google.com/maps?q=${currentLat},${currentLon}`;
+      if (navigator.share) {
+        navigator.share({ title: 'QTH Operacional', text: text }).catch(() => {});
+      } else {
+        copyCurrentQTH();
+      }
+    }
+
+    function openCurrentCoordsInMaps() {
+      window.open(`https://www.google.com/maps/search/?api=1&query=${currentLat},${currentLon}`, '_blank');
+    }
+
+    function openCurrentCoordsInWaze() {
+      window.open(`https://waze.com/ul?ll=${currentLat},${currentLon}&navigate=yes`, '_blank');
+    }
+
+    function openMapsNearMe(category) {
+      const q = `${category} perto de ${currentLat},${currentLon}`;
+      window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`, '_blank');
+    }
+
+    function logCurrentQthMark() {
+      const list = JSON.parse(localStorage.getItem('azimute_qth_history') || '[]');
+      const stamp = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      const label = lastKnownQthText || `${currentLat.toFixed(5)}, ${currentLon.toFixed(5)}`;
+      list.unshift({ time: stamp, qth: label, lat: currentLat, lon: currentLon });
+      localStorage.setItem('azimute_qth_history', JSON.stringify(list.slice(0, 15)));
+      renderQthHistory();
+    }
+
+    function renderQthHistory() {
+      const container = document.getElementById('qthHistoryList');
+      if (!container) return;
+      const list = JSON.parse(localStorage.getItem('azimute_qth_history') || '[]');
+      if (list.length === 0) {
+        container.innerHTML = '<p class="card-desc">Nenhum ponto QTH fixado neste turno.</p>';
+        return;
+      }
+      container.innerHTML = list.map(item => `
+        <div class="tactical-card" style="padding:8px 10px;">
+          <div class="card-top">
+            <span class="card-title" style="font-size:12px;">${item.qth}</span>
+            <span class="card-tag">${item.time}</span>
+          </div>
+          <div class="card-actions">
+            <a href="https://www.google.com/maps/search/?api=1&query=${item.lat},${item.lon}" target="_blank" class="btn-action">Abrir Mapa</a>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function clearQthHistory() {
+      if (confirm('Limpar histórico de posições fixadas?')) {
+        localStorage.removeItem('azimute_qth_history');
+        renderQthHistory();
       }
     }
 
@@ -1358,12 +1671,15 @@
       window.open(url, '_blank');
     }
 
-    // Inicialização
+    // Inicialização + Limpeza Automática de Cache Antigo (v2.0.2)
     window.addEventListener('DOMContentLoaded', () => {
       loadTacticalNotes();
+      renderQthHistory();
       fetchWeather();
       if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js').catch(() => {});
+        navigator.serviceWorker.register('sw.js').then((reg) => {
+          reg.update();
+        }).catch(() => {});
       }
     });
   </script>

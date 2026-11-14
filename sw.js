@@ -1,4 +1,4 @@
-const CACHE_NAME = 'azimute-v2.0.2';
+const CACHE_NAME = 'azimute-v2.2.0';
 const ASSETS = [
   './',
   './index.html',
@@ -26,12 +26,10 @@ self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
   const url = new URL(event.request.url);
 
-  // Ignora cache para APIs externas em tempo real (Open-Meteo e Nominatim)
   if (url.origin !== self.location.origin) {
     return;
   }
 
-  // Estratégia Network-First com fallback seguro para o cache estático
   event.respondWith(
     fetch(event.request)
       .then((response) => {
