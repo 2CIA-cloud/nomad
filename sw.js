@@ -1,39 +1,52 @@
-const CACHE_NAME = 'azimute-v2.0.2-clean';
-const ASSETS = [
+const CACHE_NAME = 'azimute-pmmg-v3.0';
+const ASSETS_TO_CACHE = [
   './',
   './index.html',
-  './manifest.json',
-  './icon.svg'
+  './dados.json',
+  './manifest.json'
 ];
 
+// Instala e guarda os arquivos principais na memória do celular (Modo Avião)
 self.addEventListener('install', (event) => {
   self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(ASSETS_TO_CACHE);
+    })
   );
 });
 
+// Limpa caches antigos automaticamente quando você sobe atualização no GitHub
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
-    )
+    caches.keys().then((keys) => {
+      return Promise.all(
+        keys.map((key) => {
+          if (key !== CACHE_NAME) {
+            return caches.delete(key);
+          }
+        })
+      );
+    }).then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
+// Estratégia Network-First para dados.json e index.html (sempre busca a versão mais nova se tiver internet; se estiver sem sinal no beco/estádio, usa a memória offline)
 self.addEventListener('fetch', (event) => {
-  if (event.request.method !== 'GET') return;
-  const url = new URL(event.request.url);
-  if (url.origin !== self.location.origin) return;
+  const req = event.request;
+  if (req.method !== 'GET') return;
 
   event.respondWith(
-    fetch(event.request)
-      .then((response) => {
-        const clone = response.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
-        return response;
+    fetch(req)
+      .then((networkRes) => {
+        const resClone = networkRes.clone();
+        caches.open(CACHE_NAME).then((cache) => {
+          cache.put(req, resClone);
+        });
+        return networkRes;
       })
-      .catch(() => caches.match(event.request))
+      .catch(() => {
+        return caches.match(req);
+      })
   );
 });
