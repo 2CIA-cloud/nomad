@@ -1,4 +1,4 @@
-const CACHE_NAME = 'azimute-v2.2.0';
+const CACHE_NAME = 'azimute-v2.0.2-clean';
 const ASSETS = [
   './',
   './index.html',
@@ -25,10 +25,7 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
   const url = new URL(event.request.url);
-
-  if (url.origin !== self.location.origin) {
-    return;
-  }
+  if (url.origin !== self.location.origin) return;
 
   event.respondWith(
     fetch(event.request)
@@ -37,6 +34,6 @@ self.addEventListener('fetch', (event) => {
         caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
         return response;
       })
-      .catch(() => caches.match(event.request).then((res) => res || caches.match('./index.html')))
+      .catch(() => caches.match(event.request))
   );
 });

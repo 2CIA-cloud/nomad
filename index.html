@@ -50,7 +50,7 @@
     .app-header {
       position: sticky;
       top: 0;
-      z-index: 1000;
+      z-index: 100;
       background-color: rgba(10, 10, 10, 0.96);
       backdrop-filter: blur(8px);
       border-bottom: 1px solid var(--border-subtle);
@@ -490,7 +490,7 @@
       border-color: var(--khaki-muted);
     }
 
-    /* ABA GEOLOCALIZAÇÃO E MAPA TÁTICO */
+    /* ABA GEOLOCALIZAÇÃO E MAPA */
     .geo-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -536,7 +536,7 @@
       filter: invert(100%) hue-rotate(180deg) brightness(92%) contrast(90%);
     }
 
-    /* RODAPÉ FIXO (6 ABAS COMPACTAS) */
+    /* RODAPÉ FIXO (6 ABAS) */
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -547,7 +547,7 @@
       border-top: 1px solid var(--border-subtle);
       display: grid;
       grid-template-columns: repeat(6, 1fr);
-      z-index: 1000;
+      z-index: 200;
     }
 
     .nav-btn {
@@ -598,7 +598,7 @@
       position: fixed;
       inset: 0;
       background: rgba(0, 0, 0, 0.82);
-      z-index: 1200;
+      z-index: 300;
       display: none;
       align-items: center;
       justify-content: center;
@@ -630,7 +630,7 @@
       <div class="brand">
         <div class="brand-mark"></div>
         <span class="brand-title">AZIMUTE</span>
-        <span class="brand-version">v2.2.0</span>
+        <span class="brand-version">v2.0.2</span>
       </div>
       <span class="section-indicator" id="headerSectionLabel">INÍCIO</span>
     </div>
@@ -665,7 +665,7 @@
         <circle cx="11" cy="11" r="8"></circle>
         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
       </svg>
-      <input type="text" id="omniboxInput" class="search-input" placeholder="Buscar unidade, cia, hospital, estádio, rua ou sistema..." oninput="filterOmnibox()" />
+      <input type="text" id="omniboxInput" class="search-input" placeholder="Buscar unidade, cia, hospital, estádio ou sistema..." oninput="filterOmnibox()" />
       <button class="search-clear" id="btnClearSearch" onclick="clearOmnibox()">×</button>
     </div>
   </div>
@@ -728,8 +728,7 @@
           </div>
           <p class="card-desc">Atenção redobrada sob chuva &gt; 5 mm/h: Av. Tereza Cristina, Av. Vilarinho, Via Expressa (Contagem/BH) e Ribeirão Pampulha.</p>
           <div class="card-actions">
-            <button class="btn-action" onclick="switchMainTab('geo', 'GEOLOCALIZAÇÃO', document.getElementById('navBtnGeo'))">Abrir Painel QTH / Mapa</button>
-            <button class="btn-action" onclick="openMapsQuery('Hospitais de Pronto Socorro proximos')">Hospitais Próximos</button>
+            <button class="btn-action" onclick="openMapsQuery('Hospitais de Pronto Socorro proximos')">Hospitais Próximos (GPS)</button>
             <button class="btn-action" onclick="openModal('modalCodigoQ')">Código Q / Fonético</button>
           </div>
         </div>
@@ -750,7 +749,7 @@
       </div>
     </section>
 
-    <!-- ABA 2: GEOLOCALIZAÇÃO (QTH TÁTICO & MAPA) -->
+    <!-- ABA GEOLOCALIZAÇÃO -->
     <section id="view-geo" class="tab-view">
       <div class="section-header">
         <span class="section-title">Telemetria GPS &amp; QTH Exato</span>
@@ -762,12 +761,12 @@
           <span class="card-title" id="geoFullAddress">Aguardando ativação do GPS...</span>
           <span class="card-tag" id="geoStatusBadge">INATIVO</span>
         </div>
-        <p class="card-desc" id="geoSubAddress">Toque em "ATIVAR QTH" no topo para iniciar o rastreamento contínuo com tela acesa (Wake Lock) e número aproximado da via.</p>
+        <p class="card-desc" id="geoSubAddress">Toque em "ATIVAR QTH" na barra superior para iniciar o rastreamento contínuo com tela acesa (Wake Lock) e número aproximado da via.</p>
         <div class="card-actions">
-          <button class="btn-action" onclick="copyCurrentQTH()" style="border-color:var(--khaki-primary); color:var(--khaki-primary);">Copiar QTH Completo</button>
-          <button class="btn-action" onclick="shareCurrentQTH()">Compartilhar QTH</button>
-          <button class="btn-action" onclick="openCurrentCoordsInMaps()">Abrir no Google Maps</button>
-          <button class="btn-action" onclick="openCurrentCoordsInWaze()">Abrir no Waze</button>
+          <button class="btn-action" onclick="copyCurrentQTH()" style="border-color:var(--khaki-primary); color:var(--khaki-primary);">Copiar QTH</button>
+          <button class="btn-action" onclick="shareCurrentQTH()">Compartilhar</button>
+          <button class="btn-action" onclick="openCurrentCoordsInMaps()">Google Maps</button>
+          <button class="btn-action" onclick="openCurrentCoordsInWaze()">Waze</button>
         </div>
       </div>
 
@@ -798,7 +797,7 @@
       <div id="tacticalMap"></div>
 
       <div class="section-header">
-        <span class="section-title">Varredura Rápida de Entorno (Raio GPS)</span>
+        <span class="section-title">Varredura de Entorno (Raio GPS)</span>
         <span class="section-meta">APOIO IMEDIATO</span>
       </div>
 
@@ -850,7 +849,7 @@
       </div>
     </section>
 
-    <!-- ABA 3: 18º BPM -->
+    <!-- ABA 2: 18º BPM -->
     <section id="view-18bpm" class="tab-view">
       <div class="subnav-scroll">
         <button class="subnav-pill active" onclick="switchSubTab('18bpm', 'cias', this)">Companhias</button>
@@ -971,7 +970,7 @@
       </div>
     </section>
 
-    <!-- ABA 4: RPM & ESPECIALIZADAS -->
+    <!-- ABA 3: RPM & ESPECIALIZADAS -->
     <section id="view-rpm" class="tab-view">
       <div class="section-header">
         <span class="section-title">2ª RPM — Região Metropolitana</span>
@@ -1037,7 +1036,7 @@
       </div>
     </section>
 
-    <!-- ABA 5: ESTÁDIOS -->
+    <!-- ABA 4: ESTÁDIOS -->
     <section id="view-estadios" class="tab-view">
       <div class="section-header">
         <span class="section-title">Setorização de Praças Desportivas</span>
@@ -1080,7 +1079,7 @@
       </div>
     </section>
 
-    <!-- ABA 6: SISTEMAS -->
+    <!-- ABA 5: SISTEMAS -->
     <section id="view-sistemas" class="tab-view">
       <div class="section-header">
         <span class="section-title">Central de Sistemas Operacionais</span>
@@ -1214,7 +1213,7 @@
     </div>
   </div>
 
-  <!-- RODAPÉ DE NAVEGAÇÃO (6 ABAS COM GEOLOCALIZAÇÃO) -->
+  <!-- RODAPÉ DE NAVEGAÇÃO (6 ABAS) -->
   <nav class="bottom-nav">
     <button class="nav-btn active" onclick="switchMainTab('inicio', 'INÍCIO', this)">
       <svg viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9.5z"/></svg>
@@ -1222,7 +1221,7 @@
     </button>
     <button class="nav-btn" id="navBtnGeo" onclick="switchMainTab('geo', 'GEOLOCALIZAÇÃO', this)">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="8"/><line x1="12" y1="1" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="23"/><line x1="1" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="23" y2="12"/></svg>
-      <span>QTH / GEO</span>
+      <span>GEOLOC.</span>
     </button>
     <button class="nav-btn" onclick="switchMainTab('18bpm', '18º BPM', this)">
       <svg viewBox="0 0 24 24"><path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3z"/></svg>
@@ -1244,7 +1243,7 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
-    // 1. NAVEGAÇÃO DO RODAPÉ COM SCROLL INSTANTÂNEO AO TOPO E MAPA
+    // 1. MAPA TÁTICO E NAVEGAÇÃO DO RODAPÉ COM SCROLL INSTANTÂNEO AO TOPO
     let mapInstance = null;
     let mapMarker = null;
     let mapCircle = null;
@@ -1327,7 +1326,7 @@
       window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
     }
 
-    // 3. GPS (QTH COM NÚMERO DE RUA APROXIMADO) + WAKE LOCK + ABA GEOLOCALIZAÇÃO
+    // 3. GPS (QTH COM NÚMERO DE RUA APROXIMADO) + WAKE LOCK (TELA ACESA)
     let gpsWatchId = null;
     let wakeLockSentinel = null;
     let lastGeoLookupTime = 0;
@@ -1356,7 +1355,7 @@
       }
     });
 
-    function estimateJurisdiction(city, suburb, lat, lon) {
+    function estimateJurisdiction(city, suburb) {
       const c = (city || '').toLowerCase();
       const s = (suburb || '').toLowerCase();
       if (c.includes('contagem')) {
@@ -1440,7 +1439,6 @@
       const geoFull = document.getElementById('geoFullAddress');
       const geoSub = document.getElementById('geoSubAddress');
       const geoUnit = document.getElementById('geoEstimatedUnit');
-
       try {
         const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}&addressdetails=1&zoom=18`;
         const res = await fetch(url, { headers: { 'Accept-Language': 'pt-BR' } });
@@ -1463,19 +1461,17 @@
 
         streetEl.textContent = `${road}${numDisplay}`;
         neighEl.textContent = `${suburb} — ${city}`;
-
-        geoFull.textContent = `${road}${numDisplay}`;
-        geoSub.textContent = `Bairro: ${suburb} — Município: ${city}${postcode}`;
-        geoUnit.textContent = estimateJurisdiction(city, suburb, lat, lon);
+        if (geoFull) geoFull.textContent = `${road}${numDisplay}`;
+        if (geoSub) geoSub.textContent = `Bairro: ${suburb} — Município: ${city}${postcode}`;
+        if (geoUnit) geoUnit.textContent = estimateJurisdiction(city, suburb);
 
         lastKnownQthText = `${road}${numDisplay} - ${suburb}, ${city} (${lat.toFixed(5)}, ${lon.toFixed(5)})`;
       } catch (e) {
         streetEl.textContent = `COORDENADAS ATIVAS (${lat.toFixed(5)}, ${lon.toFixed(5)})`;
-        geoFull.textContent = `Coordenadas: ${lat.toFixed(5)}, ${lon.toFixed(5)}`;
+        if (geoFull) geoFull.textContent = `Coordenadas: ${lat.toFixed(5)}, ${lon.toFixed(5)}`;
       }
     }
 
-    // FUNÇÕES DE AÇÃO DA ABA GEOLOCALIZAÇÃO
     function copyCurrentQTH() {
       const text = lastKnownQthText || `${currentLat.toFixed(5)}, ${currentLon.toFixed(5)}`;
       if (navigator.clipboard) {
@@ -1544,7 +1540,7 @@
       }
     }
 
-    // 4. CLIMA E ALERTA DE CHUVA (OPEN-METEO)
+    // 4. CLIMA E ALERTA DE CHUVA (OPEN-METEO) — MANTIDO INTACTO
     async function fetchWeather(lat = -19.932, lon = -44.053) {
       const weatherEl = document.getElementById('weatherInfo');
       const badgeEl = document.getElementById('rainAlertBadge');
@@ -1574,7 +1570,7 @@
       }
     }
 
-    // 5. BUSCA OMNIBOX GLOBAL (PESQUISA ENTRE TODAS AS ABAS E SUB-PAINÉIS)
+    // 5. BUSCA OMNIBOX GLOBAL (PESQUISA ENTRE ABAS)
     function resetSearchState() {
       document.getElementById('btnClearSearch').style.display = 'none';
       document.getElementById('searchEmptyState').style.display = 'none';
@@ -1642,7 +1638,8 @@
       const area = document.getElementById('tacticalNotes');
       const stamp = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
       const qth = lastKnownQthText || document.getElementById('qthStreet').textContent;
-      area.value = (area.value ? area.value + '\n' : '') + `[${stamp}] QTH: ${qth}`;
+      area.value = (area.value ? area.value + '
+' : '') + `[${stamp}] QTH: ${qth}`;
       saveTacticalNotes();
     }
 
@@ -1671,15 +1668,16 @@
       window.open(url, '_blank');
     }
 
-    // Inicialização + Limpeza Automática de Cache Antigo (v2.0.2)
+    // Inicialização + Remoção automática de Service Workers antigos que travavam o layout
     window.addEventListener('DOMContentLoaded', () => {
       loadTacticalNotes();
       renderQthHistory();
       fetchWeather();
       if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js').then((reg) => {
-          reg.update();
-        }).catch(() => {});
+        navigator.serviceWorker.getRegistrations().then(regs => {
+          regs.forEach(r => r.update());
+        });
+        navigator.serviceWorker.register('sw.js').catch(() => {});
       }
     });
   </script>
