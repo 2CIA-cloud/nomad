@@ -3903,7 +3903,7 @@
                         <span class="bg-red-950 text-red-400 text-[10px] px-2.5 py-0.5 rounded font-bold uppercase border border-red-500/40">Socorro Tático & APH Offline</span>
                         <h2 class="text-3xl font-military text-red-400 uppercase tracking-wide">Saúde / APH & Hospitais de Referência</h2>
                     </div>
-                    <p class="text-xs text-gray-400">Acionamento rápido de rota hospitalar, Modo Prioridade (SOS) e rede de pronto-socorro da RMBH</p>
+                    <p class="text-xs text-gray-400">Monitoramento inteligente de hospitais via GPS, Modo Prioridade (SOS) e rede de trauma da RMBH</p>
                 </div>
                 <div class="flex items-center gap-2">
                     <button type="button" onclick="openPrioritySosModal()" class="px-3.5 py-2 bg-red-600 hover:bg-red-500 text-white font-extrabold rounded-xl text-xs flex items-center gap-1.5 shadow-lg uppercase">
@@ -3913,25 +3913,120 @@
                 </div>
             </div>
 
-            <!-- DESTAQUE: HOSPITAL MAIS PRÓXIMO VIA GPS ATUAL -->
-            <div class="bg-pmmg-card border-2 border-red-500/60 rounded-2xl p-4 sm:p-5 shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div class="space-y-1">
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-red-400 block">🏥 Hospital / UPA Mais Próximo da Sua Coordenada Atual</span>
-                    <h3 id="saudeClosestHospName" class="text-xl sm:text-2xl font-extrabold text-white">Calculando hospital de referência...</h3>
-                    <p id="saudeClosestHospMeta" class="text-xs text-gray-300">Distância e tempo médio calculados automaticamente via satélite</p>
+            <!-- PAINEL DE MONITORAMENTO HOSPITALAR INTELIGENTE (COMPARATIVO: HOSPITAL DE REFERÊNCIA DA RPM vs. MAIS PRÓXIMO REAL NO GPS) -->
+            <div id="saudeSmartHospitalPanel" class="bg-pmmg-card border-2 border-red-500/70 rounded-2xl p-4 sm:p-5 shadow-2xl space-y-4">
+                <!-- Topo do Painel: Título + Coordenada / Área Detectada -->
+                <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border pb-3">
+                    <div class="flex items-center gap-2.5">
+                        <div class="p-2 rounded-xl bg-red-950 text-red-400 border border-red-500/40">
+                            <i data-lucide="radar" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <span class="text-[10px] font-extrabold uppercase tracking-wider text-red-400 block leading-none">Monitoramento Hospitalar Inteligente (Tempo Real via Satélite)</span>
+                            <h3 class="text-xl sm:text-2xl font-military text-white uppercase tracking-wide leading-none mt-1">Comparativo: Referência da Área/RPM vs. Mais Próximo Real (GPS)</h3>
+                        </div>
+                    </div>
+                    <span id="saudePanelCurrentAreaBadge" class="px-2.5 py-1 rounded-lg bg-pmmg-dark border border-pmmg-khaki/40 text-[11px] font-mono font-bold text-pmmg-khaki">
+                        Área GPS: 2ª RPM • Contagem (18º BPM)
+                    </span>
                 </div>
-                <a id="saudeClosestHospBtn" href="https://www.google.com/maps/dir/?api=1&destination=-19.9322,-44.0758&travelmode=driving" target="_blank" class="px-4 py-3 bg-red-600 hover:bg-red-500 text-white font-extrabold rounded-xl text-xs sm:text-sm flex items-center justify-center gap-2 shrink-0 shadow-lg uppercase tracking-wider">
-                    <i data-lucide="navigation" class="w-4 h-4"></i> <span>TRAÇAR ROTA IMEDIATA</span>
-                </a>
+
+                <!-- Grade Comparativa Dupla: (a) Hospital de Referência da Área/RPM vs. (b) MAIS PRÓXIMO REAL (GPS) -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch">
+                    <!-- a) HOSPITAL DE REFERÊNCIA DA ÁREA / RPM -->
+                    <div id="saudeAreaRefCard" class="bg-pmmg-dark p-4 rounded-xl border border-pmmg-khaki/50 border-l-4 border-l-pmmg-khaki flex flex-col justify-between space-y-3">
+                        <div class="space-y-1.5">
+                            <div class="flex items-center justify-between gap-2 flex-wrap">
+                                <span class="text-[10px] font-extrabold uppercase tracking-wider bg-pmmg-khakiBadge text-pmmg-khaki px-2 py-0.5 rounded border border-pmmg-khaki/40">
+                                    🏛️ Hospital de Referência da Área / RPM
+                                </span>
+                                <span id="saudeRefRpmLabel" class="text-[10px] font-mono font-bold text-pmmg-gold">
+                                    2ª RPM • Contagem
+                                </span>
+                            </div>
+                            <h4 id="saudeRefHospName" class="text-lg sm:text-xl font-extrabold text-white leading-tight pt-0.5">
+                                Hospital Municipal de Contagem (HMC)
+                            </h4>
+                            <p id="saudeRefHospAddr" class="text-xs text-gray-400">
+                                Av. Geraldo Rocha, 3220 - Chácaras Cotia, Contagem
+                            </p>
+                        </div>
+
+                        <div class="pt-3 border-t border-pmmg-border/80 flex flex-wrap items-center justify-between gap-2">
+                            <div class="space-y-0.5">
+                                <span class="text-[10px] uppercase font-bold text-gray-400 block">Distância GPS até a Referência da Área:</span>
+                                <strong id="saudeRefHospMetrics" class="text-xs sm:text-sm font-mono text-pmmg-khaki font-extrabold block">
+                                    ~-- km (linear: -- km) • ~-- min
+                                </strong>
+                            </div>
+                            <a id="saudeRefHospRouteBtn" href="https://www.google.com/maps/dir/?api=1&destination=-19.9322,-44.0758&travelmode=driving" target="_blank" class="px-3.5 py-2 bg-pmmg-card hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-khaki/50 font-extrabold rounded-xl text-xs flex items-center gap-1.5 shadow transition-all active:scale-95 shrink-0 uppercase">
+                                <i data-lucide="navigation" class="w-3.5 h-3.5 text-pmmg-gold"></i>
+                                <span>Rota Referência</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- b) MAIS PRÓXIMO REAL (GPS) - DESTAQUE PRINCIPAL COM ROTA IMEDIATA -->
+                    <div id="saudeRealClosestCard" class="bg-red-950/25 p-4 rounded-xl border-2 border-red-500 border-l-8 border-l-red-500 flex flex-col justify-between space-y-3 shadow-xl relative">
+                        <div class="space-y-1.5">
+                            <div class="flex items-center justify-between gap-2 flex-wrap">
+                                <span class="text-[10px] font-extrabold uppercase tracking-wider bg-red-600 text-white px-2.5 py-0.5 rounded shadow">
+                                    🚨 MAIS PRÓXIMO REAL (GPS)
+                                </span>
+                                <span id="saudeRealClosestDiffBadge" class="text-[10px] font-mono font-extrabold text-emerald-400 bg-emerald-950/90 px-2 py-0.5 rounded border border-emerald-500/40">
+                                    Menor Distância Real
+                                </span>
+                            </div>
+                            <h4 id="saudeClosestHospName" class="text-xl sm:text-2xl font-extrabold text-white leading-tight pt-0.5">
+                                Calculando hospital mais próximo...
+                            </h4>
+                            <p id="saudeRealClosestAddr" class="text-xs text-gray-300">
+                                Av. Geraldo Rocha, 3220 - Chácaras Cotia, Contagem
+                            </p>
+                        </div>
+
+                        <div class="pt-3 border-t border-red-500/30 flex flex-wrap items-center justify-between gap-2">
+                            <div class="space-y-0.5">
+                                <span class="text-[10px] uppercase font-bold text-red-300 block">Distância Real via GPS & Tempo Estimado:</span>
+                                <strong id="saudeClosestHospMeta" class="text-xs sm:text-sm font-mono text-white font-extrabold block">
+                                    Distância e tempo médio calculados via satélite
+                                </strong>
+                            </div>
+                            <a id="saudeClosestHospBtn" href="https://www.google.com/maps/dir/?api=1&destination=-19.9322,-44.0758&travelmode=driving" target="_blank" class="px-4 py-2.5 bg-red-600 hover:bg-red-500 text-white font-extrabold rounded-xl text-xs sm:text-sm flex items-center justify-center gap-1.5 shrink-0 shadow-lg uppercase tracking-wider transition-all active:scale-95">
+                                <i data-lucide="navigation" class="w-4 h-4"></i>
+                                <span>ROTA IMEDIATA</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alerta Tático Automático de Comparação (Destaca quando um hospital de outra área está mais perto que o de referência da área) -->
+                <div id="saudeComparisonAlertBanner" class="bg-pmmg-dark/90 border border-pmmg-border rounded-xl p-3 text-xs flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-2.5">
+                        <i data-lucide="info" class="w-4 h-4 text-pmmg-gold shrink-0"></i>
+                        <span id="saudeComparisonAlertText" class="text-gray-200 font-medium">
+                            Monitorando sua posição GPS em relação a todos os hospitais de referência cadastrados...
+                        </span>
+                    </div>
+                    <span id="saudeSecondClosestHint" class="text-[11px] font-mono text-gray-400 shrink-0 hidden sm:inline">
+                        2º mais próx.: --
+                    </span>
+                </div>
             </div>
 
-            <!-- GRADE DE HOSPITAIS DE TRAUMA E PRONTO ATENDIMENTO 24H (RMBH) -->
+            <!-- GRADE DE HOSPITAIS DE TRAUMA E PRONTO ATENDIMENTO 24H (RMBH) COM DISTÂNCIA GPS EM TEMPO REAL -->
             <div class="space-y-3">
-                <h3 class="text-xl font-military text-pmmg-khaki uppercase tracking-wide border-b border-pmmg-border pb-1.5">Rede Hospitalar de Trauma e Urgência (RMBH)</h3>
+                <div class="flex flex-wrap items-center justify-between border-b border-pmmg-border pb-1.5 gap-2">
+                    <h3 class="text-xl font-military text-pmmg-khaki uppercase tracking-wide">Rede Hospitalar de Trauma e Urgência (RMBH) • Distâncias em Tempo Real</h3>
+                    <span class="text-[11px] text-gray-400 font-mono">Cálculo contínuo via coordenada GPS atual</span>
+                </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <div class="bg-pmmg-card p-4 rounded-xl tactical-border border-l-4 border-l-red-500 flex flex-col justify-between space-y-3">
+                    <div id="saude-card-joao23" class="bg-pmmg-card p-4 rounded-xl tactical-border border-l-4 border-l-red-500 flex flex-col justify-between space-y-3 transition-all">
                         <div>
-                            <span class="text-[10px] bg-red-950 text-red-300 font-bold px-2 py-0.5 rounded uppercase">Referência Estadual Trauma / Baleado</span>
+                            <div class="flex items-center justify-between gap-1.5 flex-wrap">
+                                <span class="text-[10px] bg-red-950 text-red-300 font-bold px-2 py-0.5 rounded uppercase">Referência 1ª RPM / BH • Trauma</span>
+                                <span id="saude-dist-joao23" class="text-[11px] font-mono font-extrabold text-pmmg-gold bg-pmmg-dark px-2 py-0.5 rounded border border-pmmg-border">-- km</span>
+                            </div>
                             <h4 class="text-xl font-military text-white uppercase mt-1">HPS João XXIII (BH)</h4>
                             <p class="text-xs text-gray-400">Av. Prof. Alfredo Balena, 400 - Santa Efigênia, BH</p>
                         </div>
@@ -3941,9 +4036,12 @@
                         </div>
                     </div>
 
-                    <div class="bg-pmmg-card p-4 rounded-xl tactical-border border-l-4 border-l-pmmg-gold flex flex-col justify-between space-y-3">
+                    <div id="saude-card-hpm" class="bg-pmmg-card p-4 rounded-xl tactical-border border-l-4 border-l-pmmg-gold flex flex-col justify-between space-y-3 transition-all">
                         <div>
-                            <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-gold font-bold px-2 py-0.5 rounded uppercase">Exclusivo Militares / Família Militar</span>
+                            <div class="flex items-center justify-between gap-1.5 flex-wrap">
+                                <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-gold font-bold px-2 py-0.5 rounded uppercase">Exclusivo Militares / Família Militar</span>
+                                <span id="saude-dist-hpm" class="text-[11px] font-mono font-extrabold text-pmmg-gold bg-pmmg-dark px-2 py-0.5 rounded border border-pmmg-border">-- km</span>
+                            </div>
                             <h4 class="text-xl font-military text-white uppercase mt-1">Hospital da Polícia Militar (HPM)</h4>
                             <p class="text-xs text-gray-400">Av. do Contorno, 2787 - Santa Efigênia, BH</p>
                         </div>
@@ -3953,9 +4051,12 @@
                         </div>
                     </div>
 
-                    <div class="bg-pmmg-card p-4 rounded-xl tactical-border border-l-4 border-l-red-500 flex flex-col justify-between space-y-3">
+                    <div id="saude-card-hmc" class="bg-pmmg-card p-4 rounded-xl tactical-border border-l-4 border-l-red-500 flex flex-col justify-between space-y-3 transition-all">
                         <div>
-                            <span class="text-[10px] bg-red-950 text-red-300 font-bold px-2 py-0.5 rounded uppercase">Trauma / Referência Contagem</span>
+                            <div class="flex items-center justify-between gap-1.5 flex-wrap">
+                                <span class="text-[10px] bg-red-950 text-red-300 font-bold px-2 py-0.5 rounded uppercase">Referência 2ª RPM / Contagem</span>
+                                <span id="saude-dist-hmc" class="text-[11px] font-mono font-extrabold text-pmmg-gold bg-pmmg-dark px-2 py-0.5 rounded border border-pmmg-border">-- km</span>
+                            </div>
                             <h4 class="text-xl font-military text-white uppercase mt-1">Hosp. Municipal de Contagem (HMC)</h4>
                             <p class="text-xs text-gray-400">Av. Geraldo Rocha, 3220 - Chácaras Cotia, Contagem</p>
                         </div>
@@ -3965,9 +4066,12 @@
                         </div>
                     </div>
 
-                    <div class="bg-pmmg-card p-4 rounded-xl tactical-border border-l-4 border-l-red-500 flex flex-col justify-between space-y-3">
+                    <div id="saude-card-risoleta" class="bg-pmmg-card p-4 rounded-xl tactical-border border-l-4 border-l-red-500 flex flex-col justify-between space-y-3 transition-all">
                         <div>
-                            <span class="text-[10px] bg-red-950 text-red-300 font-bold px-2 py-0.5 rounded uppercase">Referência Trauma Norte / Venda Nova</span>
+                            <div class="flex items-center justify-between gap-1.5 flex-wrap">
+                                <span class="text-[10px] bg-red-950 text-red-300 font-bold px-2 py-0.5 rounded uppercase">Referência Trauma Norte / Venda Nova</span>
+                                <span id="saude-dist-risoleta" class="text-[11px] font-mono font-extrabold text-pmmg-gold bg-pmmg-dark px-2 py-0.5 rounded border border-pmmg-border">-- km</span>
+                            </div>
                             <h4 class="text-xl font-military text-white uppercase mt-1">Hosp. Risoleta Tolentino Neves</h4>
                             <p class="text-xs text-gray-400">Rua das Gabirobas, 1 - Vila Clóris, BH</p>
                         </div>
@@ -3977,9 +4081,12 @@
                         </div>
                     </div>
 
-                    <div class="bg-pmmg-card p-4 rounded-xl tactical-border border-l-4 border-l-red-500 flex flex-col justify-between space-y-3">
+                    <div id="saude-card-betim" class="bg-pmmg-card p-4 rounded-xl tactical-border border-l-4 border-l-red-500 flex flex-col justify-between space-y-3 transition-all">
                         <div>
-                            <span class="text-[10px] bg-red-950 text-red-300 font-bold px-2 py-0.5 rounded uppercase">Referência Trauma Betim</span>
+                            <div class="flex items-center justify-between gap-1.5 flex-wrap">
+                                <span class="text-[10px] bg-red-950 text-red-300 font-bold px-2 py-0.5 rounded uppercase">Referência Trauma Betim (2ª RPM)</span>
+                                <span id="saude-dist-betim" class="text-[11px] font-mono font-extrabold text-pmmg-gold bg-pmmg-dark px-2 py-0.5 rounded border border-pmmg-border">-- km</span>
+                            </div>
                             <h4 class="text-xl font-military text-white uppercase mt-1">Hosp. Regional de Betim</h4>
                             <p class="text-xs text-gray-400">Av. Edméia Mattos Lazzarotti, 3800 - Betim</p>
                         </div>
@@ -3989,9 +4096,12 @@
                         </div>
                     </div>
 
-                    <div class="bg-pmmg-card p-4 rounded-xl tactical-border border-l-4 border-l-red-500 flex flex-col justify-between space-y-3">
+                    <div id="saude-card-jk" class="bg-pmmg-card p-4 rounded-xl tactical-border border-l-4 border-l-red-500 flex flex-col justify-between space-y-3 transition-all">
                         <div>
-                            <span class="text-[10px] bg-red-950 text-red-300 font-bold px-2 py-0.5 rounded uppercase">Referência Barreiro</span>
+                            <div class="flex items-center justify-between gap-1.5 flex-wrap">
+                                <span class="text-[10px] bg-red-950 text-red-300 font-bold px-2 py-0.5 rounded uppercase">Referência Barreiro / Ibirité</span>
+                                <span id="saude-dist-jk" class="text-[11px] font-mono font-extrabold text-pmmg-gold bg-pmmg-dark px-2 py-0.5 rounded border border-pmmg-border">-- km</span>
+                            </div>
                             <h4 class="text-xl font-military text-white uppercase mt-1">Hosp. Júlia Kubitschek</h4>
                             <p class="text-xs text-gray-400">Av. Dr. Cristiano Rezende, 2745 - Milionários, BH</p>
                         </div>
@@ -6707,6 +6817,178 @@
             }
         }
 
+        // Hospitais de Referência Principais cadastrados na aba Saúde / APH
+        const AZIMUTE_HOSPITAIS_REFERENCIA_PRINCIPAIS = [
+            {
+                id: 'joao23',
+                nome: 'HPS João XXIII (BH)',
+                endereco: 'Av. Prof. Alfredo Balena, 400 - Santa Efigênia, BH',
+                lat: -19.9267,
+                lon: -43.9269
+            },
+            {
+                id: 'hmc',
+                nome: 'Hospital Municipal de Contagem (HMC)',
+                endereco: 'Av. Geraldo Rocha, 3220 - Chácaras Cotia, Contagem',
+                lat: -19.9322,
+                lon: -44.0758
+            },
+            {
+                id: 'hpm',
+                nome: 'Hospital da Polícia Militar (HPM)',
+                endereco: 'Av. do Contorno, 2787 - Santa Efigênia, BH',
+                lat: -19.9235,
+                lon: -43.9182
+            },
+            {
+                id: 'risoleta',
+                nome: 'Hosp. Risoleta Tolentino Neves',
+                endereco: 'Rua das Gabirobas, 1 - Vila Clóris, BH',
+                lat: -19.8195,
+                lon: -43.9535
+            },
+            {
+                id: 'betim',
+                nome: 'Hosp. Regional de Betim',
+                endereco: 'Av. Edméia Mattos Lazzarotti, 3800 - Betim',
+                lat: -19.9567,
+                lon: -44.1925
+            },
+            {
+                id: 'jk',
+                nome: 'Hosp. Júlia Kubitschek',
+                endereco: 'Av. Dr. Cristiano Rezende, 2745 - Milionários, BH',
+                lat: -19.9897,
+                lon: -44.0114
+            }
+        ];
+
+        function updateSaudeSmartHospitalComparison(lat, lon, closestArea) {
+            if (!AZIMUTE_HOSPITAIS_REFERENCIA_PRINCIPAIS || !AZIMUTE_HOSPITAIS_REFERENCIA_PRINCIPAIS.length) return;
+
+            // 1. Calcula a distância real via GPS para todos os hospitais de referência cadastrados
+            const ranked = AZIMUTE_HOSPITAIS_REFERENCIA_PRINCIPAIS.map(h => {
+                const linearKm = azimuteCalcDistKm(lat, lon, h.lat, h.lon);
+                const est = calcEstimatedDriveMinutes(linearKm);
+                const routeUrl = 'https://www.google.com/maps/dir/?api=1&destination=' + h.lat + ',' + h.lon + '&travelmode=driving';
+                return {
+                    ...h,
+                    linearKm,
+                    roadKm: parseFloat(est.roadKm),
+                    roadKmStr: est.roadKm,
+                    mins: est.mins,
+                    routeUrl
+                };
+            }).sort((a, b) => a.linearKm - b.linearKm);
+
+            const realClosest = ranked[0];
+            const secondClosest = ranked[1] || null;
+
+            // Atualiza os badges de distância em cada card da grade "Rede Hospitalar de Trauma e Urgência (RMBH)"
+            ranked.forEach((h, idx) => {
+                const distBadge = document.getElementById('saude-dist-' + h.id);
+                const cardEl = document.getElementById('saude-card-' + h.id);
+                if (distBadge) {
+                    distBadge.textContent = '~' + h.roadKmStr + ' km • ~' + h.mins + ' min';
+                    distBadge.className = idx === 0
+                        ? 'text-[11px] font-mono font-extrabold text-white bg-red-600 px-2 py-0.5 rounded shadow'
+                        : 'text-[11px] font-mono font-extrabold text-pmmg-gold bg-pmmg-dark px-2 py-0.5 rounded border border-pmmg-border';
+                }
+                if (cardEl) {
+                    if (idx === 0) {
+                        cardEl.className = 'bg-pmmg-card p-4 rounded-xl border-2 border-red-500 border-l-4 border-l-red-500 flex flex-col justify-between space-y-3 shadow-xl transition-all';
+                    } else if (h.id === 'hpm') {
+                        cardEl.className = 'bg-pmmg-card p-4 rounded-xl tactical-border border-l-4 border-l-pmmg-gold flex flex-col justify-between space-y-3 transition-all';
+                    } else {
+                        cardEl.className = 'bg-pmmg-card p-4 rounded-xl tactical-border border-l-4 border-l-red-500 flex flex-col justify-between space-y-3 transition-all';
+                    }
+                }
+            });
+
+            // 2. Determina o "Hospital de Referência da Área/RPM" conforme a área territorial atual
+            const uText = closestArea && closestArea.unidade ? closestArea.unidade : '18º BPM • Contagem';
+            const rText = closestArea && closestArea.rede ? closestArea.rede : 'REDE: 2ª RPM / 18º BPM A';
+            let refHospId = 'hmc';
+            let rpmAreaLabel = '2ª RPM • Contagem';
+
+            if (rText.includes('1ª RPM') || uText.includes('BH')) {
+                refHospId = 'joao23';
+                rpmAreaLabel = '1ª RPM • Belo Horizonte (Referência: HPS João XXIII)';
+            } else if (uText.includes('Betim') || uText.includes('33º BPM') || uText.includes('66º BPM')) {
+                refHospId = 'betim';
+                rpmAreaLabel = '2ª RPM • Betim (Referência: Hosp. Regional de Betim)';
+            } else if (uText.includes('Neves') || uText.includes('40º BPM')) {
+                refHospId = 'risoleta';
+                rpmAreaLabel = '2ª RPM • Ribeirão das Neves (Referência: Risoleta Neves)';
+            } else {
+                refHospId = 'hmc';
+                rpmAreaLabel = '2ª RPM • Contagem (Referência: Hosp. Municipal de Contagem)';
+            }
+
+            const areaRefHosp = ranked.find(h => h.id === refHospId) || ranked[0];
+
+            // 3. Preenche o lado (a) "Hospital de Referência da Área / RPM"
+            const areaBadge = document.getElementById('saudePanelCurrentAreaBadge');
+            const refRpmEl = document.getElementById('saudeRefRpmLabel');
+            const refNameEl = document.getElementById('saudeRefHospName');
+            const refAddrEl = document.getElementById('saudeRefHospAddr');
+            const refMetricsEl = document.getElementById('saudeRefHospMetrics');
+            const refRouteBtn = document.getElementById('saudeRefHospRouteBtn');
+
+            if (areaBadge) areaBadge.textContent = 'Área Atual: ' + uText;
+            if (refRpmEl) refRpmEl.textContent = rpmAreaLabel;
+            if (refNameEl) refNameEl.textContent = areaRefHosp.nome;
+            if (refAddrEl) refAddrEl.textContent = areaRefHosp.endereco;
+            if (refMetricsEl) refMetricsEl.textContent = '~' + areaRefHosp.roadKmStr + ' km (linear: ' + areaRefHosp.linearKm.toFixed(1) + ' km) • ~' + areaRefHosp.mins + ' min';
+            if (refRouteBtn) refRouteBtn.href = areaRefHosp.routeUrl;
+
+            // 4. Preenche o lado (b) "MAIS PRÓXIMO REAL (GPS)"
+            const saudeHospName = document.getElementById('saudeClosestHospName');
+            const saudeRealAddr = document.getElementById('saudeRealClosestAddr');
+            const saudeHospMeta = document.getElementById('saudeClosestHospMeta');
+            const saudeHospBtn = document.getElementById('saudeClosestHospBtn');
+            const diffBadge = document.getElementById('saudeRealClosestDiffBadge');
+            const alertBanner = document.getElementById('saudeComparisonAlertBanner');
+            const alertText = document.getElementById('saudeComparisonAlertText');
+            const secondHint = document.getElementById('saudeSecondClosestHint');
+
+            if (saudeHospName) saudeHospName.textContent = realClosest.nome;
+            if (saudeRealAddr) saudeRealAddr.textContent = realClosest.endereco;
+            if (saudeHospMeta) saudeHospMeta.textContent = '~' + realClosest.roadKmStr + ' km (linear: ' + realClosest.linearKm.toFixed(1) + ' km) • Tempo estimado: ~' + realClosest.mins + ' min';
+            if (saudeHospBtn) saudeHospBtn.href = realClosest.routeUrl;
+
+            if (secondClosest && secondHint) {
+                secondHint.textContent = '2º mais próx.: ' + secondClosest.nome + ' (~' + secondClosest.roadKmStr + ' km)';
+            }
+
+            // 5. Compara se o Hospital Mais Próximo Real no GPS é diferente do Hospital de Referência da Área/RPM
+            if (realClosest.id !== areaRefHosp.id) {
+                const savedRoadKm = Math.max(0.1, (areaRefHosp.roadKm - realClosest.roadKm)).toFixed(1);
+                const savedMins = Math.max(1, (areaRefHosp.mins - realClosest.mins));
+                if (diffBadge) {
+                    diffBadge.textContent = '⚡ ' + savedRoadKm + ' km mais perto que a Ref. da Área';
+                    diffBadge.className = 'text-[10px] font-mono font-extrabold text-amber-300 bg-amber-950/90 px-2 py-0.5 rounded border border-amber-500/60';
+                }
+                if (alertBanner) {
+                    alertBanner.className = 'bg-amber-950/40 border-2 border-amber-500/70 rounded-xl p-3 text-xs flex flex-wrap items-center justify-between gap-3';
+                }
+                if (alertText) {
+                    alertText.innerHTML = `<strong class="text-amber-400 uppercase">⚡ ATENÇÃO OPERACIONAL (DIVISA / PROXIMIDADE REAL):</strong> Na sua coordenada atual, o <strong class="text-white">${realClosest.nome}</strong> está <strong class="text-amber-300">~${savedRoadKm} km mais próximo (~${savedMins} min mais rápido)</strong> do que o hospital de referência da área (${areaRefHosp.nome}).`;
+                }
+            } else {
+                if (diffBadge) {
+                    diffBadge.textContent = '✅ Coincide com a Referência da Área';
+                    diffBadge.className = 'text-[10px] font-mono font-extrabold text-emerald-400 bg-emerald-950/90 px-2 py-0.5 rounded border border-emerald-500/50';
+                }
+                if (alertBanner) {
+                    alertBanner.className = 'bg-pmmg-dark/90 border border-emerald-500/40 rounded-xl p-3 text-xs flex flex-wrap items-center justify-between gap-3';
+                }
+                if (alertText) {
+                    alertText.innerHTML = `<strong class="text-emerald-400 uppercase">✅ REFERÊNCIA CONFIRMADA PELO GPS:</strong> O <strong class="text-white">${realClosest.nome}</strong> é simultaneamente o Hospital de Referência da sua Área/RPM e a unidade mais próxima da sua coordenada atual.`;
+                }
+            }
+        }
+
         function updateOfflineProximityData(lat, lon, acc) {
             // 1. Hospital mais próximo + Distância + Tempo Médio de Deslocamento
             let closestHosp = AZIMUTE_HOSPITAIS_RMBH[0];
@@ -6776,13 +7058,8 @@
             if (gMapBtn) gMapBtn.href = 'https://www.google.com/maps/search/?api=1&query=' + lat + ',' + lon;
             if (gCoords) gCoords.textContent = lat.toFixed(5) + ', ' + lon.toFixed(5);
 
-            // Atualiza também a aba Saúde / APH
-            const saudeHospName = document.getElementById('saudeClosestHospName');
-            const saudeHospMeta = document.getElementById('saudeClosestHospMeta');
-            const saudeHospBtn = document.getElementById('saudeClosestHospBtn');
-            if (saudeHospName) saudeHospName.textContent = closestHosp.nome;
-            if (saudeHospMeta) saudeHospMeta.textContent = 'Distância estimada: ~' + driveEst.roadKm + ' km • Tempo médio de deslocamento: ~' + driveEst.mins + ' min';
-            if (saudeHospBtn) saudeHospBtn.href = hospUrl;
+            // Atualiza também a aba Saúde / APH (Painel de Monitoramento Hospitalar Inteligente)
+            updateSaudeSmartHospitalComparison(lat, lon, closestArea);
 
             // 4. Faixa "APOIO MAIS PRÓXIMO (GPS)" na Home:
             // a) Unidade Policial mais próxima (Batalhão, Cia ou Base Comunitária)
