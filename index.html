@@ -88,35 +88,82 @@
             font-size: 11px;
         }
 
-        /* No Modo GRID, exibe os menus e sub-abas em grade tática compacta e oculta a barra inferior */
+        /* PAINEL TÁTICO 3 COLUNAS EXCLUSIVO DO MODO GRID (SUPORTE PEITORAL HORIZONTAL) */
+        #gridModeTacticalCockpit {
+            display: none;
+        }
+        body.mode-grid {
+            padding-bottom: 0.5rem !important;
+            overflow-x: hidden;
+        }
+        /* Cabeçalho e rodapé compactos e estáticos no Modo GRID para nunca encobrirem o conteúdo central */
+        body.mode-grid header.sticky {
+            position: relative !important;
+            top: auto !important;
+            box-shadow: none !important;
+        }
+        body.mode-grid header.sticky > div:first-child {
+            padding-top: 0.25rem !important;
+            padding-bottom: 0.25rem !important;
+        }
+        body.mode-grid #operationalStatusBar,
+        body.mode-grid #topNavBar {
+            display: none !important;
+        }
+        body.mode-grid #mobileBottomNav {
+            position: relative !important;
+            bottom: auto !important;
+            margin-top: 0.35rem;
+            padding-top: 0.25rem !important;
+            padding-bottom: 0.25rem !important;
+            background: #171717 !important;
+            border-top: 1px solid rgba(194, 178, 128, 0.3) !important;
+        }
+        body.mode-grid #mobileBottomNav > div {
+            max-width: 100% !important;
+        }
+        body.mode-grid #mobileBottomNav button {
+            flex-direction: row !important;
+            gap: 0.35rem !important;
+            padding: 0.3rem 0.5rem !important;
+            font-size: 10px !important;
+        }
+        body.mode-grid #mobileBottomNav button i,
+        body.mode-grid #mobileBottomNav button svg {
+            margin-bottom: 0 !important;
+            width: 13px !important;
+            height: 13px !important;
+        }
         body.mode-grid .app-main-container {
-            max-width: 960px;
+            max-width: 100% !important;
+            width: 100% !important;
+            padding-top: 0.35rem !important;
+            padding-left: 0.5rem !important;
+            padding-right: 0.5rem !important;
             margin-left: auto;
             margin-right: auto;
         }
-        body.mode-grid #mobileBottomNav {
-            display: none !important;
-        }
-        body.mode-grid #topNavLinks {
+        /* Ativa o Cockpit Tático de 3 Colunas no Modo GRID */
+        body.mode-grid #gridModeTacticalCockpit {
             display: grid !important;
-            grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-            gap: 0.35rem !important;
-            min-width: 0 !important;
-            width: 100%;
+            grid-template-columns: 3fr 5fr 4fr;
+            gap: 0.5rem;
+            align-items: stretch;
+            margin-bottom: 0.5rem;
         }
-        body.mode-grid #topNavLinks > button {
-            justify-content: center;
-            text-align: center;
-            padding: 0.45rem 0.35rem;
-            font-size: 11px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+        @media (max-width: 560px) {
+            body.mode-grid #gridModeTacticalCockpit {
+                grid-template-columns: 1fr;
+            }
+        }
+        /* No Modo GRID na Home, oculta elementos redundantes para evitar rolagem excessiva */
+        body.mode-grid #view-home > div:first-child {
+            display: none !important;
         }
         body.mode-grid .subtabs-bar {
             display: grid !important;
             grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-            gap: 0.4rem !important;
+            gap: 0.35rem !important;
             min-width: 0 !important;
             white-space: normal !important;
         }
@@ -446,6 +493,142 @@
 
     <!-- CONTAINER PRINCIPAL -->
     <main id="mainContainer" class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-4 app-main-container">
+
+        <!-- ================= COCKPIT TÁTICO HORIZONTAL DE 3 COLUNAS (EXCLUSIVO MODO GRID / SUPORTE PEITORAL) ================= -->
+        <section id="gridModeTacticalCockpit" aria-label="Painel Tático Modo GRID">
+            <!-- COLUNA ESQUERDA: TELEMETRIA RÁPIDA (GPS, REDE DO BPM, ÁREA ATUAL) -->
+            <div class="bg-pmmg-card border border-pmmg-khaki/50 rounded-xl p-2.5 flex flex-col justify-between space-y-2 shadow-lg">
+                <div class="flex items-center justify-between border-b border-pmmg-border pb-1.5">
+                    <span class="text-[9px] font-extrabold uppercase tracking-wider text-pmmg-khaki flex items-center gap-1">
+                        <i data-lucide="activity" class="w-3 h-3 text-pmmg-gold"></i> Telemetria
+                    </span>
+                    <button type="button" onclick="showView('gps')" id="gridGpsBadge" class="px-2 py-0.5 rounded font-mono font-extrabold text-[10px] uppercase bg-emerald-950 text-emerald-400 border border-emerald-500/60 flex items-center gap-1">
+                        <span id="gridGpsDot" class="w-2 h-2 rounded-full bg-emerald-400 inline-block"></span>
+                        <span id="gridGpsText">GPS BOM</span>
+                    </button>
+                </div>
+
+                <!-- Rede do BPM (clicável para abrir modal da Rede/Batalhão) -->
+                <div onclick="openCurrentNetworkBattalionModal()" class="bg-pmmg-dark p-2 rounded-lg border border-pmmg-gold/40 cursor-pointer hover:border-pmmg-gold transition-all">
+                    <span class="text-[9px] font-bold uppercase text-pmmg-gold block leading-none">📻 Rede do BPM</span>
+                    <strong id="gridTelemetryRede" class="font-mono text-xs sm:text-sm text-white font-extrabold block mt-1 truncate">18º BPM A</strong>
+                </div>
+
+                <!-- Área Atual -->
+                <div class="bg-pmmg-dark p-2 rounded-lg border border-pmmg-border">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[9px] font-bold uppercase text-pmmg-khaki leading-none">🛡️ Área Atual</span>
+                        <span id="gridTelemetryAcc" class="text-[9px] font-mono text-gray-400">±15m</span>
+                    </div>
+                    <strong id="gridTelemetryArea" class="text-[11px] sm:text-xs text-gray-100 font-bold block mt-1 leading-tight line-clamp-2">18º BPM • Contagem</strong>
+                </div>
+            </div>
+
+            <!-- COLUNA CENTRAL: ORIENTAÇÃO PRINCIPAL E QTH EM DESTAQUE -->
+            <div class="bg-pmmg-card border-2 border-pmmg-khaki rounded-xl p-3 flex flex-col justify-between space-y-2 shadow-xl relative overflow-hidden">
+                <div class="flex items-center justify-between border-b border-pmmg-border pb-1.5 gap-2">
+                    <div class="flex items-center gap-1.5">
+                        <i data-lucide="compass" class="w-4 h-4 text-pmmg-gold shrink-0"></i>
+                        <span class="text-[10px] font-extrabold uppercase tracking-wider text-pmmg-khaki">Orientação Principal & QTH</span>
+                    </div>
+                    <span id="gridCenterCoords" class="text-[10px] font-mono font-bold text-pmmg-gold bg-pmmg-dark px-2 py-0.5 rounded border border-pmmg-border">
+                        -19.91620, -44.08090
+                    </span>
+                </div>
+
+                <!-- QTH em Destaque -->
+                <div class="my-auto py-1">
+                    <div class="text-[9px] uppercase font-bold text-gray-400 tracking-wider">📍 Logradouro / Cruzamento:</div>
+                    <h2 id="gridCenterQth" class="text-base sm:text-xl font-extrabold text-white leading-tight mt-0.5 line-clamp-2">
+                        Av. João César de Oliveira, 5400
+                    </h2>
+                    <p id="gridCenterSuburb" class="text-[11px] text-pmmg-khakiLight font-medium truncate mt-0.5">
+                        Beatriz • Contagem/MG
+                    </p>
+                </div>
+
+                <!-- Barra de Orientação / Apoio Mais Próximo Compacta no Rodapé Central -->
+                <div class="pt-1.5 border-t border-pmmg-border/70 flex items-center justify-between gap-2 text-[10px]">
+                    <span class="text-gray-300 truncate">
+                        <strong class="text-pmmg-khaki">Base Próx.:</strong> <span id="gridCenterClosestUnit">18º BPM (Sede)</span>
+                    </span>
+                    <span id="gridCenterWeatherMini" class="font-mono text-sky-300 font-bold shrink-0">-- °C</span>
+                </div>
+            </div>
+
+            <!-- COLUNA DIREITA: BOTÕES GRANDES DE TOQUE RÁPIDO (COPIAR QTH, LOCALIZAÇÃO EXATA/MAPA, CLIMA, ROTA HOSP) -->
+            <div class="grid grid-cols-2 grid-rows-2 gap-2">
+                <!-- 1. Botão Grande: Copiar QTH -->
+                <button type="button" onclick="copyCurrentQth()" class="bg-pmmg-khaki hover:bg-pmmg-khakiHover active:scale-95 text-pmmg-black font-extrabold rounded-xl p-2.5 flex flex-col items-center justify-center text-center shadow-lg transition-all">
+                    <i data-lucide="copy" class="w-5 h-5 mb-1"></i>
+                    <span class="text-[11px] uppercase tracking-wider leading-tight">Copiar QTH</span>
+                </button>
+
+                <!-- 2. Botão Grande: Localização Exata / Mapa -->
+                <a id="gridBtnExactMap" href="https://www.google.com/maps/search/?api=1&query=-19.9162,-44.0809" target="_blank" class="bg-pmmg-card hover:bg-pmmg-border active:scale-95 text-pmmg-gold border-2 border-pmmg-gold/60 font-extrabold rounded-xl p-2.5 flex flex-col items-center justify-center text-center shadow-lg transition-all">
+                    <i data-lucide="map-pin" class="w-5 h-5 mb-1 text-pmmg-gold"></i>
+                    <span class="text-[10.5px] uppercase tracking-wider leading-tight text-white">Localização / Mapa</span>
+                </a>
+
+                <!-- 3. Botão Grande: Clima -->
+                <button type="button" onclick="openGridWeatherModal()" class="bg-pmmg-card hover:bg-pmmg-border active:scale-95 text-sky-300 border-2 border-sky-500/60 font-extrabold rounded-xl p-2.5 flex flex-col items-center justify-center text-center shadow-lg transition-all">
+                    <i data-lucide="cloud-sun" class="w-5 h-5 mb-1 text-sky-400"></i>
+                    <span class="text-[11px] uppercase tracking-wider leading-tight text-white">Clima</span>
+                </button>
+
+                <!-- 4. Botão Grande: Rota Hosp -->
+                <a id="gridBtnHospRoute" href="https://www.google.com/maps/dir/?api=1&destination=-19.9322,-44.0758&travelmode=driving" target="_blank" class="bg-red-600 hover:bg-red-500 active:scale-95 text-white border-2 border-red-400 font-extrabold rounded-xl p-2.5 flex flex-col items-center justify-center text-center shadow-lg transition-all">
+                    <div class="flex items-center gap-1 mb-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 text-white">
+                            <path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6V3z"/>
+                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5">
+                            <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+                        </svg>
+                    </div>
+                    <span class="text-[11px] uppercase tracking-wider leading-tight">Rota Hosp</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- MODAL COMPACTO DE CLIMA RÁPIDO (ACIONADO PELO BOTÃO "CLIMA" NO MODO GRID) -->
+        <div id="gridQuickWeatherModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-3">
+            <div class="bg-pmmg-card border-2 border-sky-500/70 rounded-2xl max-w-lg w-full p-4 space-y-3 shadow-2xl">
+                <div class="flex items-center justify-between border-b border-pmmg-border pb-2">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="cloud-sun" class="w-5 h-5 text-sky-400"></i>
+                        <h3 class="text-xl font-military text-white uppercase tracking-wider leading-none">Condições Meteorológicas & Altitude (Tempo Real)</h3>
+                    </div>
+                    <button type="button" onclick="closeGridWeatherModal()" class="px-2.5 py-1 rounded bg-pmmg-dark text-gray-300 hover:text-white border border-pmmg-border text-xs font-bold">Fechar ✕</button>
+                </div>
+                <div class="grid grid-cols-3 gap-2 text-xs">
+                    <div class="bg-pmmg-dark p-2.5 rounded-xl border border-pmmg-border">
+                        <span class="text-[10px] text-gray-400 uppercase font-bold block">🌡️ Temperatura</span>
+                        <strong id="gridModalTemp" class="text-base font-mono text-white block mt-0.5">-- °C</strong>
+                    </div>
+                    <div class="bg-pmmg-dark p-2.5 rounded-xl border border-pmmg-border">
+                        <span class="text-[10px] text-gray-400 uppercase font-bold block">⛅ Condição</span>
+                        <strong id="gridModalCond" class="text-xs text-sky-300 block mt-0.5">--</strong>
+                    </div>
+                    <div class="bg-pmmg-dark p-2.5 rounded-xl border border-pmmg-border">
+                        <span class="text-[10px] text-gray-400 uppercase font-bold block">🌧️ Chuva</span>
+                        <strong id="gridModalRain" class="text-base font-mono text-amber-400 block mt-0.5">-- %</strong>
+                    </div>
+                    <div class="bg-pmmg-dark p-2.5 rounded-xl border border-pmmg-border">
+                        <span class="text-[10px] text-gray-400 uppercase font-bold block">💨 Vento</span>
+                        <strong id="gridModalWind" class="text-base font-mono text-white block mt-0.5">-- km/h</strong>
+                    </div>
+                    <div class="bg-pmmg-dark p-2.5 rounded-xl border border-pmmg-border">
+                        <span class="text-[10px] text-gray-400 uppercase font-bold block">💧 Umidade</span>
+                        <strong id="gridModalHum" class="text-base font-mono text-emerald-400 block mt-0.5">-- %</strong>
+                    </div>
+                    <div class="bg-pmmg-dark p-2.5 rounded-xl border border-pmmg-border">
+                        <span class="text-[10px] text-gray-400 uppercase font-bold block">⛰️ Altitude</span>
+                        <strong id="gridModalAlt" class="text-base font-mono text-pmmg-gold block mt-0.5">-- m</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- ================= VIEW EXCLUSIVA: GEOLOCALIZAÇÃO (SEPARADA DE BATALHÕES E REGIÕES) ================= -->
         <section id="view-gps" class="hidden space-y-6">
@@ -5867,17 +6050,36 @@
             return s;
         }
 
-        // Atualiza o indicador "GPS" na Barra de Status: VERDE (bom/alta precisão), AMARELO (moderado), VERMELHO PISCANDO (sem sinal/aguardando)
+        // Atualiza o indicador "GPS" na Barra de Status e no Cockpit do Modo GRID: VERDE, AMARELO, VERMELHO PISCANDO
         function setStatusBarGpsSignal(level) {
             const ind = document.getElementById('statusBarGpsIndicator');
-            if (!ind) return;
-            ind.textContent = 'GPS';
-            if (level === 'green') {
-                ind.className = 'px-2 py-0.5 rounded font-mono font-extrabold text-[11px] uppercase tracking-wider border bg-emerald-950/90 text-emerald-400 border-emerald-500/70 shadow-[0_0_8px_rgba(52,211,153,0.3)] shrink-0 transition-all';
-            } else if (level === 'yellow') {
-                ind.className = 'px-2 py-0.5 rounded font-mono font-extrabold text-[11px] uppercase tracking-wider border bg-amber-950/90 text-amber-300 border-amber-500/70 shrink-0 transition-all';
-            } else {
-                ind.className = 'px-2 py-0.5 rounded font-mono font-extrabold text-[11px] uppercase tracking-wider border bg-red-950/90 text-red-400 border-red-500/70 animate-pulse shrink-0 transition-all';
+            const gBadge = document.getElementById('gridGpsBadge');
+            const gDot = document.getElementById('gridGpsDot');
+            const gTxt = document.getElementById('gridGpsText');
+            if (ind) {
+                ind.textContent = 'GPS';
+                if (level === 'green') {
+                    ind.className = 'px-2 py-0.5 rounded font-mono font-extrabold text-[11px] uppercase tracking-wider border bg-emerald-950/90 text-emerald-400 border-emerald-500/70 shadow-[0_0_8px_rgba(52,211,153,0.3)] shrink-0 transition-all';
+                } else if (level === 'yellow') {
+                    ind.className = 'px-2 py-0.5 rounded font-mono font-extrabold text-[11px] uppercase tracking-wider border bg-amber-950/90 text-amber-300 border-amber-500/70 shrink-0 transition-all';
+                } else {
+                    ind.className = 'px-2 py-0.5 rounded font-mono font-extrabold text-[11px] uppercase tracking-wider border bg-red-950/90 text-red-400 border-red-500/70 animate-pulse shrink-0 transition-all';
+                }
+            }
+            if (gBadge && gDot && gTxt) {
+                if (level === 'green') {
+                    gBadge.className = 'px-2 py-0.5 rounded font-mono font-extrabold text-[10px] uppercase bg-emerald-950 text-emerald-400 border border-emerald-500/60 flex items-center gap-1';
+                    gDot.className = 'w-2 h-2 rounded-full bg-emerald-400 inline-block shadow-[0_0_6px_#34d399]';
+                    gTxt.textContent = 'GPS BOM';
+                } else if (level === 'yellow') {
+                    gBadge.className = 'px-2 py-0.5 rounded font-mono font-extrabold text-[10px] uppercase bg-amber-950 text-amber-300 border border-amber-500/60 flex items-center gap-1';
+                    gDot.className = 'w-2 h-2 rounded-full bg-amber-400 inline-block';
+                    gTxt.textContent = 'GPS MOD';
+                } else {
+                    gBadge.className = 'px-2 py-0.5 rounded font-mono font-extrabold text-[10px] uppercase bg-red-950 text-red-400 border border-red-500/70 animate-pulse flex items-center gap-1';
+                    gDot.className = 'w-2 h-2 rounded-full bg-red-400 inline-block';
+                    gTxt.textContent = 'SEM SINAL';
+                }
             }
         }
 
@@ -5944,6 +6146,14 @@
                     if (hQth) hQth.textContent = saved.street;
                     if (hSub) hSub.textContent = saved.suburb || '';
                     if (sbQth) sbQth.textContent = saved.street;
+                    const gQth = document.getElementById('gridCenterQth');
+                    const gSub = document.getElementById('gridCenterSuburb');
+                    const gCoords = document.getElementById('gridCenterCoords');
+                    const gMapBtn = document.getElementById('gridBtnExactMap');
+                    if (gQth) gQth.textContent = saved.street;
+                    if (gSub) gSub.textContent = saved.suburb || '';
+                    if (gCoords && saved.lat && saved.lon) gCoords.textContent = saved.lat.toFixed(5) + ', ' + saved.lon.toFixed(5);
+                    if (gMapBtn && saved.lat && saved.lon) gMapBtn.href = 'https://www.google.com/maps/search/?api=1&query=' + saved.lat + ',' + saved.lon;
                     if (tsEl && saved.timestamp) tsEl.textContent = 'Último QTH registrado: ' + saved.timestamp;
                     if (coordsEl && saved.lat && saved.lon) coordsEl.textContent = saved.lat.toFixed(6) + ', ' + saved.lon.toFixed(6);
                     if (mapsBtn && saved.lat && saved.lon) {
@@ -6012,6 +6222,20 @@
             if (sbHospBtn) sbHospBtn.href = hospUrl;
             if (sbRedeTxt) sbRedeTxt.textContent = formatShortRedeName(closestArea.rede);
 
+            // Atualiza Cockpit Tático de 3 Colunas do Modo GRID
+            const gRede = document.getElementById('gridTelemetryRede');
+            const gArea = document.getElementById('gridTelemetryArea');
+            const gAcc = document.getElementById('gridTelemetryAcc');
+            const gHospBtn = document.getElementById('gridBtnHospRoute');
+            const gMapBtn = document.getElementById('gridBtnExactMap');
+            const gCoords = document.getElementById('gridCenterCoords');
+            if (gRede) gRede.textContent = formatShortRedeName(closestArea.rede);
+            if (gArea) gArea.textContent = closestArea.unidade;
+            if (gAcc && acc) gAcc.textContent = '±' + Math.round(acc) + 'm';
+            if (gHospBtn) gHospBtn.href = hospUrl;
+            if (gMapBtn) gMapBtn.href = 'https://www.google.com/maps/search/?api=1&query=' + lat + ',' + lon;
+            if (gCoords) gCoords.textContent = lat.toFixed(5) + ', ' + lon.toFixed(5);
+
             // Atualiza também a aba Saúde / APH
             const saudeHospName = document.getElementById('saudeClosestHospName');
             const saudeHospMeta = document.getElementById('saudeClosestHospMeta');
@@ -6035,6 +6259,8 @@
             const hpDist = document.getElementById('homeClosestPoliceDist');
             const hpBtn = document.getElementById('homeClosestPoliceRouteBtn');
             if (hpName) hpName.textContent = closestPolice.nome;
+            const gClosestUnit = document.getElementById('gridCenterClosestUnit');
+            if (gClosestUnit) gClosestUnit.textContent = closestPolice.nome + ' (~' + policeDrive.roadKm + ' km)';
             if (hpAddr) hpAddr.textContent = closestPolice.endereco;
             if (hpDist) hpDist.textContent = '~' + policeDrive.roadKm + ' km';
             if (hpBtn) hpBtn.href = policeUrl;
@@ -6148,6 +6374,10 @@
                             if (hQth) hQth.textContent = azimuteLastStreet;
                             if (hSub) hSub.textContent = subText;
                             if (sbQth) sbQth.textContent = azimuteLastStreet;
+                            const gQth = document.getElementById('gridCenterQth');
+                            const gSub = document.getElementById('gridCenterSuburb');
+                            if (gQth) gQth.textContent = azimuteLastStreet;
+                            if (gSub) gSub.textContent = subText;
                             document.getElementById('hudLastSavedTimestamp').textContent = 'Último QTH registrado: ' + timeStr;
                             document.getElementById('sosBigStreet').textContent = azimuteLastStreet;
                             document.getElementById('sosBigSuburb').textContent = subText;
@@ -6232,16 +6462,35 @@
                         document.getElementById('detAltitude').textContent = Math.round(data.elevation) + ' m';
                     }
                     if (data.current) {
-                        document.getElementById('detTemp').textContent = data.current.temperature_2m + ' °C';
-                        document.getElementById('detHumidity').textContent = data.current.relative_humidity_2m + ' %';
-                        document.getElementById('detWind').textContent = data.current.wind_speed_10m + ' km/h';
-                        document.getElementById('detCondition').textContent = decodeWmoWeather(data.current.weather_code);
+                        const tStr = data.current.temperature_2m + ' °C';
+                        const hStr = data.current.relative_humidity_2m + ' %';
+                        const wStr = data.current.wind_speed_10m + ' km/h';
+                        const cStr = decodeWmoWeather(data.current.weather_code);
+                        document.getElementById('detTemp').textContent = tStr;
+                        document.getElementById('detHumidity').textContent = hStr;
+                        document.getElementById('detWind').textContent = wStr;
+                        document.getElementById('detCondition').textContent = cStr;
+
+                        const gmTemp = document.getElementById('gridModalTemp');
+                        const gmCond = document.getElementById('gridModalCond');
+                        const gmWind = document.getElementById('gridModalWind');
+                        const gmHum = document.getElementById('gridModalHum');
+                        const gmAlt = document.getElementById('gridModalAlt');
+                        const gMiniW = document.getElementById('gridCenterWeatherMini');
+                        if (gmTemp) gmTemp.textContent = tStr;
+                        if (gmCond) gmCond.textContent = cStr;
+                        if (gmWind) gmWind.textContent = wStr;
+                        if (gmHum) gmHum.textContent = hStr;
+                        if (gmAlt && typeof data.elevation === 'number') gmAlt.textContent = Math.round(data.elevation) + ' m';
+                        if (gMiniW) gMiniW.textContent = tStr + ' • ' + cStr;
                     }
                     if (data.hourly && data.hourly.precipitation_probability) {
                         const currentHour = new Date().getHours();
                         const probs = data.hourly.precipitation_probability.slice(currentHour, currentHour + 4);
                         const maxProb = probs.length ? Math.max(...probs) : data.hourly.precipitation_probability[0];
                         document.getElementById('detRainProb').textContent = maxProb + ' %';
+                        const gmRain = document.getElementById('gridModalRain');
+                        if (gmRain) gmRain.textContent = maxProb + ' %';
                     }
                 }
             } catch (e) {}
@@ -6255,6 +6504,20 @@
                 fetchRealtimeWeatherDetails(azimuteLastGeoLat, azimuteLastGeoLon);
             }
         }
+
+        window.openGridWeatherModal = function() {
+            const modal = document.getElementById('gridQuickWeatherModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                fetchRealtimeWeatherDetails(azimuteLastGeoLat, azimuteLastGeoLon);
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+            }
+        };
+
+        window.closeGridWeatherModal = function() {
+            const modal = document.getElementById('gridQuickWeatherModal');
+            if (modal) modal.classList.add('hidden');
+        };
 
         function copyExactCoordinates() {
             const coords = document.getElementById('detailExactCoords') ? document.getElementById('detailExactCoords').textContent : '';
@@ -6413,6 +6676,7 @@
         // Inicia o GPS continuamente assim que o sistema carrega e preenche o Apoio Mais Próximo inicial
         document.addEventListener('DOMContentLoaded', () => {
             updateOfflineProximityData(azimuteLastGeoLat || -19.9162, azimuteLastGeoLon || -44.0809, 15);
+            fetchRealtimeWeatherDetails(azimuteLastGeoLat || -19.9162, azimuteLastGeoLon || -44.0809);
             startAzimuteLiveGps();
         });
     </script>
@@ -6557,17 +6821,19 @@
             if (typeof lucide !== 'undefined') lucide.createIcons();
         };
 
-        // DETECÇÃO AUTOMÁTICA DE TELA HORIZONTAL (LARGURA > ALTURA -> MODO PC | VERTICAL -> MODO APP)
+        // DETECÇÃO AUTOMÁTICA DE TELA HORIZONTAL NO CELULAR (GIRA NA HORIZONTAL -> ATIVA MODO GRID | VERTICAL -> MODO APP)
         function handleAutoOrientationMode() {
-            const saved = localStorage.getItem('azimute_layout_mode');
-            if (saved === 'grid') {
+            const isMobileOrSupportViewport = window.innerHeight <= 640 || /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+            if (window.innerWidth > window.innerHeight && isMobileOrSupportViewport) {
                 window.setLayoutMode('grid', false, false);
                 return;
             }
-            if (window.innerWidth > window.innerHeight) {
-                window.setLayoutMode('web', false, false);
+            let saved = 'app';
+            try { saved = localStorage.getItem('azimute_layout_mode') || 'app'; } catch (e) {}
+            if (window.innerHeight >= window.innerWidth && isMobileOrSupportViewport) {
+                window.setLayoutMode(saved === 'grid' ? 'grid' : 'app', false, false);
             } else {
-                window.setLayoutMode('app', false, false);
+                window.setLayoutMode(saved, false, false);
             }
         }
         window.addEventListener('resize', handleAutoOrientationMode);
