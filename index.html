@@ -168,15 +168,60 @@
             white-space: normal !important;
         }
 
-        /* No Modo PC (Desktop), expande o container de forma ampla e oculta a barra inferior */
-        body.mode-web .app-main-container {
-            max-width: 1400px !important;
-            width: 100%;
-            margin-left: auto;
-            margin-right: auto;
+        /* SIDEBAR RETRÁTIL EXCLUSIVA DO MODO PC (OCULTA NOS MODOS APP E GRID) */
+        #pcSidebar {
+            display: none;
         }
+        /* No Modo PC (Desktop), ativa o Menu Lateral Fixo Retrátil à esquerda e elimina duplicação de barras de menu */
+        body.mode-web {
+            padding-bottom: 2rem !important;
+        }
+        body.mode-web #topNavBar,
         body.mode-web #mobileBottomNav {
             display: none !important;
+        }
+        body.mode-web #pcSidebar {
+            display: flex !important;
+            flex-direction: column;
+            position: fixed;
+            top: 81px;
+            left: 0;
+            bottom: 0;
+            width: 265px;
+            z-index: 35;
+            background: rgba(23, 23, 23, 0.98);
+            border-right: 1px solid rgba(194, 178, 128, 0.35);
+            box-shadow: 6px 0 24px -4px rgba(0, 0, 0, 0.75);
+            transition: width 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        body.mode-web.pc-sidebar-collapsed #pcSidebar {
+            width: 68px;
+        }
+        body.mode-web.pc-sidebar-collapsed #pcSidebar .pc-sb-label,
+        body.mode-web.pc-sidebar-collapsed #pcSidebar .pc-sb-sub,
+        body.mode-web.pc-sidebar-collapsed #pcSidebar .pc-sb-chevron,
+        body.mode-web.pc-sidebar-collapsed #pcSidebar .pc-sb-footer-text {
+            display: none !important;
+        }
+        body.mode-web.pc-sidebar-collapsed #pcSidebar .pc-sb-item {
+            justify-content: center !important;
+            padding-left: 0.5rem !important;
+            padding-right: 0.5rem !important;
+        }
+        body.mode-web .app-main-container {
+            margin-left: 265px !important;
+            max-width: calc(100% - 265px) !important;
+            width: calc(100% - 265px) !important;
+            padding-left: 1.75rem !important;
+            padding-right: 1.75rem !important;
+            transition: margin-left 0.22s cubic-bezier(0.16, 1, 0.3, 1), max-width 0.22s cubic-bezier(0.16, 1, 0.3, 1), width 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        body.mode-web.pc-sidebar-collapsed .app-main-container {
+            margin-left: 68px !important;
+            max-width: calc(100% - 68px) !important;
+            width: calc(100% - 68px) !important;
         }
         /* Ajuste automático para Celular na Horizontal (Landscape): evita que o cabeçalho tampe a tela */
         @media (orientation: landscape) and (max-height: 600px) {
@@ -490,6 +535,142 @@
             </div>
         </nav>
     </header>
+
+    <!-- MENU LATERAL FIXO RETRÁTIL (SIDEBAR EXCLUSIVA DO MODO PC COM ACORDEÃO E SUBPASTAS) -->
+    <aside id="pcSidebar" aria-label="Menu Lateral Modo PC">
+        <!-- Topo da Sidebar: Título + Botão Retrátil -->
+        <div class="p-3 border-b border-pmmg-border flex items-center justify-between gap-2 shrink-0">
+            <span class="pc-sb-label text-[10px] font-extrabold uppercase tracking-widest text-pmmg-khaki flex items-center gap-1.5 truncate">
+                <i data-lucide="layout-dashboard" class="w-3.5 h-3.5 text-pmmg-gold shrink-0"></i> Painel Lateral PC
+            </span>
+            <button type="button" onclick="togglePcSidebarCollapse()" id="btnTogglePcSidebar" class="p-1.5 rounded-lg bg-pmmg-card hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-border transition-colors mx-auto sm:mx-0" title="Recolher / Expandir Menu Lateral">
+                <i data-lucide="panel-left-close" id="iconPcSidebarToggle" class="w-4 h-4"></i>
+            </button>
+        </div>
+
+        <!-- Lista Principal de Seções -->
+        <div class="p-2.5 space-y-1.5 flex-1 text-xs">
+            <!-- 1. Início -->
+            <button type="button" onclick="showView('home')" id="pcsb-btn-home" class="pc-sb-item w-full px-3 py-2.5 rounded-xl bg-pmmg-khaki text-pmmg-black font-extrabold flex items-center gap-3 transition-all shadow" title="Início">
+                <i data-lucide="home" class="w-4 h-4 shrink-0"></i>
+                <span class="pc-sb-label truncate">Início</span>
+            </button>
+
+            <!-- 2. Regiões (Com Acordeão Expansível de Subpastas: 1ª RPM, 2ª RPM e Especializadas) -->
+            <div class="space-y-1">
+                <div class="flex items-center rounded-xl bg-pmmg-card border border-pmmg-border overflow-hidden transition-all" id="pcsb-group-regioes">
+                    <button type="button" onclick="handlePcSidebarRegioesClick()" id="pcsb-btn-regioes" class="pc-sb-item flex-1 px-3 py-2.5 text-left font-bold text-gray-200 hover:text-white flex items-center gap-3 transition-all" title="Regiões PMMG">
+                        <i data-lucide="shield" class="w-4 h-4 text-pmmg-khaki shrink-0"></i>
+                        <span class="pc-sb-label truncate">Regiões</span>
+                    </button>
+                    <button type="button" onclick="togglePcRegioesAccordion(event)" class="pc-sb-chevron px-2.5 py-2.5 text-gray-400 hover:text-pmmg-khaki transition-colors border-l border-pmmg-border/60" title="Expandir / Recolher Subpastas de Regiões">
+                        <i data-lucide="chevron-down" id="pcsb-regioes-arrow" class="w-4 h-4 transition-transform duration-200"></i>
+                    </button>
+                </div>
+
+                <!-- Subpastas Expansíveis (Acordeão) dentro de Regiões -->
+                <div id="pcsb-regioes-subfolders" class="pc-sb-sub pl-3 pr-1 py-1 space-y-1 border-l-2 border-pmmg-khaki/40 ml-3.5">
+                    <!-- Subpasta 1: 1ª RPM -->
+                    <div class="space-y-1">
+                        <div class="flex items-center rounded-lg bg-pmmg-dark/90 border border-pmmg-border/80 hover:border-pmmg-khaki/60 transition-all">
+                            <button type="button" onclick="showView('rpm1')" id="pcsb-sub-rpm1" class="flex-1 px-2.5 py-2 text-left text-[11px] font-bold text-gray-300 hover:text-pmmg-khaki flex items-center gap-2 truncate">
+                                <i data-lucide="folder" class="w-3.5 h-3.5 text-pmmg-khaki shrink-0"></i>
+                                <span class="truncate">1ª RPM (Capital)</span>
+                            </button>
+                            <button type="button" onclick="togglePcSubfolderUnits('rpm1', event)" class="px-2 py-2 text-gray-400 hover:text-white" title="Listar Batalhões da 1ª RPM">
+                                <i data-lucide="chevron-right" id="pcsb-arrow-rpm1" class="w-3.5 h-3.5 transition-transform duration-200"></i>
+                            </button>
+                        </div>
+                        <div id="pcsb-units-rpm1" class="hidden pl-3 space-y-0.5 border-l border-pmmg-border ml-2 text-[11px]">
+                            <button type="button" onclick="openBattalionPlaceholder('1º BPM', 'Belo Horizonte', 'Praça Floriano Peixoto, s/n - Santa Efigênia')" class="w-full text-left px-2 py-1 rounded hover:bg-pmmg-card text-gray-400 hover:text-pmmg-khaki truncate">• 1º BPM (Sta. Efigênia)</button>
+                            <button type="button" onclick="openBattalionPlaceholder('5º BPM', 'Belo Horizonte', 'Avenida Amazonas, 6455 - Gameleira')" class="w-full text-left px-2 py-1 rounded hover:bg-pmmg-card text-gray-400 hover:text-pmmg-khaki truncate">• 5º BPM (Gameleira)</button>
+                            <button type="button" onclick="openBattalionPlaceholder('13º BPM', 'Belo Horizonte', 'Avenida Dr. Cristiano Guimarães, 2300 - Planalto')" class="w-full text-left px-2 py-1 rounded hover:bg-pmmg-card text-gray-400 hover:text-pmmg-khaki truncate">• 13º BPM (Planalto)</button>
+                            <button type="button" onclick="openBattalionPlaceholder('16º BPM', 'Belo Horizonte', 'Rua Tenente Vitorino, 71 - Santa Tereza')" class="w-full text-left px-2 py-1 rounded hover:bg-pmmg-card text-gray-400 hover:text-pmmg-khaki truncate">• 16º BPM (Sta. Tereza)</button>
+                            <button type="button" onclick="openBattalionPlaceholder('22º BPM', 'Belo Horizonte', 'Avenida Arthur Bernardes, 1337 - Santa Lúcia')" class="w-full text-left px-2 py-1 rounded hover:bg-pmmg-card text-gray-400 hover:text-pmmg-khaki truncate">• 22º BPM (Sta. Lúcia)</button>
+                            <button type="button" onclick="openBattalionPlaceholder('34º BPM', 'Belo Horizonte', 'Avenida Américo Vespúcio, 2391 - Caiçara')" class="w-full text-left px-2 py-1 rounded hover:bg-pmmg-card text-gray-400 hover:text-pmmg-khaki truncate">• 34º BPM (Caiçara)</button>
+                            <button type="button" onclick="openBattalionPlaceholder('41º BPM', 'Belo Horizonte', 'Avenida Afonso Vaz de Melo, 650 - Barreiro')" class="w-full text-left px-2 py-1 rounded hover:bg-pmmg-card text-gray-400 hover:text-pmmg-khaki truncate">• 41º BPM (Barreiro)</button>
+                            <button type="button" onclick="openBattalionPlaceholder('49º BPM', 'Belo Horizonte', 'Avenida Érico Veríssimo, 561 - Venda Nova')" class="w-full text-left px-2 py-1 rounded hover:bg-pmmg-card text-gray-400 hover:text-pmmg-khaki truncate">• 49º BPM (Venda Nova)</button>
+                            <button type="button" onclick="openBattalionPlaceholder('BPRTRAN', 'Belo Horizonte', 'Avenida Amazonas, 6227 - Gameleira')" class="w-full text-left px-2 py-1 rounded hover:bg-pmmg-card text-pmmg-gold hover:underline truncate">• BPTran (Trânsito)</button>
+                        </div>
+                    </div>
+
+                    <!-- Subpasta 2: 2ª RPM -->
+                    <div class="space-y-1">
+                        <div class="flex items-center rounded-lg bg-pmmg-dark/90 border border-pmmg-border/80 hover:border-pmmg-gold/60 transition-all">
+                            <button type="button" onclick="showView('rpm2')" id="pcsb-sub-rpm2" class="flex-1 px-2.5 py-2 text-left text-[11px] font-bold text-gray-300 hover:text-pmmg-gold flex items-center gap-2 truncate">
+                                <i data-lucide="folder" class="w-3.5 h-3.5 text-pmmg-gold shrink-0"></i>
+                                <span class="truncate">2ª RPM (RMBH)</span>
+                            </button>
+                            <button type="button" onclick="togglePcSubfolderUnits('rpm2', event)" class="px-2 py-2 text-gray-400 hover:text-white" title="Listar Batalhões da 2ª RPM">
+                                <i data-lucide="chevron-right" id="pcsb-arrow-rpm2" class="w-3.5 h-3.5 transition-transform duration-200"></i>
+                            </button>
+                        </div>
+                        <div id="pcsb-units-rpm2" class="hidden pl-3 space-y-0.5 border-l border-pmmg-gold/40 ml-2 text-[11px]">
+                            <button type="button" onclick="showView('18bpm')" class="w-full text-left px-2 py-1 rounded bg-pmmg-khaki/15 text-pmmg-khaki font-extrabold hover:bg-pmmg-khaki hover:text-pmmg-black truncate">★ 18º BPM (Contagem)</button>
+                            <button type="button" onclick="openBattalionPlaceholder('33º BPM', 'Betim', 'Rua Conceição Rosa Lima, 455 - Angola, Betim/MG')" class="w-full text-left px-2 py-1 rounded hover:bg-pmmg-card text-gray-400 hover:text-pmmg-khaki truncate">• 33º BPM (Betim)</button>
+                            <button type="button" onclick="openBattalionPlaceholder('39º BPM', 'Contagem', 'Rua Tiradentes, 2750 - Industrial, Contagem/MG')" class="w-full text-left px-2 py-1 rounded hover:bg-pmmg-card text-gray-400 hover:text-pmmg-khaki truncate">• 39º BPM (Contagem)</button>
+                            <button type="button" onclick="openBattalionPlaceholder('40º BPM', 'Ribeirão das Neves', 'Rodovia LMG-806, KM 04 - Fazenda Castro, Ribeirão das Neves/MG')" class="w-full text-left px-2 py-1 rounded hover:bg-pmmg-card text-gray-400 hover:text-pmmg-khaki truncate">• 40º BPM (R. das Neves)</button>
+                            <button type="button" onclick="openBattalionPlaceholder('48º BPM', 'Ibirité', 'Avenida Marechal Hermes, 228 - Durval de Barros, Ibirité/MG')" class="w-full text-left px-2 py-1 rounded hover:bg-pmmg-card text-gray-400 hover:text-pmmg-khaki truncate">• 48º BPM (Ibirité)</button>
+                            <button type="button" onclick="openBattalionPlaceholder('66º BPM', 'Betim', 'Rua Barão do Rio Branco, 235 - Centro, Betim/MG')" class="w-full text-left px-2 py-1 rounded hover:bg-pmmg-card text-gray-400 hover:text-pmmg-khaki truncate">• 66º BPM (Betim)</button>
+                            <button type="button" onclick="openBattalionPlaceholder('6ª Cia PM Ind', 'Brumadinho', 'Sediada em Brumadinho (Atende Brumadinho, Mário Campos e Sarzedo)')" class="w-full text-left px-2 py-1 rounded hover:bg-pmmg-card text-gray-400 hover:text-pmmg-khaki truncate">• 6ª Cia Ind (Brumadinho)</button>
+                            <button type="button" onclick="openBattalionPlaceholder('7ª Cia PM Ind', 'Igarapé', 'Sediada em Igarapé (Atende Igarapé, São Joaquim de Bicas, Juatuba, Itatiaiuçu, Mateus Leme)')" class="w-full text-left px-2 py-1 rounded hover:bg-pmmg-card text-gray-400 hover:text-pmmg-khaki truncate">• 7ª Cia Ind (Igarapé)</button>
+                        </div>
+                    </div>
+
+                    <!-- Subpasta 3: Especializadas -->
+                    <button type="button" onclick="showView('especializadas')" id="pcsb-sub-especializadas" class="w-full px-2.5 py-2 rounded-lg bg-pmmg-dark/90 border border-pmmg-border/80 hover:border-red-500/50 text-left text-[11px] font-bold text-gray-300 hover:text-red-400 flex items-center gap-2 transition-all">
+                        <i data-lucide="folder" class="w-3.5 h-3.5 text-red-400 shrink-0"></i>
+                        <span class="truncate">Especializadas</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 3. Saúde / APH -->
+            <button type="button" onclick="showView('saude')" id="pcsb-btn-saude" class="pc-sb-item w-full px-3 py-2.5 rounded-xl bg-pmmg-card hover:bg-pmmg-border text-red-400 border border-red-500/30 font-bold flex items-center gap-3 transition-all" title="Saúde / APH">
+                <i data-lucide="heart-pulse" class="w-4 h-4 text-red-400 shrink-0"></i>
+                <span class="pc-sb-label truncate">Saúde / APH</span>
+            </button>
+
+            <!-- 4. Drones / RPAS -->
+            <button type="button" onclick="showView('rpas')" id="pcsb-btn-rpas" class="pc-sb-item w-full px-3 py-2.5 rounded-xl bg-pmmg-card hover:bg-pmmg-border text-sky-400 border border-pmmg-border font-bold flex items-center gap-3 transition-all" title="Drones / RPAS">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-sky-400 shrink-0">
+                    <rect x="9" y="9" width="6" height="6" rx="1"/>
+                    <path d="M9 9 5.5 5.5"/><path d="M15 9l3.5-3.5"/><path d="M9 15l-3.5 3.5"/><path d="M15 15l3.5 3.5"/>
+                    <circle cx="4.5" cy="4.5" r="2.5"/><circle cx="19.5" cy="4.5" r="2.5"/><circle cx="4.5" cy="19.5" r="2.5"/><circle cx="19.5" cy="19.5" r="2.5"/>
+                </svg>
+                <span class="pc-sb-label truncate">Drones</span>
+            </button>
+
+            <!-- 5. Apoio -->
+            <button type="button" onclick="showView('atalhos')" id="pcsb-btn-atalhos" class="pc-sb-item w-full px-3 py-2.5 rounded-xl bg-pmmg-card hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-border font-bold flex items-center gap-3 transition-all" title="Apoio Operacional & Sistemas">
+                <i data-lucide="folder" class="w-4 h-4 text-pmmg-gold shrink-0"></i>
+                <span class="pc-sb-label truncate">Apoio</span>
+            </button>
+
+            <!-- 6. Geolocalização -->
+            <button type="button" onclick="showView('gps')" id="pcsb-btn-gps" class="pc-sb-item w-full px-3 py-2.5 rounded-xl bg-pmmg-card hover:bg-pmmg-border text-emerald-400 border border-pmmg-border font-bold flex items-center gap-3 transition-all" title="Geolocalização">
+                <i data-lucide="locate-fixed" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+                <span class="pc-sb-label truncate">Geolocalização</span>
+            </button>
+
+            <!-- 7. Estádios -->
+            <button type="button" onclick="showView('estadios')" id="pcsb-btn-estadios" class="pc-sb-item w-full px-3 py-2.5 rounded-xl bg-pmmg-card hover:bg-pmmg-border text-emerald-400 border border-pmmg-border font-bold flex items-center gap-3 transition-all" title="Estádios • BH">
+                <i data-lucide="trophy" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+                <span class="pc-sb-label truncate">Estádios</span>
+            </button>
+        </div>
+
+        <!-- Rodapé Compacto da Sidebar PC -->
+        <div class="p-3 border-t border-pmmg-border bg-pmmg-black/60 flex items-center justify-between gap-2 shrink-0">
+            <div class="pc-sb-footer-text min-w-0">
+                <span class="text-[9px] uppercase font-bold text-gray-500 block">Unidade em Foco</span>
+                <strong id="pcSidebarActiveUnit" class="text-xs font-mono text-pmmg-khaki truncate block">Painel Geral</strong>
+            </div>
+            <button type="button" onclick="toggleQCodeModal()" class="p-2 rounded-lg bg-pmmg-card hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-border shrink-0" title="Abrir Códigos Q & Alfabeto Fonético">
+                <i data-lucide="book-open" class="w-4 h-4"></i>
+            </button>
+        </div>
+    </aside>
 
     <!-- CONTAINER PRINCIPAL -->
     <main id="mainContainer" class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-4 app-main-container">
@@ -6969,9 +7150,106 @@
                 if (activeName) activeName.textContent = 'Apoio Operacional';
             }
 
+            // Atualiza estado visual dos itens na Sidebar do Modo PC (#pcSidebar)
+            const pcItems = ['home', 'saude', 'rpas', 'atalhos', 'gps', 'estadios'];
+            pcItems.forEach(id => {
+                const btn = document.getElementById(`pcsb-btn-${id}`);
+                if (!btn) return;
+                if (id === viewId) {
+                    btn.className = 'pc-sb-item w-full px-3 py-2.5 rounded-xl bg-pmmg-khaki text-pmmg-black font-extrabold flex items-center gap-3 transition-all shadow';
+                } else if (id === 'saude') {
+                    btn.className = 'pc-sb-item w-full px-3 py-2.5 rounded-xl bg-pmmg-card hover:bg-pmmg-border text-red-400 border border-red-500/30 font-bold flex items-center gap-3 transition-all';
+                } else {
+                    btn.className = 'pc-sb-item w-full px-3 py-2.5 rounded-xl bg-pmmg-card hover:bg-pmmg-border text-gray-200 border border-pmmg-border font-bold flex items-center gap-3 transition-all';
+                }
+            });
+
+            // Destaque do grupo Regiões e subpastas (1ª RPM, 2ª RPM e Especializadas) na Sidebar PC
+            const grpRegioes = document.getElementById('pcsb-group-regioes');
+            const subRpm1 = document.getElementById('pcsb-sub-rpm1');
+            const subRpm2 = document.getElementById('pcsb-sub-rpm2');
+            const subEsp = document.getElementById('pcsb-sub-especializadas');
+            const isRegioesOrEsp = isRegiaoSub || viewId === 'especializadas';
+
+            if (grpRegioes) {
+                grpRegioes.className = isRegioesOrEsp
+                    ? 'flex items-center rounded-xl bg-pmmg-khaki/20 border-2 border-pmmg-khaki overflow-hidden transition-all'
+                    : 'flex items-center rounded-xl bg-pmmg-card border border-pmmg-border overflow-hidden transition-all';
+            }
+            if (subRpm1) {
+                subRpm1.className = (viewId === 'rpm1')
+                    ? 'flex-1 px-2.5 py-2 text-left text-[11px] font-extrabold text-pmmg-khaki flex items-center gap-2 truncate'
+                    : 'flex-1 px-2.5 py-2 text-left text-[11px] font-bold text-gray-300 hover:text-pmmg-khaki flex items-center gap-2 truncate';
+            }
+            if (subRpm2) {
+                subRpm2.className = (viewId === 'rpm2' || viewId === '18bpm')
+                    ? 'flex-1 px-2.5 py-2 text-left text-[11px] font-extrabold text-pmmg-gold flex items-center gap-2 truncate'
+                    : 'flex-1 px-2.5 py-2 text-left text-[11px] font-bold text-gray-300 hover:text-pmmg-gold flex items-center gap-2 truncate';
+            }
+            if (subEsp) {
+                subEsp.className = (viewId === 'especializadas')
+                    ? 'w-full px-2.5 py-2 rounded-lg bg-red-950/60 border border-red-500 text-left text-[11px] font-extrabold text-red-300 flex items-center gap-2 transition-all'
+                    : 'w-full px-2.5 py-2 rounded-lg bg-pmmg-dark/90 border border-pmmg-border/80 hover:border-red-500/50 text-left text-[11px] font-bold text-gray-300 hover:text-red-400 flex items-center gap-2 transition-all';
+            }
+
+            const sbActiveUnit = document.getElementById('pcSidebarActiveUnit');
+            if (sbActiveUnit) {
+                sbActiveUnit.textContent = (activeName && !activeBadge?.classList.contains('hidden')) ? activeName.textContent : 'Painel Geral';
+            }
+
             window.scrollTo({ top: 0, behavior: 'smooth' });
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
+
+        // FUNÇÕES DE CONTROLE DO MENU LATERAL RETRÁTIL (MODO PC) E ACORDEÃO DE SUBPASTAS
+        window.togglePcSidebarCollapse = function() {
+            const body = document.body;
+            body.classList.toggle('pc-sidebar-collapsed');
+            const isCollapsed = body.classList.contains('pc-sidebar-collapsed');
+            const icon = document.getElementById('iconPcSidebarToggle');
+            if (icon) {
+                icon.setAttribute('data-lucide', isCollapsed ? 'panel-left-open' : 'panel-left-close');
+            }
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        };
+
+        window.togglePcRegioesAccordion = function(ev) {
+            if (ev) ev.stopPropagation();
+            if (document.body.classList.contains('pc-sidebar-collapsed')) {
+                document.body.classList.remove('pc-sidebar-collapsed');
+            }
+            const sub = document.getElementById('pcsb-regioes-subfolders');
+            const arrow = document.getElementById('pcsb-regioes-arrow');
+            if (!sub) return;
+            sub.classList.toggle('hidden');
+            if (arrow) {
+                arrow.style.transform = sub.classList.contains('hidden') ? 'rotate(-90deg)' : 'rotate(0deg)';
+            }
+        };
+
+        window.handlePcSidebarRegioesClick = function() {
+            if (document.body.classList.contains('pc-sidebar-collapsed')) {
+                document.body.classList.remove('pc-sidebar-collapsed');
+            }
+            const sub = document.getElementById('pcsb-regioes-subfolders');
+            const arrow = document.getElementById('pcsb-regioes-arrow');
+            if (sub && sub.classList.contains('hidden')) {
+                sub.classList.remove('hidden');
+                if (arrow) arrow.style.transform = 'rotate(0deg)';
+            }
+            showView('regioes');
+        };
+
+        window.togglePcSubfolderUnits = function(rpmKey, ev) {
+            if (ev) ev.stopPropagation();
+            const listEl = document.getElementById(`pcsb-units-${rpmKey}`);
+            const arrowEl = document.getElementById(`pcsb-arrow-${rpmKey}`);
+            if (!listEl) return;
+            listEl.classList.toggle('hidden');
+            if (arrowEl) {
+                arrowEl.style.transform = listEl.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(90deg)';
+            }
+        };
 
         // ABRE O ESTÁDIO EM UMA NOVA TELA (COMO NOS BATALHÕES) PARA NÃO PARECER ESTÁTICO NO CELULAR
         function openStadiumScreen(stadiumId) {
