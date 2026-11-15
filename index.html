@@ -892,36 +892,194 @@
                         </div>
                     </div>
 
-                    <!-- CARD COMPACTO "CLIMA LOCAL" NA TELA PRINCIPAL DA ABA GEOLOCALIZAÇÃO (TEMPERATURA ATUAL, CONDIÇÃO E VENTO) -->
-                    <div id="localWeatherSummaryCard" onclick="toggleGeoWeatherDetails()" class="bg-pmmg-dark hover:bg-pmmg-cardHover border border-sky-500/50 border-l-4 border-l-sky-400 rounded-xl p-3.5 cursor-pointer transition-all shadow-md group">
-                        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border/70 pb-2 mb-2.5">
-                            <div class="flex items-center gap-2">
-                                <div class="p-1.5 rounded-lg bg-sky-950 text-sky-400 border border-sky-500/40">
-                                    <i data-lucide="cloud-sun" class="w-4 h-4"></i>
+                    <!-- GRADE DUPLA LADO A LADO: CARD "CLIMA LOCAL" + CARD "CONECTIVIDADE" -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-3.5 items-stretch">
+                        <!-- CARD COMPACTO "CLIMA LOCAL" NA TELA PRINCIPAL DA ABA GEOLOCALIZAÇÃO (TEMPERATURA ATUAL, CONDIÇÃO E VENTO) -->
+                        <div id="localWeatherSummaryCard" onclick="toggleGeoWeatherDetails()" class="bg-pmmg-dark hover:bg-pmmg-cardHover border border-sky-500/50 border-l-4 border-l-sky-400 rounded-xl p-3.5 cursor-pointer transition-all shadow-md group flex flex-col justify-between">
+                            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border/70 pb-2 mb-2.5">
+                                <div class="flex items-center gap-2">
+                                    <div class="p-1.5 rounded-lg bg-sky-950 text-sky-400 border border-sky-500/40">
+                                        <i data-lucide="cloud-sun" class="w-4 h-4"></i>
+                                    </div>
+                                    <div>
+                                        <span class="text-[10px] font-extrabold uppercase tracking-wider text-sky-400 block leading-none">CLIMA LOCAL</span>
+                                        <span class="text-[10px] text-gray-400">Monitoramento meteorológico atual</span>
+                                    </div>
                                 </div>
-                                <div>
-                                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-sky-400 block leading-none">CLIMA LOCAL</span>
-                                    <span class="text-[10px] text-gray-400">Monitoramento meteorológico da coordenada atual</span>
+                                <button type="button" onclick="event.stopPropagation(); toggleGeoWeatherDetails();" class="px-2.5 py-1 rounded-lg bg-sky-950/90 group-hover:bg-sky-500 text-sky-300 group-hover:text-pmmg-black border border-sky-500/50 text-[11px] font-extrabold flex items-center gap-1 transition-all">
+                                    <span>Ver Previsão / Detalhes</span>
+                                    <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                                </button>
+                            </div>
+
+                            <div class="grid grid-cols-3 gap-2.5 text-xs">
+                                <div class="bg-pmmg-card/90 p-2.5 rounded-lg border border-pmmg-border">
+                                    <span class="text-[10px] text-gray-400 uppercase font-bold block">🌡️ Temp. Atual</span>
+                                    <strong id="localClimateTemp" class="text-sm sm:text-base font-mono text-white font-extrabold block mt-0.5">-- °C</strong>
+                                </div>
+                                <div class="bg-pmmg-card/90 p-2.5 rounded-lg border border-pmmg-border">
+                                    <span class="text-[10px] text-gray-400 uppercase font-bold block">⛅ Condição</span>
+                                    <strong id="localClimateCond" class="text-xs sm:text-sm text-sky-300 font-bold block mt-0.5 truncate">--</strong>
+                                </div>
+                                <div class="bg-pmmg-card/90 p-2.5 rounded-lg border border-pmmg-border">
+                                    <span class="text-[10px] text-gray-400 uppercase font-bold block">💨 Vento</span>
+                                    <strong id="localClimateWind" class="text-sm sm:text-base font-mono text-white font-extrabold block mt-0.5">-- km/h</strong>
                                 </div>
                             </div>
-                            <button type="button" onclick="event.stopPropagation(); toggleGeoWeatherDetails();" class="px-2.5 py-1 rounded-lg bg-sky-950/90 group-hover:bg-sky-500 text-sky-300 group-hover:text-pmmg-black border border-sky-500/50 text-[11px] font-extrabold flex items-center gap-1 transition-all">
-                                <span>Ver Previsão / Detalhes</span>
-                                <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
-                            </button>
                         </div>
 
-                        <div class="grid grid-cols-3 gap-2.5 text-xs">
-                            <div class="bg-pmmg-card/90 p-2.5 rounded-lg border border-pmmg-border">
-                                <span class="text-[10px] text-gray-400 uppercase font-bold block">🌡️ Temp. Atual</span>
-                                <strong id="localClimateTemp" class="text-sm sm:text-base font-mono text-white font-extrabold block mt-0.5">-- °C</strong>
+                        <!-- CARD RESUMIDO "CONECTIVIDADE" AO LADO DO CARD DE CLIMA (4 ESTADOS: BOA, MODERADA, RUIM, SEM MEDIÇÃO) -->
+                        <div id="localConnectivitySummaryCard" onclick="openGeoConnectivitySubpage()" class="bg-pmmg-dark hover:bg-pmmg-cardHover border border-gray-500/50 border-l-4 border-l-gray-400 rounded-xl p-3.5 cursor-pointer transition-all shadow-md group flex flex-col justify-between">
+                            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border/70 pb-2 mb-2.5">
+                                <div class="flex items-center gap-2">
+                                    <div id="connSummaryIconBox" class="p-1.5 rounded-lg bg-gray-800 text-gray-300 border border-gray-500/40 transition-colors">
+                                        <i data-lucide="wifi" class="w-4 h-4"></i>
+                                    </div>
+                                    <div>
+                                        <div class="flex items-center gap-1.5">
+                                            <span class="text-[10px] font-extrabold uppercase tracking-wider text-pmmg-khaki block leading-none">CONECTIVIDADE</span>
+                                            <span id="connSummaryStateBadge" class="px-2 py-0.5 rounded text-[9px] font-mono font-extrabold uppercase bg-gray-800 text-gray-300 border border-gray-500/50 transition-all">
+                                                SEM MEDIÇÃO
+                                            </span>
+                                        </div>
+                                        <span class="text-[10px] text-gray-400 block mt-0.5">Qualidade de rede e latência operacional</span>
+                                    </div>
+                                </div>
+                                <button type="button" onclick="event.stopPropagation(); openGeoConnectivitySubpage();" class="px-2.5 py-1 rounded-lg bg-pmmg-card group-hover:bg-pmmg-khaki text-pmmg-khaki group-hover:text-pmmg-black border border-pmmg-khaki/50 text-[11px] font-extrabold flex items-center gap-1 transition-all">
+                                    <span>Ver Diagnóstico →</span>
+                                </button>
                             </div>
-                            <div class="bg-pmmg-card/90 p-2.5 rounded-lg border border-pmmg-border">
-                                <span class="text-[10px] text-gray-400 uppercase font-bold block">⛅ Condição</span>
-                                <strong id="localClimateCond" class="text-xs sm:text-sm text-sky-300 font-bold block mt-0.5 truncate">--</strong>
+
+                            <div class="grid grid-cols-3 gap-2.5 text-xs">
+                                <div class="bg-pmmg-card/90 p-2.5 rounded-lg border border-pmmg-border">
+                                    <span class="text-[10px] text-gray-400 uppercase font-bold block">📶 Qualidade</span>
+                                    <strong id="connSummaryStatusText" class="text-xs sm:text-sm font-mono text-gray-300 font-extrabold block mt-0.5 truncate">SEM MEDIÇÃO</strong>
+                                </div>
+                                <div class="bg-pmmg-card/90 p-2.5 rounded-lg border border-pmmg-border">
+                                    <span class="text-[10px] text-gray-400 uppercase font-bold block">⚡ Down / Ping</span>
+                                    <strong id="connSummaryDownPing" class="text-xs sm:text-sm font-mono text-white font-extrabold block mt-0.5 truncate">-- Mbps / -- ms</strong>
+                                </div>
+                                <div class="bg-pmmg-card/90 p-2.5 rounded-lg border border-pmmg-border">
+                                    <span class="text-[10px] text-gray-400 uppercase font-bold block">📡 Tecnologia</span>
+                                    <strong id="connSummaryTech" class="text-xs sm:text-sm font-mono text-pmmg-gold font-extrabold block mt-0.5 truncate">SEM MEDIÇÃO</strong>
+                                </div>
                             </div>
-                            <div class="bg-pmmg-card/90 p-2.5 rounded-lg border border-pmmg-border">
-                                <span class="text-[10px] text-gray-400 uppercase font-bold block">💨 Vento</span>
-                                <strong id="localClimateWind" class="text-sm sm:text-base font-mono text-white font-extrabold block mt-0.5">-- km/h</strong>
+                        </div>
+                    </div>
+
+                    <!-- SUBPÁGINA / MODAL "DIAGNÓSTICO DE CONECTIVIDADE" (MEDIÇÃO REAL VIA REQUISIÇÃO) -->
+                    <div id="geoConnectivitySubpage" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-start sm:items-center justify-center p-2.5 sm:p-5 overflow-y-auto" onclick="if(event.target === this) closeGeoConnectivitySubpage()">
+                        <div class="bg-pmmg-dark border-2 border-pmmg-khaki/70 rounded-2xl max-w-3xl w-full p-4 sm:p-6 space-y-5 shadow-2xl my-auto app-screen-animate max-h-[92vh] overflow-y-auto">
+                            <!-- Cabeçalho da Subpágina de Diagnóstico -->
+                            <div class="flex items-center justify-between border-b border-pmmg-border pb-3 gap-2 sticky top-0 bg-pmmg-dark/95 backdrop-blur z-10 pt-1">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="p-2 rounded-xl bg-pmmg-card text-pmmg-khaki border border-pmmg-khaki/40">
+                                        <i data-lucide="activity" class="w-5 h-5"></i>
+                                    </div>
+                                    <div>
+                                        <span class="text-[10px] font-bold uppercase tracking-wider text-pmmg-khaki block leading-none">Telemetria de Rede & Internet • Medição Real</span>
+                                        <h4 class="text-xl sm:text-2xl font-military text-white uppercase tracking-wider leading-none mt-0.5">DIAGNÓSTICO DE CONECTIVIDADE</h4>
+                                    </div>
+                                </div>
+                                <button type="button" onclick="closeGeoConnectivitySubpage()" class="px-3 py-1.5 rounded-xl bg-pmmg-card hover:bg-pmmg-border text-gray-200 hover:text-white border border-pmmg-border text-xs font-extrabold flex items-center gap-1 shrink-0">
+                                    <span>Fechar ✕</span>
+                                </button>
+                            </div>
+
+                            <!-- Barra de Estado Visual (BOA / MODERADA / RUIM / SEM MEDIÇÃO) + Horário do Último Teste + Botão "Executar novo teste" -->
+                            <div class="bg-pmmg-card p-4 rounded-xl border border-pmmg-border flex flex-col sm:flex-row sm:items-center justify-between gap-3.5">
+                                <div class="space-y-1">
+                                    <div class="flex items-center gap-2 flex-wrap">
+                                        <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400">Classificação Atual:</span>
+                                        <span id="connModalStateBadge" class="px-2.5 py-0.5 rounded text-xs font-mono font-extrabold uppercase bg-gray-800 text-gray-300 border border-gray-500/60">
+                                            SEM MEDIÇÃO
+                                        </span>
+                                    </div>
+                                    <p id="connDiagLastTime" class="text-xs font-mono text-gray-400">
+                                        Horário do último teste: Sem medição realizada
+                                    </p>
+                                </div>
+
+                                <button type="button" id="btnRunConnectivityTest" onclick="runRealConnectivityDiagnostic()" class="px-4 py-2.5 bg-pmmg-khaki hover:bg-pmmg-khakiHover active:scale-95 text-pmmg-black font-extrabold rounded-xl text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg transition-all shrink-0 uppercase tracking-wider cursor-pointer">
+                                    <i data-lucide="refresh-cw" id="iconRunConnTest" class="w-4 h-4"></i>
+                                    <span id="txtRunConnTest">Executar novo teste</span>
+                                </button>
+                            </div>
+
+                            <!-- Barra de Progresso / Feedback durante a Medição Real -->
+                            <div id="connTestProgressBox" class="hidden bg-pmmg-black/90 p-3 rounded-xl border border-pmmg-khaki/40 space-y-2">
+                                <div class="flex items-center justify-between text-xs">
+                                    <span id="connTestStepText" class="text-pmmg-khaki font-bold font-mono">Iniciando sondagem de pacotes e latência...</span>
+                                    <span id="connTestPercentText" class="text-white font-mono font-bold">0%</span>
+                                </div>
+                                <div class="w-full h-2 bg-pmmg-card rounded-full overflow-hidden">
+                                    <div id="connTestProgressBar" class="h-full bg-pmmg-khaki transition-all duration-200" style="width: 0%"></div>
+                                </div>
+                            </div>
+
+                            <!-- Grade de Métricas do Diagnóstico: Download, Upload estimado, Ping, Jitter, Perda de Pacotes, Tecnologia -->
+                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
+                                <!-- 1. Download (Mbps) -->
+                                <div class="bg-pmmg-card p-3.5 rounded-xl border border-pmmg-border space-y-1">
+                                    <span class="text-[10px] text-gray-400 uppercase font-bold block">⬇️ Download (Mbps)</span>
+                                    <strong id="connDiagDownload" class="text-lg sm:text-xl font-mono text-white font-extrabold block">-- Mbps</strong>
+                                    <span class="text-[10px] text-gray-500 block">Taxa de transferência recebida</span>
+                                </div>
+
+                                <!-- 2. Upload estimado (Mbps) -->
+                                <div class="bg-pmmg-card p-3.5 rounded-xl border border-pmmg-border space-y-1">
+                                    <span class="text-[10px] text-gray-400 uppercase font-bold block">⬆️ Upload estimado (Mbps)</span>
+                                    <strong id="connDiagUpload" class="text-lg sm:text-xl font-mono text-pmmg-khaki font-extrabold block">-- Mbps</strong>
+                                    <span class="text-[10px] text-gray-500 block">Capacidade estimada de envio</span>
+                                </div>
+
+                                <!-- 3. Ping (ms) -->
+                                <div class="bg-pmmg-card p-3.5 rounded-xl border border-pmmg-border space-y-1">
+                                    <span class="text-[10px] text-gray-400 uppercase font-bold block">⚡ Ping (ms)</span>
+                                    <strong id="connDiagPing" class="text-lg sm:text-xl font-mono text-emerald-400 font-extrabold block">-- ms</strong>
+                                    <span class="text-[10px] text-gray-500 block">Latência média de resposta</span>
+                                </div>
+
+                                <!-- 4. Jitter (ms) -->
+                                <div class="bg-pmmg-card p-3.5 rounded-xl border border-pmmg-border space-y-1">
+                                    <span class="text-[10px] text-gray-400 uppercase font-bold block">〰️ Jitter (ms)</span>
+                                    <strong id="connDiagJitter" class="text-lg sm:text-xl font-mono text-sky-400 font-extrabold block">-- ms</strong>
+                                    <span class="text-[10px] text-gray-500 block">Variação de estabilidade do Ping</span>
+                                </div>
+
+                                <!-- 5. Perda de Pacotes (%) -->
+                                <div class="bg-pmmg-card p-3.5 rounded-xl border border-pmmg-border space-y-1">
+                                    <span class="text-[10px] text-gray-400 uppercase font-bold block">📦 Perda de Pacotes (%)</span>
+                                    <strong id="connDiagPacketLoss" class="text-lg sm:text-xl font-mono text-amber-400 font-extrabold block">-- %</strong>
+                                    <span class="text-[10px] text-gray-500 block">Falhas nas requisições de teste</span>
+                                </div>
+
+                                <!-- 6. Tecnologia (4G/5G/Wi-Fi) -->
+                                <div class="bg-pmmg-card p-3.5 rounded-xl border border-pmmg-border space-y-1">
+                                    <span class="text-[10px] text-gray-400 uppercase font-bold block">📡 Tecnologia (4G/5G/Wi-Fi)</span>
+                                    <strong id="connDiagTech" class="text-base sm:text-lg font-mono text-pmmg-gold font-extrabold block truncate">--</strong>
+                                    <span id="connDiagTechSub" class="text-[10px] text-gray-500 block truncate">Interface de rede detectada</span>
+                                </div>
+                            </div>
+
+                            <!-- Legenda dos 4 Estados Visuais -->
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-pmmg-border text-[10px]">
+                                <div class="bg-emerald-950/40 p-2 rounded-lg border border-emerald-500/40 text-emerald-300">
+                                    <strong class="block uppercase">🟢 VERDE: BOA</strong>
+                                    <span>Down ≥ 5 Mbps • Ping ≤ 120ms</span>
+                                </div>
+                                <div class="bg-amber-950/40 p-2 rounded-lg border border-amber-500/40 text-amber-300">
+                                    <strong class="block uppercase">🟡 AMARELO: MODERADA</strong>
+                                    <span>Down ≥ 1 Mbps • Ping ≤ 300ms</span>
+                                </div>
+                                <div class="bg-red-950/40 p-2 rounded-lg border border-red-500/40 text-red-300">
+                                    <strong class="block uppercase">🔴 VERMELHO: RUIM</strong>
+                                    <span>Down &lt; 1 Mbps, Perda ou Offline</span>
+                                </div>
+                                <div class="bg-gray-800/60 p-2 rounded-lg border border-gray-500/40 text-gray-300">
+                                    <strong class="block uppercase">⚪ CINZA: SEM MEDIÇÃO</strong>
+                                    <span>Padrão antes de realizar teste</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -7032,6 +7190,309 @@
         window.closeGeoWeatherSubpage = function() {
             const card = document.getElementById('geoDetailsCard');
             if (card) card.classList.add('hidden');
+        };
+
+        // ================= MÓDULO DE CONECTIVIDADE E DIAGNÓSTICO REAL VIA REQUISIÇÃO =================
+        let azimuteConnTestRunning = false;
+
+        function detectNetworkTechnologyLabel() {
+            if (navigator.onLine === false) {
+                return { label: 'Offline', detail: 'Sem conexão ativa' };
+            }
+            const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+            if (conn) {
+                const rawType = (conn.type || '').toLowerCase();
+                const effType = (conn.effectiveType || '').toLowerCase();
+                if (rawType === 'wifi') {
+                    return { label: 'Wi-Fi', detail: effType ? 'Wi-Fi (' + effType.toUpperCase() + ')' : 'Rede sem fio Wi-Fi' };
+                }
+                if (rawType === 'ethernet') {
+                    return { label: 'Ethernet / Cabo', detail: 'Conexão cabeada' };
+                }
+                if (rawType === 'cellular') {
+                    if (effType === '4g') return { label: '4G / 5G Móvel', detail: 'Rede celular de alta velocidade' };
+                    if (effType === '3g') return { label: '3G Móvel', detail: 'Rede celular intermediária' };
+                    if (effType === '2g' || effType === 'slow-2g') return { label: '2G Móvel', detail: 'Rede celular baixa velocidade' };
+                    return { label: '4G / 5G Móvel', detail: 'Dados móveis ativos' };
+                }
+                if (effType === '4g') {
+                    const isMobileUa = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+                    return {
+                        label: isMobileUa ? '4G / 5G / Wi-Fi' : 'Wi-Fi / Banda Larga',
+                        detail: 'Perfil efetivo: ' + effType.toUpperCase()
+                    };
+                }
+                if (effType === '3g' || effType === '2g' || effType === 'slow-2g') {
+                    return { label: effType.toUpperCase() + ' Móvel', detail: 'Perfil efetivo: ' + effType.toUpperCase() };
+                }
+            }
+            const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+            return {
+                label: isMobile ? '4G / 5G / Wi-Fi' : 'Wi-Fi / Rede Local',
+                detail: 'Conexão de dados ativa'
+            };
+        }
+
+        // Aplica um dos 4 estados visuais obrigatórios: 'unmeasured' (CINZA), 'good' (VERDE), 'moderate' (AMARELO), 'bad' (VERMELHO)
+        function applyConnectivityVisualState(stateKey) {
+            const summaryCard = document.getElementById('localConnectivitySummaryCard');
+            const summaryIcon = document.getElementById('connSummaryIconBox');
+            const summaryBadge = document.getElementById('connSummaryStateBadge');
+            const summaryStatusTxt = document.getElementById('connSummaryStatusText');
+            const modalBadge = document.getElementById('connModalStateBadge');
+
+            if (stateKey === 'good') {
+                if (summaryCard) summaryCard.className = 'bg-pmmg-dark hover:bg-pmmg-cardHover border border-emerald-500/60 border-l-4 border-l-emerald-400 rounded-xl p-3.5 cursor-pointer transition-all shadow-md group flex flex-col justify-between';
+                if (summaryIcon) summaryIcon.className = 'p-1.5 rounded-lg bg-emerald-950 text-emerald-400 border border-emerald-500/50 transition-colors';
+                if (summaryBadge) {
+                    summaryBadge.textContent = 'BOA';
+                    summaryBadge.className = 'px-2 py-0.5 rounded text-[9px] font-mono font-extrabold uppercase bg-emerald-950 text-emerald-400 border border-emerald-500/60 transition-all';
+                }
+                if (summaryStatusTxt) {
+                    summaryStatusTxt.textContent = 'BOA';
+                    summaryStatusTxt.className = 'text-xs sm:text-sm font-mono text-emerald-400 font-extrabold block mt-0.5 truncate';
+                }
+                if (modalBadge) {
+                    modalBadge.textContent = 'BOA';
+                    modalBadge.className = 'px-2.5 py-0.5 rounded text-xs font-mono font-extrabold uppercase bg-emerald-950 text-emerald-400 border border-emerald-500/60';
+                }
+            } else if (stateKey === 'moderate') {
+                if (summaryCard) summaryCard.className = 'bg-pmmg-dark hover:bg-pmmg-cardHover border border-amber-500/60 border-l-4 border-l-amber-400 rounded-xl p-3.5 cursor-pointer transition-all shadow-md group flex flex-col justify-between';
+                if (summaryIcon) summaryIcon.className = 'p-1.5 rounded-lg bg-amber-950 text-amber-300 border border-amber-500/50 transition-colors';
+                if (summaryBadge) {
+                    summaryBadge.textContent = 'MODERADA';
+                    summaryBadge.className = 'px-2 py-0.5 rounded text-[9px] font-mono font-extrabold uppercase bg-amber-950 text-amber-300 border border-amber-500/60 transition-all';
+                }
+                if (summaryStatusTxt) {
+                    summaryStatusTxt.textContent = 'MODERADA';
+                    summaryStatusTxt.className = 'text-xs sm:text-sm font-mono text-amber-300 font-extrabold block mt-0.5 truncate';
+                }
+                if (modalBadge) {
+                    modalBadge.textContent = 'MODERADA';
+                    modalBadge.className = 'px-2.5 py-0.5 rounded text-xs font-mono font-extrabold uppercase bg-amber-950 text-amber-300 border border-amber-500/60';
+                }
+            } else if (stateKey === 'bad') {
+                if (summaryCard) summaryCard.className = 'bg-pmmg-dark hover:bg-pmmg-cardHover border border-red-500/60 border-l-4 border-l-red-500 rounded-xl p-3.5 cursor-pointer transition-all shadow-md group flex flex-col justify-between';
+                if (summaryIcon) summaryIcon.className = 'p-1.5 rounded-lg bg-red-950 text-red-400 border border-red-500/50 transition-colors';
+                if (summaryBadge) {
+                    summaryBadge.textContent = 'RUIM';
+                    summaryBadge.className = 'px-2 py-0.5 rounded text-[9px] font-mono font-extrabold uppercase bg-red-950 text-red-400 border border-red-500/60 transition-all';
+                }
+                if (summaryStatusTxt) {
+                    summaryStatusTxt.textContent = 'RUIM';
+                    summaryStatusTxt.className = 'text-xs sm:text-sm font-mono text-red-400 font-extrabold block mt-0.5 truncate';
+                }
+                if (modalBadge) {
+                    modalBadge.textContent = 'RUIM';
+                    modalBadge.className = 'px-2.5 py-0.5 rounded text-xs font-mono font-extrabold uppercase bg-red-950 text-red-400 border border-red-500/60';
+                }
+            } else {
+                // CINZA: SEM MEDIÇÃO (padrão antes de realizar teste, sem inventar nota)
+                if (summaryCard) summaryCard.className = 'bg-pmmg-dark hover:bg-pmmg-cardHover border border-gray-500/50 border-l-4 border-l-gray-400 rounded-xl p-3.5 cursor-pointer transition-all shadow-md group flex flex-col justify-between';
+                if (summaryIcon) summaryIcon.className = 'p-1.5 rounded-lg bg-gray-800 text-gray-300 border border-gray-500/40 transition-colors';
+                if (summaryBadge) {
+                    summaryBadge.textContent = 'SEM MEDIÇÃO';
+                    summaryBadge.className = 'px-2 py-0.5 rounded text-[9px] font-mono font-extrabold uppercase bg-gray-800 text-gray-300 border border-gray-500/50 transition-all';
+                }
+                if (summaryStatusTxt) {
+                    summaryStatusTxt.textContent = 'SEM MEDIÇÃO';
+                    summaryStatusTxt.className = 'text-xs sm:text-sm font-mono text-gray-300 font-extrabold block mt-0.5 truncate';
+                }
+                if (modalBadge) {
+                    modalBadge.textContent = 'SEM MEDIÇÃO';
+                    modalBadge.className = 'px-2.5 py-0.5 rounded text-xs font-mono font-extrabold uppercase bg-gray-800 text-gray-300 border border-gray-500/60';
+                }
+            }
+        }
+
+        window.openGeoConnectivitySubpage = function() {
+            const modal = document.getElementById('geoConnectivitySubpage');
+            if (modal) {
+                modal.classList.remove('hidden');
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+            }
+        };
+
+        window.closeGeoConnectivitySubpage = function() {
+            const modal = document.getElementById('geoConnectivitySubpage');
+            if (modal) modal.classList.add('hidden');
+        };
+
+        window.runRealConnectivityDiagnostic = async function() {
+            if (azimuteConnTestRunning) return;
+            azimuteConnTestRunning = true;
+
+            const btn = document.getElementById('btnRunConnectivityTest');
+            const txtBtn = document.getElementById('txtRunConnTest');
+            const iconBtn = document.getElementById('iconRunConnTest');
+            const progBox = document.getElementById('connTestProgressBox');
+            const progBar = document.getElementById('connTestProgressBar');
+            const progStep = document.getElementById('connTestStepText');
+            const progPct = document.getElementById('connTestPercentText');
+
+            if (btn) btn.disabled = true;
+            if (txtBtn) txtBtn.textContent = 'Medindo rede...';
+            if (iconBtn) iconBtn.classList.add('animate-spin');
+            if (progBox) progBox.classList.remove('hidden');
+
+            const setProg = (pct, msg) => {
+                if (progBar) progBar.style.width = pct + '%';
+                if (progPct) progPct.textContent = pct + '%';
+                if (progStep) progStep.textContent = msg;
+            };
+
+            const techInfo = detectNetworkTechnologyLabel();
+            const nowStr = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ' (' + new Date().toLocaleDateString('pt-BR') + ')';
+
+            // Verifica se o navegador está totalmente offline
+            if (navigator.onLine === false) {
+                setProg(100, 'Dispositivo sem conexão de rede (Offline).');
+                applyConnectivityVisualState('bad');
+                document.getElementById('connDiagDownload').textContent = '0.0 Mbps';
+                document.getElementById('connDiagUpload').textContent = '0.0 Mbps';
+                document.getElementById('connDiagPing').textContent = 'Sem resposta';
+                document.getElementById('connDiagJitter').textContent = '-- ms';
+                document.getElementById('connDiagPacketLoss').textContent = '100 %';
+                document.getElementById('connDiagTech').textContent = techInfo.label;
+                document.getElementById('connDiagTechSub').textContent = techInfo.detail;
+                document.getElementById('connDiagLastTime').textContent = 'Horário do último teste: ' + nowStr;
+                document.getElementById('connSummaryDownPing').textContent = '0.0 Mbps / Offline';
+                document.getElementById('connSummaryTech').textContent = techInfo.label;
+
+                setTimeout(() => {
+                    if (progBox) progBox.classList.add('hidden');
+                    if (btn) btn.disabled = false;
+                    if (txtBtn) txtBtn.textContent = 'Executar novo teste';
+                    if (iconBtn) iconBtn.classList.remove('animate-spin');
+                    azimuteConnTestRunning = false;
+                }, 600);
+                return;
+            }
+
+            // ETAPA 1: 5 Sondagens reais de Ping, Jitter e Perda de Pacotes via requisição HTTP sem cache
+            const totalProbes = 5;
+            const rtts = [];
+            let failedProbes = 0;
+            const latUse = azimuteLastGeoLat || -19.9162;
+            const lonUse = azimuteLastGeoLon || -44.0809;
+
+            for (let i = 0; i < totalProbes; i++) {
+                setProg(Math.round(((i + 1) / (totalProbes + 2)) * 100), `Medindo Ping e pacotes (${i + 1}/${totalProbes})...`);
+                const probeUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latUse}&longitude=${lonUse}&current=temperature_2m&_cb=${Date.now()}_${i}`;
+                const ctrl = new AbortController();
+                const timer = setTimeout(() => ctrl.abort(), 4500);
+                const t0 = performance.now();
+                try {
+                    const res = await fetch(probeUrl, { cache: 'no-store', signal: ctrl.signal });
+                    clearTimeout(timer);
+                    if (res.ok) {
+                        await res.text();
+                        const rtt = Math.max(1, Math.round(performance.now() - t0));
+                        rtts.push(rtt);
+                    } else {
+                        failedProbes++;
+                    }
+                } catch (eProbe) {
+                    clearTimeout(timer);
+                    failedProbes++;
+                }
+            }
+
+            const packetLossPct = Math.round((failedProbes / totalProbes) * 100);
+            let avgPing = null;
+            let jitterMs = null;
+
+            if (rtts.length > 0) {
+                const sumRtt = rtts.reduce((a, b) => a + b, 0);
+                avgPing = Math.round(sumRtt / rtts.length);
+                if (rtts.length >= 2) {
+                    let diffSum = 0;
+                    for (let k = 1; k < rtts.length; k++) {
+                        diffSum += Math.abs(rtts[k] - rtts[k - 1]);
+                    }
+                    jitterMs = Math.round(diffSum / (rtts.length - 1));
+                } else {
+                    jitterMs = 0;
+                }
+            }
+
+            // ETAPA 2: Medição real de Download (Mbps) baixando carga de dados real sem cache
+            setProg(82, 'Medindo velocidade real de Download (Mbps)...');
+            let measuredDownMbps = 0;
+            try {
+                const dlCtrl = new AbortController();
+                const dlTimer = setTimeout(() => dlCtrl.abort(), 7000);
+                const dlUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latUse}&longitude=${lonUse}&hourly=temperature_2m,relative_humidity_2m,precipitation_probability,wind_speed_10m,surface_pressure,cloud_cover&forecast_days=16&_cb=${Date.now()}`;
+                const tStartDl = performance.now();
+                const dlRes = await fetch(dlUrl, { cache: 'no-store', signal: dlCtrl.signal });
+                if (dlRes.ok) {
+                    const buf = await dlRes.arrayBuffer();
+                    const elapsedSec = Math.max(0.005, (performance.now() - tStartDl) / 1000);
+                    clearTimeout(dlTimer);
+                    const bytes = buf.byteLength || 48000;
+                    // Desconta metade de um RTT (handshake/TTFB) quando disponível para refletir a taxa de transferência pura do payload
+                    const transferSec = avgPing ? Math.max(0.004, elapsedSec - (avgPing / 2000)) : elapsedSec;
+                    measuredDownMbps = (bytes * 8) / (transferSec * 1000000);
+                } else {
+                    clearTimeout(dlTimer);
+                }
+            } catch (eDl) {}
+
+            // ETAPA 3: Estimativa técnica de Upload (Mbps) via requisição + perfil de latência/link
+            setProg(95, 'Calculando Upload estimado e consolidando diagnóstico...');
+            let estimatedUpMbps = 0;
+            if (measuredDownMbps > 0) {
+                const isMobileConn = techInfo.label.includes('4G') || techInfo.label.includes('3G') || techInfo.label.includes('2G');
+                const upRatio = isMobileConn ? 0.38 : 0.52;
+                const jitterPenalty = (jitterMs && jitterMs > 50) ? 0.85 : 1.0;
+                estimatedUpMbps = Math.max(0.1, measuredDownMbps * upRatio * jitterPenalty);
+            }
+
+            setProg(100, 'Diagnóstico concluído!');
+
+            // Determinação do Estado Visual (VERDE: BOA | AMARELO: MODERADA | VERMELHO: RUIM)
+            let finalState = 'bad';
+            if (rtts.length === 0 || packetLossPct > 40 || measuredDownMbps < 1.0 || (avgPing !== null && avgPing > 320)) {
+                finalState = 'bad';
+            } else if (measuredDownMbps >= 5.0 && avgPing <= 120 && packetLossPct === 0) {
+                finalState = 'good';
+            } else {
+                finalState = 'moderate';
+            }
+
+            applyConnectivityVisualState(finalState);
+
+            const downFmt = measuredDownMbps > 0 ? measuredDownMbps.toFixed(1) + ' Mbps' : '0.0 Mbps';
+            const upFmt = estimatedUpMbps > 0 ? estimatedUpMbps.toFixed(1) + ' Mbps' : '0.0 Mbps';
+            const pingFmt = avgPing !== null ? avgPing + ' ms' : 'Falha';
+            const jitterFmt = jitterMs !== null ? jitterMs + ' ms' : '-- ms';
+            const lossFmt = packetLossPct + ' %';
+
+            document.getElementById('connDiagDownload').textContent = downFmt;
+            document.getElementById('connDiagUpload').textContent = upFmt;
+            document.getElementById('connDiagPing').textContent = pingFmt;
+            document.getElementById('connDiagJitter').textContent = jitterFmt;
+            document.getElementById('connDiagPacketLoss').textContent = lossFmt;
+            document.getElementById('connDiagTech').textContent = techInfo.label;
+            document.getElementById('connDiagTechSub').textContent = techInfo.detail;
+            document.getElementById('connDiagLastTime').textContent = 'Horário do último teste: ' + nowStr;
+
+            // Atualiza também o Card Resumido na tela principal da aba Geolocalização
+            document.getElementById('connSummaryDownPing').textContent = (measuredDownMbps > 0 ? measuredDownMbps.toFixed(1) + ' Mbps' : '-- Mbps') + ' / ' + pingFmt;
+            document.getElementById('connSummaryTech').textContent = techInfo.label;
+
+            if (typeof showToast === 'function') {
+                const labelMap = { good: '🟢 Conectividade BOA', moderate: '🟡 Conectividade MODERADA', bad: '🔴 Conectividade RUIM' };
+                showToast(`${labelMap[finalState]} (${downFmt} • ${pingFmt})`);
+            }
+
+            setTimeout(() => {
+                if (progBox) progBox.classList.add('hidden');
+                if (btn) btn.disabled = false;
+                if (txtBtn) txtBtn.textContent = 'Executar novo teste';
+                if (iconBtn) iconBtn.classList.remove('animate-spin');
+                azimuteConnTestRunning = false;
+            }, 500);
         };
 
         window.openGridWeatherModal = function() {
