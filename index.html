@@ -4014,6 +4014,221 @@
                 </div>
             </div>
 
+            <!-- 1. GUIA RÁPIDO 100% OFFLINE (6 PROTOCOLOS DE APH TÁTICO E EMERGÊNCIA COM ÍCONES) -->
+            <div id="saudeOfflineAphSection" class="bg-pmmg-card border-2 border-pmmg-khaki/60 rounded-2xl p-4 sm:p-5 shadow-2xl space-y-4">
+                <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border pb-3">
+                    <div class="flex items-center gap-2.5">
+                        <div class="p-2 rounded-xl bg-red-950 text-red-400 border border-red-500/40">
+                            <i data-lucide="shield-plus" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <span class="text-[10px] font-extrabold uppercase tracking-wider bg-emerald-950 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/40">
+                                    ⚡ 100% Offline • Sem Internet
+                                </span>
+                                <span class="text-[10px] font-mono text-pmmg-khaki uppercase font-bold">Consulta Imediata em Ocorrência</span>
+                            </div>
+                            <h3 class="text-xl sm:text-2xl font-military text-white uppercase tracking-wide leading-none mt-1">
+                                Guia Rápido de Protocolos APH Operacional (6 Protocolos)
+                            </h3>
+                        </div>
+                    </div>
+                    <span class="text-[11px] text-gray-400">Toque em um protocolo para abrir as instruções objetivas</span>
+                </div>
+
+                <!-- Grade de 6 Botões Táticos com Ícones -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    <!-- 1. Hemorragia / Torniquete -->
+                    <button type="button" onclick="openOfflineAphProtocol('hemorragia')" class="bg-pmmg-dark hover:bg-pmmg-cardHover active:scale-[0.99] p-4 rounded-xl border border-red-500/50 border-l-4 border-l-red-500 text-left flex items-center justify-between gap-3 shadow-md transition-all group">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <div class="p-2.5 rounded-xl bg-red-950 text-red-400 border border-red-500/40 group-hover:bg-red-600 group-hover:text-white transition-colors shrink-0">
+                                <i data-lucide="droplets" class="w-5 h-5"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <span class="text-[10px] font-mono font-extrabold text-red-400 uppercase block">Protocolo 01 • MARCH</span>
+                                <strong class="text-sm sm:text-base font-extrabold text-white block truncate">1. Hemorragia / Torniquete</strong>
+                                <span class="text-[11px] text-gray-400 block truncate">Compressão direta, Alto e Apertado, Preenchimento</span>
+                            </div>
+                        </div>
+                        <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500 group-hover:text-red-400 shrink-0"></i>
+                    </button>
+
+                    <!-- 2. Vias Aéreas -->
+                    <button type="button" onclick="openOfflineAphProtocol('vias_aereas')" class="bg-pmmg-dark hover:bg-pmmg-cardHover active:scale-[0.99] p-4 rounded-xl border border-sky-500/50 border-l-4 border-l-sky-400 text-left flex items-center justify-between gap-3 shadow-md transition-all group">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <div class="p-2.5 rounded-xl bg-sky-950 text-sky-400 border border-sky-500/40 group-hover:bg-sky-500 group-hover:text-pmmg-black transition-colors shrink-0">
+                                <i data-lucide="wind" class="w-5 h-5"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <span class="text-[10px] font-mono font-extrabold text-sky-400 uppercase block">Protocolo 02 • Permeabilidade</span>
+                                <strong class="text-sm sm:text-base font-extrabold text-white block truncate">2. Vias Aéreas</strong>
+                                <span class="text-[11px] text-gray-400 block truncate">Chin-Lift, Jaw-Thrust, Controle Cervical e Posição Lateral</span>
+                            </div>
+                        </div>
+                        <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500 group-hover:text-sky-400 shrink-0"></i>
+                    </button>
+
+                    <!-- 3. Queimaduras -->
+                    <button type="button" onclick="openOfflineAphProtocol('queimaduras')" class="bg-pmmg-dark hover:bg-pmmg-cardHover active:scale-[0.99] p-4 rounded-xl border border-orange-500/50 border-l-4 border-l-orange-500 text-left flex items-center justify-between gap-3 shadow-md transition-all group">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <div class="p-2.5 rounded-xl bg-orange-950 text-orange-400 border border-orange-500/40 group-hover:bg-orange-500 group-hover:text-pmmg-black transition-colors shrink-0">
+                                <i data-lucide="flame" class="w-5 h-5"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <span class="text-[10px] font-mono font-extrabold text-orange-400 uppercase block">Protocolo 03 • Térmica / Química</span>
+                                <strong class="text-sm sm:text-base font-extrabold text-white block truncate">3. Queimaduras</strong>
+                                <span class="text-[11px] text-gray-400 block truncate">Resfriamento limpo, proteção seca e sinais de inalação</span>
+                            </div>
+                        </div>
+                        <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500 group-hover:text-orange-400 shrink-0"></i>
+                    </button>
+
+                    <!-- 4. RCP -->
+                    <button type="button" onclick="openOfflineAphProtocol('rcp')" class="bg-pmmg-dark hover:bg-pmmg-cardHover active:scale-[0.99] p-4 rounded-xl border border-rose-500/50 border-l-4 border-l-rose-500 text-left flex items-center justify-between gap-3 shadow-md transition-all group">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <div class="p-2.5 rounded-xl bg-rose-950 text-rose-400 border border-rose-500/40 group-hover:bg-rose-600 group-hover:text-white transition-colors shrink-0">
+                                <i data-lucide="heart-pulse" class="w-5 h-5"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <span class="text-[10px] font-mono font-extrabold text-rose-400 uppercase block">Protocolo 04 • Parada Cardíaca</span>
+                                <strong class="text-sm sm:text-base font-extrabold text-white block truncate">4. RCP (Adulto / Pediátrico)</strong>
+                                <span class="text-[11px] text-gray-400 block truncate">100 a 120 comp/min • Ciclos 30:2 / 15:2 e DEA</span>
+                            </div>
+                        </div>
+                        <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500 group-hover:text-rose-400 shrink-0"></i>
+                    </button>
+
+                    <!-- 5. Desengasgamento (OVACE) -->
+                    <button type="button" onclick="openOfflineAphProtocol('ovace')" class="bg-pmmg-dark hover:bg-pmmg-cardHover active:scale-[0.99] p-4 rounded-xl border border-amber-500/50 border-l-4 border-l-amber-400 text-left flex items-center justify-between gap-3 shadow-md transition-all group">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <div class="p-2.5 rounded-xl bg-amber-950 text-amber-300 border border-amber-500/40 group-hover:bg-amber-400 group-hover:text-pmmg-black transition-colors shrink-0">
+                                <i data-lucide="life-buoy" class="w-5 h-5"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <span class="text-[10px] font-mono font-extrabold text-amber-300 uppercase block">Protocolo 05 • Engasgo</span>
+                                <strong class="text-sm sm:text-base font-extrabold text-white block truncate">5. Desengasgamento (OVACE)</strong>
+                                <span class="text-[11px] text-gray-400 block truncate">Manobra de Heimlich (Adulto) e 5 Tapotagens + 5 Comp. (Bebê)</span>
+                            </div>
+                        </div>
+                        <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500 group-hover:text-amber-300 shrink-0"></i>
+                    </button>
+
+                    <!-- 6. Gestantes / Parto de Emergência -->
+                    <button type="button" onclick="openOfflineAphProtocol('parto')" class="bg-pmmg-dark hover:bg-pmmg-cardHover active:scale-[0.99] p-4 rounded-xl border border-emerald-500/50 border-l-4 border-l-emerald-400 text-left flex items-center justify-between gap-3 shadow-md transition-all group">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <div class="p-2.5 rounded-xl bg-emerald-950 text-emerald-400 border border-emerald-500/40 group-hover:bg-emerald-500 group-hover:text-pmmg-black transition-colors shrink-0">
+                                <i data-lucide="baby" class="w-5 h-5"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <span class="text-[10px] font-mono font-extrabold text-emerald-400 uppercase block">Protocolo 06 • Obstetrícia</span>
+                                <strong class="text-sm sm:text-base font-extrabold text-white block truncate">6. Gestantes / Parto de Emergência</strong>
+                                <span class="text-[11px] text-gray-400 block truncate">Coroamento, proteção do períneo, aquecimento do RN e cordão</span>
+                            </div>
+                        </div>
+                        <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500 group-hover:text-emerald-400 shrink-0"></i>
+                    </button>
+                </div>
+
+                <!-- Rodapé com Fonte / Protocolo de Referência e Versão -->
+                <div class="pt-3 border-t border-pmmg-border flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[11px] text-gray-400 font-mono">
+                    <div>
+                        <strong class="text-pmmg-khaki">Fonte / Protocolo de Referência:</strong> Diretrizes PHTLS (10ª Ed.) • TCCC / CoTCCC (APH Tático) • AHA (Suporte Básico de Vida) • Protocolos CBMMG / SAMU
+                    </div>
+                    <span class="px-2 py-0.5 rounded bg-pmmg-dark border border-pmmg-border text-pmmg-gold font-bold shrink-0 self-start sm:self-auto">
+                        Versão: APH-OFFLINE v2.6 (2026)
+                    </span>
+                </div>
+            </div>
+
+            <!-- 2. CARD ASSISTENTE DE SOCORRO (NOTEBOOKLM - CONSULTA AUXILIAR POR ÁUDIO, TEXTO OU FOTO) -->
+            <div id="saudeNotebookLmAssistantCard" class="bg-pmmg-card border-2 border-pmmg-gold/60 rounded-2xl p-4 sm:p-5 shadow-xl space-y-3">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div class="flex items-start gap-3">
+                        <div class="p-3 rounded-xl bg-pmmg-khakiBadge text-pmmg-gold border border-pmmg-gold/50 shrink-0">
+                            <i data-lucide="bot" class="w-6 h-6"></i>
+                        </div>
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <span class="text-[10px] font-extrabold uppercase tracking-wider bg-pmmg-khakiBadge text-pmmg-gold px-2 py-0.5 rounded border border-pmmg-gold/40">
+                                    IA Operacional • NotebookLM
+                                </span>
+                                <span class="text-[10px] font-mono text-gray-400">Áudio • Texto • Foto</span>
+                            </div>
+                            <h3 class="text-xl sm:text-2xl font-military text-white uppercase tracking-wide leading-none">
+                                Assistente de Socorro & APH (NotebookLM)
+                            </h3>
+                            <p class="text-xs text-gray-200 leading-relaxed">
+                                Em caso de dúvida na ocorrência, acesse o assistente para enviar áudio, texto ou foto e receber orientação complementar baseada nos protocolos de APH (consulta auxiliar).
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-2 shrink-0">
+                        <a id="btnOpenNotebookLmAph" href="https://notebooklm.google.com/" target="_blank" rel="noopener noreferrer" class="px-4 py-2.5 bg-pmmg-gold hover:bg-pmmg-khakiHover active:scale-95 text-pmmg-black font-extrabold rounded-xl text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg uppercase tracking-wider transition-all">
+                            <i data-lucide="external-link" class="w-4 h-4"></i>
+                            <span>Acessar Assistente (NotebookLM)</span>
+                        </a>
+                        <button type="button" onclick="toggleConfigNotebookLmUrl()" class="p-2.5 bg-pmmg-dark hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-border rounded-xl text-xs font-bold transition-colors" title="Configurar / Colar Link do Caderno NotebookLM de APH">
+                            <i data-lucide="settings" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Gaveta opcional para vincular URL específica do Caderno NotebookLM da Unidade -->
+                <div id="notebookLmUrlConfigBox" class="hidden pt-3 border-t border-pmmg-border space-y-2">
+                    <label class="text-[10px] font-bold uppercase tracking-wider text-pmmg-khaki block">
+                        🔗 Link do Caderno NotebookLM de APH (Salvo no Aparelho):
+                    </label>
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <input type="url" id="inputNotebookLmAphUrl" placeholder="https://notebooklm.google.com/notebook/..." class="flex-1 px-3 py-2 bg-pmmg-dark text-xs text-white rounded-lg border border-pmmg-border focus:outline-none focus:border-pmmg-gold font-mono">
+                        <button type="button" onclick="saveNotebookLmAphUrl()" class="px-4 py-2 bg-pmmg-khaki hover:bg-pmmg-khakiHover text-pmmg-black font-extrabold rounded-lg text-xs uppercase shrink-0">
+                            Salvar Link
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MODAL 100% OFFLINE DE INSTRUÇÕES OBJETIVAS DOS 6 PROTOCOLOS DE APH -->
+            <div id="offlineAphProtocolModal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-start sm:items-center justify-center p-2.5 sm:p-5 overflow-y-auto" onclick="if(event.target === this) closeOfflineAphProtocol()">
+                <div class="bg-pmmg-dark border-2 border-red-500/80 rounded-2xl max-w-3xl w-full p-4 sm:p-6 space-y-4 shadow-2xl my-auto app-screen-animate max-h-[92vh] overflow-y-auto">
+                    <!-- Cabeçalho do Protocolo -->
+                    <div class="flex items-center justify-between border-b border-pmmg-border pb-3 gap-2 sticky top-0 bg-pmmg-dark/95 backdrop-blur z-10 pt-1">
+                        <div class="flex items-center gap-2.5">
+                            <span id="aphModalBadge" class="px-2.5 py-0.5 rounded text-[10px] font-mono font-extrabold uppercase bg-red-950 text-red-300 border border-red-500/50">
+                                PROTOCOLO APH OFFLINE
+                            </span>
+                            <h4 id="aphModalTitle" class="text-xl sm:text-2xl font-military text-white uppercase tracking-wider leading-none">
+                                Título do Protocolo
+                            </h4>
+                        </div>
+                        <button type="button" onclick="closeOfflineAphProtocol()" class="px-3 py-1.5 rounded-xl bg-pmmg-card hover:bg-pmmg-border text-gray-200 hover:text-white border border-pmmg-border text-xs font-extrabold shrink-0">
+                            Fechar ✕
+                        </button>
+                    </div>
+
+                    <!-- Barra de Troca Rápida entre os 6 Protocolos dentro do Modal -->
+                    <div class="flex items-center gap-1.5 overflow-x-auto pb-1 text-[11px]">
+                        <button type="button" onclick="openOfflineAphProtocol('hemorragia')" id="aph-pill-hemorragia" class="px-2.5 py-1 rounded-lg font-bold border border-pmmg-border bg-pmmg-card text-gray-300 shrink-0">1. Hemorragia</button>
+                        <button type="button" onclick="openOfflineAphProtocol('vias_aereas')" id="aph-pill-vias_aereas" class="px-2.5 py-1 rounded-lg font-bold border border-pmmg-border bg-pmmg-card text-gray-300 shrink-0">2. Vias Aéreas</button>
+                        <button type="button" onclick="openOfflineAphProtocol('queimaduras')" id="aph-pill-queimaduras" class="px-2.5 py-1 rounded-lg font-bold border border-pmmg-border bg-pmmg-card text-gray-300 shrink-0">3. Queimaduras</button>
+                        <button type="button" onclick="openOfflineAphProtocol('rcp')" id="aph-pill-rcp" class="px-2.5 py-1 rounded-lg font-bold border border-pmmg-border bg-pmmg-card text-gray-300 shrink-0">4. RCP</button>
+                        <button type="button" onclick="openOfflineAphProtocol('ovace')" id="aph-pill-ovace" class="px-2.5 py-1 rounded-lg font-bold border border-pmmg-border bg-pmmg-card text-gray-300 shrink-0">5. OVACE (Engasgo)</button>
+                        <button type="button" onclick="openOfflineAphProtocol('parto')" id="aph-pill-parto" class="px-2.5 py-1 rounded-lg font-bold border border-pmmg-border bg-pmmg-card text-gray-300 shrink-0">6. Gestantes / Parto</button>
+                    </div>
+
+                    <!-- Corpo Dinâmico de Instruções Objetivas 100% Offline -->
+                    <div id="aphModalBody" class="space-y-3 text-xs sm:text-sm text-gray-200"></div>
+
+                    <!-- Rodapé do Modal com Fonte / Protocolo de Referência e Versão -->
+                    <div class="pt-3 border-t border-pmmg-border flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[10px] text-gray-400 font-mono">
+                        <span id="aphModalSourceFooter">
+                            Fonte / Protocolo: PHTLS 10ª Ed. • CoTCCC / APH Tático • AHA • CBMMG / SAMU
+                        </span>
+                        <span class="text-pmmg-gold font-bold">Versão: APH-OFFLINE v2.6 (2026)</span>
+                    </div>
+                </div>
+            </div>
+
             <!-- GRADE DE HOSPITAIS DE TRAUMA E PRONTO ATENDIMENTO 24H (RMBH) COM DISTÂNCIA GPS EM TEMPO REAL -->
             <div class="space-y-3">
                 <div class="flex flex-wrap items-center justify-between border-b border-pmmg-border pb-1.5 gap-2">
@@ -6862,6 +7077,275 @@
                 lon: -44.0114
             }
         ];
+
+        // ================= PROTOCOLOS APH 100% OFFLINE (6 PROTOCOLOS OBJETIVOS) & ASSISTENTE NOTEBOOKLM =================
+        const AZIMUTE_APH_OFFLINE_PROTOCOLS = {
+            hemorragia: {
+                badge: 'PROTOCOLO 01 • CONTROLE DE HEMORRAGIA EXSANGUINANTE (MARCH)',
+                title: '1. Hemorragia Massiva & Uso de Torniquete',
+                source: 'Fonte / Protocolo: CoTCCC (TCCC Guidelines) & PHTLS 10ª Ed. • Versão APH-OFFLINE v2.6',
+                html: `
+                    <div class="bg-red-950/40 border border-red-500/60 rounded-xl p-3.5 space-y-1.5">
+                        <strong class="text-red-300 uppercase text-xs block">🚨 Sinais de Hemorragia Ameaçadora à Vida:</strong>
+                        <p class="text-xs text-gray-200">Sangramento pulsátil (arterial) ou em lençol contínuo, poça de sangue crescendo rapidamente, roupas encharcadas de sangue ou amputação traumática parcial/total de membro.</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="bg-pmmg-card p-3.5 rounded-xl border border-pmmg-border space-y-2">
+                            <strong class="text-pmmg-gold uppercase text-xs block">1º) Torniquete Tático (Membros / Extremidades)</strong>
+                            <ul class="space-y-1.5 text-xs text-gray-200 list-disc pl-4">
+                                <li><strong>Sob Fogo / Risco Iminente (CUF):</strong> Aplique imediatamente <strong>"Alto e Apertado"</strong> (na raiz da coxa ou axila) por cima da farda.</li>
+                                <li><strong>Fora de Fogo (Avaliação Direta):</strong> Posicione a <strong>5 a 7 cm (3 a 4 dedos) acima da lesão</strong> diretamente sobre a pele (NUNCA sobre articulações como joelho ou cotovelo, nem sobre bolsos com objetos).</li>
+                                <li><strong>Aperto da Haste (Molinete):</strong> Puxe a fita com força máxima e gire a haste até cessar totalmente o sangramento e sumir o pulso distal.</li>
+                                <li><strong>Trave e Anote o Horário:</strong> Prenda a haste no clipe, feche a fita <strong class="text-red-400">TIME</strong> e registre o horário exato (ex: <code>TQ 14:25</code>). <strong>Nunca afrouxe o torniquete em campo.</strong></li>
+                            </ul>
+                        </div>
+                        <div class="bg-pmmg-card p-3.5 rounded-xl border border-pmmg-border space-y-2">
+                            <strong class="text-pmmg-khaki uppercase text-xs block">2º) Preenchimento de Ferida (Áreas Juncionais)</strong>
+                            <ul class="space-y-1.5 text-xs text-gray-200 list-disc pl-4">
+                                <li><strong>Locais onde o Torniquete não pega:</strong> Pescoço, axila e virilha (regiões juncionais).</li>
+                                <li><strong>Técnica de Empacotamento (Wound Packing):</strong> Identifique o ponto exato de sangramento no fundo da cavidade e introduza gaze hemostática (ou gaze estéril comum) compactando firmemente até preencher toda a ferida.</li>
+                                <li><strong>Compressão Direta Contínua:</strong> Mantenha pressão manual firme e ininterrupta sobre o pacote por no mínimo <strong>3 minutos</strong> (gaze hemostática) ou <strong>10 minutos</strong> (gaze padrão).</li>
+                                <li><strong>Curativo Compressivo:</strong> Finalize com bandagem israelense / atadura bem ajustada e previna hipotermia (mantenha a vítima aquecida).</li>
+                            </ul>
+                        </div>
+                    </div>
+                `
+            },
+            vias_aereas: {
+                badge: 'PROTOCOLO 02 • MANEJO DE VIAS AÉREAS E COLUNA CERVICAL',
+                title: '2. Vias Aéreas (Abertura, Desobstrução e Posição)',
+                source: 'Fonte / Protocolo: PHTLS 10ª Ed. & Diretrizes CoTCCC • Versão APH-OFFLINE v2.6',
+                html: `
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="bg-pmmg-card p-3.5 rounded-xl border border-sky-500/40 space-y-2">
+                            <strong class="text-sky-400 uppercase text-xs block">1º) Vítima SEM Suspeita de Trauma Cervical</strong>
+                            <p class="text-xs text-gray-200"><strong>Manobra Chin-Lift (Inclinacão da Cabeça e Elevação do Queixo):</strong></p>
+                            <ul class="space-y-1.5 text-xs text-gray-300 list-disc pl-4">
+                                <li>Apoie uma mão na testa da vítima e incline suavemente a cabeça para trás.</li>
+                                <li>Com as pontas dos dedos da outra mão sob a parte óssea do queixo, eleve a mandíbula para afastar a língua do fundo da garganta.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-pmmg-card p-3.5 rounded-xl border border-amber-500/40 space-y-2">
+                            <strong class="text-amber-400 uppercase text-xs block">2º) Vítima COM Trauma (Acidente, Queda, Baleado)</strong>
+                            <p class="text-xs text-gray-200"><strong>Manobra Jaw-Thrust (Tração da Mandíbula SEM hiperestender o pescoço):</strong></p>
+                            <ul class="space-y-1.5 text-xs text-gray-300 list-disc pl-4">
+                                <li>Estabilize a cabeça manualmente em posição neutra alinhada.</li>
+                                <li>Posicione os dedos atrás dos ângulos da mandíbula e projete o maxilar inferior para cima/frente, abrindo a boca com os polegares.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="bg-pmmg-card p-3.5 rounded-xl border border-pmmg-border space-y-2">
+                        <strong class="text-pmmg-khaki uppercase text-xs block">3º) Inspeção Rápida e Posicionamento Seguro</strong>
+                        <ul class="space-y-1.5 text-xs text-gray-200 list-disc pl-4">
+                            <li><strong>Limpeza Visual:</strong> Abra a boca e verifique sangue, vômito, dentes quebrados ou próteses soltas. Remova apenas o que for visível (não faça varredura às cegas).</li>
+                            <li><strong>Vítima Consciente com Sangramento Oral/Facial:</strong> Permita que sente-se inclinada para a frente (posição que facilite cuspir/drenar o sangue sem broncoaspirar).</li>
+                            <li><strong>Vítima Inconsciente que Respira (Sem Trauma Raquimedular):</strong> Coloque em <strong>Posição Lateral de Segurança (Decúbito Lateral)</strong> para evitar aspiração de vômito/sangue e queda da língua.</li>
+                        </ul>
+                    </div>
+                `
+            },
+            queimaduras: {
+                badge: 'PROTOCOLO 03 • ATENDIMENTO A QUEIMADURAS TÉRMICAS, QUÍMICAS E ELÉTRICAS',
+                title: '3. Queimaduras (Manejo Imediato e Vias Aéreas)',
+                source: 'Fonte / Protocolo: PHTLS 10ª Ed. & Protocolo de Trauma Térmico CBMMG • Versão APH-OFFLINE v2.6',
+                html: `
+                    <div class="bg-orange-950/40 border border-orange-500/60 rounded-xl p-3.5 space-y-1.5">
+                        <strong class="text-orange-300 uppercase text-xs block">⚠️ Prioridade Crítica — Queimadura de Vias Aéreas:</strong>
+                        <p class="text-xs text-gray-200">Suspeite de lesão inalatória se houver: queimadura na face/pescoço, vibrissas nasais (pelos do nariz) chamuscadas, escarro com fuligem, rouquidão ou estridor. <strong>Acione evacuação médica imediata (HPS João XXIII).</strong></p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="bg-pmmg-card p-3.5 rounded-xl border border-pmmg-border space-y-2">
+                            <strong class="text-emerald-400 uppercase text-xs block">✅ O QUE FAZER IMEDIATAMENTE:</strong>
+                            <ul class="space-y-1.5 text-xs text-gray-200 list-disc pl-4">
+                                <li><strong>Interrompa o Processo de Queimadura:</strong> Afaste da fonte térmica; se as vestes estiverem em chamas, abafe com manta ou role a vítima no solo.</li>
+                                <li><strong>Resfriamento Inicial (Até 10 min):</strong> Irrigue com água corrente limpa em temperatura ambiente ou soro fisiológico para interromper o calor residual.</li>
+                                <li><strong>Retire Adornos Rapidamente:</strong> Remova anéis, alianças, relógios, pulseiras e cintos antes que o edema (inchaço) estrangule o membro.</li>
+                                <li><strong>Curativo Seco e Limpo:</strong> Cubra a área queimada com compressa/pano estéril seco e limpo e <strong>previna a hipotermia</strong> cobrindo o restante do corpo.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-pmmg-card p-3.5 rounded-xl border border-pmmg-border space-y-2">
+                            <strong class="text-red-400 uppercase text-xs block">❌ O QUE NUNCA FAZER + CASOS ESPECIAIS:</strong>
+                            <ul class="space-y-1.5 text-xs text-gray-200 list-disc pl-4">
+                                <li><strong>NÃO arranque roupas aderidas à pele:</strong> Recorte o tecido ao redor da lesão.</li>
+                                <li><strong>NÃO fure bolhas (flictenas)</strong> e <strong>NÃO aplique gelo direto</strong>, pomadas, pasta de dente, manteiga ou óleo.</li>
+                                <li><strong>Queimadura Química:</strong> Se for pó seco (ex: cal), escove primeiro antes de lavar. Depois irrigue com água abundante por pelo menos 20 minutos.</li>
+                                <li><strong>Queimadura Elétrica:</strong> Garanta que a rede elétrica esteja desligada antes de tocar na vítima; monitore parada cardiorrespiratória (arritmia).</li>
+                            </ul>
+                        </div>
+                    </div>
+                `
+            },
+            rcp: {
+                badge: 'PROTOCOLO 04 • RESSUSCITAÇÃO CARDIOPULMONAR (SUPORTE BÁSICO DE VIDA)',
+                title: '4. RCP (Adulto, Criança e Bebê / Lactente)',
+                source: 'Fonte / Protocolo: Diretrizes American Heart Association (AHA) & CBMMG • Versão APH-OFFLINE v2.6',
+                html: `
+                    <div class="bg-rose-950/40 border border-rose-500/60 rounded-xl p-3.5 space-y-1.5">
+                        <strong class="text-rose-300 uppercase text-xs block">1º Passo — Reconhecimento Rápido da Parada (PCR):</strong>
+                        <p class="text-xs text-gray-200">Segurança de cena -> Avalie resposta tocando nos ombros (<em>"Senhor, você me ouve?"</em>) -> Verifique respiração e pulso central (carotídeo no adulto/criança ou braquial no bebê) simultaneamente em <strong>5 a 10 segundos</strong>. Vítima <strong>inconsciente + sem respiração normal (ou apenas gasping) + sem pulso</strong> = <strong>INICIE RCP IMEDIATAMENTE!</strong></p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <div class="bg-pmmg-card p-3.5 rounded-xl border border-pmmg-border space-y-1.5">
+                            <span class="text-[10px] bg-rose-950 text-rose-300 font-bold px-2 py-0.5 rounded uppercase">Adulto (Acima da Puberdade)</span>
+                            <h5 class="text-base font-extrabold text-white mt-1">RCP em Adultos</h5>
+                            <ul class="space-y-1 text-xs text-gray-300 list-disc pl-4">
+                                <li><strong>Local:</strong> Centro do tórax (metade inferior do esterno), com 2 mãos entrelaçadas e braços retos (90°).</li>
+                                <li><strong>Frequência:</strong> <strong>100 a 120 comp/min</strong>.</li>
+                                <li><strong>Profundidade:</strong> <strong>5 a 6 cm</strong> (permita o retorno total do tórax).</li>
+                                <li><strong>Relação:</strong> <strong>30 compressões : 2 ventilações</strong> (ou compressões contínuas se sem barreira de ventilação).</li>
+                            </ul>
+                        </div>
+                        <div class="bg-pmmg-card p-3.5 rounded-xl border border-pmmg-border space-y-1.5">
+                            <span class="text-[10px] bg-amber-950 text-amber-300 font-bold px-2 py-0.5 rounded uppercase">Criança (1 ano até Puberdade)</span>
+                            <h5 class="text-base font-extrabold text-white mt-1">RCP Pediátrica</h5>
+                            <ul class="space-y-1 text-xs text-gray-300 list-disc pl-4">
+                                <li><strong>Local:</strong> Metade inferior do esterno com <strong>1 ou 2 mãos</strong> (conforme porte da criança).</li>
+                                <li><strong>Frequência:</strong> <strong>100 a 120 comp/min</strong>.</li>
+                                <li><strong>Profundidade:</strong> Cerca de <strong>5 cm</strong> (1/3 do diâmetro anteroposterior do tórax).</li>
+                                <li><strong>Relação:</strong> <strong>30:2</strong> (1 socorrista) ou <strong>15:2</strong> (com 2 socorristas).</li>
+                            </ul>
+                        </div>
+                        <div class="bg-pmmg-card p-3.5 rounded-xl border border-pmmg-border space-y-1.5">
+                            <span class="text-[10px] bg-sky-950 text-sky-300 font-bold px-2 py-0.5 rounded uppercase">Bebê / Lactente (&lt; 1 ano)</span>
+                            <h5 class="text-base font-extrabold text-white mt-1">RCP em Bebês</h5>
+                            <ul class="space-y-1 text-xs text-gray-300 list-disc pl-4">
+                                <li><strong>Local:</strong> Logo abaixo da linha intermamilar com <strong>2 dedos</strong> (1 socorrista) ou <strong>2 polegares abraçando o tórax</strong> (2 socorristas).</li>
+                                <li><strong>Frequência:</strong> <strong>100 a 120 comp/min</strong>.</li>
+                                <li><strong>Profundidade:</strong> Cerca de <strong>4 cm</strong> (1/3 do tórax).</li>
+                                <li><strong>Relação:</strong> <strong>30:2</strong> (1 socorrista) ou <strong>15:2</strong> (2 socorristas).</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="bg-pmmg-card p-3 rounded-xl border border-pmmg-gold/40 text-xs text-gray-200">
+                        <strong class="text-pmmg-gold">⚡ Uso do DEA e Troca de Socorrista:</strong> Assim que o DEA (Desfibrilador) estiver disponível, ligue-o, cole as pás no tórax seco e siga os comandos de voz. <strong>Revezem o socorrista das compressões a cada 2 minutos (5 ciclos de 30:2)</strong> para evitar fadiga.
+                    </div>
+                `
+            },
+            ovace: {
+                badge: 'PROTOCOLO 05 • DESOBSTRUÇÃO DE VIAS AÉREAS POR CORPO ESTRANHO (OVACE)',
+                title: '5. Desengasgamento (OVACE • Adulto, Gestante e Bebê)',
+                source: 'Fonte / Protocolo: Diretrizes AHA & Protocolo de Suporte Básico CBMMG / SAMU • Versão APH-OFFLINE v2.6',
+                html: `
+                    <div class="bg-amber-950/40 border border-amber-500/60 rounded-xl p-3.5 space-y-1">
+                        <strong class="text-amber-300 uppercase text-xs block">Avaliação Inicial — Engasgo Parcial (Leve) vs. Engasgo Total (Grave):</strong>
+                        <p class="text-xs text-gray-200">• <strong>Leve (Tosse eficaz, consegue falar/chorar):</strong> NÃO faça compressões nem dê tapas; apenas acalme e incentive a tossir.<br>• <strong>Grave (Sinal universal de asfixia, tosse silenciosa, não fala, cianose/roxo):</strong> Atue imediatamente conforme a idade abaixo!</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="bg-pmmg-card p-3.5 rounded-xl border border-pmmg-border space-y-2">
+                            <strong class="text-pmmg-gold uppercase text-xs block">1º) Adultos e Crianças (&gt; 1 ano) — Manobra de Heimlich</strong>
+                            <ul class="space-y-1.5 text-xs text-gray-200 list-disc pl-4">
+                                <li>Posicione-se atrás da vítima e envolva a cintura dela com seus braços (em crianças, ajoelhe-se na altura dela).</li>
+                                <li>Feche uma das mãos em punho com o polegar voltado contra o abdome da vítima, posicionando-o <strong>entre a cicatriz umbilical (umbigo) e o apêndice xifoide</strong>.</li>
+                                <li>Segure o punho com a outra mão e aplique <strong>compressões rápidas para dentro e para cima (movimento em "J")</strong> até o objeto sair ou a vítima tornar-se inconsciente.</li>
+                                <li><strong class="text-emerald-400">Gestantes ou Obesos:</strong> Realize as compressões no <strong>centro do tórax (esterno)</strong> em vez do abdome.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-pmmg-card p-3.5 rounded-xl border border-pmmg-border space-y-2">
+                            <strong class="text-sky-400 uppercase text-xs block">2º) Bebês / Lactentes (&lt; 1 ano) — 5 Golpes + 5 Compressões</strong>
+                            <ul class="space-y-1.5 text-xs text-gray-200 list-disc pl-4">
+                                <li><strong>NUNCA faça Heimlich abdominal em menores de 1 ano!</strong></li>
+                                <li><strong>Passo A (5 Tapotagens nas Costas):</strong> Apoie o bebê de bruços sobre seu antebraço (cabeça mais baixa que o tronco, segurando a mandíbula sem pressionar a garganta) e aplique <strong>5 golpes firmes com a base da mão entre as escápulas</strong>.</li>
+                                <li><strong>Passo B (5 Compressões Torácicas):</strong> Vire o bebê de barriga para cima apoiado no outro antebraço e faça <strong>5 compressões no centro do tórax com 2 dedos</strong> (linha intermamilar).</li>
+                                <li>Repita o ciclo <strong>5 golpes nas costas + 5 compressões torácicas</strong> até desengasgar (choro/respiração) ou se ficar inconsciente (inicie RCP).</li>
+                            </ul>
+                        </div>
+                    </div>
+                `
+            },
+            parto: {
+                badge: 'PROTOCOLO 06 • EMERGÊNCIA OBSTÉTRICA E PARTO IMINENTE EM VIATURA / CAMPO',
+                title: '6. Gestantes / Parto de Emergência',
+                source: 'Fonte / Protocolo: Manual de APH Obstétrico SAMU / CBMMG & PHTLS • Versão APH-OFFLINE v2.6',
+                html: `
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="bg-pmmg-card p-3.5 rounded-xl border border-emerald-500/40 space-y-2">
+                            <strong class="text-emerald-400 uppercase text-xs block">1º) Transporte da Gestante vs. Parto Iminente</strong>
+                            <ul class="space-y-1.5 text-xs text-gray-200 list-disc pl-4">
+                                <li><strong>Transporte de Gestante (Sem Coroamento):</strong> Sempre posicione a gestante em <strong>Decúbito Lateral Esquerdo (deitada sobre o lado esquerdo)</strong> para evitar compressão da veia cava pelo útero.</li>
+                                <li><strong>Quando assistir o parto no local:</strong> Contrações fortes a cada 2 minutos ou menos, vontade incontrolável de fazer força (puxo) e <strong>coroamento visível</strong> (cabeça do bebê apontando no canal vaginal).</li>
+                                <li>Garanta privacidade, calce luvas limpas e forre a superfície com lençóis/panos limpos e secos.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-pmmg-card p-3.5 rounded-xl border border-pmmg-border space-y-2">
+                            <strong class="text-pmmg-gold uppercase text-xs block">2º) Assistência à Expulsão e Cuidados com o Recém-Nascido (RN)</strong>
+                            <ul class="space-y-1.5 text-xs text-gray-200 list-disc pl-4">
+                                <li><strong>Apoie a Cabeça (Não Puxe):</strong> Amparar a cabeça do bebê com as mãos protegendo o períneo da mãe para evitar expulsão explosiva.</li>
+                                <li><strong>Verifique Circular de Cordão:</strong> Se o cordão umbilical estiver enrolado no pescoço, deslize-o suavemente com um dedo por cima da cabeça do bebê.</li>
+                                <li><strong>Cuidado nº 1 com o RN (Aquecer e Secar):</strong> Assim que nascer, <strong>seque imediatamente o bebê</strong> (especialmente a cabeça), troque o pano úmido por manta seca, coloque sobre o tórax/abdome da mãe pele a pele e cubra ambos.</li>
+                                <li><strong>Cordão e Placenta:</strong> Se não houver kit estéril, <strong>não corte o cordão em campo</strong> (apenas mantenha o bebê no mesmo nível da mãe). Se a placenta sair espontaneamente, guarde-a em saco plástico limpo para levar à maternidade e massageie suavemente o fundo do útero da mãe (abaixo do umbigo) para conter sangramento.</li>
+                            </ul>
+                        </div>
+                    </div>
+                `
+            }
+        };
+
+        window.openOfflineAphProtocol = function(protocolKey) {
+            const modal = document.getElementById('offlineAphProtocolModal');
+            const badgeEl = document.getElementById('aphModalBadge');
+            const titleEl = document.getElementById('aphModalTitle');
+            const bodyEl = document.getElementById('aphModalBody');
+            const sourceEl = document.getElementById('aphModalSourceFooter');
+            const proto = AZIMUTE_APH_OFFLINE_PROTOCOLS[protocolKey];
+            if (!modal || !proto) return;
+
+            if (badgeEl) badgeEl.textContent = proto.badge;
+            if (titleEl) titleEl.textContent = proto.title;
+            if (bodyEl) bodyEl.innerHTML = proto.html;
+            if (sourceEl) sourceEl.textContent = proto.source;
+
+            ['hemorragia', 'vias_aereas', 'queimaduras', 'rcp', 'ovace', 'parto'].forEach(k => {
+                const pill = document.getElementById('aph-pill-' + k);
+                if (!pill) return;
+                pill.className = (k === protocolKey)
+                    ? 'px-2.5 py-1 rounded-lg font-extrabold border border-pmmg-khaki bg-pmmg-khaki text-pmmg-black shrink-0'
+                    : 'px-2.5 py-1 rounded-lg font-bold border border-pmmg-border bg-pmmg-card text-gray-300 hover:text-white shrink-0';
+            });
+
+            modal.classList.remove('hidden');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        };
+
+        window.closeOfflineAphProtocol = function() {
+            const modal = document.getElementById('offlineAphProtocolModal');
+            if (modal) modal.classList.add('hidden');
+        };
+
+        window.toggleConfigNotebookLmUrl = function() {
+            const box = document.getElementById('notebookLmUrlConfigBox');
+            const inp = document.getElementById('inputNotebookLmAphUrl');
+            if (!box) return;
+            box.classList.toggle('hidden');
+            if (!box.classList.contains('hidden') && inp) {
+                try {
+                    inp.value = localStorage.getItem('azimute_notebooklm_aph_url') || 'https://notebooklm.google.com/';
+                } catch (e) {}
+            }
+        };
+
+        window.saveNotebookLmAphUrl = function() {
+            const inp = document.getElementById('inputNotebookLmAphUrl');
+            const btn = document.getElementById('btnOpenNotebookLmAph');
+            const box = document.getElementById('notebookLmUrlConfigBox');
+            if (!inp || !btn) return;
+            const url = (inp.value || '').trim() || 'https://notebooklm.google.com/';
+            btn.href = url;
+            try { localStorage.setItem('azimute_notebooklm_aph_url', url); } catch (e) {}
+            if (box) box.classList.add('hidden');
+            if (typeof showToast === 'function') showToast('🤖 Link do Assistente NotebookLM salvo!');
+        };
+
+        (function initSavedNotebookLmUrl() {
+            try {
+                const savedUrl = localStorage.getItem('azimute_notebooklm_aph_url');
+                if (savedUrl) {
+                    document.addEventListener('DOMContentLoaded', () => {
+                        const btn = document.getElementById('btnOpenNotebookLmAph');
+                        if (btn) btn.href = savedUrl;
+                    });
+                }
+            } catch (e) {}
+        })();
 
         function updateSaudeSmartHospitalComparison(lat, lon, closestArea) {
             if (!AZIMUTE_HOSPITAIS_REFERENCIA_PRINCIPAIS || !AZIMUTE_HOSPITAIS_REFERENCIA_PRINCIPAIS.length) return;
