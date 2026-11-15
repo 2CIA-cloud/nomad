@@ -59,7 +59,7 @@
             animation: appScreenSlide 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
-        /* AJUSTES EXCLUSIVOS DO MODO APP (SMARTPHONE) */
+        /* AJUSTES DOS 3 MODOS DE VISUALIZAÇÃO: App | GRID | PC (SEM DUPLICAÇÃO DE MENUS) */
         body.mode-app {
             padding-bottom: 5.5rem;
         }
@@ -68,7 +68,10 @@
             margin-left: auto;
             margin-right: auto;
         }
-        /* No Modo App, transforma barras horizontais de abas em grades de botões visíveis sem rolagem lateral */
+        /* No Modo App, oculta a barra de abas do topo para não duplicar com o menu inferior de 5 abas */
+        body.mode-app #topNavBar {
+            display: none !important;
+        }
         body.mode-app .subtabs-bar {
             display: grid !important;
             grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
@@ -84,23 +87,41 @@
             padding: 0.55rem 0.65rem;
             font-size: 11px;
         }
-        body.mode-app #topNavLinks {
+
+        /* No Modo GRID, exibe os menus e sub-abas em grade tática compacta e oculta a barra inferior */
+        body.mode-grid .app-main-container {
+            max-width: 960px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        body.mode-grid #mobileBottomNav {
+            display: none !important;
+        }
+        body.mode-grid #topNavLinks {
             display: grid !important;
-            grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+            grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
             gap: 0.35rem !important;
             min-width: 0 !important;
             width: 100%;
         }
-        body.mode-app #topNavLinks > button {
+        body.mode-grid #topNavLinks > button {
             justify-content: center;
             text-align: center;
             padding: 0.45rem 0.35rem;
-            font-size: 10.5px;
+            font-size: 11px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        /* No Modo Web (PC / Desktop), expande o container de forma ampla e confortável */
+        body.mode-grid .subtabs-bar {
+            display: grid !important;
+            grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+            gap: 0.4rem !important;
+            min-width: 0 !important;
+            white-space: normal !important;
+        }
+
+        /* No Modo PC (Desktop), expande o container de forma ampla e oculta a barra inferior */
         body.mode-web .app-main-container {
             max-width: 1400px !important;
             width: 100%;
@@ -288,84 +309,121 @@
         <span id="toastText">Copiado para a área de transferência!</span>
     </div>
 
-    <!-- CABEÇALHO SUPERIOR GLOBAL (AZIMUTE) -->
+    <!-- CABEÇALHO SUPERIOR COMPACTO GLOBAL (AZIMUTE) -->
     <header class="sticky top-0 z-40 bg-pmmg-dark/95 backdrop-blur border-b border-pmmg-khaki/40 shadow-xl">
-        <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2.5">
-            <div class="flex flex-col md:flex-row items-center justify-between gap-2.5">
+        <!-- FAIXA 1: LOGO AZIMUTE + BUSCA RÁPIDA + SELETOR (App | GRID | PC) -->
+        <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2">
+            <div class="flex flex-wrap items-center justify-between gap-2">
                 
-                <!-- Logo AZIMUTE + Frase Institucional + Alternador App/PC + Botão Tela Cheia -->
-                <div class="flex items-center justify-between w-full md:w-auto gap-2">
-                    <div class="flex items-center gap-2.5 cursor-pointer" onclick="showView('home')">
-                        <div class="w-10 h-10 rounded-xl bg-pmmg-khaki/15 border border-pmmg-khaki/60 flex items-center justify-center text-pmmg-khaki shadow-inner shrink-0">
-                            <i data-lucide="compass" class="w-6 h-6"></i>
-                        </div>
-                        <div>
-                            <div class="flex items-center gap-1.5 flex-wrap">
-                                <h1 class="text-2xl sm:text-3xl font-military tracking-widest text-pmmg-khaki uppercase leading-none">AZIMUTE</h1>
-                            </div>
-                            <p class="text-[10px] sm:text-[11px] text-pmmg-khakiLight/90 font-medium leading-tight mt-0.5">Por todo o estado mineiro, com alma e espírito de guerreiro. O Coliseu.</p>
-                        </div>
+                <!-- Logo/Título AZIMUTE Compacto -->
+                <div class="flex items-center gap-2 cursor-pointer shrink-0" onclick="showView('home')">
+                    <div class="w-8 h-8 rounded-lg bg-pmmg-khaki/15 border border-pmmg-khaki/60 flex items-center justify-center text-pmmg-khaki shadow-inner shrink-0">
+                        <i data-lucide="compass" class="w-5 h-5"></i>
                     </div>
+                    <h1 class="text-2xl sm:text-3xl font-military tracking-widest text-pmmg-khaki uppercase leading-none">AZIMUTE</h1>
+                </div>
 
-                    <!-- ALTERNADOR VERSÃO APP (MOBILE) / VERSÃO PC (DESKTOP) + TELA CHEIA -->
-                    <div class="flex items-center gap-1.5 shrink-0">
-                        <div class="flex items-center bg-pmmg-black p-1 rounded-lg border border-pmmg-border">
-                            <button type="button" onclick="setLayoutMode('app')" id="btn-mode-app" class="px-2.5 py-1 rounded-md text-[11px] font-bold flex items-center gap-1 bg-pmmg-khaki text-pmmg-black shadow transition-all" title="Versão App (Mobile)">
-                                <i data-lucide="smartphone" class="w-3.5 h-3.5"></i>
-                                <span>App</span>
-                            </button>
-                            <button type="button" onclick="setLayoutMode('web')" id="btn-mode-web" class="px-2.5 py-1 rounded-md text-[11px] font-medium flex items-center gap-1 text-gray-400 hover:text-white transition-all" title="Versão PC (Desktop)">
-                                <i data-lucide="monitor" class="w-3.5 h-3.5"></i>
-                                <span>PC</span>
-                            </button>
-                        </div>
+                <!-- Busca Rápida Global -->
+                <div class="order-3 sm:order-2 w-full sm:w-auto sm:flex-1 sm:max-w-md relative">
+                    <i data-lucide="search" class="absolute left-3 top-2 w-3.5 h-3.5 text-pmmg-khaki pointer-events-none"></i>
+                    <input 
+                        type="text" 
+                        id="globalSearch" 
+                        autocomplete="off"
+                        placeholder="Buscar rua, bairro, drone, gasolina, bnmp, cia..." 
+                        class="w-full pl-8 pr-7 py-1.5 bg-pmmg-card text-xs text-gray-100 placeholder-gray-400 rounded-lg border border-pmmg-border focus:outline-none focus:border-pmmg-khaki focus:ring-1 focus:ring-pmmg-khaki transition-all"
+                        oninput="handleGlobalSearch()"
+                        onfocus="handleGlobalSearch()"
+                    >
+                    <button id="clearGlobalSearchBtn" onclick="clearGlobalSearch()" class="hidden absolute right-2 top-1.5 text-gray-400 hover:text-pmmg-khaki p-0.5" title="Limpar pesquisa">
+                        <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                    </button>
 
-                        <button type="button" onclick="toggleAzimuteFullscreen()" id="btnFullscreen" class="p-2 bg-pmmg-black hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-border rounded-lg transition-all flex items-center justify-center" title="Expandir em Tela Cheia">
-                            <i data-lucide="maximize" id="iconFullscreen" class="w-4 h-4"></i>
-                        </button>
+                    <!-- PAINEL SUSPENSO DE RESULTADOS DA BUSCA INTELIGENTE -->
+                    <div id="globalSearchDropdown" class="hidden fixed sm:absolute left-2 right-2 sm:left-0 sm:right-auto sm:w-[460px] top-[98px] sm:top-full mt-1.5 z-50 bg-pmmg-dark/98 backdrop-blur-md border-2 border-pmmg-khaki/70 rounded-xl shadow-2xl max-h-[72vh] overflow-y-auto divide-y divide-pmmg-border">
+                        <!-- Preenchido dinamicamente pelo motor de busca -->
                     </div>
                 </div>
 
-                <!-- Busca Inteligente Global Unificada e Botão Códigos Q -->
-                <div class="w-full md:w-auto flex items-center gap-2 relative">
-                    <div class="relative flex-1 md:w-96">
-                        <i data-lucide="search" class="absolute left-3 top-2.5 w-4 h-4 text-pmmg-khaki pointer-events-none"></i>
-                        <input 
-                            type="text" 
-                            id="globalSearch" 
-                            autocomplete="off"
-                            placeholder="Buscar rua, bairro, drone, gasolina, bnmp, cia..." 
-                            class="w-full pl-9 pr-8 py-2 bg-pmmg-card text-xs text-gray-100 placeholder-gray-400 rounded-lg border border-pmmg-border focus:outline-none focus:border-pmmg-khaki focus:ring-1 focus:ring-pmmg-khaki transition-all"
-                            oninput="handleGlobalSearch()"
-                            onfocus="handleGlobalSearch()"
-                        >
-                        <button id="clearGlobalSearchBtn" onclick="clearGlobalSearch()" class="hidden absolute right-2.5 top-2 text-gray-400 hover:text-pmmg-khaki p-0.5" title="Limpar pesquisa">
-                            <i data-lucide="x" class="w-4 h-4"></i>
-                        </button>
-
-                        <!-- PAINEL SUSPENSO DE RESULTADOS DA BUSCA INTELIGENTE -->
-                        <div id="globalSearchDropdown" class="hidden fixed sm:absolute left-2 right-2 sm:left-0 sm:right-auto sm:w-[460px] top-[108px] sm:top-full mt-1.5 z-50 bg-pmmg-dark/98 backdrop-blur-md border-2 border-pmmg-khaki/70 rounded-xl shadow-2xl max-h-[72vh] overflow-y-auto divide-y divide-pmmg-border">
-                            <!-- Preenchido dinamicamente pelo motor de busca -->
-                        </div>
-                    </div>
-
-                    <button onclick="toggleQCodeModal()" class="px-3 py-2 bg-pmmg-khaki/20 hover:bg-pmmg-khaki/30 text-pmmg-khaki border border-pmmg-khaki/50 rounded-lg text-xs font-bold flex items-center gap-1.5 whitespace-nowrap">
-                        <i data-lucide="book-open" class="w-4 h-4"></i>
-                        <span>Códigos Q</span>
+                <!-- Seletor dos 3 Modos de Visualização: App | GRID | PC -->
+                <div class="order-2 sm:order-3 flex items-center bg-pmmg-black p-0.5 rounded-lg border border-pmmg-border shrink-0 text-[11px]">
+                    <button type="button" onclick="setLayoutMode('app')" id="btn-mode-app" class="px-2.5 py-1 rounded-md font-extrabold bg-pmmg-khaki text-pmmg-black shadow transition-all" title="Modo App (Smartphone)">
+                        App
+                    </button>
+                    <span class="text-pmmg-border select-none px-0.5">|</span>
+                    <button type="button" onclick="setLayoutMode('grid')" id="btn-mode-grid" class="px-2.5 py-1 rounded-md font-semibold text-gray-400 hover:text-white transition-all" title="Modo GRID (Painel em Grade)">
+                        GRID
+                    </button>
+                    <span class="text-pmmg-border select-none px-0.5">|</span>
+                    <button type="button" onclick="setLayoutMode('web')" id="btn-mode-web" class="px-2.5 py-1 rounded-md font-semibold text-gray-400 hover:text-white transition-all" title="Modo PC (Desktop Amplo)">
+                        PC
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- NAVEGAÇÃO PRINCIPAL (COM ABA EXCLUSIVA DE GEOLOCALIZAÇÃO E REGIÕES) -->
-        <nav class="bg-pmmg-card/90 border-t border-pmmg-border px-3 py-2 overflow-x-auto">
+        <!-- FAIXA 2: NOVA BARRA DE STATUS OPERACIONAL INTELIGENTE (LOGO ABAIXO DO CABEÇALHO) -->
+        <div id="operationalStatusBar" class="bg-pmmg-black/95 border-t border-pmmg-border/80 px-2.5 sm:px-6 py-1.5">
+            <div class="max-w-7xl mx-auto flex items-center justify-between gap-2 text-xs">
+                
+                <!-- Esquerda: Indicador GPS + QTH + Botão ROTA HOSP -->
+                <div class="flex items-center gap-2 min-w-0 flex-1">
+                    <!-- GPS: Apenas a palavra "GPS" funcionando como indicador visual de cor (Verde / Amarelo / Vermelho Piscando) -->
+                    <button type="button" onclick="showView('gps')" id="statusBarGpsIndicator" class="px-2 py-0.5 rounded font-mono font-extrabold text-[11px] uppercase tracking-wider border bg-red-950/90 text-red-400 border-red-500/70 animate-pulse shrink-0 transition-all" title="Toque para abrir a aba Geolocalização">
+                        GPS
+                    </button>
+
+                    <!-- QTH: Apenas "QTH: [Rua / Cruzamento]" -->
+                    <div onclick="showView('gps')" class="truncate font-sans text-xs text-gray-200 cursor-pointer hover:text-pmmg-khaki transition-colors min-w-0 flex-1" title="Toque para abrir detalhes de Geolocalização">
+                        <span class="font-bold text-pmmg-khaki">QTH:</span>
+                        <span id="statusBarQth" class="font-semibold text-white ml-0.5">--</span>
+                    </div>
+
+                    <!-- BOTÃO ROTA HOSP: Minimalista, Cruz Médica Vermelha + Seta Dourada + Texto curto "ROTA HOSP" -->
+                    <a id="statusBarBtnHosp" href="https://www.google.com/maps/dir/?api=1&destination=-19.9322,-44.0758&travelmode=driving" target="_blank" class="px-2 py-1 rounded-lg bg-pmmg-card hover:bg-pmmg-border border border-red-500/60 flex items-center gap-1 shrink-0 shadow transition-all active:scale-95" title="Traçar rota imediata para o Hospital de Referência mais próximo">
+                        <!-- Cruz Médica / Estrela da Vida Vermelha -->
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3.5 h-3.5 text-red-500 shrink-0">
+                            <path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6V3z"/>
+                        </svg>
+                        <!-- Seta de Rota Dourada -->
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3 shrink-0">
+                            <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+                        </svg>
+                        <span class="text-[10px] font-extrabold text-white tracking-wide uppercase">ROTA HOSP</span>
+                    </a>
+                </div>
+
+                <!-- Direita: REDE resumida (ex: "5º BPM A" ou "34º BPM B") clicável para abrir Batalhão/Cias/Bairros + Download Offline -->
+                <button type="button" onclick="openCurrentNetworkBattalionModal()" id="statusBarBtnRede" class="px-2.5 py-1 rounded-lg bg-pmmg-khakiBadge/90 hover:bg-pmmg-border border border-pmmg-gold/50 text-pmmg-gold font-mono font-extrabold text-[11px] flex items-center gap-1 shrink-0 transition-all" title="Clique para ver dados detalhados do Batalhão/Cias/Bairros da Rede atual e baixar offline">
+                    <i data-lucide="radio" class="w-3 h-3 text-pmmg-gold shrink-0"></i>
+                    <span id="statusBarRedeText">18º BPM A</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- NAVEGAÇÃO SUPERIOR (VISÍVEL APENAS NOS MODOS GRID E PC PARA NÃO DUPLICAR COM O MENU INFERIOR DO MODO APP) -->
+        <nav id="topNavBar" class="bg-pmmg-card/90 border-t border-pmmg-border px-3 py-1.5 overflow-x-auto">
             <div class="max-w-7xl mx-auto flex items-center justify-between text-xs font-medium gap-2">
                 <div id="topNavLinks" class="flex items-center gap-2 min-w-max">
                     <button onclick="showView('home')" id="nav-btn-home" class="px-3 py-1.5 rounded-md bg-pmmg-khaki text-pmmg-black font-bold flex items-center gap-1.5">
                         <i data-lucide="home" class="w-3.5 h-3.5 shrink-0"></i> <span>Início</span>
                     </button>
                     <button onclick="showView('regioes')" id="nav-btn-regioes" class="px-3 py-1.5 rounded-md bg-pmmg-dark text-gray-300 border border-pmmg-border hover:bg-pmmg-border font-bold flex items-center gap-1.5">
-                        <i data-lucide="shield" class="w-3.5 h-3.5 text-pmmg-khaki shrink-0"></i> <span>REGIÕES</span>
+                        <i data-lucide="shield" class="w-3.5 h-3.5 text-pmmg-khaki shrink-0"></i> <span>Regiões</span>
+                    </button>
+                    <button onclick="showView('saude')" id="nav-btn-saude" class="px-3 py-1.5 rounded-md bg-pmmg-dark text-red-400 border border-red-500/40 hover:bg-pmmg-border font-bold flex items-center gap-1.5">
+                        <i data-lucide="heart-pulse" class="w-3.5 h-3.5 text-red-400 shrink-0"></i> <span>Saúde / APH</span>
+                    </button>
+                    <button onclick="showView('rpas')" id="nav-btn-rpas" class="px-3 py-1.5 rounded-md bg-pmmg-dark text-sky-400 border border-sky-500/40 hover:bg-pmmg-border font-bold flex items-center gap-1.5">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5 text-sky-400 shrink-0">
+                            <rect x="9" y="9" width="6" height="6" rx="1"/>
+                            <path d="M9 9 5.5 5.5"/><path d="M15 9l3.5-3.5"/><path d="M9 15l-3.5 3.5"/><path d="M15 15l3.5 3.5"/>
+                            <circle cx="4.5" cy="4.5" r="2.5"/><circle cx="19.5" cy="4.5" r="2.5"/><circle cx="4.5" cy="19.5" r="2.5"/><circle cx="19.5" cy="19.5" r="2.5"/>
+                        </svg>
+                        <span>Drones</span>
+                    </button>
+                    <button onclick="showView('atalhos')" id="nav-btn-atalhos" class="px-3 py-1.5 rounded-md bg-pmmg-dark text-pmmg-khaki border border-pmmg-khaki/40 hover:bg-pmmg-border font-bold flex items-center gap-1.5">
+                        <i data-lucide="folder" class="w-3.5 h-3.5 text-pmmg-gold shrink-0"></i> <span>Apoio</span>
                     </button>
                     <button onclick="showView('gps')" id="nav-btn-gps" class="px-3 py-1.5 rounded-md bg-pmmg-dark text-emerald-400 border border-emerald-500/40 hover:bg-pmmg-border font-bold flex items-center gap-1.5">
                         <i data-lucide="locate-fixed" class="w-3.5 h-3.5 text-emerald-400 shrink-0"></i> <span>Geolocalização</span>
@@ -375,17 +433,6 @@
                     </button>
                     <button onclick="showView('estadios')" id="nav-btn-estadios" class="px-3 py-1.5 rounded-md bg-pmmg-dark text-emerald-400 border border-emerald-500/40 hover:bg-pmmg-border font-bold flex items-center gap-1.5">
                         <i data-lucide="trophy" class="w-3.5 h-3.5 text-emerald-400 shrink-0"></i> <span>Estádios</span>
-                    </button>
-                    <button onclick="showView('rpas')" id="nav-btn-rpas" class="px-3 py-1.5 rounded-md bg-pmmg-dark text-sky-400 border border-sky-500/40 hover:bg-pmmg-border font-bold flex items-center gap-1.5">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5 text-sky-400 shrink-0">
-                            <rect x="9" y="9" width="6" height="6" rx="1"/>
-                            <path d="M9 9 5.5 5.5"/><path d="M15 9l3.5-3.5"/><path d="M9 15l-3.5 3.5"/><path d="M15 15l3.5 3.5"/>
-                            <circle cx="4.5" cy="4.5" r="2.5"/><circle cx="19.5" cy="4.5" r="2.5"/><circle cx="4.5" cy="19.5" r="2.5"/><circle cx="19.5" cy="19.5" r="2.5"/>
-                        </svg>
-                        <span>Drones / RPAS</span>
-                    </button>
-                    <button onclick="showView('atalhos')" id="nav-btn-atalhos" class="px-3 py-1.5 rounded-md bg-pmmg-dark text-pmmg-khaki border border-pmmg-khaki/40 hover:bg-pmmg-border font-bold flex items-center gap-1.5 col-span-3 sm:col-span-1">
-                        <i data-lucide="external-link" class="w-3.5 h-3.5 text-pmmg-gold shrink-0"></i> <span>Atalhos & Sistemas</span>
                     </button>
                 </div>
 
@@ -3137,14 +3184,134 @@
             </div>
         </section>
 
-        <!-- ================= VIEW ATALHOS OPERACIONAIS ================= -->
-        <section id="view-atalhos" class="hidden space-y-6">
-            <div class="flex items-center justify-between border-b border-pmmg-border pb-3">
+        <!-- ================= VIEW SAÚDE / APH (POSIÇÃO CENTRAL DO MENU GLOBAL) ================= -->
+        <section id="view-saude" class="hidden space-y-6">
+            <div class="flex flex-wrap items-center justify-between border-b border-pmmg-border pb-3 gap-2">
                 <div>
-                    <h2 class="text-3xl font-military text-pmmg-khaki uppercase tracking-wide">Atalhos Operacionais & Sistemas</h2>
-                    <p class="text-xs text-gray-400">Acesso rápido aos portais de consulta operacional</p>
+                    <div class="flex items-center gap-2">
+                        <span class="bg-red-950 text-red-400 text-[10px] px-2.5 py-0.5 rounded font-bold uppercase border border-red-500/40">Socorro Tático & APH Offline</span>
+                        <h2 class="text-3xl font-military text-red-400 uppercase tracking-wide">Saúde / APH & Hospitais de Referência</h2>
+                    </div>
+                    <p class="text-xs text-gray-400">Acionamento rápido de rota hospitalar, Modo Prioridade (SOS) e rede de pronto-socorro da RMBH</p>
                 </div>
-                <button onclick="showView('home')" class="text-xs text-pmmg-khaki hover:underline flex items-center gap-1"><i data-lucide="arrow-left" class="w-4 h-4"></i> Voltar</button>
+                <div class="flex items-center gap-2">
+                    <button type="button" onclick="openPrioritySosModal()" class="px-3.5 py-2 bg-red-600 hover:bg-red-500 text-white font-extrabold rounded-xl text-xs flex items-center gap-1.5 shadow-lg uppercase">
+                        <span>🚨 MODO PRIORIDADE (SOS)</span>
+                    </button>
+                    <button onclick="showView('home')" class="text-xs text-pmmg-khaki hover:underline flex items-center gap-1"><i data-lucide="arrow-left" class="w-4 h-4"></i> Início</button>
+                </div>
+            </div>
+
+            <!-- DESTAQUE: HOSPITAL MAIS PRÓXIMO VIA GPS ATUAL -->
+            <div class="bg-pmmg-card border-2 border-red-500/60 rounded-2xl p-4 sm:p-5 shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div class="space-y-1">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-red-400 block">🏥 Hospital / UPA Mais Próximo da Sua Coordenada Atual</span>
+                    <h3 id="saudeClosestHospName" class="text-xl sm:text-2xl font-extrabold text-white">Calculando hospital de referência...</h3>
+                    <p id="saudeClosestHospMeta" class="text-xs text-gray-300">Distância e tempo médio calculados automaticamente via satélite</p>
+                </div>
+                <a id="saudeClosestHospBtn" href="https://www.google.com/maps/dir/?api=1&destination=-19.9322,-44.0758&travelmode=driving" target="_blank" class="px-4 py-3 bg-red-600 hover:bg-red-500 text-white font-extrabold rounded-xl text-xs sm:text-sm flex items-center justify-center gap-2 shrink-0 shadow-lg uppercase tracking-wider">
+                    <i data-lucide="navigation" class="w-4 h-4"></i> <span>TRAÇAR ROTA IMEDIATA</span>
+                </a>
+            </div>
+
+            <!-- GRADE DE HOSPITAIS DE TRAUMA E PRONTO ATENDIMENTO 24H (RMBH) -->
+            <div class="space-y-3">
+                <h3 class="text-xl font-military text-pmmg-khaki uppercase tracking-wide border-b border-pmmg-border pb-1.5">Rede Hospitalar de Trauma e Urgência (RMBH)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="bg-pmmg-card p-4 rounded-xl tactical-border border-l-4 border-l-red-500 flex flex-col justify-between space-y-3">
+                        <div>
+                            <span class="text-[10px] bg-red-950 text-red-300 font-bold px-2 py-0.5 rounded uppercase">Referência Estadual Trauma / Baleado</span>
+                            <h4 class="text-xl font-military text-white uppercase mt-1">HPS João XXIII (BH)</h4>
+                            <p class="text-xs text-gray-400">Av. Prof. Alfredo Balena, 400 - Santa Efigênia, BH</p>
+                        </div>
+                        <div class="pt-2 border-t border-pmmg-border flex items-center justify-between text-xs">
+                            <a href="tel:03132399200" class="text-pmmg-khaki font-mono font-bold hover:underline">(31) 3239-9200</a>
+                            <a href="https://www.google.com/maps/dir/?api=1&destination=-19.9267,-43.9269&travelmode=driving" target="_blank" class="px-3 py-1.5 bg-red-950/80 hover:bg-red-800 text-red-200 border border-red-500/40 rounded-lg font-bold flex items-center gap-1">🚑 Rota</a>
+                        </div>
+                    </div>
+
+                    <div class="bg-pmmg-card p-4 rounded-xl tactical-border border-l-4 border-l-pmmg-gold flex flex-col justify-between space-y-3">
+                        <div>
+                            <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-gold font-bold px-2 py-0.5 rounded uppercase">Exclusivo Militares / Família Militar</span>
+                            <h4 class="text-xl font-military text-white uppercase mt-1">Hospital da Polícia Militar (HPM)</h4>
+                            <p class="text-xs text-gray-400">Av. do Contorno, 2787 - Santa Efigênia, BH</p>
+                        </div>
+                        <div class="pt-2 border-t border-pmmg-border flex items-center justify-between text-xs">
+                            <a href="tel:03121231000" class="text-pmmg-khaki font-mono font-bold hover:underline">(31) 2123-1000</a>
+                            <a href="https://www.google.com/maps/dir/?api=1&destination=-19.9235,-43.9182&travelmode=driving" target="_blank" class="px-3 py-1.5 bg-red-950/80 hover:bg-red-800 text-red-200 border border-red-500/40 rounded-lg font-bold flex items-center gap-1">🚑 Rota</a>
+                        </div>
+                    </div>
+
+                    <div class="bg-pmmg-card p-4 rounded-xl tactical-border border-l-4 border-l-red-500 flex flex-col justify-between space-y-3">
+                        <div>
+                            <span class="text-[10px] bg-red-950 text-red-300 font-bold px-2 py-0.5 rounded uppercase">Trauma / Referência Contagem</span>
+                            <h4 class="text-xl font-military text-white uppercase mt-1">Hosp. Municipal de Contagem (HMC)</h4>
+                            <p class="text-xs text-gray-400">Av. Geraldo Rocha, 3220 - Chácaras Cotia, Contagem</p>
+                        </div>
+                        <div class="pt-2 border-t border-pmmg-border flex items-center justify-between text-xs">
+                            <a href="tel:03133566000" class="text-pmmg-khaki font-mono font-bold hover:underline">(31) 3356-6000</a>
+                            <a href="https://www.google.com/maps/dir/?api=1&destination=-19.9322,-44.0758&travelmode=driving" target="_blank" class="px-3 py-1.5 bg-red-950/80 hover:bg-red-800 text-red-200 border border-red-500/40 rounded-lg font-bold flex items-center gap-1">🚑 Rota</a>
+                        </div>
+                    </div>
+
+                    <div class="bg-pmmg-card p-4 rounded-xl tactical-border border-l-4 border-l-red-500 flex flex-col justify-between space-y-3">
+                        <div>
+                            <span class="text-[10px] bg-red-950 text-red-300 font-bold px-2 py-0.5 rounded uppercase">Referência Trauma Norte / Venda Nova</span>
+                            <h4 class="text-xl font-military text-white uppercase mt-1">Hosp. Risoleta Tolentino Neves</h4>
+                            <p class="text-xs text-gray-400">Rua das Gabirobas, 1 - Vila Clóris, BH</p>
+                        </div>
+                        <div class="pt-2 border-t border-pmmg-border flex items-center justify-between text-xs">
+                            <a href="tel:03134593200" class="text-pmmg-khaki font-mono font-bold hover:underline">(31) 3459-3200</a>
+                            <a href="https://www.google.com/maps/dir/?api=1&destination=-19.8195,-43.9535&travelmode=driving" target="_blank" class="px-3 py-1.5 bg-red-950/80 hover:bg-red-800 text-red-200 border border-red-500/40 rounded-lg font-bold flex items-center gap-1">🚑 Rota</a>
+                        </div>
+                    </div>
+
+                    <div class="bg-pmmg-card p-4 rounded-xl tactical-border border-l-4 border-l-red-500 flex flex-col justify-between space-y-3">
+                        <div>
+                            <span class="text-[10px] bg-red-950 text-red-300 font-bold px-2 py-0.5 rounded uppercase">Referência Trauma Betim</span>
+                            <h4 class="text-xl font-military text-white uppercase mt-1">Hosp. Regional de Betim</h4>
+                            <p class="text-xs text-gray-400">Av. Edméia Mattos Lazzarotti, 3800 - Betim</p>
+                        </div>
+                        <div class="pt-2 border-t border-pmmg-border flex items-center justify-between text-xs">
+                            <a href="tel:03135398100" class="text-pmmg-khaki font-mono font-bold hover:underline">(31) 3539-8100</a>
+                            <a href="https://www.google.com/maps/dir/?api=1&destination=-19.9567,-44.1925&travelmode=driving" target="_blank" class="px-3 py-1.5 bg-red-950/80 hover:bg-red-800 text-red-200 border border-red-500/40 rounded-lg font-bold flex items-center gap-1">🚑 Rota</a>
+                        </div>
+                    </div>
+
+                    <div class="bg-pmmg-card p-4 rounded-xl tactical-border border-l-4 border-l-red-500 flex flex-col justify-between space-y-3">
+                        <div>
+                            <span class="text-[10px] bg-red-950 text-red-300 font-bold px-2 py-0.5 rounded uppercase">Referência Barreiro</span>
+                            <h4 class="text-xl font-military text-white uppercase mt-1">Hosp. Júlia Kubitschek</h4>
+                            <p class="text-xs text-gray-400">Av. Dr. Cristiano Rezende, 2745 - Milionários, BH</p>
+                        </div>
+                        <div class="pt-2 border-t border-pmmg-border flex items-center justify-between text-xs">
+                            <a href="tel:03133897800" class="text-pmmg-khaki font-mono font-bold hover:underline">(31) 3389-7800</a>
+                            <a href="https://www.google.com/maps/dir/?api=1&destination=-19.9897,-44.0114&travelmode=driving" target="_blank" class="px-3 py-1.5 bg-red-950/80 hover:bg-red-800 text-red-200 border border-red-500/40 rounded-lg font-bold flex items-center gap-1">🚑 Rota</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= VIEW APOIO (SUBSTITUINDO ATALHOS, COM REDS, CÓDIGOS Q E FERRAMENTAS) ================= -->
+        <section id="view-atalhos" class="hidden space-y-6">
+            <div class="flex flex-wrap items-center justify-between border-b border-pmmg-border pb-3 gap-2">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="bg-pmmg-khakiBadge text-pmmg-gold text-[10px] px-2.5 py-0.5 rounded font-bold uppercase border border-pmmg-gold/30">Documentação & Sistemas PMMG</span>
+                        <h2 class="text-3xl font-military text-pmmg-khaki uppercase tracking-wide">Apoio Operacional & Sistemas</h2>
+                    </div>
+                    <p class="text-xs text-gray-400">Acesso rápido ao REDS, BNMP, Consulta IMEI, Códigos Q e portais corporativos</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button type="button" onclick="toggleQCodeModal()" class="px-3 py-1.5 bg-pmmg-khaki/20 hover:bg-pmmg-khaki/30 text-pmmg-khaki border border-pmmg-khaki/50 rounded-lg text-xs font-bold flex items-center gap-1.5">
+                        <i data-lucide="book-open" class="w-4 h-4"></i> <span>Códigos Q & Fonético</span>
+                    </button>
+                    <button type="button" onclick="toggleAzimuteFullscreen()" class="px-3 py-1.5 bg-pmmg-dark hover:bg-pmmg-border text-gray-300 border border-pmmg-border rounded-lg text-xs font-bold flex items-center gap-1.5" title="Alternar Tela Cheia">
+                        <i data-lucide="maximize" class="w-3.5 h-3.5 text-pmmg-khaki"></i> <span>Tela Cheia</span>
+                    </button>
+                    <button onclick="showView('home')" class="text-xs text-pmmg-khaki hover:underline flex items-center gap-1"><i data-lucide="arrow-left" class="w-4 h-4"></i> Início</button>
+                </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -5474,35 +5641,71 @@
 
     </main>
 
-    <!-- BARRA DE NAVEGAÇÃO INFERIOR ESTILO APP DE SMARTPHONE (ACESSO EM 1 TOQUE SEM ROLAGEM LATERAL) -->
+    <!-- MENU GLOBAL INFERIOR COM 5 ABAS PADRONIZADAS (MODO APP) -->
     <nav id="mobileBottomNav" class="fixed bottom-0 left-0 right-0 z-40 bg-pmmg-dark/95 backdrop-blur-md border-t border-pmmg-khaki/40 px-2 py-1.5 shadow-2xl">
-        <div class="max-w-md mx-auto grid grid-cols-6 gap-1 text-[10px] font-bold">
-            <button onclick="showView('home')" id="bnav-home" class="flex flex-col items-center justify-center py-1 rounded-lg text-pmmg-black bg-pmmg-khaki font-bold shadow">
+        <div class="max-w-md mx-auto grid grid-cols-5 gap-1.5 text-[10.5px] font-bold items-center">
+            <!-- 1. Início -->
+            <button onclick="showView('home')" id="bnav-home" class="flex flex-col items-center justify-center py-1.5 rounded-xl text-pmmg-black bg-pmmg-khaki font-extrabold shadow transition-all">
                 <i data-lucide="home" class="w-4 h-4 mb-0.5"></i>
                 <span>Início</span>
             </button>
-            <button onclick="showView('regioes')" id="bnav-regioes" class="flex flex-col items-center justify-center py-1 rounded-lg text-gray-400 hover:text-white">
+            <!-- 2. Regiões -->
+            <button onclick="showView('regioes')" id="bnav-regioes" class="flex flex-col items-center justify-center py-1.5 rounded-xl text-gray-400 hover:text-white transition-all">
                 <i data-lucide="shield" class="w-4 h-4 mb-0.5"></i>
                 <span>Regiões</span>
             </button>
-            <button onclick="showView('gps')" id="bnav-gps" class="flex flex-col items-center justify-center py-1 rounded-lg text-gray-400 hover:text-white">
-                <i data-lucide="locate-fixed" class="w-4 h-4 mb-0.5"></i>
-                <span>Geolocal.</span>
+            <!-- 3. Saúde / APH (Posição Central de Destaque) -->
+            <button onclick="showView('saude')" id="bnav-saude" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-xl bg-red-950/80 text-red-300 border border-red-500/60 hover:bg-red-900/80 font-extrabold shadow-md transition-all">
+                <i data-lucide="heart-pulse" class="w-4 h-4 mb-0.5 text-red-400"></i>
+                <span class="leading-none text-[10px]">Saúde / APH</span>
             </button>
-            <button onclick="showView('especializadas')" id="bnav-especializadas" class="flex flex-col items-center justify-center py-1 rounded-lg text-gray-400 hover:text-white">
-                <i data-lucide="crosshair" class="w-4 h-4 mb-0.5"></i>
-                <span>Especializ.</span>
+            <!-- 4. Drones -->
+            <button onclick="showView('rpas')" id="bnav-rpas" class="flex flex-col items-center justify-center py-1.5 rounded-xl text-gray-400 hover:text-white transition-all">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mb-0.5">
+                    <rect x="9" y="9" width="6" height="6" rx="1"/>
+                    <path d="M9 9 5.5 5.5"/><path d="M15 9l3.5-3.5"/><path d="M9 15l-3.5 3.5"/><path d="M15 15l3.5 3.5"/>
+                    <circle cx="4.5" cy="4.5" r="2.5"/><circle cx="19.5" cy="4.5" r="2.5"/><circle cx="4.5" cy="19.5" r="2.5"/><circle cx="19.5" cy="19.5" r="2.5"/>
+                </svg>
+                <span>Drones</span>
             </button>
-            <button onclick="showView('estadios')" id="bnav-estadios" class="flex flex-col items-center justify-center py-1 rounded-lg text-gray-400 hover:text-white">
-                <i data-lucide="trophy" class="w-4 h-4 mb-0.5"></i>
-                <span>Estádios</span>
-            </button>
-            <button onclick="showView('atalhos')" id="bnav-atalhos" class="flex flex-col items-center justify-center py-1 rounded-lg text-gray-400 hover:text-white">
-                <i data-lucide="external-link" class="w-4 h-4 mb-0.5"></i>
-                <span>Atalhos</span>
+            <!-- 5. Apoio (Ícone de Pasta/Documento) -->
+            <button onclick="showView('atalhos')" id="bnav-atalhos" class="flex flex-col items-center justify-center py-1.5 rounded-xl text-gray-400 hover:text-white transition-all">
+                <i data-lucide="folder" class="w-4 h-4 mb-0.5"></i>
+                <span>Apoio</span>
             </button>
         </div>
     </nav>
+
+    <!-- MODAL DE DETALHES DA REDE / BATALHÃO ATUAL (AO CLICAR NA REDE NA BARRA DE STATUS) -->
+    <div id="networkBattalionModal" class="fixed inset-0 z-50 hidden bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-pmmg-card border-2 border-pmmg-khaki rounded-2xl max-w-2xl w-full max-h-[85vh] flex flex-col overflow-hidden shadow-2xl">
+            <div class="p-4 bg-pmmg-dark border-b border-pmmg-border flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="radio" class="w-5 h-5 text-pmmg-gold"></i>
+                    <div>
+                        <span class="text-[10px] font-bold uppercase text-pmmg-gold block">Rede de Rádio & Malha Territorial da Área Atual</span>
+                        <h3 id="netModalTitle" class="text-2xl font-military text-white uppercase leading-none mt-0.5">18º BPM • REDE: 18º BPM A</h3>
+                    </div>
+                </div>
+                <button type="button" onclick="closeCurrentNetworkBattalionModal()" class="text-gray-400 hover:text-white px-2.5 py-1 rounded bg-pmmg-card border border-pmmg-border text-xs font-bold">Fechar ✕</button>
+            </div>
+
+            <div id="netModalBody" class="p-4 overflow-y-auto space-y-3 text-xs text-gray-200">
+                <!-- Preenchido dinamicamente com Batalhão / Cias / Bairros da área atual -->
+            </div>
+
+            <div class="p-3.5 bg-pmmg-dark border-t border-pmmg-border flex flex-wrap items-center justify-between gap-2">
+                <button type="button" onclick="downloadCurrentNetworkOfflineData()" class="px-3.5 py-2 bg-pmmg-khaki hover:bg-pmmg-khakiHover text-pmmg-black font-extrabold rounded-xl text-xs flex items-center gap-1.5 shadow">
+                    <i data-lucide="download" class="w-4 h-4"></i> <span>Baixar Dados Offline (Batalhão/Cias/Bairros)</span>
+                </button>
+                <div class="flex items-center gap-2">
+                    <button type="button" id="netModalOpenUnitBtn" onclick="openNetworkUnitFullPanel()" class="px-3.5 py-2 bg-pmmg-card hover:bg-pmmg-border text-pmmg-gold border border-pmmg-gold/50 font-bold rounded-xl text-xs flex items-center gap-1.5">
+                        <i data-lucide="shield" class="w-4 h-4"></i> <span>Abrir Painel da Unidade</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- MODAL MODO PRIORIDADE / TELA SOCORRO (COM DISTÂNCIA E TEMPO MÉDIO DE DESLOCAMENTO ESTIMADO) -->
     <div id="prioritySosModal" class="fixed inset-0 z-50 hidden bg-black/95 backdrop-blur-md flex flex-col justify-between p-4 overflow-y-auto">
@@ -5612,7 +5815,33 @@
             return { roadKm: roadKm.toFixed(1), mins: mins };
         }
 
-        function setGpsOnlineState(isOnline, customLabel) {
+        let azimuteCurrentClosestArea = AZIMUTE_AREAS_RADIO[0];
+
+        // Resume o texto da Rede para a Barra de Status (ex: "REDE: 2ª RPM / 18º BPM A" -> "18º BPM A")
+        function formatShortRedeName(fullRede) {
+            if (!fullRede) return '18º BPM A';
+            let s = fullRede.replace(/^REDE:\s*/i, '').trim();
+            if (s.includes('/')) {
+                s = s.split('/').pop().trim();
+            }
+            return s;
+        }
+
+        // Atualiza o indicador "GPS" na Barra de Status: VERDE (bom/alta precisão), AMARELO (moderado), VERMELHO PISCANDO (sem sinal/aguardando)
+        function setStatusBarGpsSignal(level) {
+            const ind = document.getElementById('statusBarGpsIndicator');
+            if (!ind) return;
+            ind.textContent = 'GPS';
+            if (level === 'green') {
+                ind.className = 'px-2 py-0.5 rounded font-mono font-extrabold text-[11px] uppercase tracking-wider border bg-emerald-950/90 text-emerald-400 border-emerald-500/70 shadow-[0_0_8px_rgba(52,211,153,0.3)] shrink-0 transition-all';
+            } else if (level === 'yellow') {
+                ind.className = 'px-2 py-0.5 rounded font-mono font-extrabold text-[11px] uppercase tracking-wider border bg-amber-950/90 text-amber-300 border-amber-500/70 shrink-0 transition-all';
+            } else {
+                ind.className = 'px-2 py-0.5 rounded font-mono font-extrabold text-[11px] uppercase tracking-wider border bg-red-950/90 text-red-400 border-red-500/70 animate-pulse shrink-0 transition-all';
+            }
+        }
+
+        function setGpsOnlineState(isOnline, customLabel, accuracyMeters) {
             const badge = document.getElementById('hudGpsBadge');
             const dot = document.getElementById('hudGpsDot');
             const txt = document.getElementById('hudGpsStatusText');
@@ -5627,6 +5856,12 @@
                 if (hBadge) hBadge.className = 'inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-emerald-950 text-emerald-400 border border-emerald-500/50';
                 if (hDot) hDot.className = 'w-2 h-2 rounded-full bg-emerald-400 inline-block shadow-[0_0_6px_#34d399]';
                 if (hTxt) hTxt.textContent = 'GPS Online';
+
+                if (typeof accuracyMeters === 'number') {
+                    setStatusBarGpsSignal(accuracyMeters <= 30 ? 'green' : 'yellow');
+                } else {
+                    setStatusBarGpsSignal('green');
+                }
             } else {
                 if (badge) badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-extrabold uppercase bg-amber-950 text-amber-300 border border-amber-500/50';
                 if (dot) dot.className = 'w-2.5 h-2.5 rounded-full bg-amber-400 inline-block';
@@ -5634,6 +5869,7 @@
                 if (hBadge) hBadge.className = 'inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-amber-950 text-amber-300 border border-amber-500/50';
                 if (hDot) hDot.className = 'w-2 h-2 rounded-full bg-amber-400 inline-block';
                 if (hTxt) hTxt.textContent = 'GPS Offline';
+                setStatusBarGpsSignal('red');
             }
         }
 
@@ -5664,8 +5900,10 @@
                     if (subEl) subEl.textContent = saved.suburb || '';
                     const hQth = document.getElementById('homeQuickQth');
                     const hSub = document.getElementById('homeQuickSuburb');
+                    const sbQth = document.getElementById('statusBarQth');
                     if (hQth) hQth.textContent = saved.street;
                     if (hSub) hSub.textContent = saved.suburb || '';
+                    if (sbQth) sbQth.textContent = saved.street;
                     if (tsEl && saved.timestamp) tsEl.textContent = 'Último QTH registrado: ' + saved.timestamp;
                     if (coordsEl && saved.lat && saved.lon) coordsEl.textContent = saved.lat.toFixed(6) + ', ' + saved.lon.toFixed(6);
                     if (mapsBtn && saved.lat && saved.lon) {
@@ -5720,12 +5958,27 @@
             const homeHospEta = document.getElementById('homeQuickHospEta');
             const homeHospBtn = document.getElementById('homeBtnHospRoute');
 
+            azimuteCurrentClosestArea = closestArea;
             if (homeRadio) homeRadio.textContent = closestArea.rede;
             if (homeArea) homeArea.textContent = closestArea.unidade;
             if (homeHospName) homeHospName.textContent = closestHosp.nome;
             if (homeHospDist) homeHospDist.textContent = 'Distância: ~' + driveEst.roadKm + ' km';
             if (homeHospEta) homeHospEta.textContent = 'Distância linear: ' + minHospDist.toFixed(1) + ' km • Tempo estimado: ~' + driveEst.mins + ' min';
             if (homeHospBtn) homeHospBtn.href = hospUrl;
+
+            // Atualiza Barra de Status Operacional no Topo (ROTA HOSP e REDE resumida)
+            const sbHospBtn = document.getElementById('statusBarBtnHosp');
+            const sbRedeTxt = document.getElementById('statusBarRedeText');
+            if (sbHospBtn) sbHospBtn.href = hospUrl;
+            if (sbRedeTxt) sbRedeTxt.textContent = formatShortRedeName(closestArea.rede);
+
+            // Atualiza também a aba Saúde / APH
+            const saudeHospName = document.getElementById('saudeClosestHospName');
+            const saudeHospMeta = document.getElementById('saudeClosestHospMeta');
+            const saudeHospBtn = document.getElementById('saudeClosestHospBtn');
+            if (saudeHospName) saudeHospName.textContent = closestHosp.nome;
+            if (saudeHospMeta) saudeHospMeta.textContent = 'Distância estimada: ~' + driveEst.roadKm + ' km • Tempo médio de deslocamento: ~' + driveEst.mins + ' min';
+            if (saudeHospBtn) saudeHospBtn.href = hospUrl;
 
             // 3. Atualiza Tela Socorro (Modo Prioridade) com Distância e Tempo Médio de Deslocamento
             const sosRadio = document.getElementById('sosBigRadio');
@@ -5766,7 +6019,7 @@
             const acc = Math.round(pos.coords.accuracy || 10);
             const alt = pos.coords.altitude !== null && pos.coords.altitude !== undefined ? Math.round(pos.coords.altitude) : null;
 
-            setGpsOnlineState(navigator.onLine, navigator.onLine ? 'GPS Online' : 'GPS Offline (Satélite Ativo)');
+            setGpsOnlineState(navigator.onLine, navigator.onLine ? 'GPS Online' : 'GPS Offline (Satélite Ativo)', acc);
             const accEl = document.getElementById('hudGpsAccuracy');
             if (accEl) accEl.textContent = 'Precisão: ±' + acc + 'm';
 
@@ -5814,8 +6067,10 @@
                             document.getElementById('hudCurrentSuburb').textContent = subText;
                             const hQth = document.getElementById('homeQuickQth');
                             const hSub = document.getElementById('homeQuickSuburb');
+                            const sbQth = document.getElementById('statusBarQth');
                             if (hQth) hQth.textContent = azimuteLastStreet;
                             if (hSub) hSub.textContent = subText;
+                            if (sbQth) sbQth.textContent = azimuteLastStreet;
                             document.getElementById('hudLastSavedTimestamp').textContent = 'Último QTH registrado: ' + timeStr;
                             document.getElementById('sosBigStreet').textContent = azimuteLastStreet;
                             document.getElementById('sosBigSuburb').textContent = subText;
@@ -5955,6 +6210,129 @@
             document.getElementById('prioritySosModal').classList.add('hidden');
         }
 
+        // ABRE O MODAL COM DADOS DETALHADOS DO BATALHÃO / CIAS / BAIRROS AO CLICAR NA REDE NA BARRA DE STATUS
+        window.openCurrentNetworkBattalionModal = function() {
+            const modal = document.getElementById('networkBattalionModal');
+            const titleEl = document.getElementById('netModalTitle');
+            const bodyEl = document.getElementById('netModalBody');
+            if (!modal || !titleEl || !bodyEl) return;
+
+            const areaObj = azimuteCurrentClosestArea || AZIMUTE_AREAS_RADIO[0];
+            const unitLabel = areaObj.unidade || '18º BPM';
+            const shortRede = formatShortRedeName(areaObj.rede);
+            const bpmMatch = unitLabel.match(/^(\d+º\s*BPM|BPTran)/i);
+            const bpmName = bpmMatch ? bpmMatch[1] : '18º BPM';
+
+            titleEl.textContent = bpmName + ' • REDE: ' + shortRede;
+
+            let unitData = null;
+            if (typeof AZIMUTE_DB !== 'undefined' && AZIMUTE_DB) {
+                const allUnits = [...(AZIMUTE_DB.rpm1 || []), ...(AZIMUTE_DB.rpm2 || [])];
+                unitData = allUnits.find(u => u.nome.toLowerCase() === bpmName.toLowerCase());
+            }
+
+            if (unitData && unitData.companhias && unitData.companhias.length > 0) {
+                bodyEl.innerHTML = `
+                    <div class="bg-pmmg-dark p-3 rounded-xl border border-pmmg-border space-y-1">
+                        <div class="flex flex-wrap justify-between gap-2">
+                            <strong class="text-pmmg-khaki text-sm">${unitData.nome} — ${unitData.cidade}</strong>
+                            <span class="font-mono text-xs text-pmmg-gold font-bold">SOU: ${unitData.telefone_sou || '(31) 2191-6110'}</span>
+                        </div>
+                        <p class="text-[11px] text-gray-300"><strong>Sede:</strong> ${unitData.endereco_sede || ''}</p>
+                        <p class="text-[11px] text-gray-400"><strong>Área Atual Detectada:</strong> ${unitLabel}</p>
+                    </div>
+                    <div class="space-y-2.5">
+                        <h4 class="text-xs font-extrabold uppercase text-pmmg-khaki tracking-wider">Companhias, Bairros e Vias (${unitData.nome}):</h4>
+                        ${unitData.companhias.map(c => `
+                            <div class="bg-pmmg-dark p-3 rounded-xl border border-pmmg-border space-y-1.5">
+                                <div class="flex justify-between items-center border-b border-pmmg-border pb-1">
+                                    <strong class="text-white font-bold text-xs">${c.nome} • ${c.setor || ''}</strong>
+                                    <span class="font-mono text-[11px] text-pmmg-khaki">${c.telefone || ''}</span>
+                                </div>
+                                <p class="text-[11px] text-gray-300"><strong>Sede:</strong> ${c.endereco || ''}</p>
+                                <p class="text-[11px] text-gray-300"><strong>Bairros:</strong> ${(c.bairros || []).join(', ')}</p>
+                                <p class="text-[11px] text-gray-400"><strong>Principais Vias:</strong> ${(c.vias || []).join(', ')}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else {
+                bodyEl.innerHTML = `
+                    <div class="bg-pmmg-dark p-3.5 rounded-xl border border-pmmg-border space-y-1.5">
+                        <div class="flex flex-wrap justify-between gap-2">
+                            <strong class="text-pmmg-khaki text-sm">${unitData ? unitData.nome + ' — ' + unitData.cidade : bpmName}</strong>
+                            <span class="font-mono text-xs text-pmmg-gold font-bold">SOU: ${unitData && unitData.telefone_sou ? unitData.telefone_sou : 'Consulte a gaveta da unidade'}</span>
+                        </div>
+                        <p class="text-xs text-gray-300"><strong>Área Detectada pelo GPS:</strong> ${unitLabel}</p>
+                        <p class="text-xs text-gray-300"><strong>Sede:</strong> ${unitData && unitData.endereco_sede ? unitData.endereco_sede : 'Região Metropolitana de BH'}</p>
+                        <p class="text-xs text-gray-400"><strong>Divisas:</strong> ${unitData && unitData.divisas ? unitData.divisas : 'Consulte o painel da unidade para detalhes territoriais.'}</p>
+                    </div>
+                `;
+            }
+
+            modal.classList.remove('hidden');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        };
+
+        window.closeCurrentNetworkBattalionModal = function() {
+            const modal = document.getElementById('networkBattalionModal');
+            if (modal) modal.classList.add('hidden');
+        };
+
+        window.openNetworkUnitFullPanel = function() {
+            const areaObj = azimuteCurrentClosestArea || AZIMUTE_AREAS_RADIO[0];
+            const unitLabel = areaObj.unidade || '18º BPM';
+            const bpmMatch = unitLabel.match(/^(\d+º\s*BPM|BPTran)/i);
+            const bpmName = bpmMatch ? bpmMatch[1] : '18º BPM';
+            closeCurrentNetworkBattalionModal();
+            if (bpmName.toUpperCase() === '18º BPM') {
+                showView('18bpm');
+            } else if (typeof window.openBattalionPlaceholder === 'function') {
+                window.openBattalionPlaceholder(bpmName, 'RMBH', 'Sede ' + bpmName);
+            }
+        };
+
+        window.downloadCurrentNetworkOfflineData = function() {
+            const areaObj = azimuteCurrentClosestArea || AZIMUTE_AREAS_RADIO[0];
+            const unitLabel = areaObj.unidade || '18º BPM';
+            const shortRede = formatShortRedeName(areaObj.rede);
+            const bpmMatch = unitLabel.match(/^(\d+º\s*BPM|BPTran)/i);
+            const bpmName = bpmMatch ? bpmMatch[1] : '18º BPM';
+            const bodyEl = document.getElementById('netModalBody');
+            const contentHtml = bodyEl ? bodyEl.innerHTML : '';
+
+            const offlineDoc = `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AZIMUTE Offline - ${bpmName} (${shortRede})</title>
+<style>
+  body { background:#0F0F0F; color:#e5e7eb; font-family:sans-serif; padding:20px; max-width:800px; margin:0 auto; }
+  h1 { color:#C2B280; border-bottom:1px solid #3d3a33; padding-bottom:8px; }
+  div { margin-bottom:10px; }
+  strong { color:#D4AF37; }
+</style>
+</head>
+<body>
+  <h1>AZIMUTE PMMG • Dados Offline: ${bpmName} (REDE: ${shortRede})</h1>
+  <p>Gerado para consulta offline em: ${new Date().toLocaleString('pt-BR')}</p>
+  ${contentHtml}
+</body>
+</html>`;
+
+            const blob = new Blob([offlineDoc], { type: 'text/html;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `AZIMUTE-Offline-${bpmName.replace(/\s+/g, '')}.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setTimeout(() => URL.revokeObjectURL(url), 1500);
+            if (typeof showToast === 'function') showToast('📥 Dados do ' + bpmName + ' baixados para consulta offline!');
+        };
+
         // Inicia o GPS continuamente assim que o sistema carrega
         document.addEventListener('DOMContentLoaded', () => {
             startAzimuteLiveGps();
@@ -6067,24 +6445,33 @@
             if (typeof showToast === 'function') showToast('📥 Mapa do ' + cfg.label + ' baixado para uso offline!');
         };
 
-        // ALTERNADOR RÁPIDO ENTRE VERSÃO APP (MOBILE) E VERSÃO PC (DESKTOP AMPLO)
+        // ALTERNADOR DOS 3 MODOS DE VISUALIZAÇÃO: App | GRID | PC
         window.setLayoutMode = function(mode, notify = true, savePreference = true) {
             const body = document.body;
             const btnApp = document.getElementById('btn-mode-app');
+            const btnGrid = document.getElementById('btn-mode-grid');
             const btnWeb = document.getElementById('btn-mode-web');
 
+            const inactiveCls = 'px-2.5 py-1 rounded-md font-semibold text-gray-400 hover:text-white transition-all';
+            const activeCls = 'px-2.5 py-1 rounded-md font-extrabold bg-pmmg-khaki text-pmmg-black shadow transition-all';
+
+            body.classList.remove('mode-app', 'mode-grid', 'mode-web');
+            if (btnApp) btnApp.className = inactiveCls;
+            if (btnGrid) btnGrid.className = inactiveCls;
+            if (btnWeb) btnWeb.className = inactiveCls;
+
             if (mode === 'web') {
-                body.classList.remove('mode-app');
                 body.classList.add('mode-web');
-                if (btnWeb) btnWeb.className = 'px-2.5 py-1 rounded-md text-[11px] font-bold flex items-center gap-1 bg-pmmg-khaki text-pmmg-black shadow transition-all';
-                if (btnApp) btnApp.className = 'px-2.5 py-1 rounded-md text-[11px] font-medium flex items-center gap-1 text-gray-400 hover:text-white transition-all';
-                if (notify && typeof showToast === 'function') showToast('💻 Versão PC (Desktop Amplo) ativada!');
+                if (btnWeb) btnWeb.className = activeCls;
+                if (notify && typeof showToast === 'function') showToast('💻 Modo PC ativado!');
+            } else if (mode === 'grid') {
+                body.classList.add('mode-grid');
+                if (btnGrid) btnGrid.className = activeCls;
+                if (notify && typeof showToast === 'function') showToast('🎛️ Modo GRID ativado!');
             } else {
-                body.classList.remove('mode-web');
                 body.classList.add('mode-app');
-                if (btnApp) btnApp.className = 'px-2.5 py-1 rounded-md text-[11px] font-bold flex items-center gap-1 bg-pmmg-khaki text-pmmg-black shadow transition-all';
-                if (btnWeb) btnWeb.className = 'px-2.5 py-1 rounded-md text-[11px] font-medium flex items-center gap-1 text-gray-400 hover:text-white transition-all';
-                if (notify && typeof showToast === 'function') showToast('📱 Versão App (Mobile) ativada!');
+                if (btnApp) btnApp.className = activeCls;
+                if (notify && typeof showToast === 'function') showToast('📱 Modo App ativado!');
             }
             if (savePreference) {
                 try { localStorage.setItem('azimute_layout_mode', mode); } catch (e) {}
@@ -6094,6 +6481,11 @@
 
         // DETECÇÃO AUTOMÁTICA DE TELA HORIZONTAL (LARGURA > ALTURA -> MODO PC | VERTICAL -> MODO APP)
         function handleAutoOrientationMode() {
+            const saved = localStorage.getItem('azimute_layout_mode');
+            if (saved === 'grid') {
+                window.setLayoutMode('grid', false, false);
+                return;
+            }
             if (window.innerWidth > window.innerHeight) {
                 window.setLayoutMode('web', false, false);
             } else {
@@ -6130,7 +6522,7 @@
         };
 
         function showView(viewId) {
-            const views = ['home', 'regioes', 'rpm1', 'rpm2', 'rpm3', 'especializadas', 'estadios', 'rpas', 'atalhos', 'skeleton', '18bpm', 'gps'];
+            const views = ['home', 'regioes', 'rpm1', 'rpm2', 'rpm3', 'especializadas', 'estadios', 'rpas', 'atalhos', 'saude', 'skeleton', '18bpm', 'gps'];
             views.forEach(v => {
                 const el = document.getElementById(`view-${v}`);
                 if (el) {
@@ -6158,6 +6550,7 @@
 
             const btnHome = document.getElementById('nav-btn-home');
             const btnRegioes = document.getElementById('nav-btn-regioes');
+            const btnSaude = document.getElementById('nav-btn-saude');
             const btnGps = document.getElementById('nav-btn-gps');
             const btnEsp = document.getElementById('nav-btn-especializadas');
             const btnEstadios = document.getElementById('nav-btn-estadios');
@@ -6166,22 +6559,28 @@
 
             if (btnHome) btnHome.className = 'px-3 py-1.5 rounded-md bg-pmmg-dark text-gray-300 border border-pmmg-border hover:bg-pmmg-border flex items-center gap-1.5';
             if (btnRegioes) btnRegioes.className = 'px-3 py-1.5 rounded-md bg-pmmg-dark text-gray-300 border border-pmmg-border hover:bg-pmmg-border font-bold flex items-center gap-1.5';
+            if (btnSaude) btnSaude.className = 'px-3 py-1.5 rounded-md bg-pmmg-dark text-red-400 border border-red-500/40 hover:bg-pmmg-border font-bold flex items-center gap-1.5';
             if (btnGps) btnGps.className = 'px-3 py-1.5 rounded-md bg-pmmg-dark text-emerald-400 border border-emerald-500/40 hover:bg-pmmg-border font-bold flex items-center gap-1.5';
             if (btnEsp) btnEsp.className = 'px-3 py-1.5 rounded-md bg-pmmg-dark text-gray-300 border border-pmmg-border hover:bg-pmmg-border flex items-center gap-1.5';
             if (btnEstadios) btnEstadios.className = 'px-3 py-1.5 rounded-md bg-pmmg-dark text-emerald-400 border border-emerald-500/40 hover:bg-pmmg-border font-bold flex items-center gap-1.5';
             if (btnRpas) btnRpas.className = 'px-3 py-1.5 rounded-md bg-pmmg-dark text-sky-400 border border-sky-500/40 hover:bg-pmmg-border font-bold flex items-center gap-1.5';
-            if (btnAtalhos) btnAtalhos.className = 'px-3 py-1.5 rounded-md bg-pmmg-dark text-pmmg-khaki border border-pmmg-khaki/40 hover:bg-pmmg-border font-bold flex items-center gap-1.5 col-span-3 sm:col-span-1';
+            if (btnAtalhos) btnAtalhos.className = 'px-3 py-1.5 rounded-md bg-pmmg-dark text-pmmg-khaki border border-pmmg-khaki/40 hover:bg-pmmg-border font-bold flex items-center gap-1.5';
 
             const isRegiaoSub = ['regioes', 'rpm1', 'rpm2', 'rpm3', '18bpm', 'skeleton'].includes(viewId);
 
-            // Atualiza também a Barra Inferior (Mobile)
-            ['home', 'regioes', 'gps', 'especializadas', 'estadios', 'atalhos'].forEach(id => {
+            // Atualiza o Menu Global Inferior de 5 Abas (1. Início, 2. Regiões, 3. Saúde / APH, 4. Drones, 5. Apoio)
+            ['home', 'regioes', 'saude', 'rpas', 'atalhos'].forEach(id => {
                 const bBtn = document.getElementById(`bnav-${id}`);
-                if (bBtn) {
-                    const isActive = (id === viewId) || (id === 'regioes' && isRegiaoSub);
+                if (!bBtn) return;
+                const isActive = (id === viewId) || (id === 'regioes' && isRegiaoSub);
+                if (id === 'saude') {
                     bBtn.className = isActive
-                        ? 'flex flex-col items-center justify-center py-1 rounded-lg text-pmmg-black bg-pmmg-khaki font-bold shadow'
-                        : 'flex flex-col items-center justify-center py-1 rounded-lg text-gray-400 hover:text-white';
+                        ? 'flex flex-col items-center justify-center py-1.5 px-1 rounded-xl bg-red-600 text-white border border-red-400 font-extrabold shadow-lg transition-all'
+                        : 'flex flex-col items-center justify-center py-1.5 px-1 rounded-xl bg-red-950/80 text-red-300 border border-red-500/60 hover:bg-red-900/80 font-extrabold shadow-md transition-all';
+                } else {
+                    bBtn.className = isActive
+                        ? 'flex flex-col items-center justify-center py-1.5 rounded-xl text-pmmg-black bg-pmmg-khaki font-extrabold shadow transition-all'
+                        : 'flex flex-col items-center justify-center py-1.5 rounded-xl text-gray-400 hover:text-white transition-all';
                 }
             });
 
@@ -6200,6 +6599,10 @@
                 } else {
                     if (activeBadge) activeBadge.classList.add('hidden');
                 }
+            } else if (viewId === 'saude') {
+                if (btnSaude) btnSaude.className = 'px-3 py-1.5 rounded-md bg-red-600 text-white font-bold flex items-center gap-1.5';
+                if (activeBadge) activeBadge.classList.remove('hidden');
+                if (activeName) activeName.textContent = 'Saúde / APH';
             } else if (viewId === 'gps') {
                 if (btnGps) btnGps.className = 'px-3 py-1.5 rounded-md bg-emerald-500 text-pmmg-black font-bold flex items-center gap-1.5';
                 if (activeBadge) activeBadge.classList.remove('hidden');
@@ -6217,8 +6620,9 @@
                 if (activeBadge) activeBadge.classList.remove('hidden');
                 if (activeName) activeName.textContent = 'Aeronaves Remotamente Pilotadas';
             } else if (viewId === 'atalhos') {
-                if (btnAtalhos) btnAtalhos.className = 'px-3 py-1.5 rounded-md bg-pmmg-khaki text-pmmg-black font-bold flex items-center gap-1.5 col-span-3 sm:col-span-1';
-                if (activeBadge) activeBadge.classList.add('hidden');
+                if (btnAtalhos) btnAtalhos.className = 'px-3 py-1.5 rounded-md bg-pmmg-khaki text-pmmg-black font-bold flex items-center gap-1.5';
+                if (activeBadge) activeBadge.classList.remove('hidden');
+                if (activeName) activeName.textContent = 'Apoio Operacional';
             }
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
