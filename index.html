@@ -955,6 +955,109 @@
                     </div>
                 </div>
 
+                <!-- BÚSSOLA DIGITAL TÁTICA REAL EM PORTUGUÊS (SENSORES DO APARELHO • N, S, L, O, NE, NO, SE, SO) -->
+                <div id="azimuteDigitalCompassCard" class="bg-pmmg-card/90 backdrop-blur-sm border-2 border-pmmg-khaki/60 rounded-2xl p-4 sm:p-5 shadow-2xl space-y-4">
+                    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border pb-3">
+                        <div class="flex items-center gap-2">
+                            <div class="p-2 rounded-lg bg-pmmg-khaki/15 border border-pmmg-khaki/50 text-pmmg-khaki">
+                                <i data-lucide="compass" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-pmmg-khaki block">Orientação Magnética • Sensor Real do Aparelho</span>
+                                <h3 class="text-xl font-military text-white uppercase tracking-wide leading-none mt-0.5">Bússola Digital Tática (Azimute)</h3>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span id="compassAxisCompBadge" class="text-[10px] font-mono bg-pmmg-dark text-gray-300 px-2.5 py-1 rounded-lg border border-pmmg-border">
+                                Eixo: Vertical Padrão
+                            </span>
+                            <button type="button" id="btnRequestCompassSensor" onclick="requestAzimuteCompassPermission()" class="px-3 py-1.5 bg-pmmg-khaki hover:bg-pmmg-khakiHover text-pmmg-black font-extrabold rounded-lg text-xs flex items-center gap-1.5 shadow transition-all active:scale-95">
+                                <i data-lucide="compass" class="w-3.5 h-3.5"></i>
+                                <span>Ativar / Permitir Sensor (iOS / Android)</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+                        <!-- Rosa dos Ventos Vetorial em Português (N, NE, L, SE, S, SO, O, NO) -->
+                        <div class="flex flex-col items-center justify-center bg-pmmg-black/80 rounded-2xl p-4 border border-pmmg-border relative">
+                            <!-- Indicador fixo de linha de fé (topo) -->
+                            <div class="w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-t-[12px] border-t-pmmg-gold mb-1 drop-shadow"></div>
+
+                            <div class="relative w-48 h-48 sm:w-52 sm:h-52 flex items-center justify-center">
+                                <svg id="compassDialSvg" viewBox="0 0 220 220" class="w-full h-full transition-transform duration-150 ease-out select-none">
+                                    <!-- Anel Externo Graduado -->
+                                    <circle cx="110" cy="110" r="102" fill="#141413" stroke="#C2B280" stroke-width="2.5" />
+                                    <circle cx="110" cy="110" r="88" fill="none" stroke="#3d3a33" stroke-width="1.2" stroke-dasharray="3,5" />
+
+                                    <!-- Marcações de Graus Principais -->
+                                    <line x1="110" y1="8" x2="110" y2="20" stroke="#ef4444" stroke-width="3" />
+                                    <line x1="212" y1="110" x2="200" y2="110" stroke="#C2B280" stroke-width="2.5" />
+                                    <line x1="110" y1="212" x2="110" y2="200" stroke="#C2B280" stroke-width="2.5" />
+                                    <line x1="8" y1="110" x2="20" y2="110" stroke="#C2B280" stroke-width="2.5" />
+
+                                    <!-- Marcações Colaterais (45°, 135°, 225°, 315°) -->
+                                    <line x1="182" y1="38" x2="174" y2="46" stroke="#D4AF37" stroke-width="2" />
+                                    <line x1="182" y1="182" x2="174" y2="174" stroke="#D4AF37" stroke-width="2" />
+                                    <line x1="38" y1="182" x2="46" y2="174" stroke="#D4AF37" stroke-width="2" />
+                                    <line x1="38" y1="38" x2="46" y2="46" stroke="#D4AF37" stroke-width="2" />
+
+                                    <!-- Pontos Cardeais em PORTUGUÊS (N, L, S, O) -->
+                                    <text x="110" y="38" fill="#ef4444" font-size="18" font-weight="900" text-anchor="middle" font-family="Inter, sans-serif">N</text>
+                                    <text x="188" y="116" fill="#C2B280" font-size="16" font-weight="800" text-anchor="middle" font-family="Inter, sans-serif">L</text>
+                                    <text x="110" y="196" fill="#C2B280" font-size="16" font-weight="800" text-anchor="middle" font-family="Inter, sans-serif">S</text>
+                                    <text x="32" y="116" fill="#C2B280" font-size="16" font-weight="800" text-anchor="middle" font-family="Inter, sans-serif">O</text>
+
+                                    <!-- Pontos Colaterais em PORTUGUÊS (NE, SE, SO, NO) -->
+                                    <text x="163" y="62" fill="#D4AF37" font-size="11" font-weight="800" text-anchor="middle" font-family="Inter, sans-serif">NE</text>
+                                    <text x="163" y="166" fill="#D4AF37" font-size="11" font-weight="800" text-anchor="middle" font-family="Inter, sans-serif">SE</text>
+                                    <text x="57" y="166" fill="#D4AF37" font-size="11" font-weight="800" text-anchor="middle" font-family="Inter, sans-serif">SO</text>
+                                    <text x="57" y="62" fill="#D4AF37" font-size="11" font-weight="800" text-anchor="middle" font-family="Inter, sans-serif">NO</text>
+
+                                    <!-- Agulha Tática Central -->
+                                    <polygon points="110,46 118,110 102,110" fill="#ef4444" />
+                                    <polygon points="110,174 118,110 102,110" fill="#6b7280" />
+                                    <circle cx="110" cy="110" r="7" fill="#D4AF37" stroke="#0F0F0F" stroke-width="2" />
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Leitura Digital do Azimute / Aviso de Sensor Indisponível -->
+                        <div class="bg-pmmg-dark p-4 rounded-2xl border border-pmmg-border flex flex-col justify-between space-y-3 h-full">
+                            <div class="space-y-1">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-[10px] font-bold uppercase tracking-wider text-pmmg-khaki">Leitura de Azimute Magnético</span>
+                                    <span id="compassSensorStateBadge" class="px-2 py-0.5 rounded text-[10px] font-extrabold uppercase bg-red-950 text-red-400 border border-red-500/50">
+                                        SENSOR INDISPONÍVEL
+                                    </span>
+                                </div>
+
+                                <!-- Exibição Principal: Grau + Cardeal ou SENSOR INDISPONÍVEL (Nunca exibe grau inventado) -->
+                                <div id="compassReadoutContainer" class="py-3 text-center bg-pmmg-black/90 rounded-xl border border-pmmg-border my-2">
+                                    <div id="compassUnavailableAlert" class="px-2 py-2 space-y-1">
+                                        <span class="text-base sm:text-lg font-extrabold text-red-400 uppercase tracking-wider block">⚠️ SENSOR INDISPONÍVEL</span>
+                                        <span id="compassUnavailableSubtext" class="text-[11px] text-gray-400 block">Aguardando leitura real do magnetômetro ou toque em "Ativar / Permitir Sensor".</span>
+                                    </div>
+
+                                    <div id="compassActiveReadout" class="hidden space-y-0.5">
+                                        <div class="flex items-baseline justify-center gap-2">
+                                            <strong id="compassDegreeValue" class="text-4xl sm:text-5xl font-mono font-extrabold text-white">--°</strong>
+                                            <strong id="compassCardinalPt" class="text-2xl sm:text-3xl font-military text-pmmg-gold uppercase tracking-wider">--</strong>
+                                        </div>
+                                        <p id="compassCardinalFullPt" class="text-xs text-pmmg-khaki font-semibold uppercase tracking-wide">--</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="text-[11px] text-gray-400 space-y-1 border-t border-pmmg-border/70 pt-2">
+                                <p>• <strong class="text-gray-200">Pontos em Português:</strong> N (Norte), NE (Nordeste), L (Leste), SE (Sudeste), S (Sul), SO (Sudoeste), O (Oeste), NO (Noroeste).</p>
+                                <p>• <strong class="text-gray-200">Compensação Horizontal:</strong> Ajuste automático de eixo quando o celular está na horizontal (Modo GRID).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- 4. GUIA DE MAPAS OFFLINE (PASSO A PASSO DIRETO LOGO ABAIXO DAS INFORMAÇÕES DE GEOLOCALIZAÇÃO) -->
                 <div class="bg-pmmg-card/90 backdrop-blur-sm border border-pmmg-khaki/40 rounded-2xl p-4 sm:p-5 shadow-xl space-y-3">
                     <div class="flex items-center justify-between border-b border-pmmg-border pb-2.5">
@@ -6908,11 +7011,196 @@
             if (typeof showToast === 'function') showToast('📥 Dados do ' + bpmName + ' baixados para consulta offline!');
         };
 
+        // ================= BÚSSOLA DIGITAL TÁTICA REAL (DeviceOrientationEvent) =================
+        let azimuteCompassActive = false;
+        let azimuteCompassLastValidTime = 0;
+        let azimuteCompassListenersAttached = false;
+
+        const AZIMUTE_CARDINAIS_PT = ['N', 'NE', 'L', 'SE', 'S', 'SO', 'O', 'NO'];
+        const AZIMUTE_CARDINAIS_NOMES_PT = {
+            'N': 'Norte (0°)',
+            'NE': 'Nordeste (45°)',
+            'L': 'Leste (90°)',
+            'SE': 'Sudeste (135°)',
+            'S': 'Sul (180°)',
+            'SO': 'Sudoeste (225°)',
+            'O': 'Oeste (270°)',
+            'NO': 'Noroeste (315°)'
+        };
+
+        // Obtém o ângulo de compensação da tela quando na horizontal / Modo GRID
+        function getAzimuteScreenOrientationOffset() {
+            let angle = 0;
+            if (window.screen && window.screen.orientation && typeof window.screen.orientation.angle === 'number') {
+                angle = window.screen.orientation.angle;
+            } else if (typeof window.orientation === 'number') {
+                angle = window.orientation;
+            } else if (document.body.classList.contains('mode-grid') || window.innerWidth > window.innerHeight) {
+                angle = 90;
+            }
+            // Se o modo GRID estiver ativo manualmente em tela horizontal e o ângulo reportado for 0, aplica +90°
+            if (angle === 0 && (document.body.classList.contains('mode-grid') && window.innerWidth > window.innerHeight)) {
+                angle = 90;
+            }
+            const badge = document.getElementById('compassAxisCompBadge');
+            if (badge) {
+                if (angle !== 0 || document.body.classList.contains('mode-grid')) {
+                    badge.textContent = 'Eixo: Horizontal Compensado (' + (angle >= 0 ? '+' + angle : angle) + '°)';
+                    badge.className = 'text-[10px] font-mono bg-pmmg-khakiBadge text-pmmg-gold px-2.5 py-1 rounded-lg border border-pmmg-gold/40';
+                } else {
+                    badge.textContent = 'Eixo: Vertical Padrão (0°)';
+                    badge.className = 'text-[10px] font-mono bg-pmmg-dark text-gray-300 px-2.5 py-1 rounded-lg border border-pmmg-border';
+                }
+            }
+            return angle;
+        }
+
+        function setCompassSensorUnavailable(reasonText) {
+            azimuteCompassActive = false;
+            const stateBadge = document.getElementById('compassSensorStateBadge');
+            const unavailBox = document.getElementById('compassUnavailableAlert');
+            const unavailSub = document.getElementById('compassUnavailableSubtext');
+            const activeBox = document.getElementById('compassActiveReadout');
+            const dialSvg = document.getElementById('compassDialSvg');
+
+            if (stateBadge) {
+                stateBadge.textContent = 'SENSOR INDISPONÍVEL';
+                stateBadge.className = 'px-2 py-0.5 rounded text-[10px] font-extrabold uppercase bg-red-950 text-red-400 border border-red-500/50';
+            }
+            if (unavailBox) unavailBox.classList.remove('hidden');
+            if (activeBox) activeBox.classList.add('hidden');
+            if (unavailSub && reasonText) unavailSub.textContent = reasonText;
+            if (dialSvg) dialSvg.style.transform = 'rotate(0deg)';
+        }
+
+        function updateCompassUiWithValidHeading(headingDeg) {
+            azimuteCompassActive = true;
+            azimuteCompassLastValidTime = Date.now();
+
+            const normDeg = ((headingDeg % 360) + 360) % 360;
+            const roundedDeg = Math.round(normDeg) % 360;
+            const idx = Math.round(normDeg / 45) % 8;
+            const cardinalPt = AZIMUTE_CARDINAIS_PT[idx];
+            const cardinalFull = AZIMUTE_CARDINAIS_NOMES_PT[cardinalPt] || cardinalPt;
+
+            const stateBadge = document.getElementById('compassSensorStateBadge');
+            const unavailBox = document.getElementById('compassUnavailableAlert');
+            const activeBox = document.getElementById('compassActiveReadout');
+            const degEl = document.getElementById('compassDegreeValue');
+            const cardEl = document.getElementById('compassCardinalPt');
+            const fullEl = document.getElementById('compassCardinalFullPt');
+            const dialSvg = document.getElementById('compassDialSvg');
+
+            if (stateBadge) {
+                stateBadge.textContent = 'SENSOR ATIVO';
+                stateBadge.className = 'px-2 py-0.5 rounded text-[10px] font-extrabold uppercase bg-emerald-950 text-emerald-400 border border-emerald-500/50';
+            }
+            if (unavailBox) unavailBox.classList.add('hidden');
+            if (activeBox) activeBox.classList.remove('hidden');
+            if (degEl) degEl.textContent = roundedDeg + '°';
+            if (cardEl) cardEl.textContent = cardinalPt;
+            if (fullEl) fullEl.textContent = 'Direção: ' + cardinalFull;
+            if (dialSvg) dialSvg.style.transform = 'rotate(' + (-normDeg).toFixed(1) + 'deg)';
+        }
+
+        function handleAzimuteDeviceOrientation(ev) {
+            let rawHeading = null;
+
+            // 1. iOS (webkitCompassHeading)
+            if (typeof ev.webkitCompassHeading === 'number' && !isNaN(ev.webkitCompassHeading)) {
+                rawHeading = ev.webkitCompassHeading;
+            }
+            // 2. Android / Padrão W3C (alpha válido)
+            else if (ev.alpha !== null && ev.alpha !== undefined && typeof ev.alpha === 'number' && !isNaN(ev.alpha)) {
+                // Se usarmos tanto deviceorientationabsolute quanto deviceorientation, prioriza absoluto quando disponível
+                if (ev.type === 'deviceorientation' && window._azimuteHasAbsoluteOrientation) {
+                    return;
+                }
+                if (ev.type === 'deviceorientationabsolute' || ev.absolute === true) {
+                    window._azimuteHasAbsoluteOrientation = true;
+                }
+                rawHeading = (360 - ev.alpha) % 360;
+            }
+
+            if (rawHeading === null || isNaN(rawHeading)) {
+                if (!azimuteCompassActive) {
+                    setCompassSensorUnavailable('Dispositivo sem magnetômetro ativo ou leitura inválida.');
+                }
+                return;
+            }
+
+            // Aplica compensação automática quando a tela estiver na horizontal (Modo GRID / Landscape)
+            const screenOffset = getAzimuteScreenOrientationOffset();
+            const compensatedHeading = (rawHeading + screenOffset + 360) % 360;
+            updateCompassUiWithValidHeading(compensatedHeading);
+        }
+
+        function attachAzimuteCompassListeners() {
+            if (typeof window.DeviceOrientationEvent === 'undefined') {
+                setCompassSensorUnavailable('Este navegador/dispositivo não suporta DeviceOrientationEvent.');
+                return;
+            }
+            if (!azimuteCompassListenersAttached) {
+                azimuteCompassListenersAttached = true;
+                if ('ondeviceorientationabsolute' in window) {
+                    window.addEventListener('deviceorientationabsolute', handleAzimuteDeviceOrientation, true);
+                }
+                window.addEventListener('deviceorientation', handleAzimuteDeviceOrientation, true);
+            }
+            // Verifica após 2.5s se alguma leitura real chegou; caso contrário, mantém o aviso claro SENSOR INDISPONÍVEL
+            setTimeout(() => {
+                if (!azimuteCompassActive) {
+                    setCompassSensorUnavailable('Nenhuma leitura magnética recebida do hardware (Sensor Indisponível neste aparelho).');
+                }
+            }, 2500);
+        }
+
+        window.requestAzimuteCompassPermission = async function() {
+            getAzimuteScreenOrientationOffset();
+            if (typeof window.DeviceOrientationEvent === 'undefined') {
+                setCompassSensorUnavailable('Dispositivo sem suporte ao sensor de bússola.');
+                if (typeof showToast === 'function') showToast('⚠️ SENSOR INDISPONÍVEL neste aparelho.');
+                return;
+            }
+            // iOS 13+ exige solicitação explícita de permissão via gesto do usuário
+            if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+                try {
+                    const permState = await DeviceOrientationEvent.requestPermission();
+                    if (permState === 'granted') {
+                        attachAzimuteCompassListeners();
+                        if (typeof showToast === 'function') showToast('🧭 Permissão de sensor concedida! Gire o aparelho.');
+                    } else {
+                        setCompassSensorUnavailable('Permissão negada pelo sistema para leitura do sensor.');
+                        if (typeof showToast === 'function') showToast('⚠️ Permissão do sensor negada.');
+                    }
+                } catch (err) {
+                    setCompassSensorUnavailable('Não foi possível ativar o sensor (requer HTTPS ou sensor ausente).');
+                }
+            } else {
+                // Android e demais navegadores
+                attachAzimuteCompassListeners();
+                if (azimuteCompassActive) {
+                    if (typeof showToast === 'function') showToast('🧭 Bússola digital ativa e calibrada!');
+                } else {
+                    if (typeof showToast === 'function') showToast('Verificando sensor magnético do aparelho...');
+                }
+            }
+        };
+
+        window.addEventListener('orientationchange', () => setTimeout(getAzimuteScreenOrientationOffset, 150));
+        window.addEventListener('resize', getAzimuteScreenOrientationOffset);
+
         // Inicia o GPS continuamente assim que o sistema carrega e preenche o Apoio Mais Próximo inicial
         document.addEventListener('DOMContentLoaded', () => {
             updateOfflineProximityData(azimuteLastGeoLat || -19.9162, azimuteLastGeoLon || -44.0809, 15);
             fetchRealtimeWeatherDetails(azimuteLastGeoLat || -19.9162, azimuteLastGeoLon || -44.0809);
             startAzimuteLiveGps();
+            getAzimuteScreenOrientationOffset();
+            if (typeof window.DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission !== 'function') {
+                attachAzimuteCompassListeners();
+            } else {
+                setCompassSensorUnavailable('Toque em "Ativar / Permitir Sensor" para habilitar a bússola.');
+            }
         });
     </script>
 
