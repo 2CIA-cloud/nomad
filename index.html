@@ -622,131 +622,126 @@
         </section>
 
         <!-- ================= VIEW 1: HOME (PAINEL INICIAL) ================= -->
-        <section id="view-home" class="space-y-6">
-            <!-- SEÇÃO COMPACTA NO TOPO DA TELA INICIAL: STATUS RÁPIDO & HOSPITAL DE REFERÊNCIA -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-7xl mx-auto pt-1">
-                <!-- Quadro Esquerdo (Status Rápido) -->
-                <div class="bg-pmmg-card p-4 rounded-2xl tactical-border border-l-4 border-l-pmmg-khaki shadow-lg flex flex-col justify-between space-y-2.5">
-                    <div class="flex items-center justify-between border-b border-pmmg-border pb-2 gap-2">
-                        <span class="text-[10px] font-bold uppercase tracking-wider text-pmmg-khaki flex items-center gap-1">
-                            <i data-lucide="compass" class="w-3.5 h-3.5"></i> Status Operacional Rápido
-                        </span>
-                        <span id="homeGpsBadge" class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-emerald-950 text-emerald-400 border border-emerald-500/50">
-                            <span id="homeGpsDot" class="w-2 h-2 rounded-full bg-emerald-400 inline-block shadow-[0_0_6px_#34d399]"></span>
-                            <span id="homeGpsStatusText">GPS Online</span>
-                        </span>
-                    </div>
-                    <div class="space-y-1">
-                        <div class="text-[10px] uppercase font-bold text-gray-400">📍 QTH Atual:</div>
-                        <div id="homeQuickQth" class="text-sm sm:text-base font-extrabold text-white leading-snug truncate" title="Logradouro atual">Sincronizando localização via satélite...</div>
-                        <div id="homeQuickSuburb" class="text-[11px] text-gray-400 truncate">Aguardando leitura de coordenadas...</div>
-                    </div>
-                    <div class="pt-2 border-t border-pmmg-border/60 flex flex-wrap items-center justify-between gap-2 text-xs">
-                        <div>
-                            <span class="text-[10px] text-pmmg-gold font-bold uppercase block">📻 Rede de Rádio</span>
-                            <strong id="homeQuickRadio" class="font-mono text-white text-xs">REDE: 2ª RPM / 18º BPM A</strong>
-                        </div>
-                        <div class="text-right">
-                            <span class="text-[10px] text-pmmg-khaki font-bold uppercase block">🛡️ Área / Batalhão & Cia</span>
-                            <strong id="homeQuickArea" class="text-gray-200 text-xs">Calculando área...</strong>
-                        </div>
-                    </div>
+        <section id="view-home" class="space-y-4">
+            <!-- Slogan Institucional Exclusivo da Home (Sem textos explicativos longos) -->
+            <div class="text-center pt-1">
+                <p class="text-[11px] sm:text-xs text-pmmg-khaki font-semibold tracking-wide">Por todo o estado mineiro, com alma e espírito de guerreiro. O Coliseu.</p>
+            </div>
+
+            <!-- FAIXA COMPACTA: APOIO MAIS PRÓXIMO (GPS) -->
+            <div class="bg-pmmg-card border border-pmmg-khaki/50 rounded-2xl p-3 sm:p-3.5 shadow-xl max-w-7xl mx-auto space-y-2.5">
+                <div class="flex items-center justify-between border-b border-pmmg-border pb-1.5">
+                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-pmmg-khaki flex items-center gap-1.5">
+                        <i data-lucide="radar" class="w-3.5 h-3.5 text-pmmg-gold"></i> Apoio Mais Próximo (GPS)
+                    </span>
+                    <span id="homeSupportGpsStatus" class="text-[10px] font-mono text-emerald-400 font-bold">Cálculo Automático via Satélite</span>
                 </div>
 
-                <!-- Quadro Direito (Hospital de Referência Mais Próximo) -->
-                <div class="bg-pmmg-card p-4 rounded-2xl tactical-border border-l-4 border-l-red-500 shadow-lg flex flex-col justify-between space-y-2.5">
-                    <div class="flex items-center justify-between border-b border-pmmg-border pb-2 gap-2">
-                        <span class="text-[10px] font-bold uppercase tracking-wider text-red-400 flex items-center gap-1">
-                            <i data-lucide="heart-pulse" class="w-3.5 h-3.5"></i> Hospital de Referência Mais Próximo
-                        </span>
-                        <span id="homeHospDistBadge" class="text-[10px] font-mono font-bold bg-pmmg-dark text-pmmg-khaki px-2 py-0.5 rounded border border-pmmg-border">
-                            Distância: -- km
-                        </span>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    <!-- a) Unidade Policial mais próxima (Batalhão, Cia ou Base Comunitária) + distância + botão rápido de rota -->
+                    <div class="bg-pmmg-dark p-2.5 rounded-xl border border-pmmg-border border-l-4 border-l-pmmg-khaki flex items-center justify-between gap-2">
+                        <div class="min-w-0 flex-1">
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-[10px] font-bold uppercase text-pmmg-khaki">🛡️ Unidade Policial Mais Próxima</span>
+                                <span id="homeClosestPoliceDist" class="text-[10px] font-mono font-extrabold bg-pmmg-card text-pmmg-gold px-1.5 py-0.5 rounded border border-pmmg-gold/40 shrink-0">-- km</span>
+                            </div>
+                            <strong id="homeClosestPoliceName" class="text-xs sm:text-sm font-extrabold text-white block truncate mt-0.5">18º BPM • Sede (Beatriz)</strong>
+                            <span id="homeClosestPoliceAddr" class="text-[10px] text-gray-400 block truncate">Av. João César de Oliveira, 5400 - Contagem</span>
+                        </div>
+                        <a id="homeClosestPoliceRouteBtn" href="https://www.google.com/maps/dir/?api=1&destination=-19.9162,-44.0809&travelmode=driving" target="_blank" class="px-2.5 py-2 bg-pmmg-khaki hover:bg-pmmg-khakiHover text-pmmg-black font-extrabold rounded-lg text-[11px] flex items-center gap-1 shrink-0 shadow transition-all active:scale-95" title="Traçar rota para a Unidade Policial mais próxima">
+                            <i data-lucide="navigation" class="w-3.5 h-3.5"></i> <span>Rota</span>
+                        </a>
                     </div>
-                    <div class="space-y-1">
-                        <div class="text-[10px] uppercase font-bold text-gray-400">🏥 Unidade Hospitalar / Pronto Socorro:</div>
-                        <div id="homeQuickHospName" class="text-base sm:text-lg font-extrabold text-white leading-snug">Calculando hospital mais próximo...</div>
-                        <div id="homeQuickHospEta" class="text-xs text-gray-300 font-medium">Aguardando coordenadas do GPS...</div>
-                    </div>
-                    <div class="pt-2 border-t border-pmmg-border/60 flex items-center justify-between gap-2">
-                        <button type="button" onclick="showView('gps')" class="px-3 py-2 bg-pmmg-dark hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-border rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all">
-                            <i data-lucide="locate-fixed" class="w-3.5 h-3.5"></i> <span>Painel GPS</span>
-                        </button>
-                        <a id="homeBtnHospRoute" href="https://www.google.com/maps/search/?api=1&query=Hospital+Pronto+Socorro" target="_blank" class="px-4 py-2 bg-red-600 hover:bg-red-500 text-white font-extrabold rounded-xl text-xs flex items-center gap-1.5 shadow-lg transition-all uppercase tracking-wider">
-                            <i data-lucide="navigation" class="w-3.5 h-3.5"></i> <span>Gerar Rota</span>
+
+                    <!-- b) Ponto de Abastecimento mais próximo + distância + botão rápido de rota -->
+                    <div class="bg-pmmg-dark p-2.5 rounded-xl border border-pmmg-border border-l-4 border-l-pmmg-gold flex items-center justify-between gap-2">
+                        <div class="min-w-0 flex-1">
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-[10px] font-bold uppercase text-pmmg-gold">⛽ Abastecimento Mais Próximo</span>
+                                <span id="homeClosestFuelDist" class="text-[10px] font-mono font-extrabold bg-pmmg-card text-pmmg-khaki px-1.5 py-0.5 rounded border border-pmmg-khaki/40 shrink-0">-- km</span>
+                            </div>
+                            <strong id="homeClosestFuelName" class="text-xs sm:text-sm font-extrabold text-white block truncate mt-0.5">Abastecimento 18º BPM (Sede)</strong>
+                            <span id="homeClosestFuelAddr" class="text-[10px] text-gray-400 block truncate">Av. João César de Oliveira, 5400 - Contagem</span>
+                        </div>
+                        <a id="homeClosestFuelRouteBtn" href="https://www.google.com/maps/dir/?api=1&destination=-19.9162,-44.0809&travelmode=driving" target="_blank" class="px-2.5 py-2 bg-pmmg-gold hover:bg-pmmg-khakiHover text-pmmg-black font-extrabold rounded-lg text-[11px] flex items-center gap-1 shrink-0 shadow transition-all active:scale-95" title="Traçar rota para o Ponto de Abastecimento mais próximo">
+                            <i data-lucide="fuel" class="w-3.5 h-3.5"></i> <span>Rota</span>
                         </a>
                     </div>
                 </div>
+
+                <!-- Elementos de compatibilidade ocultos para preservar 100% das referências de script existentes -->
+                <div class="hidden">
+                    <span id="homeGpsBadge"><span id="homeGpsDot"></span><span id="homeGpsStatusText"></span></span>
+                    <span id="homeQuickQth"></span><span id="homeQuickSuburb"></span>
+                    <span id="homeQuickRadio"></span><span id="homeQuickArea"></span>
+                    <span id="homeHospDistBadge"></span><span id="homeQuickHospName"></span>
+                    <span id="homeQuickHospEta"></span><a id="homeBtnHospRoute" href="#"></a>
+                </div>
             </div>
 
-            <div class="text-center max-w-2xl mx-auto space-y-2 py-2">
-                <h2 class="text-4xl font-military text-pmmg-khaki uppercase tracking-wider">Sistema Geral de Consulta Rápida</h2>
-                <p class="text-xs text-pmmg-khaki font-semibold">Por todo o estado mineiro, com alma e espírito de guerreiro. O Coliseu.</p>
-                <p class="text-xs text-gray-400">Acesse instantaneamente as Regiões da PMMG, Geolocalização, Unidades Especializadas, Estádios, RPAS/Drones e Sistemas Operacionais.</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
-                <!-- SELETOR REGIÕES (AGRUPA 1ª REGIÃO, 2ª REGIÃO, 3ª REGIÃO...) -->
-                <div onclick="showView('regioes')" class="bg-pmmg-card p-6 rounded-2xl tactical-border tactical-card cursor-pointer group flex flex-col justify-between space-y-4">
-                    <div class="space-y-3">
-                        <div class="flex justify-between items-start">
-                            <span class="text-xs bg-pmmg-khakiBadge text-pmmg-khaki font-bold px-3 py-1 rounded-full border border-pmmg-khaki/30 uppercase">Territorial • PMMG</span>
-                            <i data-lucide="chevron-right" class="w-6 h-6 text-gray-500 group-hover:text-pmmg-khaki transition-colors"></i>
+            <!-- GRADE LIMPA DE 2 COLUNAS NA HOME (1ª RPM, 2ª RPM, UNIDADES ESPECIALIZADAS E GEOLOCALIZAÇÃO) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-7xl mx-auto">
+                <!-- 1. 1ª RPM -->
+                <div onclick="showView('rpm1')" class="bg-pmmg-card p-5 rounded-2xl tactical-border tactical-card cursor-pointer group flex flex-col justify-between space-y-3">
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between items-center">
+                            <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-khaki font-bold px-2.5 py-0.5 rounded-full border border-pmmg-khaki/30 uppercase">1ª Região • Capital</span>
+                            <i data-lucide="chevron-right" class="w-5 h-5 text-gray-500 group-hover:text-pmmg-khaki transition-colors"></i>
                         </div>
-                        <h3 class="text-3xl font-military text-pmmg-khaki uppercase font-bold leading-none">REGIÕES (1ª e 2ª RPM)</h3>
-                        <p class="text-xs text-gray-400">Acesse a 1ª Região (Capital BH) e a 2ª Região (Contagem, Betim, Neves, Ibirité...) em uma estrutura unificada.</p>
+                        <h3 class="text-3xl font-military text-pmmg-khaki uppercase font-bold leading-none">1ª RPM • Belo Horizonte</h3>
+                        <p class="text-xs text-gray-400">1º, 5º, 13º, 16º, 22º, 34º, 41º, 49º BPM e BPTran</p>
                     </div>
-                    <div class="pt-4 border-t border-pmmg-border flex justify-between items-center text-xs font-bold text-pmmg-khaki">
-                        <span>1ª Região • 2ª Região</span>
-                        <span class="flex items-center gap-1">Abrir Regiões <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
+                    <div class="pt-3 border-t border-pmmg-border flex justify-between items-center text-xs font-bold text-pmmg-khaki">
+                        <span>9 Unidades</span>
+                        <span class="flex items-center gap-1">Acessar <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
                     </div>
                 </div>
 
-                <!-- SELETOR UNIDADES ESPECIALIZADAS -->
-                <div onclick="showView('especializadas')" class="bg-pmmg-card p-6 rounded-2xl tactical-border tactical-card cursor-pointer group flex flex-col justify-between space-y-4">
-                    <div class="space-y-3">
-                        <div class="flex justify-between items-start">
-                            <span class="text-xs bg-red-950 text-red-400 font-bold px-3 py-1 rounded-full border border-red-500/30 uppercase">Especializadas</span>
-                            <i data-lucide="chevron-right" class="w-6 h-6 text-gray-500 group-hover:text-red-400 transition-colors"></i>
+                <!-- 2. 2ª RPM -->
+                <div onclick="showView('rpm2')" class="bg-pmmg-card p-5 rounded-2xl tactical-border tactical-card cursor-pointer group flex flex-col justify-between space-y-3">
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between items-center">
+                            <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-gold font-bold px-2.5 py-0.5 rounded-full border border-pmmg-gold/30 uppercase">2ª Região • RMBH</span>
+                            <i data-lucide="chevron-right" class="w-5 h-5 text-gray-500 group-hover:text-pmmg-gold transition-colors"></i>
+                        </div>
+                        <h3 class="text-3xl font-military text-pmmg-gold uppercase font-bold leading-none">2ª RPM • Região Metropolitana</h3>
+                        <p class="text-xs text-gray-400">18º, 33º, 39º, 40º, 48º, 66º BPM, 6ª e 7ª Cia Ind</p>
+                    </div>
+                    <div class="pt-3 border-t border-pmmg-border flex justify-between items-center text-xs font-bold text-pmmg-gold">
+                        <span>8 Unidades • 18º BPM Ativo</span>
+                        <span class="flex items-center gap-1">Acessar <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
+                    </div>
+                </div>
+
+                <!-- 3. UNIDADES ESPECIALIZADAS -->
+                <div onclick="showView('especializadas')" class="bg-pmmg-card p-5 rounded-2xl tactical-border tactical-card cursor-pointer group flex flex-col justify-between space-y-3">
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between items-center">
+                            <span class="text-[10px] bg-red-950 text-red-400 font-bold px-2.5 py-0.5 rounded-full border border-red-500/30 uppercase">CPE / CME / Recobrimento</span>
+                            <i data-lucide="chevron-right" class="w-5 h-5 text-gray-500 group-hover:text-red-400 transition-colors"></i>
                         </div>
                         <h3 class="text-3xl font-military text-red-400 uppercase font-bold leading-none">Unidades Especializadas</h3>
-                        <p class="text-xs text-gray-400">GER, ROCCA, BOPE, Choque, BEPE, BPGd, Meio Ambiente, Rodoviária, ROTAM e Cavalaria (RCAT).</p>
+                        <p class="text-xs text-gray-400">GER, ROTAM, BOPE, Choque, ROCCA, BEPE, BPGd, MAmb, BPMRv e RCAT</p>
                     </div>
-                    <div class="pt-4 border-t border-pmmg-border flex justify-between items-center text-xs font-bold text-red-400">
-                        <span>10 Batalhões Especializados</span>
-                        <span class="flex items-center gap-1">Acessar Unidades <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
-                    </div>
-                </div>
-
-                <!-- SELETOR ESTÁDIOS (EVENTOS) -->
-                <div onclick="showView('estadios')" class="bg-pmmg-card p-6 rounded-2xl border border-emerald-500/40 hover:border-emerald-400 tactical-card cursor-pointer group flex flex-col justify-between space-y-4">
-                    <div class="space-y-3">
-                        <div class="flex justify-between items-start">
-                            <span class="text-xs bg-emerald-950 text-emerald-400 font-bold px-3 py-1 rounded-full border border-emerald-500/30 uppercase">Eventos & Praças Desportivas</span>
-                            <i data-lucide="chevron-right" class="w-6 h-6 text-gray-500 group-hover:text-emerald-400 transition-colors"></i>
-                        </div>
-                        <h3 class="text-3xl font-military text-emerald-400 uppercase font-bold leading-none">Estádios • BH</h3>
-                        <p class="text-xs text-gray-400">Mineirão (34º BPM), Arena MRV (5º BPM) e Independência (16º BPM). Portões, setores, croqui e RPAS/Drone.</p>
-                    </div>
-                    <div class="pt-4 border-t border-pmmg-border flex justify-between items-center text-xs font-bold text-emerald-400">
-                        <span>3 Praças Esportivas</span>
-                        <span class="flex items-center gap-1">Acessar Estádios <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
+                    <div class="pt-3 border-t border-pmmg-border flex justify-between items-center text-xs font-bold text-red-400">
+                        <span>10 Unidades + Estádios (BEPE)</span>
+                        <span class="flex items-center gap-1">Acessar <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
                     </div>
                 </div>
 
-                <!-- SELETOR DRONES / RPAS -->
-                <div onclick="showView('rpas')" class="bg-pmmg-card p-6 rounded-2xl border border-sky-500/40 hover:border-sky-400 tactical-card cursor-pointer group flex flex-col justify-between space-y-4">
-                    <div class="space-y-3">
-                        <div class="flex justify-between items-start">
-                            <span class="text-xs bg-sky-950 text-sky-400 font-bold px-3 py-1 rounded-full border border-sky-500/30 uppercase">Apoio Aéreo • RPAS</span>
-                            <i data-lucide="chevron-right" class="w-6 h-6 text-gray-500 group-hover:text-sky-400 transition-colors"></i>
+                <!-- 4. ATALHO DE GEOLOCALIZAÇÃO -->
+                <div onclick="showView('gps')" class="bg-pmmg-card p-5 rounded-2xl border border-emerald-500/40 hover:border-emerald-400 tactical-card cursor-pointer group flex flex-col justify-between space-y-3">
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between items-center">
+                            <span class="text-[10px] bg-emerald-950 text-emerald-400 font-bold px-2.5 py-0.5 rounded-full border border-emerald-500/30 uppercase">GPS Contínuo & Clima</span>
+                            <i data-lucide="chevron-right" class="w-5 h-5 text-gray-500 group-hover:text-emerald-400 transition-colors"></i>
                         </div>
-                        <h3 class="text-3xl font-military text-sky-400 uppercase font-bold leading-none">Drones / RPAS</h3>
-                        <p class="text-xs text-gray-400">Manuais Técnicos DJI Mavic 3 Enterprise, Materiais Restritos para Pilotos (EAD) e Acesso SARPAS.</p>
+                        <h3 class="text-3xl font-military text-emerald-400 uppercase font-bold leading-none">Geolocalização</h3>
+                        <p class="text-xs text-gray-400">QTH com número aproximado, coordenadas exatas, meteorologia e mapas offline</p>
                     </div>
-                    <div class="pt-4 border-t border-pmmg-border flex justify-between items-center text-xs font-bold text-sky-400">
-                        <span>Manuais & SARPAS</span>
-                        <span class="flex items-center gap-1">Acessar RPAS <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
+                    <div class="pt-3 border-t border-pmmg-border flex justify-between items-center text-xs font-bold text-emerald-400">
+                        <span>Rastreamento & Socorro</span>
+                        <span class="flex items-center gap-1">Abrir GPS <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
                     </div>
                 </div>
             </div>
@@ -5769,6 +5764,51 @@
             { nome: "Hosp. Júlia Kubitschek (Barreiro)", lat: -19.9897, lon: -44.0114 }
         ];
 
+        const AZIMUTE_UNIDADES_POLICIAIS = [
+            { nome: "18º BPM • Sede / 133ª e 283ª Cia", endereco: "Av. João César de Oliveira, 5400 - Beatriz, Contagem", lat: -19.9162, lon: -44.0809 },
+            { nome: "131ª Cia PM (18º BPM - Ressaca)", endereco: "Rua Diamante, 950 - São Joaquim, Contagem", lat: -19.8885, lon: -44.0405 },
+            { nome: "Base Comunitária BSC 18.131.1 (Praça do Divino)", endereco: "Av. João Gomes Cardoso, 2244 - Jardim Laguna, Contagem", lat: -19.8842, lon: -44.0358 },
+            { nome: "Base Comunitária BSC 18.131.3 (Shopping Contagem)", endereco: "Av. Severino Ballesteros, 850 - São Joaquim, Contagem", lat: -19.8788, lon: -44.0321 },
+            { nome: "ZQC Padre Feijó (Ponto de Apoio 131ª Cia)", endereco: "Av. João Gomes Cardoso, 1366 - Jardim Laguna, Contagem", lat: -19.8868, lon: -44.0381 },
+            { nome: "Base Comunitária Praça Silviano Brandão (133ª Cia)", endereco: "Praça Silviano Brandão - Centro, Contagem", lat: -19.9160, lon: -44.0858 },
+            { nome: "Base Comunitária Praça do Petrolândia (283ª Cia)", endereco: "Praça do Petrolândia - Petrolândia, Contagem", lat: -19.9340, lon: -44.1180 },
+            { nome: "38ª Cia PM Especial (18º BPM - Nova Contagem)", endereco: "Rua Maria José Chiodi, 960 - Nova Contagem", lat: -19.8350, lon: -44.1480 },
+            { nome: "Base Comunitária BSC 18.38.1 (Nova Contagem)", endereco: "Av. VP-1, 1375 - Nova Contagem", lat: -19.8312, lon: -44.1510 },
+            { nome: "39ª Cia PM (18º BPM - Kennedy / Ceasa)", endereco: "Av. Carandaí - Kennedy / Posto Ceasa, Contagem", lat: -19.8690, lon: -44.0430 },
+            { nome: "Batalhão GER (2ª RPM - Contagem)", endereco: "Rua Iguaçu, 233 - São Joaquim, Contagem", lat: -19.8895, lon: -44.0390 },
+            { nome: "39º BPM (Industrial / Eldorado - Contagem)", endereco: "Rua Tiradentes, 2750 - Industrial, Contagem", lat: -19.9540, lon: -44.0320 },
+            { nome: "66º BPM (Betim - Divisa 18º BPM)", endereco: "Rua Barão do Rio Branco, 235 - Centro, Betim", lat: -19.9610, lon: -44.1350 },
+            { nome: "33º BPM (Betim)", endereco: "Rua Conceição Rosa Lima, 455 - Angola, Betim", lat: -19.9670, lon: -44.1980 },
+            { nome: "40º BPM (Ribeirão das Neves)", endereco: "Rodovia LMG-806, KM 04 - Fazenda Castro, Neves", lat: -19.7670, lon: -44.0860 },
+            { nome: "48º BPM (Ibirité)", endereco: "Av. Marechal Hermes, 228 - Durval de Barros, Ibirité", lat: -20.0210, lon: -44.0580 },
+            { nome: "5º BPM / BEPE / BPChq (Gameleira - BH)", endereco: "Av. Amazonas, 6455 - Gameleira, BH", lat: -19.9320, lon: -43.9930 },
+            { nome: "BPTran / BPMRv (Gameleira - BH)", endereco: "Av. Amazonas, 6227 - Gameleira, BH", lat: -19.9310, lon: -43.9910 },
+            { nome: "34º BPM (Caiçara / Pampulha - BH)", endereco: "Av. Américo Vespúcio, 2391 - Caiçara, BH", lat: -19.8658, lon: -43.9711 },
+            { nome: "Batalhão ROTAM (Centro - BH)", endereco: "Av. do Contorno, 777 - Centro, BH", lat: -19.9142, lon: -43.9378 },
+            { nome: "1º BPM (Santa Efigênia - BH)", endereco: "Praça Floriano Peixoto, s/n - Santa Efigênia, BH", lat: -19.9220, lon: -43.9240 },
+            { nome: "16º BPM (Santa Tereza / Horto - BH)", endereco: "Rua Tenente Vitorino, 71 - Santa Tereza, BH", lat: -19.9083, lon: -43.9178 },
+            { nome: "22º BPM (Santa Lúcia - BH)", endereco: "Av. Arthur Bernardes, 1337 - Santa Lúcia, BH", lat: -19.9460, lon: -43.9300 },
+            { nome: "41º BPM (Barreiro - BH)", endereco: "Av. Afonso Vaz de Melo, 650 - Barreiro, BH", lat: -19.9760, lon: -44.0180 },
+            { nome: "13º BPM (Planalto - BH)", endereco: "Av. Dr. Cristiano Guimarães, 2300 - Planalto, BH", lat: -19.8320, lon: -43.9450 },
+            { nome: "49º BPM (Venda Nova - BH)", endereco: "Av. Érico Veríssimo, 561 - São João Batista, BH", lat: -19.8140, lon: -43.9680 },
+            { nome: "BOPE / ROCCA (Prado - BH)", endereco: "Rua Diabase, 200 - Prado, BH", lat: -19.9265, lon: -43.9615 },
+            { nome: "RCAT Cavalaria (Prado - BH)", endereco: "Rua Platina, 580 - Prado, BH", lat: -19.9240, lon: -43.9640 }
+        ];
+
+        const AZIMUTE_PONTOS_ABASTECIMENTO = [
+            { nome: "18º BPM (Sede Contagem)", endereco: "Av. João César de Oliveira, 5400 - Beatriz, Contagem", lat: -19.9162, lon: -44.0809 },
+            { nome: "2º Batalhão de Bombeiros (2º BBM)", endereco: "Av. João César de Oliveira, 3744 - Eldorado, Contagem", lat: -19.9298, lon: -44.0542 },
+            { nome: "Posto ALE (ZQC Padre Feijó - Apoio 131ª Cia)", endereco: "Av. João Gomes Cardoso, 1366 - Jardim Laguna, Contagem", lat: -19.8868, lon: -44.0381 },
+            { nome: "40º BPM (Ribeirão das Neves)", endereco: "Rodovia LMG-806, KM 04 - Fazenda Castro, Neves", lat: -19.7670, lon: -44.0860 },
+            { nome: "Batalhão ROTAM (CME - 1ª RPM)", endereco: "Av. do Contorno, 777 - Centro, BH", lat: -19.9142, lon: -43.9378 },
+            { nome: "5º BPM (Sede Gameleira • Horário Comercial)", endereco: "Av. Amazonas, 6455 - Gameleira, BH", lat: -19.9320, lon: -43.9930 },
+            { nome: "34º BPM (Sede Caiçara - 1ª RPM)", endereco: "Av. Américo Vespúcio, 2391 - Caiçara, BH", lat: -19.8658, lon: -43.9711 },
+            { nome: "1º BPM (Sede Santa Efigênia - 1ª RPM)", endereco: "Praça Floriano Peixoto, s/n - Santa Efigênia, BH", lat: -19.9220, lon: -43.9240 },
+            { nome: "16º BPM (Sede Santa Tereza - 1ª RPM)", endereco: "Rua Tenente Vitorino, 71 - Santa Tereza, BH", lat: -19.9083, lon: -43.9178 },
+            { nome: "22º BPM (Sede Santa Lúcia - 1ª RPM)", endereco: "Av. Arthur Bernardes, 1337 - Santa Lúcia, BH", lat: -19.9460, lon: -43.9300 },
+            { nome: "13º BPM (Sede Planalto - 1ª RPM)", endereco: "Av. Dr. Cristiano Guimarães, 2300 - Planalto, BH", lat: -19.8320, lon: -43.9450 }
+        ];
+
         const AZIMUTE_AREAS_RADIO = [
             { unidade: "18º BPM • 133ª Cia (Sede/Centro Contagem)", rede: "REDE: 2ª RPM / 18º BPM A", lat: -19.9162, lon: -44.0809 },
             { unidade: "18º BPM • 131ª Cia (Ressaca / Laguna)", rede: "REDE: 2ª RPM / 18º BPM A", lat: -19.8885, lon: -44.0405 },
@@ -5979,6 +6019,43 @@
             if (saudeHospName) saudeHospName.textContent = closestHosp.nome;
             if (saudeHospMeta) saudeHospMeta.textContent = 'Distância estimada: ~' + driveEst.roadKm + ' km • Tempo médio de deslocamento: ~' + driveEst.mins + ' min';
             if (saudeHospBtn) saudeHospBtn.href = hospUrl;
+
+            // 4. Faixa "APOIO MAIS PRÓXIMO (GPS)" na Home:
+            // a) Unidade Policial mais próxima (Batalhão, Cia ou Base Comunitária)
+            let closestPolice = AZIMUTE_UNIDADES_POLICIAIS[0];
+            let minPoliceDist = 99999;
+            AZIMUTE_UNIDADES_POLICIAIS.forEach(u => {
+                const d = azimuteCalcDistKm(lat, lon, u.lat, u.lon);
+                if (d < minPoliceDist) { minPoliceDist = d; closestPolice = u; }
+            });
+            const policeDrive = calcEstimatedDriveMinutes(minPoliceDist);
+            const policeUrl = 'https://www.google.com/maps/dir/?api=1&destination=' + closestPolice.lat + ',' + closestPolice.lon + '&travelmode=driving';
+            const hpName = document.getElementById('homeClosestPoliceName');
+            const hpAddr = document.getElementById('homeClosestPoliceAddr');
+            const hpDist = document.getElementById('homeClosestPoliceDist');
+            const hpBtn = document.getElementById('homeClosestPoliceRouteBtn');
+            if (hpName) hpName.textContent = closestPolice.nome;
+            if (hpAddr) hpAddr.textContent = closestPolice.endereco;
+            if (hpDist) hpDist.textContent = '~' + policeDrive.roadKm + ' km';
+            if (hpBtn) hpBtn.href = policeUrl;
+
+            // b) Ponto de Abastecimento mais próximo
+            let closestFuel = AZIMUTE_PONTOS_ABASTECIMENTO[0];
+            let minFuelDist = 99999;
+            AZIMUTE_PONTOS_ABASTECIMENTO.forEach(f => {
+                const d = azimuteCalcDistKm(lat, lon, f.lat, f.lon);
+                if (d < minFuelDist) { minFuelDist = d; closestFuel = f; }
+            });
+            const fuelDrive = calcEstimatedDriveMinutes(minFuelDist);
+            const fuelUrl = 'https://www.google.com/maps/dir/?api=1&destination=' + closestFuel.lat + ',' + closestFuel.lon + '&travelmode=driving';
+            const hfName = document.getElementById('homeClosestFuelName');
+            const hfAddr = document.getElementById('homeClosestFuelAddr');
+            const hfDist = document.getElementById('homeClosestFuelDist');
+            const hfBtn = document.getElementById('homeClosestFuelRouteBtn');
+            if (hfName) hfName.textContent = closestFuel.nome;
+            if (hfAddr) hfAddr.textContent = closestFuel.endereco;
+            if (hfDist) hfDist.textContent = '~' + fuelDrive.roadKm + ' km';
+            if (hfBtn) hfBtn.href = fuelUrl;
 
             // 3. Atualiza Tela Socorro (Modo Prioridade) com Distância e Tempo Médio de Deslocamento
             const sosRadio = document.getElementById('sosBigRadio');
@@ -6333,8 +6410,9 @@
             if (typeof showToast === 'function') showToast('📥 Dados do ' + bpmName + ' baixados para consulta offline!');
         };
 
-        // Inicia o GPS continuamente assim que o sistema carrega
+        // Inicia o GPS continuamente assim que o sistema carrega e preenche o Apoio Mais Próximo inicial
         document.addEventListener('DOMContentLoaded', () => {
+            updateOfflineProximityData(azimuteLastGeoLat || -19.9162, azimuteLastGeoLon || -44.0809, 15);
             startAzimuteLiveGps();
         });
     </script>
