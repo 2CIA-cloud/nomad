@@ -1505,7 +1505,7 @@
                         <span class="bg-sky-950 text-sky-400 text-[10px] px-2.5 py-0.5 rounded font-bold uppercase border border-sky-500/30">RPAS • Drones PMMG</span>
                         <h2 class="text-3xl font-military text-sky-400 uppercase tracking-wide">Aeronaves Remotamente Pilotadas</h2>
                     </div>
-                    <p class="text-xs text-gray-400">Avaliação Técnica de Voo (GPS + Clima Local), Alerta Sonoro de Mudança Climática e Manuais Técnicos</p>
+                    <p class="text-xs text-gray-400">Avaliação Técnica de Voo (GPS + Clima Local), Checklist Pré-Voo, Alerta Sonoro e Manuais Técnicos</p>
                 </div>
                 <div class="flex items-center gap-2">
                     <button type="button" onclick="evaluateRpasFlightConditions(true)" class="px-3 py-1.5 bg-sky-950/80 hover:bg-sky-800 text-sky-300 border border-sky-500/50 rounded-lg text-xs font-extrabold flex items-center gap-1.5 transition-all" title="Sincronizar GPS + Clima Local agora">
@@ -1516,6 +1516,122 @@
                 </div>
             </div>
 
+            <!-- BARRA DE SUB-ABAS DA ABA DRONES: 1. PAINEL DE VOO & MANUAIS | 2. CHECKLIST PRÉ-VOO -->
+            <div class="bg-pmmg-card/95 border border-pmmg-border rounded-xl p-2 flex flex-wrap items-center justify-between gap-2 shadow-md">
+                <div class="flex items-center gap-2 flex-wrap">
+                    <button type="button" id="btnRpasTab-painel" onclick="switchRpasInternalSubtab('painel')" class="px-4 py-2 rounded-lg bg-sky-500 text-pmmg-black font-extrabold text-xs flex items-center gap-1.5 shadow transition-all cursor-pointer">
+                        <i data-lucide="gauge" class="w-4 h-4"></i>
+                        <span>1. Avaliação de Voo & Manuais</span>
+                    </button>
+                    <button type="button" id="btnRpasTab-checklist" onclick="switchRpasInternalSubtab('checklist')" class="px-4 py-2 rounded-lg bg-pmmg-dark hover:bg-pmmg-border text-gray-200 border border-pmmg-border font-extrabold text-xs flex items-center gap-1.5 transition-all cursor-pointer">
+                        <i data-lucide="clipboard-check" class="w-4 h-4 text-emerald-400"></i>
+                        <span>2. Checklist Pré-Voo</span>
+                        <span id="rpasTabChecklistMiniBadge" class="px-1.5 py-0.5 rounded bg-pmmg-card text-[10px] font-mono text-pmmg-khaki border border-pmmg-border">0%</span>
+                    </button>
+                </div>
+                <span class="text-[11px] font-mono text-gray-400 hidden sm:inline">Segurança Operacional RPAS • PMMG</span>
+            </div>
+
+            <!-- SUB-ABA 2: CHECKLIST PRÉ-VOO INTERATIVO (100% OFFLINE) -->
+            <div id="rpasSubtabChecklist" class="hidden bg-pmmg-card border-2 border-emerald-500/60 rounded-2xl p-4 sm:p-6 shadow-2xl space-y-5 app-screen-animate">
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-pmmg-border pb-3">
+                    <div class="flex items-center gap-2.5">
+                        <div class="p-2.5 rounded-xl bg-emerald-950 text-emerald-400 border border-emerald-500/40">
+                            <i data-lucide="clipboard-check" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-400 block leading-none">Procedimento Operacional Padrão • Inspeção Antes da Decolagem</span>
+                            <h3 class="text-xl sm:text-2xl font-military text-white uppercase tracking-wide leading-none mt-1">Checklist Pré-Voo de Aeronave (RPAS)</h3>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <button type="button" onclick="resetRpasPreflightChecklist()" class="px-3.5 py-2 bg-pmmg-dark hover:bg-pmmg-border active:scale-95 text-pmmg-khaki border border-pmmg-khaki/50 font-extrabold rounded-xl text-xs flex items-center gap-1.5 shadow transition-all cursor-pointer">
+                            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                            <span>Reiniciar</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Barra de Progresso + Contador de Itens -->
+                <div class="bg-pmmg-dark p-4 rounded-xl border border-pmmg-border space-y-2.5">
+                    <div class="flex items-center justify-between text-xs">
+                        <span id="rpasChecklistCountText" class="font-bold text-gray-200 uppercase tracking-wider">Progresso da Inspeção: 0 de 6 itens verificados</span>
+                        <strong id="rpasChecklistPctText" class="text-base font-mono font-extrabold text-pmmg-gold">0%</strong>
+                    </div>
+                    <div class="w-full h-3 bg-pmmg-black rounded-full overflow-hidden border border-pmmg-border">
+                        <div id="rpasChecklistProgressBar" class="h-full bg-emerald-500 transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Banner de Status Final (Destaca "ITENS DE VERIFICAÇÃO CONFERIDOS" ao atingir 100%) -->
+                <div id="rpasChecklistFinalStatusBox" class="bg-pmmg-dark border-2 border-pmmg-border rounded-xl p-4 text-center space-y-1 transition-all">
+                    <span class="text-[10px] font-mono uppercase tracking-wider text-gray-400 block">Status da Verificação Pré-Voo</span>
+                    <strong id="rpasChecklistFinalStatusText" class="text-base sm:text-lg font-military uppercase tracking-wider text-amber-300 block">
+                        AGUARDANDO CONFERÊNCIA COMPLETA DOS ITENS (0%)
+                    </strong>
+                </div>
+
+                <!-- Caixas de Seleção dos 6 Itens Obrigatórios do Checklist Pré-Voo -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                    <!-- 1. Hélices -->
+                    <label for="chkRpas-helices" id="lblChkRpas-helices" class="bg-pmmg-dark hover:bg-pmmg-cardHover p-3.5 rounded-xl border border-pmmg-border flex items-start gap-3 cursor-pointer transition-all select-none">
+                        <input type="checkbox" id="chkRpas-helices" onchange="updateRpasPreflightChecklist()" class="mt-0.5 w-5 h-5 rounded border-pmmg-border bg-pmmg-black text-emerald-500 focus:ring-emerald-500 accent-emerald-500 cursor-pointer shrink-0">
+                        <div class="space-y-0.5">
+                            <strong class="text-sm text-white font-extrabold block">1. Hélices e Motores</strong>
+                            <span class="text-[11px] text-gray-400 block leading-relaxed">Pás íntegras (sem fissuras ou empenos), travamento firme nos motores e rotação livre de obstruções.</span>
+                        </div>
+                    </label>
+
+                    <!-- 2. Baterias aeronave/rádio -->
+                    <label for="chkRpas-baterias" id="lblChkRpas-baterias" class="bg-pmmg-dark hover:bg-pmmg-cardHover p-3.5 rounded-xl border border-pmmg-border flex items-start gap-3 cursor-pointer transition-all select-none">
+                        <input type="checkbox" id="chkRpas-baterias" onchange="updateRpasPreflightChecklist()" class="mt-0.5 w-5 h-5 rounded border-pmmg-border bg-pmmg-black text-emerald-500 focus:ring-emerald-500 accent-emerald-500 cursor-pointer shrink-0">
+                        <div class="space-y-0.5">
+                            <strong class="text-sm text-white font-extrabold block">2. Baterias (Aeronave e Rádio Controle)</strong>
+                            <span class="text-[11px] text-gray-400 block leading-relaxed">Carga suficiente para a missão, bateria da aeronave travada sem folgas, sem estufamento e temperatura normal.</span>
+                        </div>
+                    </label>
+
+                    <!-- 3. Trava do gimbal -->
+                    <label for="chkRpas-gimbal" id="lblChkRpas-gimbal" class="bg-pmmg-dark hover:bg-pmmg-cardHover p-3.5 rounded-xl border border-pmmg-border flex items-start gap-3 cursor-pointer transition-all select-none">
+                        <input type="checkbox" id="chkRpas-gimbal" onchange="updateRpasPreflightChecklist()" class="mt-0.5 w-5 h-5 rounded border-pmmg-border bg-pmmg-black text-emerald-500 focus:ring-emerald-500 accent-emerald-500 cursor-pointer shrink-0">
+                        <div class="space-y-0.5">
+                            <strong class="text-sm text-white font-extrabold block">3. Trava do Gimbal e Câmera</strong>
+                            <span class="text-[11px] text-gray-400 block leading-relaxed">Protetor físico/trava do gimbal removido antes de ligar a aeronave, movimento livre nos 3 eixos e lente limpa.</span>
+                        </div>
+                    </label>
+
+                    <!-- 4. Cartão SD -->
+                    <label for="chkRpas-sd" id="lblChkRpas-sd" class="bg-pmmg-dark hover:bg-pmmg-cardHover p-3.5 rounded-xl border border-pmmg-border flex items-start gap-3 cursor-pointer transition-all select-none">
+                        <input type="checkbox" id="chkRpas-sd" onchange="updateRpasPreflightChecklist()" class="mt-0.5 w-5 h-5 rounded border-pmmg-border bg-pmmg-black text-emerald-500 focus:ring-emerald-500 accent-emerald-500 cursor-pointer shrink-0">
+                        <div class="space-y-0.5">
+                            <strong class="text-sm text-white font-extrabold block">4. Cartão SD e Armazenamento</strong>
+                            <span class="text-[11px] text-gray-400 block leading-relaxed">Cartão MicroSD inserido corretamente, reconhecido pelo sistema e com espaço livre para registro de imagens.</span>
+                        </div>
+                    </label>
+
+                    <!-- 5. Bússola / IMU -->
+                    <label for="chkRpas-imu" id="lblChkRpas-imu" class="bg-pmmg-dark hover:bg-pmmg-cardHover p-3.5 rounded-xl border border-pmmg-border flex items-start gap-3 cursor-pointer transition-all select-none">
+                        <input type="checkbox" id="chkRpas-imu" onchange="updateRpasPreflightChecklist()" class="mt-0.5 w-5 h-5 rounded border-pmmg-border bg-pmmg-black text-emerald-500 focus:ring-emerald-500 accent-emerald-500 cursor-pointer shrink-0">
+                        <div class="space-y-0.5">
+                            <strong class="text-sm text-white font-extrabold block">5. Bússola, IMU e Home Point (GPS)</strong>
+                            <span class="text-[11px] text-gray-400 block leading-relaxed">Bússola e IMU calibradas sem interferência magnética, satélites GNSS conectados, RTH configurado e Home Point gravado.</span>
+                        </div>
+                    </label>
+
+                    <!-- 6. Espaço aéreo -->
+                    <label for="chkRpas-espaco" id="lblChkRpas-espaco" class="bg-pmmg-dark hover:bg-pmmg-cardHover p-3.5 rounded-xl border border-pmmg-border flex items-start gap-3 cursor-pointer transition-all select-none">
+                        <input type="checkbox" id="chkRpas-espaco" onchange="updateRpasPreflightChecklist()" class="mt-0.5 w-5 h-5 rounded border-pmmg-border bg-pmmg-black text-emerald-500 focus:ring-emerald-500 accent-emerald-500 cursor-pointer shrink-0">
+                        <div class="space-y-0.5">
+                            <strong class="text-sm text-white font-extrabold block">6. Espaço Aéreo, SARPAS e Entorno</strong>
+                            <span class="text-[11px] text-gray-400 block leading-relaxed">Solicitação SARPAS ativa, coordenação com aeronaves tripuladas (Pégaso/Arcanjo) e área livre de fios, árvores e público.</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- SUB-ABA 1: PAINEL PRINCIPAL (AVALIAÇÃO TÉCNICA DE VOO + MANUAIS) -->
+            <div id="rpasSubtabPainel" class="space-y-6">
             <!-- PAINEL DE AVALIAÇÃO TÉCNICA AUXILIAR DE VOO (SELETOR DE AERONAVE + LIMITES CONFIGURÁVEIS + 3 ESTADOS + ALERTA SONORO) -->
             <div id="rpasFlightAssessmentContainer" class="bg-pmmg-card border-2 border-sky-500/60 rounded-2xl p-4 sm:p-5 shadow-2xl space-y-5">
                 <!-- Cabeçalho do Painel Técnico RPAS -->
@@ -1749,6 +1865,7 @@
                         </svg>
                     </div>
                 </a>
+            </div>
             </div>
         </section>
 
@@ -4827,6 +4944,18 @@
                     </div>
                 </a>
 
+                <!-- VIATURAS / MANUTENÇÃO (JUNTO AO ACESSO DO REDS NA ABA APOIO) -->
+                <div onclick="openViaturasManutencaoSubpage()" class="bg-pmmg-card p-5 rounded-xl tactical-border tactical-card flex items-center justify-between group border-l-4 border-l-amber-500 cursor-pointer">
+                    <div>
+                        <span class="text-[10px] bg-amber-950 text-amber-300 font-bold px-2 py-0.5 rounded border border-amber-500/40 uppercase">Frota PMMG • Consulta Offline & IA</span>
+                        <h3 class="text-2xl font-military text-amber-400 font-bold uppercase mt-1 group-hover:text-white transition-colors">VIATURAS / MANUTENÇÃO</h3>
+                        <p class="text-[11px] text-gray-300">Fichas por Modelo/Ano/Motor (Duster e frota) + Assistente de Manutenção</p>
+                    </div>
+                    <div class="p-3 bg-amber-950/60 text-amber-400 border border-amber-500/40 rounded-lg group-hover:bg-amber-400 group-hover:text-pmmg-black transition-colors shrink-0">
+                        <i data-lucide="wrench" class="w-6 h-6"></i>
+                    </div>
+                </div>
+
                 <!-- SIGOP -->
                 <a href="https://intranet.policiamilitar.mg.gov.br/lite/daop/web/" target="_blank" class="bg-pmmg-card p-5 rounded-xl tactical-border tactical-card flex items-center justify-between group">
                     <div>
@@ -4921,6 +5050,148 @@
                         </svg>
                     </div>
                 </a>
+            </div>
+
+            <!-- SUBPÁGINA / MODAL "VIATURAS / MANUTENÇÃO" (CONSULTA RÁPIDA OFFLINE PARAMETRIZADA + FICHA RENAULT DUSTER + ASSISTENTE NOTEBOOKLM) -->
+            <div id="viaturasManutencaoSubpage" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-start sm:items-center justify-center p-2.5 sm:p-5 overflow-y-auto" onclick="if(event.target === this) closeViaturasManutencaoSubpage()">
+                <div class="bg-pmmg-dark border-2 border-amber-500/70 rounded-2xl max-w-5xl w-full p-4 sm:p-6 space-y-5 shadow-2xl my-auto app-screen-animate max-h-[92vh] overflow-y-auto">
+                    <!-- Cabeçalho da Subpágina de Viaturas / Manutenção -->
+                    <div class="flex items-center justify-between border-b border-pmmg-border pb-3 gap-2 sticky top-0 bg-pmmg-dark/95 backdrop-blur z-10 pt-1">
+                        <div class="flex items-center gap-2.5">
+                            <div class="p-2 rounded-xl bg-amber-950 text-amber-400 border border-amber-500/40">
+                                <i data-lucide="wrench" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-amber-400 block leading-none">Gestão Técnica de Frota PMMG • Consulta Rápida 100% Offline</span>
+                                <h4 class="text-xl sm:text-2xl font-military text-white uppercase tracking-wider leading-none mt-0.5">Viaturas / Manutenção & Diagnóstico de Painel</h4>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <button type="button" onclick="toggleAddNewViaturaForm()" class="px-3 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/50 text-xs font-extrabold flex items-center gap-1">
+                                <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
+                                <span>+ Nova Viatura</span>
+                            </button>
+                            <button type="button" onclick="closeViaturasManutencaoSubpage()" class="px-3 py-1.5 rounded-xl bg-pmmg-card hover:bg-pmmg-border text-gray-200 hover:text-white border border-pmmg-border text-xs font-extrabold">
+                                Fechar ✕
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 1. FILTROS PARAMETRIZADOS DA FROTA: MODELO, ANO, MOTORIZAÇÃO E VERSÃO -->
+                    <div class="bg-pmmg-card p-4 rounded-xl border border-pmmg-border space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[11px] font-extrabold uppercase tracking-wider text-pmmg-khaki flex items-center gap-1.5">
+                                <i data-lucide="sliders-horizontal" class="w-3.5 h-3.5 text-amber-400"></i> Consulta Parametrizada de Frota (Modelo • Ano • Motorização • Versão)
+                            </span>
+                            <span id="vtrCountBadge" class="text-[10px] font-mono text-amber-300 bg-amber-950/70 px-2 py-0.5 rounded border border-amber-500/30 font-bold">
+                                Frota Cadastrada
+                            </span>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+                            <!-- Seletor 1: Modelo -->
+                            <div class="space-y-1">
+                                <label for="vtrSelectModelo" class="text-[10px] font-bold uppercase text-gray-400 block">🚓 1. Modelo da Viatura:</label>
+                                <select id="vtrSelectModelo" onchange="onVtrFilterChange('modelo')" class="w-full px-3 py-2 bg-pmmg-dark text-white font-bold rounded-xl border border-pmmg-border focus:outline-none focus:border-amber-400 cursor-pointer"></select>
+                            </div>
+
+                            <!-- Seletor 2: Ano -->
+                            <div class="space-y-1">
+                                <label for="vtrSelectAno" class="text-[10px] font-bold uppercase text-gray-400 block">📅 2. Ano / Safra:</label>
+                                <select id="vtrSelectAno" onchange="onVtrFilterChange('ano')" class="w-full px-3 py-2 bg-pmmg-dark text-white font-bold rounded-xl border border-pmmg-border focus:outline-none focus:border-amber-400 cursor-pointer"></select>
+                            </div>
+
+                            <!-- Seletor 3: Motorização -->
+                            <div class="space-y-1">
+                                <label for="vtrSelectMotor" class="text-[10px] font-bold uppercase text-gray-400 block">⚙️ 3. Motorização:</label>
+                                <select id="vtrSelectMotor" onchange="onVtrFilterChange('motor')" class="w-full px-3 py-2 bg-pmmg-dark text-white font-bold rounded-xl border border-pmmg-border focus:outline-none focus:border-amber-400 cursor-pointer"></select>
+                            </div>
+
+                            <!-- Seletor 4: Versão -->
+                            <div class="space-y-1">
+                                <label for="vtrSelectVersao" class="text-[10px] font-bold uppercase text-gray-400 block">🛡️ 4. Versão / Emprego:</label>
+                                <select id="vtrSelectVersao" onchange="onVtrFilterChange('versao')" class="w-full px-3 py-2 bg-pmmg-dark text-white font-bold rounded-xl border border-pmmg-border focus:outline-none focus:border-amber-400 cursor-pointer"></select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FORMULÁRIO EXPANSÍVEL PARA CADASTRAR NOVAS VIATURAS NA FROTA (SUPORTE ESCALÁVEL SALVO NO APARELHO) -->
+                    <div id="addNewViaturaFormBox" class="hidden bg-pmmg-card p-4 rounded-xl border-2 border-amber-500/60 space-y-3">
+                        <div class="flex items-center justify-between border-b border-pmmg-border pb-2">
+                            <strong class="text-xs font-extrabold uppercase text-amber-400">➕ Cadastrar Nova Viatura na Consulta Offline</strong>
+                            <button type="button" onclick="toggleAddNewViaturaForm()" class="text-xs text-gray-400 hover:text-white">Cancelar ✕</button>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 text-xs">
+                            <input type="text" id="newVtrModelo" placeholder="Modelo (ex: Chevrolet S10)" class="px-3 py-2 bg-pmmg-dark text-white rounded-lg border border-pmmg-border">
+                            <input type="text" id="newVtrAno" placeholder="Ano (ex: 2024 / 2025)" class="px-3 py-2 bg-pmmg-dark text-white rounded-lg border border-pmmg-border">
+                            <input type="text" id="newVtrMotor" placeholder="Motorização (ex: 2.8 Turbo Diesel)" class="px-3 py-2 bg-pmmg-dark text-white rounded-lg border border-pmmg-border">
+                            <input type="text" id="newVtrVersao" placeholder="Versão (ex: 4x4 Patrulha Rural)" class="px-3 py-2 bg-pmmg-dark text-white rounded-lg border border-pmmg-border">
+                            <input type="text" id="newVtrPneus" placeholder="Calibragem Pneus (ex: 35 / 38 PSI)" class="px-3 py-2 bg-pmmg-dark text-white rounded-lg border border-pmmg-border">
+                            <input type="text" id="newVtrOleo" placeholder="Óleo Motor (ex: 5W-30 Sintético)" class="px-3 py-2 bg-pmmg-dark text-white rounded-lg border border-pmmg-border">
+                            <input type="text" id="newVtrTanque" placeholder="Combustível / Tanque (ex: Diesel S10 • 76L)" class="px-3 py-2 bg-pmmg-dark text-white rounded-lg border border-pmmg-border">
+                            <input type="text" id="newVtrBateria" placeholder="Bateria / Transmissão (ex: 75Ah • Automática)" class="px-3 py-2 bg-pmmg-dark text-white rounded-lg border border-pmmg-border">
+                        </div>
+                        <textarea id="newVtrNotas" rows="2" placeholder="Observações de manutenção preventiva, filtros, arrefecimento e cuidados operacionais..." class="w-full p-2.5 bg-pmmg-dark text-xs text-white rounded-lg border border-pmmg-border"></textarea>
+                        <div class="flex justify-end">
+                            <button type="button" onclick="saveNewCustomViatura()" class="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-pmmg-black font-extrabold rounded-lg text-xs uppercase shadow">
+                                Salvar Viatura na Frota
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 2. FICHA TÉCNICA OPERACIONAL DA VIATURA SELECIONADA (INCLUINDO RENAULT DUSTER E DEMAIS VIATURAS) -->
+                    <div id="vtrTechnicalSheetContainer" class="bg-pmmg-card border border-pmmg-khaki/40 rounded-2xl p-4 sm:p-5 space-y-4">
+                        <!-- Preenchido dinamicamente pelo motor de frota offline -->
+                    </div>
+
+                    <!-- 3. CARD DO ASSISTENTE NOTEBOOKLM DE MANUTENÇÃO -->
+                    <div id="viaturasNotebookLmCard" class="bg-pmmg-card border-2 border-amber-500/70 rounded-2xl p-4 sm:p-5 shadow-xl space-y-3">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                            <div class="flex items-start gap-3">
+                                <div class="p-3 rounded-xl bg-amber-950 text-amber-400 border border-amber-500/50 shrink-0">
+                                    <i data-lucide="bot" class="w-6 h-6"></i>
+                                </div>
+                                <div class="space-y-1">
+                                    <div class="flex items-center gap-2 flex-wrap">
+                                        <span class="text-[10px] font-extrabold uppercase tracking-wider bg-amber-950 text-amber-300 px-2 py-0.5 rounded border border-amber-500/40">
+                                            IA de Apoio Mecânico • NotebookLM
+                                        </span>
+                                        <span class="text-[10px] font-mono text-gray-400">Manuais Técnicos da Frota</span>
+                                    </div>
+                                    <h5 class="text-xl sm:text-2xl font-military text-white uppercase tracking-wide leading-none">
+                                        Assistente de Manutenção & Diagnóstico de Viaturas (NotebookLM)
+                                    </h5>
+                                    <p class="text-xs sm:text-sm text-amber-200 font-semibold leading-relaxed">
+                                        "Luz acesa no painel ou falha mecânica? Consulte o assistente com base nos manuais"
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-wrap items-center gap-2 shrink-0">
+                                <a id="btnOpenNotebookLmManutencao" href="https://notebooklm.google.com/" target="_blank" rel="noopener noreferrer" class="px-4 py-2.5 bg-amber-500 hover:bg-amber-400 active:scale-95 text-pmmg-black font-extrabold rounded-xl text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg uppercase tracking-wider transition-all">
+                                    <i data-lucide="external-link" class="w-4 h-4"></i>
+                                    <span>Consultar Assistente (NotebookLM)</span>
+                                </a>
+                                <button type="button" onclick="toggleConfigNotebookLmManutencaoUrl()" class="p-2.5 bg-pmmg-dark hover:bg-pmmg-border text-amber-400 border border-pmmg-border rounded-xl text-xs font-bold transition-colors" title="Configurar / Colar Link do Caderno NotebookLM de Manutenção">
+                                    <i data-lucide="settings" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Gaveta opcional para salvar URL do Caderno NotebookLM de Manutenção -->
+                        <div id="notebookLmManutencaoUrlConfigBox" class="hidden pt-3 border-t border-pmmg-border space-y-2">
+                            <label class="text-[10px] font-bold uppercase tracking-wider text-amber-400 block">
+                                🔗 Link do Caderno NotebookLM de Manutenção de Viaturas (Salvo no Aparelho):
+                            </label>
+                            <div class="flex flex-col sm:flex-row gap-2">
+                                <input type="url" id="inputNotebookLmManutencaoUrl" placeholder="https://notebooklm.google.com/notebook/..." class="flex-1 px-3 py-2 bg-pmmg-dark text-xs text-white rounded-lg border border-pmmg-border focus:outline-none focus:border-amber-400 font-mono">
+                                <button type="button" onclick="saveNotebookLmManutencaoUrl()" class="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-pmmg-black font-extrabold rounded-lg text-xs uppercase shrink-0">
+                                    Salvar Link
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -7773,6 +8044,433 @@
                     });
                 }
             } catch (e) {}
+        })();
+
+        // ================= TAREFA FINAL 1: SUB-ABA CHECKLIST PRÉ-VOO NA ABA DRONES =================
+        const AZIMUTE_RPAS_CHECKLIST_IDS = [
+            'chkRpas-helices',
+            'chkRpas-baterias',
+            'chkRpas-gimbal',
+            'chkRpas-sd',
+            'chkRpas-imu',
+            'chkRpas-espaco'
+        ];
+
+        window.switchRpasInternalSubtab = function(subtab) {
+            const tabPainel = document.getElementById('rpasSubtabPainel');
+            const tabCheck = document.getElementById('rpasSubtabChecklist');
+            const btnPainel = document.getElementById('btnRpasTab-painel');
+            const btnCheck = document.getElementById('btnRpasTab-checklist');
+
+            if (subtab === 'checklist') {
+                if (tabPainel) tabPainel.classList.add('hidden');
+                if (tabCheck) tabCheck.classList.remove('hidden');
+                if (btnCheck) btnCheck.className = 'px-4 py-2 rounded-lg bg-emerald-500 text-pmmg-black font-extrabold text-xs flex items-center gap-1.5 shadow transition-all cursor-pointer';
+                if (btnPainel) btnPainel.className = 'px-4 py-2 rounded-lg bg-pmmg-dark hover:bg-pmmg-border text-gray-200 border border-pmmg-border font-extrabold text-xs flex items-center gap-1.5 transition-all cursor-pointer';
+            } else {
+                if (tabCheck) tabCheck.classList.add('hidden');
+                if (tabPainel) tabPainel.classList.remove('hidden');
+                if (btnPainel) btnPainel.className = 'px-4 py-2 rounded-lg bg-sky-500 text-pmmg-black font-extrabold text-xs flex items-center gap-1.5 shadow transition-all cursor-pointer';
+                if (btnCheck) btnCheck.className = 'px-4 py-2 rounded-lg bg-pmmg-dark hover:bg-pmmg-border text-gray-200 border border-pmmg-border font-extrabold text-xs flex items-center gap-1.5 transition-all cursor-pointer';
+            }
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        };
+
+        window.updateRpasPreflightChecklist = function() {
+            let checkedCount = 0;
+            const total = AZIMUTE_RPAS_CHECKLIST_IDS.length;
+            const stateObj = {};
+
+            AZIMUTE_RPAS_CHECKLIST_IDS.forEach(id => {
+                const el = document.getElementById(id);
+                const keySuffix = id.replace('chkRpas-', '');
+                const lbl = document.getElementById('lblChkRpas-' + keySuffix);
+                const isChecked = !!(el && el.checked);
+                stateObj[id] = isChecked;
+                if (isChecked) {
+                    checkedCount++;
+                    if (lbl) lbl.className = 'bg-emerald-950/35 p-3.5 rounded-xl border-2 border-emerald-500/70 flex items-start gap-3 cursor-pointer transition-all select-none';
+                } else {
+                    if (lbl) lbl.className = 'bg-pmmg-dark hover:bg-pmmg-cardHover p-3.5 rounded-xl border border-pmmg-border flex items-start gap-3 cursor-pointer transition-all select-none';
+                }
+            });
+
+            const pct = Math.round((checkedCount / total) * 100);
+            const countTxt = document.getElementById('rpasChecklistCountText');
+            const pctTxt = document.getElementById('rpasChecklistPctText');
+            const progBar = document.getElementById('rpasChecklistProgressBar');
+            const miniBadge = document.getElementById('rpasTabChecklistMiniBadge');
+            const statusBox = document.getElementById('rpasChecklistFinalStatusBox');
+            const statusTxt = document.getElementById('rpasChecklistFinalStatusText');
+
+            if (countTxt) countTxt.textContent = `Progresso da Inspeção: ${checkedCount} de ${total} itens verificados`;
+            if (pctTxt) pctTxt.textContent = pct + '%';
+            if (progBar) progBar.style.width = pct + '%';
+            if (miniBadge) miniBadge.textContent = pct + '%';
+
+            if (pct === 100) {
+                if (statusBox) {
+                    statusBox.className = 'bg-emerald-950/50 border-2 border-emerald-400 rounded-xl p-4 text-center space-y-1 transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)]';
+                }
+                if (statusTxt) {
+                    statusTxt.textContent = '✅ ITENS DE VERIFICAÇÃO CONFERIDOS';
+                    statusTxt.className = 'text-lg sm:text-2xl font-military uppercase tracking-wider text-emerald-400 block';
+                }
+                if (typeof showToast === 'function') {
+                    showToast('✅ ITENS DE VERIFICAÇÃO CONFERIDOS (100%)');
+                }
+            } else {
+                if (statusBox) {
+                    statusBox.className = 'bg-pmmg-dark border-2 border-pmmg-border rounded-xl p-4 text-center space-y-1 transition-all';
+                }
+                if (statusTxt) {
+                    statusTxt.textContent = `AGUARDANDO CONFERÊNCIA COMPLETA DOS ITENS (${pct}%)`;
+                    statusTxt.className = 'text-base sm:text-lg font-military uppercase tracking-wider text-amber-300 block';
+                }
+            }
+
+            try {
+                localStorage.setItem('azimute_rpas_preflight_checklist', JSON.stringify(stateObj));
+            } catch (e) {}
+        };
+
+        window.resetRpasPreflightChecklist = function() {
+            AZIMUTE_RPAS_CHECKLIST_IDS.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.checked = false;
+            });
+            try { localStorage.removeItem('azimute_rpas_preflight_checklist'); } catch (e) {}
+            window.updateRpasPreflightChecklist();
+            if (typeof showToast === 'function') showToast('🔄 Checklist Pré-Voo reiniciado!');
+        };
+
+        // ================= TAREFA FINAL 2: SUBPÁGINA "VIATURAS / MANUTENÇÃO" NA ABA APOIO =================
+        const AZIMUTE_DEFAULT_FROTA_DB = [
+            {
+                id: 'duster_16_mt',
+                modelo: 'Renault Duster (Viatura PMMG)',
+                ano: '2021 a 2025',
+                motor: '1.6 16V SCe Flex (H4M • 120 cv)',
+                versao: 'Zen / Intense Manual (Rádio Patrulha)',
+                pneus: '32 PSI (Dianteiros) / 32 PSI (Traseiros) • Carga máxima/tática: 34 / 36 PSI (Pneus 215/65 R16)',
+                oleo: 'SAE 5W-30 ou 10W-40 Sintético (Norma RN0700 / ACEA A3/B4) • Capacidade: 4,3 Litros (com filtro)',
+                arrefecimento: 'Glaceol RX Type D (Aditivo orgânico pronto para uso) • Capacidade: ~5,5 a 6,0 Litros',
+                tanque: '50 Litros (Gasolina / Etanol) • Fluido de Freio: DOT 4',
+                bateria: '60Ah / 65Ah EFB (Sistema Start-Stop / Alternador pilotado + Rádio/Giroflex)',
+                notas: 'Uso severo policial: Verificar nível do óleo a cada 1.000 km; inspecionar pastilhas dianteiras a cada 5.000 km; nunca completar arrefecimento apenas com água pura; manter giroflex acionado com motor em funcionamento para preservar carga da bateria EFB.',
+                luzesPainel: [
+                    { icone: '🟧 / 🟥 Ziguezague (Multifunção)', significado: 'Laranja: Anomalia elétrica/injeção (conduzir com moderação à oficina). Vermelha + STOP: Falha grave imediata (pare a viatura em local seguro).' },
+                    { icone: '🌡️ Termômetro Vermelho', significado: 'Superaquecimento do motor. Pare imediatamente, mantenha ignição ligada sem dar partida para ventoinha atuar e NÃO abra o reservatório quente.' },
+                    { icone: '🛢️ Almotolia Vermelha (Óleo)', significado: 'Pressão de óleo insuficiente. Desligue o motor imediatamente para evitar fundir o motor 1.6 SCe.' },
+                    { icone: '🔋 Bateria Vermelha', significado: 'Falha no circuito de carga (alternador ou correia de acessórios rompida).' }
+                ]
+            },
+            {
+                id: 'duster_16_cvt',
+                modelo: 'Renault Duster (Viatura PMMG)',
+                ano: '2022 a 2026',
+                motor: '1.6 16V SCe Flex (H4M • 120 cv)',
+                versao: 'Intense / Iconic CVT X-Tronic (Patrulha)',
+                pneus: '32 PSI (Dianteiros) / 32 PSI (Traseiros) • Pneus 215/65 R16 ou 215/60 R17',
+                oleo: 'SAE 5W-30 Sintético (Norma RN0700) • Capacidade: 4,3 Litros (com filtro) • Fluido CVT: NS-3',
+                arrefecimento: 'Glaceol RX Type D • Capacidade: ~6,0 Litros',
+                tanque: '50 Litros (Flex) • Fluido de Freio: DOT 4',
+                bateria: '60Ah EFB (Start-Stop)',
+                notas: 'Câmbio CVT X-Tronic: Em uso severo policial, monitorar temperatura da transmissão em subidas íngremes prolongadas e verificar troca preventiva do fluido NS-3 conforme plano de manutenção da frota.',
+                luzesPainel: [
+                    { icone: '⚙️ Alerta Transmissão / Multifunção', significado: 'Superaquecimento ou anomalia no câmbio CVT. Estacione em local seguro em "P" com motor ligado até resfriar.' },
+                    { icone: '🛞 Luz ABS / ESP Acesa', significado: 'Falha no sensor de roda ou controle de estabilidade (comum após barro/incursão em vias não pavimentadas).' }
+                ]
+            },
+            {
+                id: 'duster_13_tce',
+                modelo: 'Renault Duster (Viatura PMMG)',
+                ano: '2023 a 2026',
+                motor: '1.3 TCe Turbo Flex (H5Ht • 170 cv)',
+                versao: 'Iconic Turbo CVT (Apoio / Comando)',
+                pneus: '33 PSI (Dianteiros) / 33 PSI (Traseiros) • Pneus 215/60 R17',
+                oleo: 'SAE 5W-30 Sintético (Norma RN17 obrigatória p/ motor Turbo com injeção direta) • Capacidade: 5,4 Litros',
+                arrefecimento: 'Glaceol RX Type D • Capacidade: ~6,5 Litros',
+                tanque: '50 Litros (Preferência Gasolina p/ conservação de bicos de injeção direta)',
+                bateria: '60Ah / 70Ah EFB',
+                notas: 'Motor 1.3 Turbo: Aguardar 30 segundos em marcha lenta antes de desligar após deslocamento de emergência em alta rotação para lubrificação e resfriamento da turbina.',
+                luzesPainel: [
+                    { icone: '🔧 Chave Inglesa + Multifunção', significado: 'Revisão programada vencida ou alerta do sistema de injeção direta/turbocompressor.' }
+                ]
+            },
+            {
+                id: 'trailblazer_28',
+                modelo: 'Chevrolet Trailblazer (Tática / Recobrimento)',
+                ano: '2021 a 2026',
+                motor: '2.8 CTDI Turbo Diesel Duramax (200 cv)',
+                versao: 'LT / Premier 4x4 Automática (GER / Tático / ROTAM)',
+                pneus: '35 PSI (Dianteiros) / 38 PSI (Traseiros c/ equipamento tático) • Pneus 265/60 R18',
+                oleo: 'SAE 5W-30 Dexos2 Sintético (Diesel) • Capacidade: 6,0 Litros (com filtro)',
+                arrefecimento: 'ACDelco Dex-Cool (Orgânico Laranja 50/50) • Capacidade: ~11,8 Litros',
+                tanque: '76 Litros (EXCLUSIVO DIESEL S-10)',
+                bateria: '70Ah / 75Ah Selada',
+                notas: 'Atenção redobrada no abastecimento: EXCLUSIVO DIESEL S-10. Drenar filtro separador de água periodicamente e respeitar regeneração do filtro de partículas (DPF).',
+                luzesPainel: [
+                    { icone: '💨 Ícone Filtro DPF', significado: 'Saturação do filtro de partículas diesel. Manter rodagem constante acima de 2.000 rpm por ~15 min para regeneração.' },
+                    { icone: '💧 Água no Combustível', significado: 'Presença de água no filtro separador de diesel. Drenar imediatamente.' }
+                ]
+            },
+            {
+                id: 'l200_triton_24',
+                modelo: 'Mitsubishi L200 Triton Sport (PMMG)',
+                ano: '2021 a 2026',
+                motor: '2.4 Turbo Diesel MIVEC (190 cv)',
+                versao: 'GL / GLS 4x4 (Patrulha Rural / MAmb / Choque)',
+                pneus: '32 PSI (Dianteiros) / 36 PSI (Traseiros) • Pneus 245/70 R16 ou 265/60 R18',
+                oleo: 'SAE 5W-30 ACEA C2/C3 Sintético Diesel • Capacidade: 8,3 Litros (com filtro)',
+                arrefecimento: 'Mitsubishi Super Long Life Coolant • Capacidade: ~8,0 Litros',
+                tanque: '75 Litros (EXCLUSIVO DIESEL S-10)',
+                bateria: '75Ah',
+                notas: 'Tração 4x4 Easy Select: Engatar 4H (4x4 alta) apenas para pisos de baixa aderência (terra, lama, cascalho); nunca rodar em 4x4 no asfalto seco para não danificar a caixa de transferência.',
+                luzesPainel: [
+                    { icone: '🛞 Indicador 4WD Piscando', significado: 'Acoplamento da tração 4x4 em andamento ou falha no atuador da caixa de transferência.' }
+                ]
+            }
+        ];
+
+        function getFullViaturasDatabase() {
+            let customList = [];
+            try {
+                const raw = localStorage.getItem('azimute_custom_viaturas');
+                if (raw) customList = JSON.parse(raw) || [];
+            } catch (e) {}
+            return [...AZIMUTE_DEFAULT_FROTA_DB, ...customList];
+        }
+
+        window.openViaturasManutencaoSubpage = function() {
+            const modal = document.getElementById('viaturasManutencaoSubpage');
+            if (!modal) return;
+            populateViaturasSelectors();
+            modal.classList.remove('hidden');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        };
+
+        window.closeViaturasManutencaoSubpage = function() {
+            const modal = document.getElementById('viaturasManutencaoSubpage');
+            if (modal) modal.classList.add('hidden');
+        };
+
+        function populateViaturasSelectors() {
+            const db = getFullViaturasDatabase();
+            const selMod = document.getElementById('vtrSelectModelo');
+            const badge = document.getElementById('vtrCountBadge');
+            if (!selMod) return;
+
+            if (badge) badge.textContent = `${db.length} fichas técnicas offline`;
+
+            const uniqueModelos = [...new Set(db.map(v => v.modelo))];
+            const currentMod = selMod.value && uniqueModelos.includes(selMod.value) ? selMod.value : uniqueModelos[0];
+            selMod.innerHTML = uniqueModelos.map(m => `<option value="${m}">${m}</option>`).join('');
+            selMod.value = currentMod;
+
+            window.onVtrFilterChange('modelo');
+        }
+
+        window.onVtrFilterChange = function(changedLevel) {
+            const db = getFullViaturasDatabase();
+            const selMod = document.getElementById('vtrSelectModelo');
+            const selAno = document.getElementById('vtrSelectAno');
+            const selMot = document.getElementById('vtrSelectMotor');
+            const selVer = document.getElementById('vtrSelectVersao');
+            if (!selMod || !selAno || !selMot || !selVer) return;
+
+            const chosenMod = selMod.value;
+            const byMod = db.filter(v => v.modelo === chosenMod);
+
+            if (changedLevel === 'modelo') {
+                const anos = [...new Set(byMod.map(v => v.ano))];
+                selAno.innerHTML = anos.map(a => `<option value="${a}">${a}</option>`).join('');
+            }
+            const chosenAno = selAno.value;
+            const byAno = byMod.filter(v => v.ano === chosenAno);
+
+            if (changedLevel === 'modelo' || changedLevel === 'ano') {
+                const motores = [...new Set((byAno.length ? byAno : byMod).map(v => v.motor))];
+                selMot.innerHTML = motores.map(m => `<option value="${m}">${m}</option>`).join('');
+            }
+            const chosenMot = selMot.value;
+            const byMot = (byAno.length ? byAno : byMod).filter(v => v.motor === chosenMot);
+
+            if (changedLevel === 'modelo' || changedLevel === 'ano' || changedLevel === 'motor') {
+                const versoes = [...new Set((byMot.length ? byMot : byMod).map(v => v.versao))];
+                selVer.innerHTML = versoes.map(vr => `<option value="${vr}">${vr}</option>`).join('');
+            }
+            const chosenVer = selVer.value;
+
+            const selectedVtr = db.find(v =>
+                v.modelo === chosenMod &&
+                v.ano === chosenAno &&
+                v.motor === chosenMot &&
+                v.versao === chosenVer
+            ) || byMot[0] || byAno[0] || byMod[0] || db[0];
+
+            renderSelectedViaturaSheet(selectedVtr);
+        };
+
+        function renderSelectedViaturaSheet(vtr) {
+            const container = document.getElementById('vtrTechnicalSheetContainer');
+            if (!container || !vtr) return;
+
+            const luzesHtml = (vtr.luzesPainel && vtr.luzesPainel.length > 0)
+                ? vtr.luzesPainel.map(l => `
+                    <div class="bg-pmmg-dark p-3 rounded-xl border border-amber-500/30 space-y-1">
+                        <strong class="text-amber-300 text-xs block">${l.icone}</strong>
+                        <p class="text-[11px] text-gray-300 leading-relaxed">${l.significado}</p>
+                    </div>
+                `).join('')
+                : `<div class="col-span-full bg-pmmg-dark p-3 rounded-xl border border-pmmg-border text-xs text-gray-400">Consulte o Assistente NotebookLM abaixo para diagnóstico detalhado de luzes de painel deste modelo.</div>`;
+
+            container.innerHTML = `
+                <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border pb-3">
+                    <div>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="px-2.5 py-0.5 rounded bg-amber-500 text-pmmg-black text-[10px] font-mono font-extrabold uppercase">Ficha Técnica Oficial</span>
+                            <span class="px-2 py-0.5 rounded bg-pmmg-dark text-pmmg-khaki border border-pmmg-border text-[10px] font-mono font-bold">Ano: ${vtr.ano}</span>
+                        </div>
+                        <h5 class="text-2xl font-military text-white uppercase tracking-wide mt-1">${vtr.modelo} — ${vtr.versao}</h5>
+                        <p class="text-xs text-amber-300 font-mono font-bold">Motorização: ${vtr.motor}</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+                    <div class="bg-pmmg-dark p-3.5 rounded-xl border border-pmmg-border space-y-1">
+                        <span class="text-[10px] font-bold uppercase text-pmmg-khaki block">🛞 Calibragem de Pneus</span>
+                        <strong class="text-white font-semibold block leading-snug">${vtr.pneus || '--'}</strong>
+                    </div>
+                    <div class="bg-pmmg-dark p-3.5 rounded-xl border border-pmmg-border space-y-1">
+                        <span class="text-[10px] font-bold uppercase text-amber-400 block">🛢️ Óleo do Motor & Capacidade</span>
+                        <strong class="text-white font-semibold block leading-snug">${vtr.oleo || '--'}</strong>
+                    </div>
+                    <div class="bg-pmmg-dark p-3.5 rounded-xl border border-pmmg-border space-y-1">
+                        <span class="text-[10px] font-bold uppercase text-sky-400 block">❄️ Arrefecimento & Freio</span>
+                        <strong class="text-white font-semibold block leading-snug">${vtr.arrefecimento || '--'}</strong>
+                    </div>
+                    <div class="bg-pmmg-dark p-3.5 rounded-xl border border-pmmg-border space-y-1">
+                        <span class="text-[10px] font-bold uppercase text-emerald-400 block">⛽ Combustível & Bateria</span>
+                        <strong class="text-white font-semibold block leading-snug">${vtr.tanque || '--'} • ${vtr.bateria || ''}</strong>
+                    </div>
+                </div>
+
+                <div class="bg-pmmg-dark p-3.5 rounded-xl border border-pmmg-khaki/40 space-y-1 text-xs">
+                    <span class="text-[10px] font-extrabold uppercase text-pmmg-khaki block">🛡️ Recomendações de Uso Severo Policial (Manutenção Preventiva):</span>
+                    <p class="text-gray-200 leading-relaxed">${vtr.notas || ''}</p>
+                </div>
+
+                <div class="space-y-2 pt-1">
+                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-amber-400 block">⚠️ Guia Rápido Offline de Luzes de Alerta no Painel (${vtr.modelo}):</span>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+                        ${luzesHtml}
+                    </div>
+                </div>
+            `;
+        }
+
+        window.toggleAddNewViaturaForm = function() {
+            const box = document.getElementById('addNewViaturaFormBox');
+            if (box) box.classList.toggle('hidden');
+        };
+
+        window.saveNewCustomViatura = function() {
+            const modelo = (document.getElementById('newVtrModelo').value || '').trim();
+            const ano = (document.getElementById('newVtrAno').value || '').trim() || '2024 a 2026';
+            const motor = (document.getElementById('newVtrMotor').value || '').trim() || 'Padrão Frota';
+            const versao = (document.getElementById('newVtrVersao').value || '').trim() || 'Caracterizada PMMG';
+            const pneus = (document.getElementById('newVtrPneus').value || '').trim() || 'Conforme etiqueta da porta';
+            const oleo = (document.getElementById('newVtrOleo').value || '').trim() || 'Conforme manual do fabricante';
+            const tanque = (document.getElementById('newVtrTanque').value || '').trim() || 'Padrão';
+            const bateria = (document.getElementById('newVtrBateria').value || '').trim() || '12V';
+            const notas = (document.getElementById('newVtrNotas').value || '').trim() || 'Viatura adicionada manualmente pelo operador.';
+
+            if (!modelo) {
+                if (typeof showToast === 'function') showToast('⚠️ Informe pelo menos o Modelo da viatura!');
+                return;
+            }
+
+            const newEntry = {
+                id: 'custom_' + Date.now(),
+                modelo,
+                ano,
+                motor,
+                versao,
+                pneus,
+                oleo,
+                arrefecimento: 'Verificar nível no reservatório a frio',
+                tanque,
+                bateria,
+                notas,
+                luzesPainel: []
+            };
+
+            try {
+                const raw = localStorage.getItem('azimute_custom_viaturas');
+                const arr = raw ? (JSON.parse(raw) || []) : [];
+                arr.push(newEntry);
+                localStorage.setItem('azimute_custom_viaturas', JSON.stringify(arr));
+            } catch (e) {}
+
+            document.getElementById('addNewViaturaFormBox').classList.add('hidden');
+            populateViaturasSelectors();
+            const selMod = document.getElementById('vtrSelectModelo');
+            if (selMod) {
+                selMod.value = modelo;
+                window.onVtrFilterChange('modelo');
+            }
+            if (typeof showToast === 'function') showToast('🚓 Nova viatura cadastrada na consulta offline!');
+        };
+
+        window.toggleConfigNotebookLmManutencaoUrl = function() {
+            const box = document.getElementById('notebookLmManutencaoUrlConfigBox');
+            const inp = document.getElementById('inputNotebookLmManutencaoUrl');
+            if (!box) return;
+            box.classList.toggle('hidden');
+            if (!box.classList.contains('hidden') && inp) {
+                try {
+                    inp.value = localStorage.getItem('azimute_notebooklm_manutencao_url') || 'https://notebooklm.google.com/';
+                } catch (e) {}
+            }
+        };
+
+        window.saveNotebookLmManutencaoUrl = function() {
+            const inp = document.getElementById('inputNotebookLmManutencaoUrl');
+            const btn = document.getElementById('btnOpenNotebookLmManutencao');
+            const box = document.getElementById('notebookLmManutencaoUrlConfigBox');
+            if (!inp || !btn) return;
+            const url = (inp.value || '').trim() || 'https://notebooklm.google.com/';
+            btn.href = url;
+            try { localStorage.setItem('azimute_notebooklm_manutencao_url', url); } catch (e) {}
+            if (box) box.classList.add('hidden');
+            if (typeof showToast === 'function') showToast('🔧 Link do Assistente de Manutenção NotebookLM salvo!');
+        };
+
+        (function initChecklistAndViaturasStorage() {
+            document.addEventListener('DOMContentLoaded', () => {
+                // Restaura estado do Checklist Pré-Voo se salvo
+                try {
+                    const savedChk = localStorage.getItem('azimute_rpas_preflight_checklist');
+                    if (savedChk) {
+                        const parsed = JSON.parse(savedChk);
+                        AZIMUTE_RPAS_CHECKLIST_IDS.forEach(id => {
+                            const el = document.getElementById(id);
+                            if (el && parsed[id]) el.checked = true;
+                        });
+                        window.updateRpasPreflightChecklist();
+                    }
+                } catch (e) {}
+
+                // Restaura link do NotebookLM de Manutenção se salvo
+                try {
+                    const savedManutUrl = localStorage.getItem('azimute_notebooklm_manutencao_url');
+                    if (savedManutUrl) {
+                        const btn = document.getElementById('btnOpenNotebookLmManutencao');
+                        if (btn) btn.href = savedManutUrl;
+                    }
+                } catch (e) {}
+            });
         })();
 
         // ================= AVALIAÇÃO TÉCNICA DE VOO RPAS (3 ESTADOS) & ALERTA SONORO DE MUDANÇA CLIMÁTICA =================
