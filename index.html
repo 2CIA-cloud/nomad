@@ -4140,6 +4140,236 @@
                 </div>
             </div>
 
+            <!-- METRÔNOMOS TÁTICOS DE RCP LUMINOSOS E SONOROS (100% OFFLINE VIA WEB AUDIO API) -->
+            <div id="saudeRcpMetronomesSection" class="bg-pmmg-card border-2 border-rose-500/70 rounded-2xl p-4 sm:p-5 shadow-2xl space-y-4">
+                <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border pb-3">
+                    <div class="flex items-center gap-2.5">
+                        <div class="p-2 rounded-xl bg-rose-950 text-rose-400 border border-rose-500/40">
+                            <i data-lucide="activity" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <span class="text-[10px] font-extrabold uppercase tracking-wider bg-rose-950 text-rose-300 px-2 py-0.5 rounded border border-rose-500/40">
+                                    🔊 Web Audio API • 100% Offline
+                                </span>
+                                <span class="text-[10px] font-mono text-pmmg-gold uppercase font-bold">Cadência Guiada 100–120 BPM (Padrão 110 BPM)</span>
+                            </div>
+                            <h3 class="text-xl sm:text-2xl font-military text-white uppercase tracking-wide leading-none mt-1">
+                                Metrônomos de RCP Luminosos & Sonoros (Adulto e Pediátrico / Neonatal)
+                            </h3>
+                        </div>
+                    </div>
+                    <span class="text-[11px] text-gray-400 font-mono">Ciclos de 2 min com Alerta de Reavaliação / Troca</span>
+                </div>
+
+                <!-- Grade Dupla: Metrônomo 1 (RCP Adulto) e Metrônomo 2 (RCP Pediátrico / Neonatal) -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch">
+
+                    <!-- ================= METRÔNOMO 1: RCP ADULTO (REFERÊNCIA 30:2) ================= -->
+                    <div id="rcpMetroCard-adult" class="bg-pmmg-dark p-4 rounded-2xl border-2 border-rose-500/50 flex flex-col justify-between space-y-4 transition-all duration-100 relative overflow-hidden">
+                        <!-- Topo do Card Adulto -->
+                        <div class="flex items-start justify-between gap-2 border-b border-pmmg-border pb-3">
+                            <div>
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <span class="text-[10px] font-extrabold uppercase tracking-wider bg-rose-600 text-white px-2.5 py-0.5 rounded shadow">
+                                        Metrônomo 1 • RCP Adulto
+                                    </span>
+                                    <span class="text-[10px] font-mono font-extrabold text-rose-300 bg-rose-950/90 px-2 py-0.5 rounded border border-rose-500/40">
+                                        Referência: 30:2
+                                    </span>
+                                </div>
+                                <h4 class="text-lg sm:text-xl font-extrabold text-white mt-1.5 leading-tight">
+                                    Compressões Torácicas — Adulto
+                                </h4>
+                                <p class="text-[11px] text-gray-400">
+                                    30 compressões para 2 ventilações • Profundidade: 5 a 6 cm
+                                </p>
+                            </div>
+
+                            <!-- Indicador Luminoso de Pulso Sincronizado -->
+                            <div class="flex flex-col items-center shrink-0">
+                                <div id="rcpPulseOrb-adult" class="w-12 h-12 rounded-2xl bg-pmmg-card border-2 border-rose-500/50 flex flex-col items-center justify-center transition-all duration-75 shadow-inner">
+                                    <i data-lucide="heart-pulse" class="w-5 h-5 text-rose-400"></i>
+                                    <span id="rcpBeatCounter-adult" class="text-[10px] font-mono font-extrabold text-gray-300 leading-none mt-0.5">0/30</span>
+                                </div>
+                                <span class="text-[9px] font-mono uppercase text-gray-400 mt-1">Pulso Visual</span>
+                            </div>
+                        </div>
+
+                        <!-- Barra Luminosa de Sincronismo Visual & Cronômetro de 2 Minutos -->
+                        <div class="grid grid-cols-2 gap-2.5">
+                            <div id="rcpVisualFlashBox-adult" class="bg-pmmg-card p-3 rounded-xl border border-pmmg-border flex flex-col justify-between transition-all duration-75">
+                                <span class="text-[10px] font-bold uppercase text-gray-400 block">⚡ Cadência / Batida</span>
+                                <div class="flex items-baseline justify-between mt-1">
+                                    <strong id="rcpBpmReadout-adult" class="text-2xl font-mono font-extrabold text-white">110 <span class="text-xs font-normal text-rose-400">BPM</span></strong>
+                                    <span id="rcpStateLabel-adult" class="text-[10px] font-mono font-bold uppercase text-gray-400">PARADO</span>
+                                </div>
+                            </div>
+
+                            <div class="bg-pmmg-card p-3 rounded-xl border border-pmmg-border flex flex-col justify-between">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-[10px] font-bold uppercase text-pmmg-gold block">⏱️ Ciclo 2 Minutos</span>
+                                    <span id="rcpCycleCount-adult" class="text-[10px] font-mono font-extrabold text-pmmg-khaki">Ciclo #1</span>
+                                </div>
+                                <div class="flex items-baseline justify-between mt-1">
+                                    <strong id="rcpTimerDisplay-adult" class="text-2xl font-mono font-extrabold text-pmmg-gold">02:00</strong>
+                                    <button type="button" onclick="triggerRcpReevaluationAlert('adult')" class="text-[9px] font-mono text-gray-400 hover:text-white underline" title="Testar som e alerta visual de 2 minutos">
+                                        Testar Alerta
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Alerta Visual de Fechamento de Ciclo de 2 Minutos (Oculto até completar 2 min ou testar) -->
+                        <div id="rcpCycleAlertBanner-adult" class="hidden bg-amber-950/95 border-2 border-amber-400 rounded-xl p-3 text-center space-y-1.5 animate-pulse shadow-[0_0_20px_rgba(251,191,36,0.45)]">
+                            <div class="text-xs sm:text-sm font-extrabold text-amber-300 uppercase tracking-wider flex items-center justify-center gap-1.5">
+                                <span>🚨 MOMENTO DE REAVALIAÇÃO / TROCAR SOCORRISTA</span>
+                            </div>
+                            <p class="text-[11px] text-white font-medium">
+                                2 minutos completos! Verifique pulso/ritmo (máx. 10s) e reveze o socorrista das compressões.
+                            </p>
+                            <button type="button" onclick="acknowledgeRcpAlert('adult')" class="px-3 py-1 bg-amber-400 hover:bg-amber-300 text-pmmg-black font-extrabold rounded-lg text-[11px] uppercase">
+                                Confirmar Reavaliação / Continuar
+                            </button>
+                        </div>
+
+                        <!-- Controle de Ajuste de BPM (100 a 120 BPM, Padrão 110 BPM) -->
+                        <div class="bg-pmmg-card/80 p-3 rounded-xl border border-pmmg-border space-y-2">
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="font-bold text-gray-300 uppercase text-[10px]">Ajuste de Frequência (100 a 120 BPM):</span>
+                                <div class="flex items-center gap-1">
+                                    <button type="button" onclick="setRcpMetronomeBpm('adult', 100)" class="px-2 py-0.5 rounded bg-pmmg-dark hover:bg-pmmg-border text-[10px] font-mono font-bold text-gray-300 border border-pmmg-border">100</button>
+                                    <button type="button" onclick="setRcpMetronomeBpm('adult', 110)" class="px-2 py-0.5 rounded bg-rose-950 text-[10px] font-mono font-extrabold text-rose-300 border border-rose-500/40">110 (Padrão)</button>
+                                    <button type="button" onclick="setRcpMetronomeBpm('adult', 120)" class="px-2 py-0.5 rounded bg-pmmg-dark hover:bg-pmmg-border text-[10px] font-mono font-bold text-gray-300 border border-pmmg-border">120</button>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2.5">
+                                <button type="button" onclick="stepRcpMetronomeBpm('adult', -2)" class="w-8 h-8 rounded-lg bg-pmmg-dark hover:bg-pmmg-border text-white font-mono font-extrabold border border-pmmg-border flex items-center justify-center shrink-0">-2</button>
+                                <input type="range" id="rcpBpmSlider-adult" min="100" max="120" step="1" value="110" oninput="setRcpMetronomeBpm('adult', this.value)" class="w-full accent-rose-500 cursor-pointer h-2 bg-pmmg-black rounded-lg">
+                                <button type="button" onclick="stepRcpMetronomeBpm('adult', 2)" class="w-8 h-8 rounded-lg bg-pmmg-dark hover:bg-pmmg-border text-white font-mono font-extrabold border border-pmmg-border flex items-center justify-center shrink-0">+2</button>
+                            </div>
+                        </div>
+
+                        <!-- Botões Iniciar / Parar e Reiniciar -->
+                        <div class="grid grid-cols-3 gap-2.5 pt-1">
+                            <button type="button" id="btnToggleMetro-adult" onclick="toggleRcpMetronome('adult')" class="col-span-2 py-3 px-4 bg-rose-600 hover:bg-rose-500 active:scale-95 text-white font-extrabold rounded-xl text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg uppercase tracking-wider transition-all cursor-pointer">
+                                <i data-lucide="play" id="iconToggleMetro-adult" class="w-4 h-4"></i>
+                                <span id="txtToggleMetro-adult">INICIAR METRÔNOMO ADULTO</span>
+                            </button>
+                            <button type="button" onclick="resetRcpMetronome('adult')" class="py-3 px-3 bg-pmmg-card hover:bg-pmmg-border active:scale-95 text-gray-200 border border-pmmg-border font-extrabold rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer" title="Zerar cronômetro de 2 minutos e contador">
+                                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                                <span>Zerar</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ================= METRÔNOMO 2: RCP PEDIÁTRICO / NEONATAL (REFERÊNCIA 15:2 OU 30:2) ================= -->
+                    <div id="rcpMetroCard-pediatric" class="bg-pmmg-dark p-4 rounded-2xl border-2 border-sky-500/50 flex flex-col justify-between space-y-4 transition-all duration-100 relative overflow-hidden">
+                        <!-- Topo do Card Pediátrico / Neonatal -->
+                        <div class="flex items-start justify-between gap-2 border-b border-pmmg-border pb-3">
+                            <div>
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <span class="text-[10px] font-extrabold uppercase tracking-wider bg-sky-500 text-pmmg-black px-2.5 py-0.5 rounded shadow">
+                                        Metrônomo 2 • RCP Pediátrico / Neonatal
+                                    </span>
+                                    <span id="rcpPedRatioBadge" class="text-[10px] font-mono font-extrabold text-sky-300 bg-sky-950/90 px-2 py-0.5 rounded border border-sky-500/40">
+                                        Referência: 15:2 ou 30:2
+                                    </span>
+                                </div>
+                                <h4 class="text-lg sm:text-xl font-extrabold text-white mt-1.5 leading-tight">
+                                    Compressões — Pediátrico / Neonatal
+                                </h4>
+                                <div class="flex items-center gap-1.5 mt-1 flex-wrap">
+                                    <span class="text-[10px] text-gray-400 font-bold uppercase">Ciclo Guia:</span>
+                                    <button type="button" id="btnPedRatio15" onclick="setPediatricCycleRatio(15)" class="px-2 py-0.5 rounded text-[10px] font-mono font-extrabold bg-sky-500 text-pmmg-black border border-sky-400">
+                                        15:2 (2 Socorristas)
+                                    </button>
+                                    <button type="button" id="btnPedRatio30" onclick="setPediatricCycleRatio(30)" class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-pmmg-card text-gray-300 border border-pmmg-border hover:text-white">
+                                        30:2 (1 Socorrista)
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Indicador Luminoso de Pulso Sincronizado -->
+                            <div class="flex flex-col items-center shrink-0">
+                                <div id="rcpPulseOrb-pediatric" class="w-12 h-12 rounded-2xl bg-pmmg-card border-2 border-sky-500/50 flex flex-col items-center justify-center transition-all duration-75 shadow-inner">
+                                    <i data-lucide="baby" class="w-5 h-5 text-sky-400"></i>
+                                    <span id="rcpBeatCounter-pediatric" class="text-[10px] font-mono font-extrabold text-gray-300 leading-none mt-0.5">0/15</span>
+                                </div>
+                                <span class="text-[9px] font-mono uppercase text-gray-400 mt-1">Pulso Visual</span>
+                            </div>
+                        </div>
+
+                        <!-- Barra Luminosa de Sincronismo Visual & Cronômetro de 2 Minutos -->
+                        <div class="grid grid-cols-2 gap-2.5">
+                            <div id="rcpVisualFlashBox-pediatric" class="bg-pmmg-card p-3 rounded-xl border border-pmmg-border flex flex-col justify-between transition-all duration-75">
+                                <span class="text-[10px] font-bold uppercase text-gray-400 block">⚡ Cadência / Batida</span>
+                                <div class="flex items-baseline justify-between mt-1">
+                                    <strong id="rcpBpmReadout-pediatric" class="text-2xl font-mono font-extrabold text-white">110 <span class="text-xs font-normal text-sky-400">BPM</span></strong>
+                                    <span id="rcpStateLabel-pediatric" class="text-[10px] font-mono font-bold uppercase text-gray-400">PARADO</span>
+                                </div>
+                            </div>
+
+                            <div class="bg-pmmg-card p-3 rounded-xl border border-pmmg-border flex flex-col justify-between">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-[10px] font-bold uppercase text-pmmg-gold block">⏱️ Ciclo 2 Minutos</span>
+                                    <span id="rcpCycleCount-pediatric" class="text-[10px] font-mono font-extrabold text-pmmg-khaki">Ciclo #1</span>
+                                </div>
+                                <div class="flex items-baseline justify-between mt-1">
+                                    <strong id="rcpTimerDisplay-pediatric" class="text-2xl font-mono font-extrabold text-pmmg-gold">02:00</strong>
+                                    <button type="button" onclick="triggerRcpReevaluationAlert('pediatric')" class="text-[9px] font-mono text-gray-400 hover:text-white underline" title="Testar som e alerta visual de 2 minutos">
+                                        Testar Alerta
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Alerta Visual de Fechamento de Ciclo de 2 Minutos (Oculto até completar 2 min ou testar) -->
+                        <div id="rcpCycleAlertBanner-pediatric" class="hidden bg-amber-950/95 border-2 border-amber-400 rounded-xl p-3 text-center space-y-1.5 animate-pulse shadow-[0_0_20px_rgba(251,191,36,0.45)]">
+                            <div class="text-xs sm:text-sm font-extrabold text-amber-300 uppercase tracking-wider flex items-center justify-center gap-1.5">
+                                <span>🚨 MOMENTO DE REAVALIAÇÃO / TROCAR SOCORRISTA</span>
+                            </div>
+                            <p class="text-[11px] text-white font-medium">
+                                2 minutos completos! Verifique pulso/respiração (máx. 10s) e reveze o socorrista das compressões.
+                            </p>
+                            <button type="button" onclick="acknowledgeRcpAlert('pediatric')" class="px-3 py-1 bg-amber-400 hover:bg-amber-300 text-pmmg-black font-extrabold rounded-lg text-[11px] uppercase">
+                                Confirmar Reavaliação / Continuar
+                            </button>
+                        </div>
+
+                        <!-- Controle de Ajuste de BPM (100 a 120 BPM, Padrão 110 BPM) -->
+                        <div class="bg-pmmg-card/80 p-3 rounded-xl border border-pmmg-border space-y-2">
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="font-bold text-gray-300 uppercase text-[10px]">Ajuste de Frequência (100 a 120 BPM):</span>
+                                <div class="flex items-center gap-1">
+                                    <button type="button" onclick="setRcpMetronomeBpm('pediatric', 100)" class="px-2 py-0.5 rounded bg-pmmg-dark hover:bg-pmmg-border text-[10px] font-mono font-bold text-gray-300 border border-pmmg-border">100</button>
+                                    <button type="button" onclick="setRcpMetronomeBpm('pediatric', 110)" class="px-2 py-0.5 rounded bg-sky-950 text-[10px] font-mono font-extrabold text-sky-300 border border-sky-500/40">110 (Padrão)</button>
+                                    <button type="button" onclick="setRcpMetronomeBpm('pediatric', 120)" class="px-2 py-0.5 rounded bg-pmmg-dark hover:bg-pmmg-border text-[10px] font-mono font-bold text-gray-300 border border-pmmg-border">120</button>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2.5">
+                                <button type="button" onclick="stepRcpMetronomeBpm('pediatric', -2)" class="w-8 h-8 rounded-lg bg-pmmg-dark hover:bg-pmmg-border text-white font-mono font-extrabold border border-pmmg-border flex items-center justify-center shrink-0">-2</button>
+                                <input type="range" id="rcpBpmSlider-pediatric" min="100" max="120" step="1" value="110" oninput="setRcpMetronomeBpm('pediatric', this.value)" class="w-full accent-sky-400 cursor-pointer h-2 bg-pmmg-black rounded-lg">
+                                <button type="button" onclick="stepRcpMetronomeBpm('pediatric', 2)" class="w-8 h-8 rounded-lg bg-pmmg-dark hover:bg-pmmg-border text-white font-mono font-extrabold border border-pmmg-border flex items-center justify-center shrink-0">+2</button>
+                            </div>
+                        </div>
+
+                        <!-- Botões Iniciar / Parar e Reiniciar -->
+                        <div class="grid grid-cols-3 gap-2.5 pt-1">
+                            <button type="button" id="btnToggleMetro-pediatric" onclick="toggleRcpMetronome('pediatric')" class="col-span-2 py-3 px-4 bg-sky-500 hover:bg-sky-400 active:scale-95 text-pmmg-black font-extrabold rounded-xl text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg uppercase tracking-wider transition-all cursor-pointer">
+                                <i data-lucide="play" id="iconToggleMetro-pediatric" class="w-4 h-4"></i>
+                                <span id="txtToggleMetro-pediatric">INICIAR METRÔNOMO PEDIÁTRICO</span>
+                            </button>
+                            <button type="button" onclick="resetRcpMetronome('pediatric')" class="py-3 px-3 bg-pmmg-card hover:bg-pmmg-border active:scale-95 text-gray-200 border border-pmmg-border font-extrabold rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer" title="Zerar cronômetro de 2 minutos e contador">
+                                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                                <span>Zerar</span>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
             <!-- 2. CARD ASSISTENTE DE SOCORRO (NOTEBOOKLM - CONSULTA AUXILIAR POR ÁUDIO, TEXTO OU FOTO) -->
             <div id="saudeNotebookLmAssistantCard" class="bg-pmmg-card border-2 border-pmmg-gold/60 rounded-2xl p-4 sm:p-5 shadow-xl space-y-3">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -7346,6 +7576,344 @@
                 }
             } catch (e) {}
         })();
+
+        // ================= DOIS METRÔNOMOS DE RCP LUMINOSOS E SONOROS (WEB AUDIO API 100% OFFLINE) =================
+        let azimuteAudioCtx = null;
+
+        function getAzimuteAudioContext() {
+            if (!azimuteAudioCtx) {
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                if (AudioCtx) {
+                    azimuteAudioCtx = new AudioCtx();
+                }
+            }
+            if (azimuteAudioCtx && azimuteAudioCtx.state === 'suspended') {
+                azimuteAudioCtx.resume();
+            }
+            return azimuteAudioCtx;
+        }
+
+        const azimuteRcpMetronomes = {
+            adult: {
+                running: false,
+                bpm: 110,
+                targetRatio: 30,
+                beatInCycle: 0,
+                totalBeats: 0,
+                secondsLeft: 120,
+                cycleNumber: 1,
+                beatIntervalId: null,
+                timerIntervalId: null
+            },
+            pediatric: {
+                running: false,
+                bpm: 110,
+                targetRatio: 15,
+                beatInCycle: 0,
+                totalBeats: 0,
+                secondsLeft: 120,
+                cycleNumber: 1,
+                beatIntervalId: null,
+                timerIntervalId: null
+            }
+        };
+
+        // Emite o bipe sonoro de cada compressão via Web Audio API (100% offline)
+        function playRcpCompressionBeep(type, isCycleEndBeat) {
+            try {
+                const ctx = getAzimuteAudioContext();
+                if (!ctx) return;
+                const now = ctx.currentTime;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+
+                // Frequência audível e nítida em ambiente externo; tom levemente mais agudo no fechamento do subciclo (30 ou 15)
+                if (type === 'adult') {
+                    osc.frequency.setValueAtTime(isCycleEndBeat ? 1180 : 880, now);
+                } else {
+                    osc.frequency.setValueAtTime(isCycleEndBeat ? 1320 : 980, now);
+                }
+                osc.type = 'triangle';
+
+                gain.gain.setValueAtTime(0.001, now);
+                gain.gain.exponentialRampToValueAtTime(0.45, now + 0.008);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.075);
+
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.08);
+            } catch (e) {}
+        }
+
+        // Emite som diferenciado (alarme triplo ascendente) ao fechar cada ciclo de 2 minutos
+        function playRcpTwoMinuteCycleAlarm() {
+            try {
+                const ctx = getAzimuteAudioContext();
+                if (!ctx) return;
+                const now = ctx.currentTime;
+                const notes = [660, 880, 1320, 1760];
+                notes.forEach((freq, idx) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    const startT = now + idx * 0.14;
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(freq, startT);
+
+                    gain.gain.setValueAtTime(0.001, startT);
+                    gain.gain.exponentialRampToValueAtTime(0.5, startT + 0.015);
+                    gain.gain.exponentialRampToValueAtTime(0.001, startT + 0.12);
+
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(startT);
+                    osc.stop(startT + 0.13);
+                });
+            } catch (e) {}
+        }
+
+        // Gera o pulso luminoso na tela sincronizado com o bipe sonoro
+        function triggerRcpVisualPulse(type, beatInCycle, targetRatio) {
+            const orb = document.getElementById('rcpPulseOrb-' + type);
+            const flashBox = document.getElementById('rcpVisualFlashBox-' + type);
+            const card = document.getElementById('rcpMetroCard-' + type);
+            const beatCounter = document.getElementById('rcpBeatCounter-' + type);
+
+            if (beatCounter) {
+                beatCounter.textContent = beatInCycle + '/' + targetRatio;
+            }
+
+            if (type === 'adult') {
+                if (orb) {
+                    orb.className = 'w-12 h-12 rounded-2xl bg-rose-500 text-white border-2 border-white flex flex-col items-center justify-center transition-all duration-75 scale-110 shadow-[0_0_22px_#f43f5e]';
+                }
+                if (flashBox) {
+                    flashBox.className = 'bg-rose-950/90 p-3 rounded-xl border-2 border-rose-400 flex flex-col justify-between transition-all duration-75 shadow-[0_0_15px_rgba(244,63,94,0.45)]';
+                }
+                if (card) {
+                    card.className = 'bg-pmmg-dark p-4 rounded-2xl border-2 border-rose-400 flex flex-col justify-between space-y-4 transition-all duration-75 relative overflow-hidden shadow-[0_0_25px_rgba(244,63,94,0.3)]';
+                }
+            } else {
+                if (orb) {
+                    orb.className = 'w-12 h-12 rounded-2xl bg-sky-400 text-pmmg-black border-2 border-white flex flex-col items-center justify-center transition-all duration-75 scale-110 shadow-[0_0_22px_#38bdf8]';
+                }
+                if (flashBox) {
+                    flashBox.className = 'bg-sky-950/90 p-3 rounded-xl border-2 border-sky-300 flex flex-col justify-between transition-all duration-75 shadow-[0_0_15px_rgba(56,189,248,0.45)]';
+                }
+                if (card) {
+                    card.className = 'bg-pmmg-dark p-4 rounded-2xl border-2 border-sky-300 flex flex-col justify-between space-y-4 transition-all duration-75 relative overflow-hidden shadow-[0_0_25px_rgba(56,189,248,0.3)]';
+                }
+            }
+
+            setTimeout(() => {
+                if (type === 'adult') {
+                    if (orb) orb.className = 'w-12 h-12 rounded-2xl bg-pmmg-card border-2 border-rose-500/50 flex flex-col items-center justify-center transition-all duration-75 shadow-inner';
+                    if (flashBox) flashBox.className = 'bg-pmmg-card p-3 rounded-xl border border-pmmg-border flex flex-col justify-between transition-all duration-75';
+                    if (card) card.className = 'bg-pmmg-dark p-4 rounded-2xl border-2 border-rose-500/50 flex flex-col justify-between space-y-4 transition-all duration-100 relative overflow-hidden';
+                } else {
+                    if (orb) orb.className = 'w-12 h-12 rounded-2xl bg-pmmg-card border-2 border-sky-500/50 flex flex-col items-center justify-center transition-all duration-75 shadow-inner';
+                    if (flashBox) flashBox.className = 'bg-pmmg-card p-3 rounded-xl border border-pmmg-border flex flex-col justify-between transition-all duration-75';
+                    if (card) card.className = 'bg-pmmg-dark p-4 rounded-2xl border-2 border-sky-500/50 flex flex-col justify-between space-y-4 transition-all duration-100 relative overflow-hidden';
+                }
+            }, 135);
+        }
+
+        function formatRcpSeconds(sec) {
+            const m = Math.floor(sec / 60);
+            const s = sec % 60;
+            return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+        }
+
+        window.triggerRcpReevaluationAlert = function(type) {
+            playRcpTwoMinuteCycleAlarm();
+            const banner = document.getElementById('rcpCycleAlertBanner-' + type);
+            if (banner) banner.classList.remove('hidden');
+            if (typeof showToast === 'function') {
+                showToast('🚨 MOMENTO DE REAVALIAÇÃO / TROCAR SOCORRISTA');
+            }
+        };
+
+        window.acknowledgeRcpAlert = function(type) {
+            const banner = document.getElementById('rcpCycleAlertBanner-' + type);
+            if (banner) banner.classList.add('hidden');
+        };
+
+        function executeRcpBeatTick(type) {
+            const st = azimuteRcpMetronomes[type];
+            if (!st || !st.running) return;
+            st.beatInCycle = (st.beatInCycle % st.targetRatio) + 1;
+            st.totalBeats += 1;
+            const isEndBeat = (st.beatInCycle === st.targetRatio);
+            playRcpCompressionBeep(type, isEndBeat);
+            triggerRcpVisualPulse(type, st.beatInCycle, st.targetRatio);
+        }
+
+        function startRcpMetronomeLoops(type) {
+            const st = azimuteRcpMetronomes[type];
+            if (!st) return;
+            if (st.beatIntervalId) clearInterval(st.beatIntervalId);
+            if (st.timerIntervalId) clearInterval(st.timerIntervalId);
+
+            const intervalMs = Math.round(60000 / st.bpm);
+            // Primeira batida imediata ao iniciar
+            executeRcpBeatTick(type);
+            st.beatIntervalId = setInterval(() => {
+                executeRcpBeatTick(type);
+            }, intervalMs);
+
+            st.timerIntervalId = setInterval(() => {
+                if (!st.running) return;
+                st.secondsLeft -= 1;
+                if (st.secondsLeft <= 0) {
+                    // Fechou ciclo de 2 minutos: emite som diferenciado e alerta visual obrigatório
+                    window.triggerRcpReevaluationAlert(type);
+                    st.cycleNumber += 1;
+                    st.secondsLeft = 120;
+                    const cycEl = document.getElementById('rcpCycleCount-' + type);
+                    if (cycEl) cycEl.textContent = 'Ciclo #' + st.cycleNumber;
+                }
+                const tDisp = document.getElementById('rcpTimerDisplay-' + type);
+                if (tDisp) tDisp.textContent = formatRcpSeconds(st.secondsLeft);
+            }, 1000);
+        }
+
+        window.toggleRcpMetronome = function(type) {
+            const otherType = (type === 'adult') ? 'pediatric' : 'adult';
+            if (azimuteRcpMetronomes[otherType] && azimuteRcpMetronomes[otherType].running) {
+                stopRcpMetronomeInternal(otherType);
+            }
+
+            const st = azimuteRcpMetronomes[type];
+            if (!st) return;
+
+            if (st.running) {
+                stopRcpMetronomeInternal(type);
+            } else {
+                getAzimuteAudioContext();
+                st.running = true;
+                updateRcpMetronomeControlsUi(type);
+                startRcpMetronomeLoops(type);
+            }
+        };
+
+        function stopRcpMetronomeInternal(type) {
+            const st = azimuteRcpMetronomes[type];
+            if (!st) return;
+            st.running = false;
+            if (st.beatIntervalId) {
+                clearInterval(st.beatIntervalId);
+                st.beatIntervalId = null;
+            }
+            if (st.timerIntervalId) {
+                clearInterval(st.timerIntervalId);
+                st.timerIntervalId = null;
+            }
+            updateRcpMetronomeControlsUi(type);
+        }
+
+        function updateRcpMetronomeControlsUi(type) {
+            const st = azimuteRcpMetronomes[type];
+            const btn = document.getElementById('btnToggleMetro-' + type);
+            const txt = document.getElementById('txtToggleMetro-' + type);
+            const stateLbl = document.getElementById('rcpStateLabel-' + type);
+
+            if (st.running) {
+                if (stateLbl) {
+                    stateLbl.textContent = 'ATIVO • PULSANDO';
+                    stateLbl.className = 'text-[10px] font-mono font-extrabold uppercase text-emerald-400 animate-pulse';
+                }
+                if (btn) {
+                    btn.className = 'col-span-2 py-3 px-4 bg-amber-500 hover:bg-amber-400 active:scale-95 text-pmmg-black font-extrabold rounded-xl text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg uppercase tracking-wider transition-all cursor-pointer';
+                }
+                if (txt) {
+                    txt.textContent = (type === 'adult') ? 'PARAR METRÔNOMO ADULTO' : 'PARAR METRÔNOMO PEDIÁTRICO';
+                }
+            } else {
+                if (stateLbl) {
+                    stateLbl.textContent = 'PARADO';
+                    stateLbl.className = 'text-[10px] font-mono font-bold uppercase text-gray-400';
+                }
+                if (btn) {
+                    btn.className = (type === 'adult')
+                        ? 'col-span-2 py-3 px-4 bg-rose-600 hover:bg-rose-500 active:scale-95 text-white font-extrabold rounded-xl text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg uppercase tracking-wider transition-all cursor-pointer'
+                        : 'col-span-2 py-3 px-4 bg-sky-500 hover:bg-sky-400 active:scale-95 text-pmmg-black font-extrabold rounded-xl text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg uppercase tracking-wider transition-all cursor-pointer';
+                }
+                if (txt) {
+                    txt.textContent = (type === 'adult') ? 'INICIAR METRÔNOMO ADULTO' : 'INICIAR METRÔNOMO PEDIÁTRICO';
+                }
+            }
+        }
+
+        window.setRcpMetronomeBpm = function(type, newBpm) {
+            const st = azimuteRcpMetronomes[type];
+            if (!st) return;
+            const clamped = Math.min(120, Math.max(100, parseInt(newBpm, 10) || 110));
+            st.bpm = clamped;
+
+            const slider = document.getElementById('rcpBpmSlider-' + type);
+            const readout = document.getElementById('rcpBpmReadout-' + type);
+            if (slider) slider.value = clamped;
+            if (readout) {
+                const colorClass = (type === 'adult') ? 'text-rose-400' : 'text-sky-400';
+                readout.innerHTML = `${clamped} <span class="text-xs font-normal ${colorClass}">BPM</span>`;
+            }
+
+            if (st.running) {
+                if (st.beatIntervalId) clearInterval(st.beatIntervalId);
+                const intervalMs = Math.round(60000 / st.bpm);
+                st.beatIntervalId = setInterval(() => {
+                    executeRcpBeatTick(type);
+                }, intervalMs);
+            }
+        };
+
+        window.stepRcpMetronomeBpm = function(type, delta) {
+            const st = azimuteRcpMetronomes[type];
+            if (!st) return;
+            window.setRcpMetronomeBpm(type, st.bpm + delta);
+        };
+
+        window.resetRcpMetronome = function(type) {
+            stopRcpMetronomeInternal(type);
+            const st = azimuteRcpMetronomes[type];
+            if (!st) return;
+            st.beatInCycle = 0;
+            st.totalBeats = 0;
+            st.secondsLeft = 120;
+            st.cycleNumber = 1;
+
+            const beatCounter = document.getElementById('rcpBeatCounter-' + type);
+            const tDisp = document.getElementById('rcpTimerDisplay-' + type);
+            const cycEl = document.getElementById('rcpCycleCount-' + type);
+            const banner = document.getElementById('rcpCycleAlertBanner-' + type);
+
+            if (beatCounter) beatCounter.textContent = '0/' + st.targetRatio;
+            if (tDisp) tDisp.textContent = '02:00';
+            if (cycEl) cycEl.textContent = 'Ciclo #1';
+            if (banner) banner.classList.add('hidden');
+        };
+
+        window.setPediatricCycleRatio = function(ratioNum) {
+            const st = azimuteRcpMetronomes.pediatric;
+            if (!st) return;
+            st.targetRatio = (ratioNum === 30) ? 30 : 15;
+            st.beatInCycle = 0;
+
+            const b15 = document.getElementById('btnPedRatio15');
+            const b30 = document.getElementById('btnPedRatio30');
+            const beatCounter = document.getElementById('rcpBeatCounter-pediatric');
+
+            if (b15 && b30) {
+                if (st.targetRatio === 15) {
+                    b15.className = 'px-2 py-0.5 rounded text-[10px] font-mono font-extrabold bg-sky-500 text-pmmg-black border border-sky-400';
+                    b30.className = 'px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-pmmg-card text-gray-300 border border-pmmg-border hover:text-white';
+                } else {
+                    b30.className = 'px-2 py-0.5 rounded text-[10px] font-mono font-extrabold bg-sky-500 text-pmmg-black border border-sky-400';
+                    b15.className = 'px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-pmmg-card text-gray-300 border border-pmmg-border hover:text-white';
+                }
+            }
+            if (beatCounter) beatCounter.textContent = '0/' + st.targetRatio;
+        };
 
         function updateSaudeSmartHospitalComparison(lat, lon, closestArea) {
             if (!AZIMUTE_HOSPITAIS_REFERENCIA_PRINCIPAIS || !AZIMUTE_HOSPITAIS_REFERENCIA_PRINCIPAIS.length) return;
