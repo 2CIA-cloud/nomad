@@ -959,17 +959,14 @@
                             </div>
                         </div>
 
-                        <!-- Ações Rápidas: Copiar QTH + LOCALIZAÇÃO EXATA (lado a lado) + Ver Previsão / Detalhes -->
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-2 border-t border-pmmg-border/60">
-                            <button type="button"onclick="copyCurrentQth()"class="py-2.5 px-3 bg-pmmg-khaki hover:bg-pmmg-khakiHover text-pmmg-black font-extrabold rounded-xl text-xs flex items-center justify-center gap-1.5 shadow transition-all">
-                                <i data-lucide="copy"class="w-4 h-4"></i> <span>Copiar QTH</span>
+                        <!-- Ações Rápidas do QTH: Apenas Copiar QTH e LOCALIZAÇÃO EXATA (Clima mantido exclusivamente no card Clima Local) -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2 border-t border-pmmg-border/60">
+                            <button type="button" onclick="copyCurrentQth()" class="py-2.5 px-3 bg-pmmg-khaki hover:bg-pmmg-khakiHover text-pmmg-black font-extrabold rounded-xl text-xs flex items-center justify-center gap-1.5 shadow transition-all cursor-pointer">
+                                <i data-lucide="copy" class="w-4 h-4"></i> <span>Copiar QTH</span>
                             </button>
-                            <a id="btnOpenCurrentInMaps"href="https://www.google.com/maps/search/?api=1&query=-19.9162,-44.0809"target="_blank"class="py-2.5 px-3 bg-pmmg-gold hover:bg-pmmg-khakiHover text-pmmg-black font-extrabold rounded-xl text-xs flex items-center justify-center gap-1.5 shadow transition-all uppercase tracking-wide"title="Abre o Google Maps na coordenada exata do GPS para visualizar o número do imóvel na via">
-                                <i data-lucide="map-pin"class="w-4 h-4 text-pmmg-black"></i> <span>LOCALIZAÇÃO EXATA</span>
+                            <a id="btnOpenCurrentInMaps" href="https://www.google.com/maps/search/?api=1&query=-19.9162,-44.0809" target="_blank" class="py-2.5 px-3 bg-pmmg-gold hover:bg-pmmg-khakiHover text-pmmg-black font-extrabold rounded-xl text-xs flex items-center justify-center gap-1.5 shadow transition-all uppercase tracking-wide" title="Abre o Google Maps na coordenada exata do GPS para visualizar o número do imóvel na via">
+                                <i data-lucide="map-pin" class="w-4 h-4 text-pmmg-black"></i> <span>LOCALIZAÇÃO EXATA</span>
                             </a>
-                            <button type="button"onclick="toggleGeoWeatherDetails()"id="btnGeoDetails"class="py-2.5 px-3 bg-pmmg-dark hover:bg-pmmg-border text-sky-400 border border-sky-500/50 font-extrabold rounded-xl text-xs flex items-center justify-center gap-1.5 shadow transition-all">
-                                <i data-lucide="cloud-sun"class="w-4 h-4"></i> <span>Ver Previsão / Detalhes</span>
-                            </button>
                         </div>
                     </div>
 
@@ -1377,41 +1374,46 @@
                     </div>
                 </div>
 
-                <!-- 4. GUIA DE MAPAS OFFLINE (PASSO A PASSO DIRETO LOGO ABAIXO DAS INFORMAÇÕES DE GEOLOCALIZAÇÃO) -->
-                <div class="bg-pmmg-card/90 backdrop-blur-sm border border-pmmg-khaki/40 rounded-2xl p-4 sm:p-5 shadow-xl space-y-3">
-                    <div class="flex items-center justify-between border-b border-pmmg-border pb-2.5">
-                        <div class="flex items-center gap-2">
-                            <div class="p-2 rounded-lg bg-pmmg-khaki/15 border border-pmmg-khaki/40 text-pmmg-khaki">
-                                <i data-lucide="map"class="w-5 h-5"></i>
+                <!-- 4. GUIA DE MAPAS OFFLINE (CAIXA FECHADA POR PADRÃO, ABRE APENAS AO CLICAR) -->
+                <div class="bg-pmmg-card/90 backdrop-blur-sm border border-pmmg-khaki/40 rounded-2xl overflow-hidden shadow-xl">
+                    <button type="button" onclick="toggleOfflineMapsGuideBox()" id="btnToggleOfflineMapsBox" class="w-full p-4 sm:p-5 flex items-center justify-between gap-3 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
+                        <div class="flex items-center gap-2.5">
+                            <div class="p-2 rounded-lg bg-pmmg-khaki/15 border border-pmmg-khaki/40 text-pmmg-khaki shrink-0">
+                                <i data-lucide="map" class="w-5 h-5"></i>
                             </div>
-                            <div>
-                                <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-khaki font-bold px-2 py-0.5 rounded uppercase border border-pmmg-khaki/30">Prevenção Sem Sinal 4G</span>
-                                <h3 class="text-xl font-military text-white uppercase tracking-wide mt-0.5">Como Baixar Mapas Offline no Google Maps</h3>
+                            <h3 class="text-xl font-military text-white uppercase tracking-wide leading-none">Como Baixar Mapas Offline no Google Maps</h3>
+                        </div>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <span id="lblOfflineMapsToggle" class="text-[11px] font-bold text-pmmg-khaki">Abrir</span>
+                            <i data-lucide="chevron-down" id="iconOfflineMapsChevron" class="w-4 h-4 text-pmmg-gold transition-transform duration-200"></i>
+                        </div>
+                    </button>
+
+                    <div id="offlineMapsGuideContent" class="hidden p-4 sm:p-5 pt-0 border-t border-pmmg-border space-y-3">
+                        <div class="flex items-center justify-between gap-2 pt-3">
+                            <p class="text-xs text-gray-300">Garanta a navegação por ruas e becos mesmo em zonas de sombra de rádio ou sem internet móvel seguindo estes 4 passos rápidos no seu celular:</p>
+                            <a href="https://www.google.com/maps" target="_blank" class="px-3 py-1.5 bg-pmmg-dark hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-border rounded-lg text-xs font-bold flex items-center gap-1 shrink-0">
+                                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>Abrir Maps
+                            </a>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+                            <div class="bg-pmmg-dark p-3 rounded-xl border border-pmmg-border space-y-1">
+                                <span class="text-pmmg-khaki font-extrabold uppercase block">1º Passo • Perfil</span>
+                                <p class="text-gray-300">Abra o aplicativo do <strong>Google Maps</strong> no celular e toque na sua <strong>foto de perfil</strong> (no canto superior direito da tela).</p>
                             </div>
-                        </div>
-                        <a href="https://www.google.com/maps"target="_blank"class="px-3 py-1.5 bg-pmmg-dark hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-border rounded-lg text-xs font-bold flex items-center gap-1 shrink-0">
-                            <i data-lucide="external-link"class="w-3.5 h-3.5"></i>Abrir Maps
-                        </a>
-                    </div>
-
-                    <p class="text-xs text-gray-300">Garanta a navegação por ruas e becos mesmo em zonas de sombra de rádio ou sem internet móvel seguindo estes 4 passos rápidos no seu celular:</p>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
-                        <div class="bg-pmmg-dark p-3 rounded-xl border border-pmmg-border space-y-1">
-                            <span class="text-pmmg-khaki font-extrabold uppercase block">1º Passo • Perfil</span>
-                            <p class="text-gray-300">Abra o aplicativo do <strong>Google Maps</strong>no celular e toque na sua <strong>foto de perfil</strong> (no canto superior direito da tela).</p>
-                        </div>
-                        <div class="bg-pmmg-dark p-3 rounded-xl border border-pmmg-border space-y-1">
-                            <span class="text-pmmg-khaki font-extrabold uppercase block">2º Passo • Menu Offline</span>
-                            <p class="text-gray-300">No menu que abrir, toque na opção <strong>"Mapas off-line"</strong>.</p>
-                        </div>
-                        <div class="bg-pmmg-dark p-3 rounded-xl border border-pmmg-border space-y-1">
-                            <span class="text-pmmg-khaki font-extrabold uppercase block">3º Passo • Selecionar Área</span>
-                            <p class="text-gray-300">Toque em <strong>"Selecionar seu próprio mapa"</strong>e ajuste o retângulo azul cobrindo <strong>Belo Horizonte, Contagem, Betim e RMBH</strong>.</p>
-                        </div>
-                        <div class="bg-pmmg-dark p-3 rounded-xl border border-pmmg-border space-y-1">
-                            <span class="text-pmmg-khaki font-extrabold uppercase block">4º Passo • Download</span>
-                            <p class="text-gray-300">Toque em <strong>"Fazer o download"</strong>. Pronto! O GPS continuará traçando rotas e mostrando nomes de ruas mesmo em Modo Avião.</p>
+                            <div class="bg-pmmg-dark p-3 rounded-xl border border-pmmg-border space-y-1">
+                                <span class="text-pmmg-khaki font-extrabold uppercase block">2º Passo • Menu Offline</span>
+                                <p class="text-gray-300">No menu que abrir, toque na opção <strong>"Mapas off-line"</strong>.</p>
+                            </div>
+                            <div class="bg-pmmg-dark p-3 rounded-xl border border-pmmg-border space-y-1">
+                                <span class="text-pmmg-khaki font-extrabold uppercase block">3º Passo • Selecionar Área</span>
+                                <p class="text-gray-300">Toque em <strong>"Selecionar seu próprio mapa"</strong> e ajuste o retângulo azul cobrindo <strong>Belo Horizonte, Contagem, Betim e RMBH</strong>.</p>
+                            </div>
+                            <div class="bg-pmmg-dark p-3 rounded-xl border border-pmmg-border space-y-1">
+                                <span class="text-pmmg-khaki font-extrabold uppercase block">4º Passo • Download</span>
+                                <p class="text-gray-300">Toque em <strong>"Fazer o download"</strong>. Pronto! O GPS continuará traçando rotas e mostrando nomes de ruas mesmo em Modo Avião.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -11064,6 +11066,22 @@
         document.addEventListener('fullscreenchange', updateFullscreenButtonsUi);
         document.addEventListener('webkitfullscreenchange', updateFullscreenButtonsUi);
 
+        window.toggleOfflineMapsGuideBox = function() {
+            const box = document.getElementById('offlineMapsGuideContent');
+            const lbl = document.getElementById('lblOfflineMapsToggle');
+            const icon = document.getElementById('iconOfflineMapsChevron');
+            if (!box) return;
+            const isHidden = box.classList.contains('hidden');
+            if (isHidden) {
+                box.classList.remove('hidden');
+                if (lbl) lbl.textContent = 'Fechar';
+                if (icon) icon.style.transform = 'rotate(180deg)';
+            } else {
+                box.classList.add('hidden');
+                if (lbl) lbl.textContent = 'Abrir';
+                if (icon) icon.style.transform = 'rotate(0deg)';
+            }
+        };
         window.openHomeCompassPill = function() {
             showView('gps');
             setTimeout(() => {
