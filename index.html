@@ -19,17 +19,17 @@
                 extend: {
                     colors: {
                         pmmg: {
-                            black: '#0F0F0F',
-                            dark: '#171717',
-                            card: '#24231f',
-                            cardHover: '#2d2b27',
-                            border: '#3d3a33',
-                            khaki: '#C2B280',
-                            khakiHover: '#d4c596',
+                            black: '#0D0D0D',
+                            dark: '#161616',
+                            card: '#161616',
+                            cardHover: '#1f1e1b',
+                            border: '#2e2b24',
+                            khaki: '#C5A869',
+                            khakiHover: '#d4bc84',
                             khakiDark: '#8B7E52',
                             khakiLight: '#f4efe0',
-                            khakiBadge: '#3b382c',
-                            gold: '#D4AF37',
+                            khakiBadge: '#26231c',
+                            gold: '#C5A869',
                             red: '#dc2626'
                         }
                     },
@@ -266,30 +266,43 @@
             display: none !important;
         }
 
-        /* VISUAL ESCURO E SÓBRIO: FUNDO PRETO/GRAFITE E LINHAS FINAS EM DOURADO/CÁQUI */
+        /* VISUAL ESCURO E SÓBRIO (#0D0D0D, #161616, #C5A869): RODAPÉ DISCRETO COM REALCE EXCLUSIVO EM SAÚDE / APH */
         #mobileBottomNav {
-            background: #121211 !important;
-            border-top: 1px solid rgba(194, 178, 128, 0.35) !important;
+            background: #0D0D0D !important;
+            border-top: 1px solid rgba(197, 168, 105, 0.22) !important;
         }
         #mobileBottomNav button {
-            background: #171717 !important;
-            color: #9ca3af !important;
-            border: 1px solid rgba(61, 58, 51, 0.8) !important;
+            background: #161616 !important;
+            color: #8c8c8c !important;
+            border: 1px solid #222222 !important;
             box-shadow: none !important;
         }
-        #mobileBottomNav button:hover {
-            color: #f4efe0 !important;
-            border-color: rgba(194, 178, 128, 0.5) !important;
+        #mobileBottomNav button i,
+        #mobileBottomNav button svg {
+            color: #8c8c8c !important;
         }
+        #mobileBottomNav button:hover,
         #mobileBottomNav button.bnav-active {
-            background: #1f1e1b !important;
-            color: #C2B280 !important;
-            border: 1px solid #D4AF37 !important;
-            box-shadow: inset 0 0 0 1px rgba(212, 175, 55, 0.25) !important;
+            background: #161616 !important;
+            color: #d4d4d4 !important;
+            border: 1px solid #222222 !important;
+            box-shadow: none !important;
         }
         #mobileBottomNav button.bnav-active i,
         #mobileBottomNav button.bnav-active svg {
-            color: #D4AF37 !important;
+            color: #d4d4d4 !important;
+        }
+        /* ÚNICO ITEM DO RODAPÉ COM COR E CONTORNO DE REALCE: SAÚDE / APH */
+        #mobileBottomNav button#bnav-saude,
+        #mobileBottomNav button#bnav-saude.bnav-active {
+            background: #1c1614 !important;
+            color: #C5A869 !important;
+            border: 1px solid #C5A869 !important;
+            box-shadow: inset 0 0 0 1px rgba(197, 168, 105, 0.25) !important;
+        }
+        #mobileBottomNav button#bnav-saude i,
+        #mobileBottomNav button#bnav-saude svg {
+            color: #C5A869 !important;
         }
     </style>
 </head>
@@ -569,7 +582,7 @@
                         <i data-lucide="home"class="w-3.5 h-3.5 shrink-0"></i> <span>Início</span>
                     </button>
                     <button onclick="showView('regioes')"id="nav-btn-regioes"class="px-3 py-1.5 rounded-md bg-pmmg-dark text-gray-300 border border-pmmg-border hover:bg-pmmg-border font-bold flex items-center gap-1.5">
-                        <i data-lucide="shield"class="w-3.5 h-3.5 text-pmmg-khaki shrink-0"></i> <span>Regiões</span>
+                        <i data-lucide="shield"class="w-3.5 h-3.5 text-pmmg-khaki shrink-0"></i> <span>Unidades</span>
                     </button>
                     <button onclick="showView('saude')"id="nav-btn-saude"class="px-3 py-1.5 rounded-md bg-pmmg-dark text-red-400 border border-red-500/40 hover:bg-pmmg-border font-bold flex items-center gap-1.5">
                         <i data-lucide="heart-pulse"class="w-3.5 h-3.5 text-red-400 shrink-0"></i> <span>Saúde / APH</span>
@@ -637,19 +650,19 @@
                 <span class="pc-sb-label truncate">Início</span>
             </button>
 
-            <!-- 2. Regiões (Com Acordeão Expansível de Subpastas: 1ª RPM, 2ª RPM e Especializadas) -->
+            <!-- 2. Unidades (Com Acordeão Expansível de Subpastas: 1ª RPM, 2ª RPM e Especializadas) -->
             <div class="space-y-1">
                 <div class="flex items-center rounded-xl bg-pmmg-card border border-pmmg-border overflow-hidden transition-all"id="pcsb-group-regioes">
-                    <button type="button"onclick="handlePcSidebarRegioesClick()"id="pcsb-btn-regioes"class="pc-sb-item flex-1 px-3 py-2.5 text-left font-bold text-gray-200 hover:text-white flex items-center gap-3 transition-all"title="Regiões PMMG">
+                    <button type="button"onclick="handlePcSidebarRegioesClick()"id="pcsb-btn-regioes"class="pc-sb-item flex-1 px-3 py-2.5 text-left font-bold text-gray-200 hover:text-white flex items-center gap-3 transition-all"title="Unidades PMMG">
                         <i data-lucide="shield"class="w-4 h-4 text-pmmg-khaki shrink-0"></i>
-                        <span class="pc-sb-label truncate">Regiões</span>
+                        <span class="pc-sb-label truncate">Unidades</span>
                     </button>
-                    <button type="button"onclick="togglePcRegioesAccordion(event)"class="pc-sb-chevron px-2.5 py-2.5 text-gray-400 hover:text-pmmg-khaki transition-colors border-l border-pmmg-border/60"title="Expandir / Recolher Subpastas de Regiões">
+                    <button type="button"onclick="togglePcRegioesAccordion(event)"class="pc-sb-chevron px-2.5 py-2.5 text-gray-400 hover:text-pmmg-khaki transition-colors border-l border-pmmg-border/60"title="Expandir / Recolher Subpastas de Unidades">
                         <i data-lucide="chevron-down"id="pcsb-regioes-arrow"class="w-4 h-4 transition-transform duration-200"></i>
                     </button>
                 </div>
 
-                <!-- Subpastas Expansíveis (Acordeão) dentro de Regiões -->
+                <!-- Subpastas Expansíveis (Acordeão) dentro de Unidades -->
                 <div id="pcsb-regioes-subfolders"class="pc-sb-sub pl-3 pr-1 py-1 space-y-1 border-l-2 border-pmmg-khaki/40 ml-3.5">
                     <!-- Subpasta 1: 1ª RPM -->
                     <div class="space-y-1">
@@ -1432,11 +1445,6 @@
 
         <!-- ================= VIEW 1: HOME (PAINEL INICIAL) ================= -->
         <section id="view-home" class="azimute-active-view space-y-4">
-            <!-- Slogan Institucional Exclusivo da Home -->
-            <div class="text-center pt-1">
-                <p class="text-[11px] sm:text-xs text-pmmg-khaki font-semibold tracking-wide">Por todo o estado mineiro, com alma e espírito de guerreiro. O Coliseu.</p>
-            </div>
-
             <!-- 1. BOTÕES FECHADOS EM FORMATO DE PÍLULA (SEM IMAGEM CENTRAL DE MAPA OU MILITARES) -->
             <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-center gap-3 py-1">
                 <!-- Pílula 1: Bússola Digital (Fechada) -->
@@ -1490,13 +1498,13 @@
                 </div>
             </div>
 
-            <!-- FAIXA COMPACTA: APOIO MAIS PRÓXIMO (GPS) -->
+            <!-- 3. FAIXA COMPACTA: APOIO MAIS PRÓXIMO (GPS) -->
             <div class="bg-pmmg-card border border-pmmg-khaki/50 rounded-2xl p-3 sm:p-3.5 shadow-xl max-w-7xl mx-auto space-y-2.5">
                 <div class="flex items-center justify-between border-b border-pmmg-border pb-1.5">
                     <span class="text-[10px] font-extrabold uppercase tracking-wider text-pmmg-khaki flex items-center gap-1.5">
-                        <i data-lucide="radar"class="w-3.5 h-3.5 text-pmmg-gold"></i>Apoio Mais Próximo (GPS)
+                        <i data-lucide="radar" class="w-3.5 h-3.5 text-pmmg-gold"></i>Apoio Mais Próximo (GPS)
                     </span>
-                    <span id="homeSupportGpsStatus"class="text-[10px] font-mono text-emerald-400 font-bold">Cálculo Automático via Satélite</span>
+                    <span id="homeSupportGpsStatus" class="text-[10px] font-mono text-emerald-400 font-bold">Cálculo Automático via Satélite</span>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -1505,13 +1513,13 @@
                         <div class="min-w-0 flex-1">
                             <div class="flex items-center gap-1.5">
                                 <span class="text-[10px] font-bold uppercase text-pmmg-khaki">Unidade Policial Mais Próxima</span>
-                                <span id="homeClosestPoliceDist"class="text-[10px] font-mono font-extrabold bg-pmmg-card text-pmmg-gold px-1.5 py-0.5 rounded border border-pmmg-gold/40 shrink-0">-- km</span>
+                                <span id="homeClosestPoliceDist" class="text-[10px] font-mono font-extrabold bg-pmmg-card text-pmmg-gold px-1.5 py-0.5 rounded border border-pmmg-gold/40 shrink-0">-- km</span>
                             </div>
-                            <strong id="homeClosestPoliceName"class="text-xs sm:text-sm font-extrabold text-white block truncate mt-0.5">18º BPM • Sede (Beatriz)</strong>
-                            <span id="homeClosestPoliceAddr"class="text-[10px] text-gray-400 block truncate">Av. João César de Oliveira, 5400 - Contagem</span>
+                            <strong id="homeClosestPoliceName" class="text-xs sm:text-sm font-extrabold text-white block truncate mt-0.5">18º BPM • Sede (Beatriz)</strong>
+                            <span id="homeClosestPoliceAddr" class="text-[10px] text-gray-400 block truncate">Av. João César de Oliveira, 5400 - Contagem</span>
                         </div>
-                        <a id="homeClosestPoliceRouteBtn"href="https://www.google.com/maps/dir/?api=1&destination=-19.9162,-44.0809&travelmode=driving"target="_blank"class="px-2.5 py-2 bg-pmmg-khaki hover:bg-pmmg-khakiHover text-pmmg-black font-extrabold rounded-lg text-[11px] flex items-center gap-1 shrink-0 shadow transition-all active:scale-95"title="Traçar rota para a Unidade Policial mais próxima">
-                            <i data-lucide="navigation"class="w-3.5 h-3.5"></i> <span>Rota</span>
+                        <a id="homeClosestPoliceRouteBtn" href="https://www.google.com/maps/dir/?api=1&destination=-19.9162,-44.0809&travelmode=driving" target="_blank" class="px-2.5 py-2 bg-pmmg-khaki hover:bg-pmmg-khakiHover text-pmmg-black font-extrabold rounded-lg text-[11px] flex items-center gap-1 shrink-0 shadow transition-all active:scale-95" title="Traçar rota para a Unidade Policial mais próxima">
+                            <i data-lucide="navigation" class="w-3.5 h-3.5"></i> <span>Rota</span>
                         </a>
                     </div>
 
@@ -1520,13 +1528,13 @@
                         <div class="min-w-0 flex-1">
                             <div class="flex items-center gap-1.5">
                                 <span class="text-[10px] font-bold uppercase text-pmmg-gold">Abastecimento Mais Próximo</span>
-                                <span id="homeClosestFuelDist"class="text-[10px] font-mono font-extrabold bg-pmmg-card text-pmmg-khaki px-1.5 py-0.5 rounded border border-pmmg-khaki/40 shrink-0">-- km</span>
+                                <span id="homeClosestFuelDist" class="text-[10px] font-mono font-extrabold bg-pmmg-card text-pmmg-khaki px-1.5 py-0.5 rounded border border-pmmg-khaki/40 shrink-0">-- km</span>
                             </div>
-                            <strong id="homeClosestFuelName"class="text-xs sm:text-sm font-extrabold text-white block truncate mt-0.5">Abastecimento 18º BPM (Sede)</strong>
-                            <span id="homeClosestFuelAddr"class="text-[10px] text-gray-400 block truncate">Av. João César de Oliveira, 5400 - Contagem</span>
+                            <strong id="homeClosestFuelName" class="text-xs sm:text-sm font-extrabold text-white block truncate mt-0.5">Abastecimento 18º BPM (Sede)</strong>
+                            <span id="homeClosestFuelAddr" class="text-[10px] text-gray-400 block truncate">Av. João César de Oliveira, 5400 - Contagem</span>
                         </div>
-                        <a id="homeClosestFuelRouteBtn"href="https://www.google.com/maps/dir/?api=1&destination=-19.9162,-44.0809&travelmode=driving"target="_blank"class="px-2.5 py-2 bg-pmmg-gold hover:bg-pmmg-khakiHover text-pmmg-black font-extrabold rounded-lg text-[11px] flex items-center gap-1 shrink-0 shadow transition-all active:scale-95"title="Traçar rota para o Ponto de Abastecimento mais próximo">
-                            <i data-lucide="fuel"class="w-3.5 h-3.5"></i> <span>Rota</span>
+                        <a id="homeClosestFuelRouteBtn" href="https://www.google.com/maps/dir/?api=1&destination=-19.9162,-44.0809&travelmode=driving" target="_blank" class="px-2.5 py-2 bg-pmmg-gold hover:bg-pmmg-khakiHover text-pmmg-black font-extrabold rounded-lg text-[11px] flex items-center gap-1 shrink-0 shadow transition-all active:scale-95" title="Traçar rota para o Ponto de Abastecimento mais próximo">
+                            <i data-lucide="fuel" class="w-3.5 h-3.5"></i> <span>Rota</span>
                         </a>
                     </div>
                 </div>
@@ -1537,108 +1545,7 @@
                     <span id="homeQuickQth"></span><span id="homeQuickSuburb"></span>
                     <span id="homeQuickRadio"></span><span id="homeQuickArea"></span>
                     <span id="homeHospDistBadge"></span><span id="homeQuickHospName"></span>
-                    <span id="homeQuickHospEta"></span><a id="homeBtnHospRoute"href="#"></a>
-                </div>
-            </div>
-
-            <!-- GRADE LIMPA DE 2 COLUNAS NA HOME (1ª RPM, 2ª RPM, UNIDADES ESPECIALIZADAS E GEOLOCALIZAÇÃO) -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-7xl mx-auto">
-                <!-- 1. 1ª RPM -->
-                <div onclick="showView('rpm1')"class="bg-pmmg-card p-5 rounded-2xl tactical-border tactical-card cursor-pointer group flex flex-col justify-between space-y-3">
-                    <div class="space-y-1.5">
-                        <div class="flex justify-between items-center">
-                            <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-khaki font-bold px-2.5 py-0.5 rounded-full border border-pmmg-khaki/30 uppercase">1ª Região • Capital</span>
-                            <i data-lucide="chevron-right"class="w-5 h-5 text-gray-500 group-hover:text-pmmg-khaki transition-colors"></i>
-                        </div>
-                        <h3 class="text-3xl font-military text-pmmg-khaki uppercase font-bold leading-none">1ª RPM • Belo Horizonte</h3>
-                        <p class="text-xs text-gray-400">1º, 5º, 13º, 16º, 22º, 34º, 41º, 49º BPM e BPTran</p>
-                    </div>
-                    <div class="pt-3 border-t border-pmmg-border flex justify-between items-center text-xs font-bold text-pmmg-khaki">
-                        <span>9 Unidades</span>
-                        <span class="flex items-center gap-1">Acessar <i data-lucide="arrow-right"class="w-3.5 h-3.5"></i></span>
-                    </div>
-                </div>
-
-                <!-- 2. 2ª RPM -->
-                <div onclick="showView('rpm2')"class="bg-pmmg-card p-5 rounded-2xl tactical-border tactical-card cursor-pointer group flex flex-col justify-between space-y-3">
-                    <div class="space-y-1.5">
-                        <div class="flex justify-between items-center">
-                            <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-gold font-bold px-2.5 py-0.5 rounded-full border border-pmmg-gold/30 uppercase">2ª Região • RMBH</span>
-                            <i data-lucide="chevron-right"class="w-5 h-5 text-gray-500 group-hover:text-pmmg-gold transition-colors"></i>
-                        </div>
-                        <h3 class="text-3xl font-military text-pmmg-gold uppercase font-bold leading-none">2ª RPM • Região Metropolitana</h3>
-                        <p class="text-xs text-gray-400">18º, 33º, 39º, 40º, 48º, 66º BPM, 6ª e 7ª Cia Ind</p>
-                    </div>
-                    <div class="pt-3 border-t border-pmmg-border flex justify-between items-center text-xs font-bold text-pmmg-gold">
-                        <span>8 Unidades • 18º BPM Ativo</span>
-                        <span class="flex items-center gap-1">Acessar <i data-lucide="arrow-right"class="w-3.5 h-3.5"></i></span>
-                    </div>
-                </div>
-
-                <!-- 3. UNIDADES ESPECIALIZADAS -->
-                <div onclick="showView('especializadas')"class="bg-pmmg-card p-5 rounded-2xl tactical-border tactical-card cursor-pointer group flex flex-col justify-between space-y-3">
-                    <div class="space-y-1.5">
-                        <div class="flex justify-between items-center">
-                            <span class="text-[10px] bg-red-950 text-red-400 font-bold px-2.5 py-0.5 rounded-full border border-red-500/30 uppercase">CPE / CME / Recobrimento</span>
-                            <i data-lucide="chevron-right"class="w-5 h-5 text-gray-500 group-hover:text-red-400 transition-colors"></i>
-                        </div>
-                        <h3 class="text-3xl font-military text-red-400 uppercase font-bold leading-none">Unidades Especializadas</h3>
-                        <p class="text-xs text-gray-400">GER, ROTAM, BOPE, Choque, ROCCA, BEPE, BPGd, MAmb, BPMRv e RCAT</p>
-                    </div>
-                    <div class="pt-3 border-t border-pmmg-border flex justify-between items-center text-xs font-bold text-red-400">
-                        <span>10 Unidades + Estádios (BEPE)</span>
-                        <span class="flex items-center gap-1">Acessar <i data-lucide="arrow-right"class="w-3.5 h-3.5"></i></span>
-                    </div>
-                </div>
-
-                <!-- 4. ATALHO DE GEOLOCALIZAÇÃO -->
-                <div onclick="showView('gps')"class="bg-pmmg-card p-5 rounded-2xl border border-emerald-500/40 hover:border-emerald-400 tactical-card cursor-pointer group flex flex-col justify-between space-y-3">
-                    <div class="space-y-1.5">
-                        <div class="flex justify-between items-center">
-                            <span class="text-[10px] bg-emerald-950 text-emerald-400 font-bold px-2.5 py-0.5 rounded-full border border-emerald-500/30 uppercase">GPS Contínuo & Clima</span>
-                            <i data-lucide="chevron-right"class="w-5 h-5 text-gray-500 group-hover:text-emerald-400 transition-colors"></i>
-                        </div>
-                        <h3 class="text-3xl font-military text-emerald-400 uppercase font-bold leading-none">Geolocalização</h3>
-                        <p class="text-xs text-gray-400">QTH com número aproximado, coordenadas exatas, meteorologia e mapas offline</p>
-                    </div>
-                    <div class="pt-3 border-t border-pmmg-border flex justify-between items-center text-xs font-bold text-emerald-400">
-                        <span>Rastreamento & Socorro</span>
-                        <span class="flex items-center gap-1">Abrir GPS <i data-lucide="arrow-right"class="w-3.5 h-3.5"></i></span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- CAIXA TEMPORÁRIA DE DESENVOLVIMENTO: IDEIAS (SERÁ APAGADA AO FINAL DO PROJETO) -->
-            <div class="max-w-7xl mx-auto bg-pmmg-card p-5 rounded-2xl tactical-border space-y-3 shadow-lg">
-                <div class="flex flex-wrap items-center justify-between border-b border-pmmg-border pb-2 gap-2">
-                    <div class="flex items-center gap-2">
-                        <i data-lucide="lightbulb"class="w-5 h-5 text-pmmg-gold"></i>
-                        <h3 class="text-2xl font-military text-pmmg-khaki uppercase tracking-wider leading-none">IDEIAS</h3>
-                        <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-gold px-2 py-0.5 rounded border border-pmmg-gold/30 uppercase font-bold">Caixa Temporária do Projeto</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <span id="cloudSyncBadge"class="text-[10px] bg-emerald-950 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/40 font-bold flex items-center gap-1">
-                            <i data-lucide="cloud"class="w-3 h-3"></i> <span id="ideasSaveStatus">Sincronizado na Nuvem</span>
-                        </span>
-                    </div>
-                </div>
-                <textarea 
-                    id="projectIdeasInput" 
-                    rows="5" 
-                    placeholder="Digite aqui suas ideias, lembretes e próximos ajustes para o projeto AZIMUTE (salvo automaticamente na nuvem mesmo após atualizações do código)..." 
-                    class="w-full p-3 bg-pmmg-dark border border-pmmg-border rounded-xl text-xs sm:text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:border-pmmg-khaki font-mono"
-                    oninput="saveProjectIdeas(false)"
-                ></textarea>
-                <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
-                    <span class="text-[11px] text-gray-400">Dica: Suas ideias ficam salvas na nuvem e não apagam ao atualizar o sistema.</span>
-                    <div class="flex items-center gap-2">
-                        <button onclick="copyIdeasToClipboard()"class="px-3 py-2 bg-pmmg-dark hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-border font-bold rounded-lg text-xs flex items-center gap-1.5 transition-colors"title="Copiar ideias para colar no chat">
-                            <i data-lucide="copy"class="w-3.5 h-3.5"></i>Copiar Ideias
-                        </button>
-                        <button onclick="saveProjectIdeas(true)"class="px-4 py-2 bg-pmmg-khaki hover:bg-pmmg-khakiHover text-pmmg-black font-bold rounded-lg text-xs flex items-center gap-1.5 shadow transition-colors">
-                            <i data-lucide="save"class="w-4 h-4"></i>Salvar
-                        </button>
-                    </div>
+                    <span id="homeQuickHospEta"></span><a id="homeBtnHospRoute" href="#"></a>
                 </div>
             </div>
         </section>
@@ -5078,64 +4985,69 @@
         </section>
 
         <!-- ================= VIEW REGIÕES (AGRUPADOR ESCALÁVEL: 1ª REGIÃO, 2ª REGIÃO, 3ª REGIÃO...) ================= -->
-        <section id="view-regioes"class="hidden space-y-6">
-            <div class="flex items-center justify-between border-b border-pmmg-border pb-3">
-                <div>
-                    <div class="flex items-center gap-2">
-                        <span class="bg-pmmg-khakiBadge text-pmmg-khaki text-[10px] px-2.5 py-0.5 rounded font-bold uppercase border border-pmmg-khaki/30">Estrutura Territorial PMMG</span>
-                        <h2 class="text-3xl font-military text-pmmg-khaki uppercase tracking-wide">Regiões da Polícia Militar (RPM)</h2>
-                    </div>
-                    <p class="text-xs text-gray-400">Selecione a Região para acessar seus Batalhões e Companhias Independentes.</p>
-                </div>
-                <button onclick="showView('home')"class="text-xs text-pmmg-khaki hover:underline flex items-center gap-1"><i data-lucide="arrow-left"class="w-4 h-4"></i>Início</button>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- 1ª REGIÃO (1ª RPM) -->
-                <div onclick="showView('rpm1')"class="bg-pmmg-card p-6 rounded-2xl tactical-border tactical-card cursor-pointer group flex flex-col justify-between space-y-4">
-                    <div class="space-y-3">
-                        <div class="flex justify-between items-start">
-                            <span class="text-xs bg-pmmg-khakiBadge text-pmmg-khaki font-bold px-3 py-1 rounded-full border border-pmmg-khaki/30 uppercase">1ª Região • Capital</span>
-                            <i data-lucide="chevron-right"class="w-6 h-6 text-gray-500 group-hover:text-pmmg-khaki transition-colors"></i>
+        <section id="view-regioes" class="hidden space-y-5">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <!-- 1. 1ª RPM (Capital) -->
+                <div onclick="showView('rpm1')" class="bg-pmmg-card p-5 rounded-2xl tactical-border tactical-card cursor-pointer group flex flex-col justify-between space-y-3">
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between items-center">
+                            <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-khaki font-bold px-2.5 py-0.5 rounded-full border border-pmmg-khaki/30 uppercase">1ª RPM • Capital</span>
+                            <i data-lucide="chevron-right" class="w-5 h-5 text-gray-500 group-hover:text-pmmg-khaki transition-colors"></i>
                         </div>
-                        <h3 class="text-3xl font-military text-pmmg-khaki uppercase font-bold leading-none">1ª Região (1ª RPM • BH)</h3>
-                        <p class="text-xs text-gray-400">Abrange os Batalhões da Capital: 1º, 5º, 13º, 16º, 22º, 34º, 41º, 49º BPM e BPTran.</p>
+                        <h3 class="text-3xl font-military text-pmmg-khaki uppercase font-bold leading-none">1ª RPM • Belo Horizonte</h3>
+                        <p class="text-xs text-gray-400">1º, 5º, 13º, 16º, 22º, 34º, 41º, 49º BPM e BPTran</p>
                     </div>
-                    <div class="pt-4 border-t border-pmmg-border flex justify-between items-center text-xs font-bold text-pmmg-khaki">
-                        <span>9 Unidades Gerais</span>
-                        <span class="flex items-center gap-1">Acessar 1ª Região <i data-lucide="arrow-right"class="w-3.5 h-3.5"></i></span>
+                    <div class="pt-3 border-t border-pmmg-border flex justify-between items-center text-xs font-bold text-pmmg-khaki">
+                        <span>9 Unidades</span>
+                        <span class="flex items-center gap-1">Acessar Unidades <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
                     </div>
                 </div>
 
-                <!-- 2ª REGIÃO (2ª RPM) -->
-                <div onclick="showView('rpm2')"class="bg-pmmg-card p-6 rounded-2xl border-2 border-pmmg-gold/70 tactical-card cursor-pointer group flex flex-col justify-between space-y-4">
-                    <div class="space-y-3">
-                        <div class="flex justify-between items-start">
-                            <span class="text-xs bg-pmmg-khakiBadge text-pmmg-gold font-bold px-3 py-1 rounded-full border border-pmmg-gold/30 uppercase">2ª Região • RMBH</span>
-                            <i data-lucide="chevron-right"class="w-6 h-6 text-gray-500 group-hover:text-pmmg-gold transition-colors"></i>
+                <!-- 2. 2ª RPM (RMBH) -->
+                <div onclick="showView('rpm2')" class="bg-pmmg-card p-5 rounded-2xl border border-pmmg-gold/60 tactical-card cursor-pointer group flex flex-col justify-between space-y-3">
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between items-center">
+                            <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-gold font-bold px-2.5 py-0.5 rounded-full border border-pmmg-gold/30 uppercase">2ª RPM • RMBH</span>
+                            <i data-lucide="chevron-right" class="w-5 h-5 text-gray-500 group-hover:text-pmmg-gold transition-colors"></i>
                         </div>
-                        <h3 class="text-3xl font-military text-pmmg-gold uppercase font-bold leading-none">2ª Região (2ª RPM • RMBH)</h3>
-                        <p class="text-xs text-gray-400">Abrange 18º BPM (Completo), 33º BPM, 39º BPM, 40º BPM, 48º BPM, 66º BPM, 6ª Cia Ind e 7ª Cia Ind.</p>
+                        <h3 class="text-3xl font-military text-pmmg-gold uppercase font-bold leading-none">2ª RPM • Região Metropolitana</h3>
+                        <p class="text-xs text-gray-400">18º BPM (Completo), 33º, 39º, 40º, 48º, 66º BPM, 6ª e 7ª Cia Ind</p>
                     </div>
-                    <div class="pt-4 border-t border-pmmg-border flex justify-between items-center text-xs font-bold text-pmmg-gold">
+                    <div class="pt-3 border-t border-pmmg-border flex justify-between items-center text-xs font-bold text-pmmg-gold">
                         <span>8 Unidades • 18º BPM Ativo</span>
-                        <span class="flex items-center gap-1">Acessar 2ª Região <i data-lucide="arrow-right"class="w-3.5 h-3.5"></i></span>
+                        <span class="flex items-center gap-1">Acessar Unidades <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
                     </div>
                 </div>
 
-                <!-- 3ª REGIÃO (3ª RPM - ESTRUTURA PRONTA E ESCALÁVEL) -->
-                <div onclick="showView('rpm3')"class="bg-pmmg-card p-6 rounded-2xl tactical-border tactical-card cursor-pointer group flex flex-col justify-between space-y-4 opacity-90 hover:opacity-100">
-                    <div class="space-y-3">
-                        <div class="flex justify-between items-start">
-                            <span class="text-xs bg-pmmg-dark text-gray-300 font-bold px-3 py-1 rounded-full border border-pmmg-border uppercase">3ª Região • RMBH / Expansão</span>
-                            <i data-lucide="chevron-right"class="w-6 h-6 text-gray-500 group-hover:text-pmmg-khaki transition-colors"></i>
+                <!-- 3. UNIDADES ESPECIALIZADAS -->
+                <div onclick="showView('especializadas')" class="bg-pmmg-card p-5 rounded-2xl tactical-border tactical-card cursor-pointer group flex flex-col justify-between space-y-3">
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between items-center">
+                            <span class="text-[10px] bg-red-950 text-red-400 font-bold px-2.5 py-0.5 rounded-full border border-red-500/30 uppercase">CPE / CME / Recobrimento</span>
+                            <i data-lucide="chevron-right" class="w-5 h-5 text-gray-500 group-hover:text-red-400 transition-colors"></i>
                         </div>
-                        <h3 class="text-3xl font-military text-white uppercase font-bold leading-none">3ª Região (3ª RPM)</h3>
-                        <p class="text-xs text-gray-400">Estrutura pronta e escalável para alimentação dos Batalhões e Companhias da 3ª RPM (Santa Luzia, Vespasiano, Lagoa Santa, Sabará...).</p>
+                        <h3 class="text-3xl font-military text-red-400 uppercase font-bold leading-none">Unidades Especializadas</h3>
+                        <p class="text-xs text-gray-400">GER, ROTAM, BOPE, Choque, ROCCA, BEPE, BPGd, MAmb, BPMRv e RCAT</p>
                     </div>
-                    <div class="pt-4 border-t border-pmmg-border flex justify-between items-center text-xs font-bold text-pmmg-khaki">
-                        <span>Gaveta Regional Pronta</span>
-                        <span class="flex items-center gap-1">Acessar 3ª Região <i data-lucide="arrow-right"class="w-3.5 h-3.5"></i></span>
+                    <div class="pt-3 border-t border-pmmg-border flex justify-between items-center text-xs font-bold text-red-400">
+                        <span>10 Unidades</span>
+                        <span class="flex items-center gap-1">Acessar Unidades <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
+                    </div>
+                </div>
+
+                <!-- 4. 3ª RPM -->
+                <div onclick="showView('rpm3')" class="bg-pmmg-card p-5 rounded-2xl tactical-border tactical-card cursor-pointer group flex flex-col justify-between space-y-3 opacity-90 hover:opacity-100">
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between items-center">
+                            <span class="text-[10px] bg-pmmg-dark text-gray-300 font-bold px-2.5 py-0.5 rounded-full border border-pmmg-border uppercase">3ª RPM • RMBH / Expansão</span>
+                            <i data-lucide="chevron-right" class="w-5 h-5 text-gray-500 group-hover:text-pmmg-khaki transition-colors"></i>
+                        </div>
+                        <h3 class="text-3xl font-military text-white uppercase font-bold leading-none">3ª RPM • Vetor Norte / Leste</h3>
+                        <p class="text-xs text-gray-400">Santa Luzia, Vespasiano, Lagoa Santa, Sabará e entorno</p>
+                    </div>
+                    <div class="pt-3 border-t border-pmmg-border flex justify-between items-center text-xs font-bold text-pmmg-khaki">
+                        <span>Gaveta Pronta</span>
+                        <span class="flex items-center gap-1">Acessar Unidades <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
                     </div>
                 </div>
             </div>
@@ -5148,7 +5060,7 @@
                     <h2 class="text-3xl font-military text-pmmg-khaki uppercase tracking-wide">3ª Região de Polícia Militar (3ª RPM)</h2>
                     <p class="text-xs text-gray-400">Estrutura pronta e escalável para cadastramento de unidades da 3ª Região</p>
                 </div>
-                <button onclick="showView('regioes')"class="text-xs text-pmmg-khaki hover:underline flex items-center gap-1"><i data-lucide="arrow-left"class="w-4 h-4"></i>Voltar às Regiões</button>
+                <button onclick="showView('regioes')"class="text-xs text-pmmg-khaki hover:underline flex items-center gap-1"><i data-lucide="arrow-left"class="w-4 h-4"></i>Voltar às Unidades</button>
             </div>
             <div class="bg-pmmg-card p-6 rounded-2xl tactical-border space-y-2">
                 <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-khaki font-bold px-2.5 py-0.5 rounded uppercase border border-pmmg-khaki/30">Módulo Escalável Ativo</span>
@@ -5164,7 +5076,7 @@
                     <h2 class="text-3xl font-military text-pmmg-khaki uppercase tracking-wide">1ª Região de Polícia Militar (1ª RPM)</h2>
                     <p class="text-xs text-gray-400">Batalhões da Capital - Belo Horizonte/MG</p>
                 </div>
-                <button onclick="showView('regioes')"class="text-xs text-pmmg-khaki hover:underline flex items-center gap-1"><i data-lucide="arrow-left"class="w-4 h-4"></i>Voltar às Regiões</button>
+                <button onclick="showView('regioes')"class="text-xs text-pmmg-khaki hover:underline flex items-center gap-1"><i data-lucide="arrow-left"class="w-4 h-4"></i>Voltar às Unidades</button>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -5267,7 +5179,7 @@
                     <h2 class="text-3xl font-military text-pmmg-gold uppercase tracking-wide">2ª Região de Polícia Militar (2ª RPM)</h2>
                     <p class="text-xs text-gray-400">Contagem, Betim, Ribeirão das Neves, Ibirité, Brumadinho, Igarapé...</p>
                 </div>
-                <button onclick="showView('regioes')"class="text-xs text-pmmg-khaki hover:underline flex items-center gap-1"><i data-lucide="arrow-left"class="w-4 h-4"></i>Voltar às Regiões</button>
+                <button onclick="showView('regioes')"class="text-xs text-pmmg-khaki hover:underline flex items-center gap-1"><i data-lucide="arrow-left"class="w-4 h-4"></i>Voltar às Unidades</button>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -5365,7 +5277,7 @@
                     <h2 class="text-3xl font-military text-red-400 uppercase tracking-wide">Unidades Especializadas PMMG</h2>
                     <p class="text-xs text-gray-400">Endereços, Telefones / SOU, Localização e Abastecimento das Unidades Especializadas</p>
                 </div>
-                <button onclick="showView('home')"class="text-xs text-pmmg-khaki hover:underline flex items-center gap-1"><i data-lucide="arrow-left"class="w-4 h-4"></i>Voltar</button>
+                <button onclick="showView('regioes')" class="text-xs text-pmmg-khaki hover:underline flex items-center gap-1"><i data-lucide="arrow-left" class="w-4 h-4"></i>Voltar às Unidades</button>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -7259,35 +7171,35 @@
     </main>
 
     <!-- MENU GLOBAL INFERIOR COM 5 ABAS PADRONIZADAS (MODO APP) -->
-    <nav id="mobileBottomNav" class="fixed bottom-0 left-0 right-0 z-40 bg-pmmg-black/95 backdrop-blur-md border-t border-pmmg-khaki/35 px-1.5 py-1.5 shadow-2xl">
+    <nav id="mobileBottomNav" class="fixed bottom-0 left-0 right-0 z-40 bg-pmmg-black/95 backdrop-blur-md border-t border-pmmg-khaki/25 px-1.5 py-1.5 shadow-2xl">
         <div class="max-w-3xl mx-auto grid grid-cols-7 gap-1 text-[9.5px] sm:text-[10.5px] font-bold items-center">
             <!-- 1. Início -->
-            <button type="button" onclick="showView('home')" id="bnav-home" class="bnav-active flex flex-col items-center justify-center py-1.5 px-1 rounded-lg transition-all">
+            <button type="button" onclick="showView('home')" id="bnav-home" class="bnav-active flex flex-col items-center justify-center py-1.5 px-1 rounded-lg transition-all cursor-pointer">
                 <i data-lucide="home" class="w-4 h-4 mb-0.5"></i>
                 <span class="truncate">Início</span>
             </button>
-            <!-- 2. Regiões -->
-            <button type="button" onclick="showView('regioes')" id="bnav-regioes" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-lg transition-all">
+            <!-- 2. Unidades -->
+            <button type="button" onclick="showView('regioes')" id="bnav-regioes" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-lg transition-all cursor-pointer">
                 <i data-lucide="shield" class="w-4 h-4 mb-0.5"></i>
-                <span class="truncate">Regiões</span>
+                <span class="truncate">Unidades</span>
             </button>
             <!-- 3. Geolocalização -->
-            <button type="button" onclick="showView('gps')" id="bnav-gps" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-lg transition-all">
+            <button type="button" onclick="showView('gps')" id="bnav-gps" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-lg transition-all cursor-pointer">
                 <i data-lucide="locate-fixed" class="w-4 h-4 mb-0.5"></i>
                 <span class="truncate">Geolocal.</span>
             </button>
-            <!-- 4. Estádios -->
-            <button type="button" onclick="showView('estadios')" id="bnav-estadios" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-lg transition-all">
-                <i data-lucide="trophy" class="w-4 h-4 mb-0.5"></i>
-                <span class="truncate">Estádios</span>
-            </button>
-            <!-- 5. Saúde / APH -->
-            <button type="button" onclick="showView('saude')" id="bnav-saude" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-lg transition-all">
+            <!-- 4. Saúde / APH (Movido para a esquerda, invertendo posição com Estádios, e único item com realce) -->
+            <button type="button" onclick="showView('saude')" id="bnav-saude" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-lg transition-all cursor-pointer">
                 <i data-lucide="heart-pulse" class="w-4 h-4 mb-0.5"></i>
                 <span class="truncate">Saúde/APH</span>
             </button>
+            <!-- 5. Estádios (Invertido com Saúde / APH) -->
+            <button type="button" onclick="showView('estadios')" id="bnav-estadios" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-lg transition-all cursor-pointer">
+                <i data-lucide="trophy" class="w-4 h-4 mb-0.5"></i>
+                <span class="truncate">Estádios</span>
+            </button>
             <!-- 6. Drones -->
-            <button type="button" onclick="showView('rpas')" id="bnav-rpas" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-lg transition-all">
+            <button type="button" onclick="showView('rpas')" id="bnav-rpas" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-lg transition-all cursor-pointer">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mb-0.5">
                     <rect x="9" y="9" width="6" height="6" rx="1"/>
                     <path d="M9 9 5.5 5.5"/><path d="M15 9l3.5-3.5"/><path d="M9 15l-3.5 3.5"/><path d="M15 15l3.5 3.5"/>
@@ -7296,7 +7208,7 @@
                 <span class="truncate">Drones</span>
             </button>
             <!-- 7. Apoio -->
-            <button type="button" onclick="showView('atalhos')" id="bnav-atalhos" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-lg transition-all">
+            <button type="button" onclick="showView('atalhos')" id="bnav-atalhos" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-lg transition-all cursor-pointer">
                 <i data-lucide="folder" class="w-4 h-4 mb-0.5"></i>
                 <span class="truncate">Apoio</span>
             </button>
@@ -10369,6 +10281,7 @@
             }, 120);
         };
         function showView(viewId) {
+            if (viewId === 'unidades') viewId = 'regioes';
             const views = ['home', 'regioes', 'rpm1', 'rpm2', 'rpm3', 'especializadas', 'estadios', 'rpas', 'atalhos', 'saude', 'skeleton', '18bpm', 'gps'];
             views.forEach(v => {
                 const el = document.getElementById(`view-${v}`);
@@ -10870,6 +10783,14 @@
             const index = [];
 
             // 1. ATALHOS PRINCIPAIS DE NAVEGAÇÃO E ABAS GERAIS
+            index.push({
+                title: 'Unidades PMMG (1ª RPM, 2ª RPM, Especializadas e 3ª RPM)',
+                category: 'Aba Principal • Unidades',
+                badgeColor: 'bg-pmmg-khakiBadge text-pmmg-khaki border-pmmg-khaki/40',
+                keywords: 'unidades regioes rpm 1 rpm 2 rpm 3 rpm especializadas batalhoes companhias',
+                snippet: 'Acesso a todas as Unidades, Batalhões e Companhias Independentes.',
+                execute: () => showView('unidades')
+            });
             index.push({
                 title: 'Aeronaves Remotamente Pilotadas (RPAS / Drones)',
                 category: 'Aba Principal • Drones PMMG',
