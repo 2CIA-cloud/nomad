@@ -4434,359 +4434,311 @@
                 </div>
             </div>
 
-            <!-- 1. GUIA RÁPIDO 100% OFFLINE (6 PROTOCOLOS DE APH E EMERGÊNCIA COM ÍCONES) -->
-            <div id="saudeOfflineAphSection"class="bg-pmmg-card border-2 border-pmmg-khaki/60 rounded-2xl p-4 sm:p-5 shadow-2xl space-y-4">
-                <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border pb-3">
+            <!-- 1. GUIA DE APH OFFLINE (CAIXA FECHADA POR PADRÃO E ESTRUTURA LIMPA PARA ARQUIVOS OFICIAIS) -->
+            <div id="saudeOfflineAphSection" class="bg-pmmg-card border border-pmmg-khaki/50 rounded-2xl overflow-hidden shadow-2xl">
+                <button type="button" onclick="toggleOfflineAphGuideBox()" id="btnToggleOfflineAphGuide" class="w-full p-4 sm:p-5 flex items-center justify-between gap-3 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
                     <div class="flex items-center gap-2.5">
-                        <div class="p-2 rounded-xl bg-red-950 text-red-400 border border-red-500/40">
-                            <i data-lucide="shield-plus"class="w-5 h-5"></i>
+                        <div class="p-2 rounded-xl bg-red-950 text-red-400 border border-red-500/40 shrink-0">
+                            <i data-lucide="shield-plus" class="w-5 h-5"></i>
                         </div>
-                        <div>
-                            <div class="flex items-center gap-2 flex-wrap">
-                                <span class="text-[10px] font-extrabold uppercase tracking-wider bg-emerald-950 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/40">
-                                     100% Offline • Sem Internet
-                                </span>
-                                <span class="text-[10px] font-mono text-pmmg-khaki uppercase font-bold">Consulta Imediata em Ocorrência</span>
-                            </div>
-                            <h3 class="text-xl sm:text-2xl font-military text-white uppercase tracking-wide leading-none mt-1">
-                                Guia Rápido de Protocolos de APH (6 Protocolos)
-                            </h3>
-                        </div>
+                        <h3 class="text-xl sm:text-2xl font-military text-white uppercase tracking-wide leading-none">
+                            Guia de APH Offline
+                        </h3>
                     </div>
-                    <span class="text-[11px] text-gray-400">Toque em um protocolo para abrir as instruções objetivas</span>
-                </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <span id="lblOfflineAphGuideToggle" class="text-[11px] font-bold text-pmmg-khaki">Abrir</span>
+                        <i data-lucide="chevron-down" id="iconOfflineAphGuideChevron" class="w-4 h-4 text-pmmg-gold transition-transform duration-200"></i>
+                    </div>
+                </button>
 
-                <!-- Grade de 6 Botões de Protocolos com Ícones -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                    <!-- 1. Hemorragia / Torniquete -->
-                    <button type="button"onclick="openOfflineAphProtocol('hemorragia')"class="bg-pmmg-dark hover:bg-pmmg-cardHover active:scale-[0.99] p-4 rounded-xl border border-red-500/50 border-l-4 border-l-red-500 text-left flex items-center justify-between gap-3 shadow-md transition-all group">
-                        <div class="flex items-center gap-3 min-w-0">
-                            <div class="p-2.5 rounded-xl bg-red-950 text-red-400 border border-red-500/40 group-hover:bg-red-600 group-hover:text-white transition-colors shrink-0">
-                                <i data-lucide="droplets"class="w-5 h-5"></i>
-                            </div>
-                            <div class="min-w-0">
-                                <span class="text-[10px] font-mono font-extrabold text-red-400 uppercase block">Protocolo 01 • MARCH</span>
+                <!-- Conteúdo interno fechado por padrão, mantendo apenas os botões/estrutura limpa -->
+                <div id="offlineAphGuideExpandableBody" class="hidden p-4 sm:p-5 pt-3 border-t border-pmmg-border space-y-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                        <!-- 1. Hemorragia / Torniquete -->
+                        <button type="button" onclick="openOfflineAphProtocol('hemorragia')" class="bg-pmmg-dark hover:bg-pmmg-cardHover active:scale-[0.99] p-4 rounded-xl border border-red-500/50 border-l-4 border-l-red-500 text-left flex items-center justify-between gap-3 shadow-md transition-all group cursor-pointer">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div class="p-2.5 rounded-xl bg-red-950 text-red-400 border border-red-500/40 group-hover:bg-red-600 group-hover:text-white transition-colors shrink-0">
+                                    <i data-lucide="droplets" class="w-5 h-5"></i>
+                                </div>
                                 <strong class="text-sm sm:text-base font-extrabold text-white block truncate">1. Hemorragia / Torniquete</strong>
-                                <span class="text-[11px] text-gray-400 block truncate">Compressão direta, Alto e Apertado, Preenchimento</span>
                             </div>
-                        </div>
-                        <i data-lucide="chevron-right"class="w-4 h-4 text-gray-500 group-hover:text-red-400 shrink-0"></i>
-                    </button>
+                            <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500 group-hover:text-red-400 shrink-0"></i>
+                        </button>
 
-                    <!-- 2. Vias Aéreas -->
-                    <button type="button"onclick="openOfflineAphProtocol('vias_aereas')"class="bg-pmmg-dark hover:bg-pmmg-cardHover active:scale-[0.99] p-4 rounded-xl border border-sky-500/50 border-l-4 border-l-sky-400 text-left flex items-center justify-between gap-3 shadow-md transition-all group">
-                        <div class="flex items-center gap-3 min-w-0">
-                            <div class="p-2.5 rounded-xl bg-sky-950 text-sky-400 border border-sky-500/40 group-hover:bg-sky-500 group-hover:text-pmmg-black transition-colors shrink-0">
-                                <i data-lucide="wind"class="w-5 h-5"></i>
-                            </div>
-                            <div class="min-w-0">
-                                <span class="text-[10px] font-mono font-extrabold text-sky-400 uppercase block">Protocolo 02 • Permeabilidade</span>
+                        <!-- 2. Vias Aéreas -->
+                        <button type="button" onclick="openOfflineAphProtocol('vias_aereas')" class="bg-pmmg-dark hover:bg-pmmg-cardHover active:scale-[0.99] p-4 rounded-xl border border-sky-500/50 border-l-4 border-l-sky-400 text-left flex items-center justify-between gap-3 shadow-md transition-all group cursor-pointer">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div class="p-2.5 rounded-xl bg-sky-950 text-sky-400 border border-sky-500/40 group-hover:bg-sky-500 group-hover:text-pmmg-black transition-colors shrink-0">
+                                    <i data-lucide="wind" class="w-5 h-5"></i>
+                                </div>
                                 <strong class="text-sm sm:text-base font-extrabold text-white block truncate">2. Vias Aéreas</strong>
-                                <span class="text-[11px] text-gray-400 block truncate">Chin-Lift, Jaw-Thrust, Controle Cervical e Posição Lateral</span>
                             </div>
-                        </div>
-                        <i data-lucide="chevron-right"class="w-4 h-4 text-gray-500 group-hover:text-sky-400 shrink-0"></i>
-                    </button>
+                            <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500 group-hover:text-sky-400 shrink-0"></i>
+                        </button>
 
-                    <!-- 3. Queimaduras -->
-                    <button type="button"onclick="openOfflineAphProtocol('queimaduras')"class="bg-pmmg-dark hover:bg-pmmg-cardHover active:scale-[0.99] p-4 rounded-xl border border-orange-500/50 border-l-4 border-l-orange-500 text-left flex items-center justify-between gap-3 shadow-md transition-all group">
-                        <div class="flex items-center gap-3 min-w-0">
-                            <div class="p-2.5 rounded-xl bg-orange-950 text-orange-400 border border-orange-500/40 group-hover:bg-orange-500 group-hover:text-pmmg-black transition-colors shrink-0">
-                                <i data-lucide="flame"class="w-5 h-5"></i>
-                            </div>
-                            <div class="min-w-0">
-                                <span class="text-[10px] font-mono font-extrabold text-orange-400 uppercase block">Protocolo 03 • Térmica / Química</span>
+                        <!-- 3. Queimaduras -->
+                        <button type="button" onclick="openOfflineAphProtocol('queimaduras')" class="bg-pmmg-dark hover:bg-pmmg-cardHover active:scale-[0.99] p-4 rounded-xl border border-orange-500/50 border-l-4 border-l-orange-500 text-left flex items-center justify-between gap-3 shadow-md transition-all group cursor-pointer">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div class="p-2.5 rounded-xl bg-orange-950 text-orange-400 border border-orange-500/40 group-hover:bg-orange-500 group-hover:text-pmmg-black transition-colors shrink-0">
+                                    <i data-lucide="flame" class="w-5 h-5"></i>
+                                </div>
                                 <strong class="text-sm sm:text-base font-extrabold text-white block truncate">3. Queimaduras</strong>
-                                <span class="text-[11px] text-gray-400 block truncate">Resfriamento limpo, proteção seca e sinais de inalação</span>
                             </div>
-                        </div>
-                        <i data-lucide="chevron-right"class="w-4 h-4 text-gray-500 group-hover:text-orange-400 shrink-0"></i>
-                    </button>
+                            <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500 group-hover:text-orange-400 shrink-0"></i>
+                        </button>
 
-                    <!-- 4. RCP -->
-                    <button type="button"onclick="openOfflineAphProtocol('rcp')"class="bg-pmmg-dark hover:bg-pmmg-cardHover active:scale-[0.99] p-4 rounded-xl border border-rose-500/50 border-l-4 border-l-rose-500 text-left flex items-center justify-between gap-3 shadow-md transition-all group">
-                        <div class="flex items-center gap-3 min-w-0">
-                            <div class="p-2.5 rounded-xl bg-rose-950 text-rose-400 border border-rose-500/40 group-hover:bg-rose-600 group-hover:text-white transition-colors shrink-0">
-                                <i data-lucide="heart-pulse"class="w-5 h-5"></i>
+                        <!-- 4. RCP -->
+                        <button type="button" onclick="openOfflineAphProtocol('rcp')" class="bg-pmmg-dark hover:bg-pmmg-cardHover active:scale-[0.99] p-4 rounded-xl border border-rose-500/50 border-l-4 border-l-rose-500 text-left flex items-center justify-between gap-3 shadow-md transition-all group cursor-pointer">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div class="p-2.5 rounded-xl bg-rose-950 text-rose-400 border border-rose-500/40 group-hover:bg-rose-600 group-hover:text-white transition-colors shrink-0">
+                                    <i data-lucide="heart-pulse" class="w-5 h-5"></i>
+                                </div>
+                                <strong class="text-sm sm:text-base font-extrabold text-white block truncate">4. RCP</strong>
                             </div>
-                            <div class="min-w-0">
-                                <span class="text-[10px] font-mono font-extrabold text-rose-400 uppercase block">Protocolo 04 • Parada Cardíaca</span>
-                                <strong class="text-sm sm:text-base font-extrabold text-white block truncate">4. RCP (Adulto / Pediátrico)</strong>
-                                <span class="text-[11px] text-gray-400 block truncate">100 a 120 comp/min • Ciclos 30:2 / 15:2 e DEA</span>
-                            </div>
-                        </div>
-                        <i data-lucide="chevron-right"class="w-4 h-4 text-gray-500 group-hover:text-rose-400 shrink-0"></i>
-                    </button>
+                            <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500 group-hover:text-rose-400 shrink-0"></i>
+                        </button>
 
-                    <!-- 5. Desengasgamento (OVACE) -->
-                    <button type="button"onclick="openOfflineAphProtocol('ovace')"class="bg-pmmg-dark hover:bg-pmmg-cardHover active:scale-[0.99] p-4 rounded-xl border border-amber-500/50 border-l-4 border-l-amber-400 text-left flex items-center justify-between gap-3 shadow-md transition-all group">
-                        <div class="flex items-center gap-3 min-w-0">
-                            <div class="p-2.5 rounded-xl bg-amber-950 text-amber-300 border border-amber-500/40 group-hover:bg-amber-400 group-hover:text-pmmg-black transition-colors shrink-0">
-                                <i data-lucide="life-buoy"class="w-5 h-5"></i>
-                            </div>
-                            <div class="min-w-0">
-                                <span class="text-[10px] font-mono font-extrabold text-amber-300 uppercase block">Protocolo 05 • Engasgo</span>
+                        <!-- 5. Desengasgamento (OVACE) -->
+                        <button type="button" onclick="openOfflineAphProtocol('ovace')" class="bg-pmmg-dark hover:bg-pmmg-cardHover active:scale-[0.99] p-4 rounded-xl border border-amber-500/50 border-l-4 border-l-amber-400 text-left flex items-center justify-between gap-3 shadow-md transition-all group cursor-pointer">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div class="p-2.5 rounded-xl bg-amber-950 text-amber-300 border border-amber-500/40 group-hover:bg-amber-400 group-hover:text-pmmg-black transition-colors shrink-0">
+                                    <i data-lucide="life-buoy" class="w-5 h-5"></i>
+                                </div>
                                 <strong class="text-sm sm:text-base font-extrabold text-white block truncate">5. Desengasgamento (OVACE)</strong>
-                                <span class="text-[11px] text-gray-400 block truncate">Manobra de Heimlich (Adulto) e 5 Tapotagens + 5 Comp. (Bebê)</span>
                             </div>
-                        </div>
-                        <i data-lucide="chevron-right"class="w-4 h-4 text-gray-500 group-hover:text-amber-300 shrink-0"></i>
-                    </button>
+                            <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500 group-hover:text-amber-300 shrink-0"></i>
+                        </button>
 
-                    <!-- 6. Gestantes / Parto de Emergência -->
-                    <button type="button"onclick="openOfflineAphProtocol('parto')"class="bg-pmmg-dark hover:bg-pmmg-cardHover active:scale-[0.99] p-4 rounded-xl border border-emerald-500/50 border-l-4 border-l-emerald-400 text-left flex items-center justify-between gap-3 shadow-md transition-all group">
-                        <div class="flex items-center gap-3 min-w-0">
-                            <div class="p-2.5 rounded-xl bg-emerald-950 text-emerald-400 border border-emerald-500/40 group-hover:bg-emerald-500 group-hover:text-pmmg-black transition-colors shrink-0">
-                                <i data-lucide="baby"class="w-5 h-5"></i>
-                            </div>
-                            <div class="min-w-0">
-                                <span class="text-[10px] font-mono font-extrabold text-emerald-400 uppercase block">Protocolo 06 • Obstetrícia</span>
+                        <!-- 6. Gestantes / Parto de Emergência -->
+                        <button type="button" onclick="openOfflineAphProtocol('parto')" class="bg-pmmg-dark hover:bg-pmmg-cardHover active:scale-[0.99] p-4 rounded-xl border border-emerald-500/50 border-l-4 border-l-emerald-400 text-left flex items-center justify-between gap-3 shadow-md transition-all group cursor-pointer">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div class="p-2.5 rounded-xl bg-emerald-950 text-emerald-400 border border-emerald-500/40 group-hover:bg-emerald-500 group-hover:text-pmmg-black transition-colors shrink-0">
+                                    <i data-lucide="baby" class="w-5 h-5"></i>
+                                </div>
                                 <strong class="text-sm sm:text-base font-extrabold text-white block truncate">6. Gestantes / Parto de Emergência</strong>
-                                <span class="text-[11px] text-gray-400 block truncate">Coroamento, proteção do períneo, aquecimento do RN e cordão</span>
                             </div>
-                        </div>
-                        <i data-lucide="chevron-right"class="w-4 h-4 text-gray-500 group-hover:text-emerald-400 shrink-0"></i>
-                    </button>
-                </div>
-
-                <!-- Rodapé com Fonte / Protocolo de Referência e Versão -->
-                <div class="pt-3 border-t border-pmmg-border flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[11px] text-gray-400 font-mono">
-                    <div>
-                        <strong class="text-pmmg-khaki">Fonte / Protocolo de Referência:</strong>Diretrizes PHTLS (10ª Ed.) • TCCC / CoTCCC (APH Policial) • AHA (Suporte Básico de Vida) • Protocolos CBMMG / SAMU
+                            <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500 group-hover:text-emerald-400 shrink-0"></i>
+                        </button>
                     </div>
-                    <span class="px-2 py-0.5 rounded bg-pmmg-dark border border-pmmg-border text-pmmg-gold font-bold shrink-0 self-start sm:self-auto">
-                        Versão: APH-OFFLINE v2.6 (2026)
-                    </span>
                 </div>
             </div>
 
-            <!-- METRÔNOMOS DE RCP LUMINOSOS E SONOROS (100% OFFLINE VIA WEB AUDIO API) -->
-            <div id="saudeRcpMetronomesSection"class="bg-pmmg-card border-2 border-rose-500/70 rounded-2xl p-4 sm:p-5 shadow-2xl space-y-4">
-                <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border pb-3">
+            <!-- METRÔNOMO DE RCP (FECHADO POR PADRÃO, ABRE APENAS AO CLICAR) -->
+            <div id="saudeRcpMetronomesSection" class="bg-pmmg-card border border-rose-500/60 rounded-2xl overflow-hidden shadow-2xl">
+                <button type="button" onclick="toggleRcpMetronomeModuleBox()" id="btnToggleRcpMetronomeModule" class="w-full p-4 sm:p-5 flex items-center justify-between gap-3 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
                     <div class="flex items-center gap-2.5">
-                        <div class="p-2 rounded-xl bg-rose-950 text-rose-400 border border-rose-500/40">
-                            <i data-lucide="activity"class="w-5 h-5"></i>
+                        <div class="p-2 rounded-xl bg-rose-950 text-rose-400 border border-rose-500/40 shrink-0">
+                            <i data-lucide="activity" class="w-5 h-5"></i>
                         </div>
-                        <div>
-                            <div class="flex items-center gap-2 flex-wrap">
-                                <span class="text-[10px] font-extrabold uppercase tracking-wider bg-rose-950 text-rose-300 px-2 py-0.5 rounded border border-rose-500/40">
-                                     Web Audio API • 100% Offline
-                                </span>
-                                <span class="text-[10px] font-mono text-pmmg-gold uppercase font-bold">Cadência Guiada 100–120 BPM (Padrão 110 BPM)</span>
-                            </div>
-                            <h3 class="text-xl sm:text-2xl font-military text-white uppercase tracking-wide leading-none mt-1">
-                                Metrônomos de RCP Luminosos & Sonoros (Adulto e Pediátrico / Neonatal)
-                            </h3>
-                        </div>
+                        <h3 class="text-xl sm:text-2xl font-military text-white uppercase tracking-wide leading-none">
+                            Metrônomo de RCP
+                        </h3>
                     </div>
-                    <span class="text-[11px] text-gray-400 font-mono">Ciclos de 2 min com Alerta de Reavaliação / Troca</span>
-                </div>
-
-                <!-- Grade Dupla: Metrônomo 1 (RCP Adulto) e Metrônomo 2 (RCP Pediátrico / Neonatal) -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch">
-
-                    <!-- ================= METRÔNOMO 1: RCP ADULTO (REFERÊNCIA 30:2) ================= -->
-                    <div id="rcpMetroCard-adult"class="bg-pmmg-dark p-4 rounded-2xl border-2 border-rose-500/50 flex flex-col justify-between space-y-4 transition-all duration-100 relative overflow-hidden">
-                        <!-- Topo do Card Adulto -->
-                        <div class="flex items-start justify-between gap-2 border-b border-pmmg-border pb-3">
-                            <div>
-                                <div class="flex items-center gap-2 flex-wrap">
-                                    <span class="text-[10px] font-extrabold uppercase tracking-wider bg-rose-600 text-white px-2.5 py-0.5 rounded shadow">
-                                        Metrônomo 1 • RCP Adulto
-                                    </span>
-                                    <span class="text-[10px] font-mono font-extrabold text-rose-300 bg-rose-950/90 px-2 py-0.5 rounded border border-rose-500/40">
-                                        Referência: 30:2
-                                    </span>
-                                </div>
-                                <h4 class="text-lg sm:text-xl font-extrabold text-white mt-1.5 leading-tight">
-                                    Compressões Torácicas — Adulto
-                                </h4>
-                                <p class="text-[11px] text-gray-400">
-                                    30 compressões para 2 ventilações • Profundidade: 5 a 6 cm
-                                </p>
-                            </div>
-
-                            <!-- Indicador Luminoso de Pulso Sincronizado -->
-                            <div class="flex flex-col items-center shrink-0">
-                                <div id="rcpPulseOrb-adult"class="w-12 h-12 rounded-2xl bg-pmmg-card border-2 border-rose-500/50 flex flex-col items-center justify-center transition-all duration-75 shadow-inner">
-                                    <i data-lucide="heart-pulse"class="w-5 h-5 text-rose-400"></i>
-                                    <span id="rcpBeatCounter-adult"class="text-[10px] font-mono font-extrabold text-gray-300 leading-none mt-0.5">0/30</span>
-                                </div>
-                                <span class="text-[9px] font-mono uppercase text-gray-400 mt-1">Pulso Visual</span>
-                            </div>
-                        </div>
-
-                        <!-- Barra Luminosa de Sincronismo Visual & Cronômetro de 2 Minutos -->
-                        <div class="grid grid-cols-2 gap-2.5">
-                            <div id="rcpVisualFlashBox-adult"class="bg-pmmg-card p-3 rounded-xl border border-pmmg-border flex flex-col justify-between transition-all duration-75">
-                                <span class="text-[10px] font-bold uppercase text-gray-400 block">Cadência / Batida</span>
-                                <div class="flex items-baseline justify-between mt-1">
-                                    <strong id="rcpBpmReadout-adult"class="text-2xl font-mono font-extrabold text-white">110 <span class="text-xs font-normal text-rose-400">BPM</span></strong>
-                                    <span id="rcpStateLabel-adult"class="text-[10px] font-mono font-bold uppercase text-gray-400">PARADO</span>
-                                </div>
-                            </div>
-
-                            <div class="bg-pmmg-card p-3 rounded-xl border border-pmmg-border flex flex-col justify-between">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-[10px] font-bold uppercase text-pmmg-gold block">Ciclo 2 Minutos</span>
-                                    <span id="rcpCycleCount-adult"class="text-[10px] font-mono font-extrabold text-pmmg-khaki">Ciclo #1</span>
-                                </div>
-                                <div class="flex items-baseline justify-between mt-1">
-                                    <strong id="rcpTimerDisplay-adult"class="text-2xl font-mono font-extrabold text-pmmg-gold">02:00</strong>
-                                    <button type="button"onclick="triggerRcpReevaluationAlert('adult')"class="text-[9px] font-mono text-gray-400 hover:text-white underline"title="Testar som e alerta visual de 2 minutos">
-                                        Testar Alerta
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Alerta Visual de Fechamento de Ciclo de 2 Minutos (Oculto até completar 2 min ou testar) -->
-                        <div id="rcpCycleAlertBanner-adult"class="hidden bg-amber-950/95 border-2 border-amber-400 rounded-xl p-3 text-center space-y-1.5 animate-pulse shadow-[0_0_20px_rgba(251,191,36,0.45)]">
-                            <div class="text-xs sm:text-sm font-extrabold text-amber-300 uppercase tracking-wider flex items-center justify-center gap-1.5">
-                                <span>MOMENTO DE REAVALIAÇÃO / TROCAR SOCORRISTA</span>
-                            </div>
-                            <p class="text-[11px] text-white font-medium">
-                                2 minutos completos! Verifique pulso/ritmo (máx. 10s) e reveze o socorrista das compressões.
-                            </p>
-                            <button type="button"onclick="acknowledgeRcpAlert('adult')"class="px-3 py-1 bg-amber-400 hover:bg-amber-300 text-pmmg-black font-extrabold rounded-lg text-[11px] uppercase">
-                                Confirmar Reavaliação / Continuar
-                            </button>
-                        </div>
-
-                        <!-- Controle de Ajuste de BPM (100 a 120 BPM, Padrão 110 BPM) -->
-                        <div class="bg-pmmg-card/80 p-3 rounded-xl border border-pmmg-border space-y-2">
-                            <div class="flex items-center justify-between text-xs">
-                                <span class="font-bold text-gray-300 uppercase text-[10px]">Ajuste de Frequência (100 a 120 BPM):</span>
-                                <div class="flex items-center gap-1">
-                                    <button type="button"onclick="setRcpMetronomeBpm('adult', 100)"class="px-2 py-0.5 rounded bg-pmmg-dark hover:bg-pmmg-border text-[10px] font-mono font-bold text-gray-300 border border-pmmg-border">100</button>
-                                    <button type="button"onclick="setRcpMetronomeBpm('adult', 110)"class="px-2 py-0.5 rounded bg-rose-950 text-[10px] font-mono font-extrabold text-rose-300 border border-rose-500/40">110 (Padrão)</button>
-                                    <button type="button"onclick="setRcpMetronomeBpm('adult', 120)"class="px-2 py-0.5 rounded bg-pmmg-dark hover:bg-pmmg-border text-[10px] font-mono font-bold text-gray-300 border border-pmmg-border">120</button>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-2.5">
-                                <button type="button"onclick="stepRcpMetronomeBpm('adult', -2)"class="w-8 h-8 rounded-lg bg-pmmg-dark hover:bg-pmmg-border text-white font-mono font-extrabold border border-pmmg-border flex items-center justify-center shrink-0">-2</button>
-                                <input type="range"id="rcpBpmSlider-adult"min="100"max="120"step="1"value="110"oninput="setRcpMetronomeBpm('adult', this.value)"class="w-full accent-rose-500 cursor-pointer h-2 bg-pmmg-black rounded-lg">
-                                <button type="button"onclick="stepRcpMetronomeBpm('adult', 2)"class="w-8 h-8 rounded-lg bg-pmmg-dark hover:bg-pmmg-border text-white font-mono font-extrabold border border-pmmg-border flex items-center justify-center shrink-0">+2</button>
-                            </div>
-                        </div>
-
-                        <!-- Botões Iniciar / Parar e Reiniciar -->
-                        <div class="grid grid-cols-3 gap-2.5 pt-1">
-                            <button type="button"id="btnToggleMetro-adult"onclick="toggleRcpMetronome('adult')"class="col-span-2 py-3 px-4 bg-rose-600 hover:bg-rose-500 active:scale-95 text-white font-extrabold rounded-xl text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg uppercase tracking-wider transition-all cursor-pointer">
-                                <i data-lucide="play"id="iconToggleMetro-adult"class="w-4 h-4"></i>
-                                <span id="txtToggleMetro-adult">INICIAR METRÔNOMO ADULTO</span>
-                            </button>
-                            <button type="button"onclick="resetRcpMetronome('adult')"class="py-3 px-3 bg-pmmg-card hover:bg-pmmg-border active:scale-95 text-gray-200 border border-pmmg-border font-extrabold rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer"title="Zerar cronômetro de 2 minutos e contador">
-                                <i data-lucide="rotate-ccw"class="w-3.5 h-3.5"></i>
-                                <span>Zerar</span>
-                            </button>
-                        </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <span id="lblRcpMetronomeModuleToggle" class="text-[11px] font-bold text-pmmg-khaki">Abrir</span>
+                        <i data-lucide="chevron-down" id="iconRcpMetronomeModuleChevron" class="w-4 h-4 text-pmmg-gold transition-transform duration-200"></i>
                     </div>
+                </button>
 
-                    <!-- ================= METRÔNOMO 2: RCP PEDIÁTRICO / NEONATAL (REFERÊNCIA 15:2 OU 30:2) ================= -->
-                    <div id="rcpMetroCard-pediatric"class="bg-pmmg-dark p-4 rounded-2xl border-2 border-sky-500/50 flex flex-col justify-between space-y-4 transition-all duration-100 relative overflow-hidden">
-                        <!-- Topo do Card Pediátrico / Neonatal -->
-                        <div class="flex items-start justify-between gap-2 border-b border-pmmg-border pb-3">
-                            <div>
-                                <div class="flex items-center gap-2 flex-wrap">
-                                    <span class="text-[10px] font-extrabold uppercase tracking-wider bg-sky-500 text-pmmg-black px-2.5 py-0.5 rounded shadow">
-                                        Metrônomo 2 • RCP Pediátrico / Neonatal
-                                    </span>
-                                    <span id="rcpPedRatioBadge"class="text-[10px] font-mono font-extrabold text-sky-300 bg-sky-950/90 px-2 py-0.5 rounded border border-sky-500/40">
-                                        Referência: 15:2 ou 30:2
-                                    </span>
+                <!-- Conteúdo interno do Metrônomo de RCP (Oculto por padrão até o militar clicar para utilizar) -->
+                <div id="rcpMetronomeExpandableBody" class="hidden p-4 sm:p-5 pt-3 border-t border-pmmg-border space-y-4">
+                    <!-- Grade Dupla: Metrônomo 1 (RCP Adulto) e Metrônomo 2 (RCP Pediátrico / Neonatal) -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch">
+
+                        <!-- ================= METRÔNOMO 1: RCP ADULTO ================= -->
+                        <div id="rcpMetroCard-adult" class="bg-pmmg-dark p-4 rounded-2xl border-2 border-rose-500/50 flex flex-col justify-between space-y-4 transition-all duration-100 relative overflow-hidden">
+                            <!-- Topo do Card Adulto -->
+                            <div class="flex items-start justify-between gap-2 border-b border-pmmg-border pb-3">
+                                <div>
+                                    <div class="flex items-center gap-2 flex-wrap">
+                                        <span class="text-[10px] font-extrabold uppercase tracking-wider bg-rose-600 text-white px-2.5 py-0.5 rounded shadow">
+                                            Metrônomo 1 • RCP Adulto
+                                        </span>
+                                        <span class="text-[10px] font-mono font-extrabold text-rose-300 bg-rose-950/90 px-2 py-0.5 rounded border border-rose-500/40">
+                                            30:2
+                                        </span>
+                                    </div>
+                                    <h4 class="text-lg sm:text-xl font-extrabold text-white mt-1.5 leading-tight">
+                                        Compressões — Adulto
+                                    </h4>
                                 </div>
-                                <h4 class="text-lg sm:text-xl font-extrabold text-white mt-1.5 leading-tight">
-                                    Compressões — Pediátrico / Neonatal
-                                </h4>
-                                <div class="flex items-center gap-1.5 mt-1 flex-wrap">
-                                    <span class="text-[10px] text-gray-400 font-bold uppercase">Ciclo Guia:</span>
-                                    <button type="button"id="btnPedRatio15"onclick="setPediatricCycleRatio(15)"class="px-2 py-0.5 rounded text-[10px] font-mono font-extrabold bg-sky-500 text-pmmg-black border border-sky-400">
-                                        15:2 (2 Socorristas)
-                                    </button>
-                                    <button type="button"id="btnPedRatio30"onclick="setPediatricCycleRatio(30)"class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-pmmg-card text-gray-300 border border-pmmg-border hover:text-white">
-                                        30:2 (1 Socorrista)
-                                    </button>
+
+                                <!-- Indicador Luminoso de Pulso Sincronizado -->
+                                <div class="flex flex-col items-center shrink-0">
+                                    <div id="rcpPulseOrb-adult" class="w-12 h-12 rounded-2xl bg-pmmg-card border-2 border-rose-500/50 flex flex-col items-center justify-center transition-all duration-75 shadow-inner">
+                                        <i data-lucide="heart-pulse" class="w-5 h-5 text-rose-400"></i>
+                                        <span id="rcpBeatCounter-adult" class="text-[10px] font-mono font-extrabold text-gray-300 leading-none mt-0.5">0/30</span>
+                                    </div>
+                                    <span class="text-[9px] font-mono uppercase text-gray-400 mt-1">Pulso Visual</span>
                                 </div>
                             </div>
 
-                            <!-- Indicador Luminoso de Pulso Sincronizado -->
-                            <div class="flex flex-col items-center shrink-0">
-                                <div id="rcpPulseOrb-pediatric"class="w-12 h-12 rounded-2xl bg-pmmg-card border-2 border-sky-500/50 flex flex-col items-center justify-center transition-all duration-75 shadow-inner">
-                                    <i data-lucide="baby"class="w-5 h-5 text-sky-400"></i>
-                                    <span id="rcpBeatCounter-pediatric"class="text-[10px] font-mono font-extrabold text-gray-300 leading-none mt-0.5">0/15</span>
+                            <!-- Barra Luminosa de Sincronismo Visual & Cronômetro de 2 Minutos -->
+                            <div class="grid grid-cols-2 gap-2.5">
+                                <div id="rcpVisualFlashBox-adult" class="bg-pmmg-card p-3 rounded-xl border border-pmmg-border flex flex-col justify-between transition-all duration-75">
+                                    <span class="text-[10px] font-bold uppercase text-gray-400 block">Cadência / Batida</span>
+                                    <div class="flex items-baseline justify-between mt-1">
+                                        <strong id="rcpBpmReadout-adult" class="text-2xl font-mono font-extrabold text-white">110 <span class="text-xs font-normal text-rose-400">BPM</span></strong>
+                                        <span id="rcpStateLabel-adult" class="text-[10px] font-mono font-bold uppercase text-gray-400">PARADO</span>
+                                    </div>
                                 </div>
-                                <span class="text-[9px] font-mono uppercase text-gray-400 mt-1">Pulso Visual</span>
+
+                                <div class="bg-pmmg-card p-3 rounded-xl border border-pmmg-border flex flex-col justify-between">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-[10px] font-bold uppercase text-pmmg-gold block">Ciclo 2 Minutos</span>
+                                        <span id="rcpCycleCount-adult" class="text-[10px] font-mono font-extrabold text-pmmg-khaki">Ciclo #1</span>
+                                    </div>
+                                    <div class="flex items-baseline justify-between mt-1">
+                                        <strong id="rcpTimerDisplay-adult" class="text-2xl font-mono font-extrabold text-pmmg-gold">02:00</strong>
+                                        <button type="button" onclick="triggerRcpReevaluationAlert('adult')" class="text-[9px] font-mono text-gray-400 hover:text-white underline" title="Testar som e alerta visual de 2 minutos">
+                                            Testar Alerta
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Alerta Visual de Fechamento de Ciclo de 2 Minutos -->
+                            <div id="rcpCycleAlertBanner-adult" class="hidden bg-amber-950/95 border-2 border-amber-400 rounded-xl p-3 text-center space-y-1.5 animate-pulse shadow-[0_0_20px_rgba(251,191,36,0.45)]">
+                                <div class="text-xs sm:text-sm font-extrabold text-amber-300 uppercase tracking-wider flex items-center justify-center gap-1.5">
+                                    <span>CICLO DE 2 MINUTOS CONCLUÍDO</span>
+                                </div>
+                                <button type="button" onclick="acknowledgeRcpAlert('adult')" class="px-3 py-1 bg-amber-400 hover:bg-amber-300 text-pmmg-black font-extrabold rounded-lg text-[11px] uppercase">
+                                    Confirmar / Continuar
+                                </button>
+                            </div>
+
+                            <!-- Controle de Ajuste de BPM (100 a 120 BPM, Padrão 110 BPM) -->
+                            <div class="bg-pmmg-card/80 p-3 rounded-xl border border-pmmg-border space-y-2">
+                                <div class="flex items-center justify-between text-xs">
+                                    <span class="font-bold text-gray-300 uppercase text-[10px]">Frequência (100 a 120 BPM):</span>
+                                    <div class="flex items-center gap-1">
+                                        <button type="button" onclick="setRcpMetronomeBpm('adult', 100)" class="px-2 py-0.5 rounded bg-pmmg-dark hover:bg-pmmg-border text-[10px] font-mono font-bold text-gray-300 border border-pmmg-border">100</button>
+                                        <button type="button" onclick="setRcpMetronomeBpm('adult', 110)" class="px-2 py-0.5 rounded bg-rose-950 text-[10px] font-mono font-extrabold text-rose-300 border border-rose-500/40">110 (Padrão)</button>
+                                        <button type="button" onclick="setRcpMetronomeBpm('adult', 120)" class="px-2 py-0.5 rounded bg-pmmg-dark hover:bg-pmmg-border text-[10px] font-mono font-bold text-gray-300 border border-pmmg-border">120</button>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2.5">
+                                    <button type="button" onclick="stepRcpMetronomeBpm('adult', -2)" class="w-8 h-8 rounded-lg bg-pmmg-dark hover:bg-pmmg-border text-white font-mono font-extrabold border border-pmmg-border flex items-center justify-center shrink-0">-2</button>
+                                    <input type="range" id="rcpBpmSlider-adult" min="100" max="120" step="1" value="110" oninput="setRcpMetronomeBpm('adult', this.value)" class="w-full accent-rose-500 cursor-pointer h-2 bg-pmmg-black rounded-lg">
+                                    <button type="button" onclick="stepRcpMetronomeBpm('adult', 2)" class="w-8 h-8 rounded-lg bg-pmmg-dark hover:bg-pmmg-border text-white font-mono font-extrabold border border-pmmg-border flex items-center justify-center shrink-0">+2</button>
+                                </div>
+                            </div>
+
+                            <!-- Botões Iniciar / Parar e Reiniciar -->
+                            <div class="grid grid-cols-3 gap-2.5 pt-1">
+                                <button type="button" id="btnToggleMetro-adult" onclick="toggleRcpMetronome('adult')" class="col-span-2 py-3 px-4 bg-rose-600 hover:bg-rose-500 active:scale-95 text-white font-extrabold rounded-xl text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg uppercase tracking-wider transition-all cursor-pointer">
+                                    <i data-lucide="play" id="iconToggleMetro-adult" class="w-4 h-4"></i>
+                                    <span id="txtToggleMetro-adult">INICIAR METRÔNOMO ADULTO</span>
+                                </button>
+                                <button type="button" onclick="resetRcpMetronome('adult')" class="py-3 px-3 bg-pmmg-card hover:bg-pmmg-border active:scale-95 text-gray-200 border border-pmmg-border font-extrabold rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer" title="Zerar cronômetro de 2 minutos e contador">
+                                    <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                                    <span>Zerar</span>
+                                </button>
                             </div>
                         </div>
 
-                        <!-- Barra Luminosa de Sincronismo Visual & Cronômetro de 2 Minutos -->
-                        <div class="grid grid-cols-2 gap-2.5">
-                            <div id="rcpVisualFlashBox-pediatric"class="bg-pmmg-card p-3 rounded-xl border border-pmmg-border flex flex-col justify-between transition-all duration-75">
-                                <span class="text-[10px] font-bold uppercase text-gray-400 block">Cadência / Batida</span>
-                                <div class="flex items-baseline justify-between mt-1">
-                                    <strong id="rcpBpmReadout-pediatric"class="text-2xl font-mono font-extrabold text-white">110 <span class="text-xs font-normal text-sky-400">BPM</span></strong>
-                                    <span id="rcpStateLabel-pediatric"class="text-[10px] font-mono font-bold uppercase text-gray-400">PARADO</span>
+                        <!-- ================= METRÔNOMO 2: RCP PEDIÁTRICO / NEONATAL ================= -->
+                        <div id="rcpMetroCard-pediatric" class="bg-pmmg-dark p-4 rounded-2xl border-2 border-sky-500/50 flex flex-col justify-between space-y-4 transition-all duration-100 relative overflow-hidden">
+                            <!-- Topo do Card Pediátrico / Neonatal -->
+                            <div class="flex items-start justify-between gap-2 border-b border-pmmg-border pb-3">
+                                <div>
+                                    <div class="flex items-center gap-2 flex-wrap">
+                                        <span class="text-[10px] font-extrabold uppercase tracking-wider bg-sky-500 text-pmmg-black px-2.5 py-0.5 rounded shadow">
+                                            Metrônomo 2 • RCP Pediátrico / Neonatal
+                                        </span>
+                                        <span id="rcpPedRatioBadge" class="text-[10px] font-mono font-extrabold text-sky-300 bg-sky-950/90 px-2 py-0.5 rounded border border-sky-500/40">
+                                            15:2 ou 30:2
+                                        </span>
+                                    </div>
+                                    <h4 class="text-lg sm:text-xl font-extrabold text-white mt-1.5 leading-tight">
+                                        Compressões — Pediátrico / Neonatal
+                                    </h4>
+                                    <div class="flex items-center gap-1.5 mt-1 flex-wrap">
+                                        <span class="text-[10px] text-gray-400 font-bold uppercase">Ciclo:</span>
+                                        <button type="button" id="btnPedRatio15" onclick="setPediatricCycleRatio(15)" class="px-2 py-0.5 rounded text-[10px] font-mono font-extrabold bg-sky-500 text-pmmg-black border border-sky-400">
+                                            15:2
+                                        </button>
+                                        <button type="button" id="btnPedRatio30" onclick="setPediatricCycleRatio(30)" class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-pmmg-card text-gray-300 border border-pmmg-border hover:text-white">
+                                            30:2
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Indicador Luminoso de Pulso Sincronizado -->
+                                <div class="flex flex-col items-center shrink-0">
+                                    <div id="rcpPulseOrb-pediatric" class="w-12 h-12 rounded-2xl bg-pmmg-card border-2 border-sky-500/50 flex flex-col items-center justify-center transition-all duration-75 shadow-inner">
+                                        <i data-lucide="baby" class="w-5 h-5 text-sky-400"></i>
+                                        <span id="rcpBeatCounter-pediatric" class="text-[10px] font-mono font-extrabold text-gray-300 leading-none mt-0.5">0/15</span>
+                                    </div>
+                                    <span class="text-[9px] font-mono uppercase text-gray-400 mt-1">Pulso Visual</span>
                                 </div>
                             </div>
 
-                            <div class="bg-pmmg-card p-3 rounded-xl border border-pmmg-border flex flex-col justify-between">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-[10px] font-bold uppercase text-pmmg-gold block">Ciclo 2 Minutos</span>
-                                    <span id="rcpCycleCount-pediatric"class="text-[10px] font-mono font-extrabold text-pmmg-khaki">Ciclo #1</span>
+                            <!-- Barra Luminosa de Sincronismo Visual & Cronômetro de 2 Minutos -->
+                            <div class="grid grid-cols-2 gap-2.5">
+                                <div id="rcpVisualFlashBox-pediatric" class="bg-pmmg-card p-3 rounded-xl border border-pmmg-border flex flex-col justify-between transition-all duration-75">
+                                    <span class="text-[10px] font-bold uppercase text-gray-400 block">Cadência / Batida</span>
+                                    <div class="flex items-baseline justify-between mt-1">
+                                        <strong id="rcpBpmReadout-pediatric" class="text-2xl font-mono font-extrabold text-white">110 <span class="text-xs font-normal text-sky-400">BPM</span></strong>
+                                        <span id="rcpStateLabel-pediatric" class="text-[10px] font-mono font-bold uppercase text-gray-400">PARADO</span>
+                                    </div>
                                 </div>
-                                <div class="flex items-baseline justify-between mt-1">
-                                    <strong id="rcpTimerDisplay-pediatric"class="text-2xl font-mono font-extrabold text-pmmg-gold">02:00</strong>
-                                    <button type="button"onclick="triggerRcpReevaluationAlert('pediatric')"class="text-[9px] font-mono text-gray-400 hover:text-white underline"title="Testar som e alerta visual de 2 minutos">
-                                        Testar Alerta
-                                    </button>
+
+                                <div class="bg-pmmg-card p-3 rounded-xl border border-pmmg-border flex flex-col justify-between">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-[10px] font-bold uppercase text-pmmg-gold block">Ciclo 2 Minutos</span>
+                                        <span id="rcpCycleCount-pediatric" class="text-[10px] font-mono font-extrabold text-pmmg-khaki">Ciclo #1</span>
+                                    </div>
+                                    <div class="flex items-baseline justify-between mt-1">
+                                        <strong id="rcpTimerDisplay-pediatric" class="text-2xl font-mono font-extrabold text-pmmg-gold">02:00</strong>
+                                        <button type="button" onclick="triggerRcpReevaluationAlert('pediatric')" class="text-[9px] font-mono text-gray-400 hover:text-white underline" title="Testar som e alerta visual de 2 minutos">
+                                            Testar Alerta
+                                        </button>
+                                    </div>
                                 </div>
+                            </div>
+
+                            <!-- Alerta Visual de Fechamento de Ciclo de 2 Minutos -->
+                            <div id="rcpCycleAlertBanner-pediatric" class="hidden bg-amber-950/95 border-2 border-amber-400 rounded-xl p-3 text-center space-y-1.5 animate-pulse shadow-[0_0_20px_rgba(251,191,36,0.45)]">
+                                <div class="text-xs sm:text-sm font-extrabold text-amber-300 uppercase tracking-wider flex items-center justify-center gap-1.5">
+                                    <span>CICLO DE 2 MINUTOS CONCLUÍDO</span>
+                                </div>
+                                <button type="button" onclick="acknowledgeRcpAlert('pediatric')" class="px-3 py-1 bg-amber-400 hover:bg-amber-300 text-pmmg-black font-extrabold rounded-lg text-[11px] uppercase">
+                                    Confirmar / Continuar
+                                </button>
+                            </div>
+
+                            <!-- Controle de Ajuste de BPM (100 a 120 BPM, Padrão 110 BPM) -->
+                            <div class="bg-pmmg-card/80 p-3 rounded-xl border border-pmmg-border space-y-2">
+                                <div class="flex items-center justify-between text-xs">
+                                    <span class="font-bold text-gray-300 uppercase text-[10px]">Frequência (100 a 120 BPM):</span>
+                                    <div class="flex items-center gap-1">
+                                        <button type="button" onclick="setRcpMetronomeBpm('pediatric', 100)" class="px-2 py-0.5 rounded bg-pmmg-dark hover:bg-pmmg-border text-[10px] font-mono font-bold text-gray-300 border border-pmmg-border">100</button>
+                                        <button type="button" onclick="setRcpMetronomeBpm('pediatric', 110)" class="px-2 py-0.5 rounded bg-sky-950 text-[10px] font-mono font-extrabold text-sky-300 border border-sky-500/40">110 (Padrão)</button>
+                                        <button type="button" onclick="setRcpMetronomeBpm('pediatric', 120)" class="px-2 py-0.5 rounded bg-pmmg-dark hover:bg-pmmg-border text-[10px] font-mono font-bold text-gray-300 border border-pmmg-border">120</button>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2.5">
+                                    <button type="button" onclick="stepRcpMetronomeBpm('pediatric', -2)" class="w-8 h-8 rounded-lg bg-pmmg-dark hover:bg-pmmg-border text-white font-mono font-extrabold border border-pmmg-border flex items-center justify-center shrink-0">-2</button>
+                                    <input type="range" id="rcpBpmSlider-pediatric" min="100" max="120" step="1" value="110" oninput="setRcpMetronomeBpm('pediatric', this.value)" class="w-full accent-sky-400 cursor-pointer h-2 bg-pmmg-black rounded-lg">
+                                    <button type="button" onclick="stepRcpMetronomeBpm('pediatric', 2)" class="w-8 h-8 rounded-lg bg-pmmg-dark hover:bg-pmmg-border text-white font-mono font-extrabold border border-pmmg-border flex items-center justify-center shrink-0">+2</button>
+                                </div>
+                            </div>
+
+                            <!-- Botões Iniciar / Parar e Reiniciar -->
+                            <div class="grid grid-cols-3 gap-2.5 pt-1">
+                                <button type="button" id="btnToggleMetro-pediatric" onclick="toggleRcpMetronome('pediatric')" class="col-span-2 py-3 px-4 bg-sky-500 hover:bg-sky-400 active:scale-95 text-pmmg-black font-extrabold rounded-xl text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg uppercase tracking-wider transition-all cursor-pointer">
+                                    <i data-lucide="play" id="iconToggleMetro-pediatric" class="w-4 h-4"></i>
+                                    <span id="txtToggleMetro-pediatric">INICIAR METRÔNOMO PEDIÁTRICO</span>
+                                </button>
+                                <button type="button" onclick="resetRcpMetronome('pediatric')" class="py-3 px-3 bg-pmmg-card hover:bg-pmmg-border active:scale-95 text-gray-200 border border-pmmg-border font-extrabold rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer" title="Zerar cronômetro de 2 minutos e contador">
+                                    <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                                    <span>Zerar</span>
+                                </button>
                             </div>
                         </div>
 
-                        <!-- Alerta Visual de Fechamento de Ciclo de 2 Minutos (Oculto até completar 2 min ou testar) -->
-                        <div id="rcpCycleAlertBanner-pediatric"class="hidden bg-amber-950/95 border-2 border-amber-400 rounded-xl p-3 text-center space-y-1.5 animate-pulse shadow-[0_0_20px_rgba(251,191,36,0.45)]">
-                            <div class="text-xs sm:text-sm font-extrabold text-amber-300 uppercase tracking-wider flex items-center justify-center gap-1.5">
-                                <span>MOMENTO DE REAVALIAÇÃO / TROCAR SOCORRISTA</span>
-                            </div>
-                            <p class="text-[11px] text-white font-medium">
-                                2 minutos completos! Verifique pulso/respiração (máx. 10s) e reveze o socorrista das compressões.
-                            </p>
-                            <button type="button"onclick="acknowledgeRcpAlert('pediatric')"class="px-3 py-1 bg-amber-400 hover:bg-amber-300 text-pmmg-black font-extrabold rounded-lg text-[11px] uppercase">
-                                Confirmar Reavaliação / Continuar
-                            </button>
-                        </div>
-
-                        <!-- Controle de Ajuste de BPM (100 a 120 BPM, Padrão 110 BPM) -->
-                        <div class="bg-pmmg-card/80 p-3 rounded-xl border border-pmmg-border space-y-2">
-                            <div class="flex items-center justify-between text-xs">
-                                <span class="font-bold text-gray-300 uppercase text-[10px]">Ajuste de Frequência (100 a 120 BPM):</span>
-                                <div class="flex items-center gap-1">
-                                    <button type="button"onclick="setRcpMetronomeBpm('pediatric', 100)"class="px-2 py-0.5 rounded bg-pmmg-dark hover:bg-pmmg-border text-[10px] font-mono font-bold text-gray-300 border border-pmmg-border">100</button>
-                                    <button type="button"onclick="setRcpMetronomeBpm('pediatric', 110)"class="px-2 py-0.5 rounded bg-sky-950 text-[10px] font-mono font-extrabold text-sky-300 border border-sky-500/40">110 (Padrão)</button>
-                                    <button type="button"onclick="setRcpMetronomeBpm('pediatric', 120)"class="px-2 py-0.5 rounded bg-pmmg-dark hover:bg-pmmg-border text-[10px] font-mono font-bold text-gray-300 border border-pmmg-border">120</button>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-2.5">
-                                <button type="button"onclick="stepRcpMetronomeBpm('pediatric', -2)"class="w-8 h-8 rounded-lg bg-pmmg-dark hover:bg-pmmg-border text-white font-mono font-extrabold border border-pmmg-border flex items-center justify-center shrink-0">-2</button>
-                                <input type="range"id="rcpBpmSlider-pediatric"min="100"max="120"step="1"value="110"oninput="setRcpMetronomeBpm('pediatric', this.value)"class="w-full accent-sky-400 cursor-pointer h-2 bg-pmmg-black rounded-lg">
-                                <button type="button"onclick="stepRcpMetronomeBpm('pediatric', 2)"class="w-8 h-8 rounded-lg bg-pmmg-dark hover:bg-pmmg-border text-white font-mono font-extrabold border border-pmmg-border flex items-center justify-center shrink-0">+2</button>
-                            </div>
-                        </div>
-
-                        <!-- Botões Iniciar / Parar e Reiniciar -->
-                        <div class="grid grid-cols-3 gap-2.5 pt-1">
-                            <button type="button"id="btnToggleMetro-pediatric"onclick="toggleRcpMetronome('pediatric')"class="col-span-2 py-3 px-4 bg-sky-500 hover:bg-sky-400 active:scale-95 text-pmmg-black font-extrabold rounded-xl text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg uppercase tracking-wider transition-all cursor-pointer">
-                                <i data-lucide="play"id="iconToggleMetro-pediatric"class="w-4 h-4"></i>
-                                <span id="txtToggleMetro-pediatric">INICIAR METRÔNOMO PEDIÁTRICO</span>
-                            </button>
-                            <button type="button"onclick="resetRcpMetronome('pediatric')"class="py-3 px-3 bg-pmmg-card hover:bg-pmmg-border active:scale-95 text-gray-200 border border-pmmg-border font-extrabold rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer"title="Zerar cronômetro de 2 minutos e contador">
-                                <i data-lucide="rotate-ccw"class="w-3.5 h-3.5"></i>
-                                <span>Zerar</span>
-                            </button>
-                        </div>
                     </div>
-
                 </div>
             </div>
 
@@ -4869,12 +4821,9 @@
                     <!-- Corpo Dinâmico de Instruções Objetivas 100% Offline -->
                     <div id="aphModalBody"class="space-y-3 text-xs sm:text-sm text-gray-200"></div>
 
-                    <!-- Rodapé do Modal com Fonte / Protocolo de Referência e Versão -->
-                    <div class="pt-3 border-t border-pmmg-border flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[10px] text-gray-400 font-mono">
-                        <span id="aphModalSourceFooter">
-                            Fonte / Protocolo: PHTLS 10ª Ed. • CoTCCC / APH Policial • AHA • CBMMG / SAMU
-                        </span>
-                        <span class="text-pmmg-gold font-bold">Versão: APH-OFFLINE v2.6 (2026)</span>
+                    <!-- Rodapé Limpo do Modal -->
+                    <div class="pt-3 border-t border-pmmg-border flex items-center justify-between gap-2 text-[10px] text-gray-400 font-mono">
+                        <span id="aphModalSourceFooter">Aguardando arquivo oficial</span>
                     </div>
                 </div>
             </div>
@@ -7888,204 +7837,76 @@
         ];
 
         // ================= PROTOCOLOS APH 100% OFFLINE (6 PROTOCOLOS OBJETIVOS) & ASSISTENTE NOTEBOOKLM =================
+        window.toggleOfflineAphGuideBox = function(forceOpen = null) {
+            const body = document.getElementById('offlineAphGuideExpandableBody');
+            const lbl = document.getElementById('lblOfflineAphGuideToggle');
+            const icon = document.getElementById('iconOfflineAphGuideChevron');
+            if (!body) return;
+            const shouldOpen = forceOpen !== null ? forceOpen : body.classList.contains('hidden');
+            if (shouldOpen) {
+                body.classList.remove('hidden');
+                if (lbl) lbl.textContent = 'Fechar';
+                if (icon) icon.style.transform = 'rotate(180deg)';
+            } else {
+                body.classList.add('hidden');
+                if (lbl) lbl.textContent = 'Abrir';
+                if (icon) icon.style.transform = 'rotate(0deg)';
+            }
+        };
+
+        window.toggleRcpMetronomeModuleBox = function(forceOpen = null) {
+            const body = document.getElementById('rcpMetronomeExpandableBody');
+            const lbl = document.getElementById('lblRcpMetronomeModuleToggle');
+            const icon = document.getElementById('iconRcpMetronomeModuleChevron');
+            if (!body) return;
+            const shouldOpen = forceOpen !== null ? forceOpen : body.classList.contains('hidden');
+            if (shouldOpen) {
+                body.classList.remove('hidden');
+                if (lbl) lbl.textContent = 'Fechar';
+                if (icon) icon.style.transform = 'rotate(180deg)';
+            } else {
+                body.classList.add('hidden');
+                if (lbl) lbl.textContent = 'Abrir';
+                if (icon) icon.style.transform = 'rotate(0deg)';
+            }
+        };
+
         const AZIMUTE_APH_OFFLINE_PROTOCOLS = {
             hemorragia: {
-                badge: 'PROTOCOLO 01 • CONTROLE DE HEMORRAGIA EXSANGUINANTE (MARCH)',
-                title: '1. Hemorragia Massiva & Uso de Torniquete',
-                source: 'Fonte / Protocolo: CoTCCC (TCCC Guidelines) & PHTLS 10ª Ed. • Versão APH-OFFLINE v2.6',
-                html: `
-                    <div class="bg-red-950/40 border border-red-500/60 rounded-xl p-3.5 space-y-1.5">
-                        <strong class="text-red-300 uppercase text-xs block">Sinais de Hemorragia Ameaçadora à Vida:</strong>
-                        <p class="text-xs text-gray-200">Sangramento pulsátil (arterial) ou em lençol contínuo, poça de sangue crescendo rapidamente, roupas encharcadas de sangue ou amputação traumática parcial/total de membro.</p>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        <div class="bg-pmmg-card p-3.5 rounded-xl border border-pmmg-border space-y-2">
-                            <strong class="text-pmmg-gold uppercase text-xs block">1º) Torniquete de Extremidade (Membros / Extremidades)</strong>
-                            <ul class="space-y-1.5 text-xs text-gray-200 list-disc pl-4">
-                                <li><strong>Sob Fogo / Risco Iminente (CUF):</strong>Aplique imediatamente <strong>"Alto e Apertado"</strong> (na raiz da coxa ou axila) por cima da farda.</li>
-                                <li><strong>Fora de Fogo (Avaliação Direta):</strong>Posicione a <strong>5 a 7 cm (3 a 4 dedos) acima da lesão</strong>diretamente sobre a pele (NUNCA sobre articulações como joelho ou cotovelo, nem sobre bolsos com objetos).</li>
-                                <li><strong>Aperto da Haste (Molinete):</strong>Puxe a fita com força máxima e gire a haste até cessar totalmente o sangramento e sumir o pulso distal.</li>
-                                <li><strong>Trave e Anote o Horário:</strong>Prenda a haste no clipe, feche a fita <strong class="text-red-400">TIME</strong>e registre o horário exato (ex: <code>TQ 14:25</code>). <strong>Nunca afrouxe o torniquete em campo.</strong></li>
-                            </ul>
-                        </div>
-                        <div class="bg-pmmg-card p-3.5 rounded-xl border border-pmmg-border space-y-2">
-                            <strong class="text-pmmg-khaki uppercase text-xs block">2º) Preenchimento de Ferida (Áreas Juncionais)</strong>
-                            <ul class="space-y-1.5 text-xs text-gray-200 list-disc pl-4">
-                                <li><strong>Locais onde o Torniquete não pega:</strong>Pescoço, axila e virilha (regiões juncionais).</li>
-                                <li><strong>Técnica de Empacotamento (Wound Packing):</strong>Identifique o ponto exato de sangramento no fundo da cavidade e introduza gaze hemostática (ou gaze estéril comum) compactando firmemente até preencher toda a ferida.</li>
-                                <li><strong>Compressão Direta Contínua:</strong>Mantenha pressão manual firme e ininterrupta sobre o pacote por no mínimo <strong>3 minutos</strong> (gaze hemostática) ou <strong>10 minutos</strong> (gaze padrão).</li>
-                                <li><strong>Curativo Compressivo:</strong>Finalize com bandagem israelense / atadura bem ajustada e previna hipotermia (mantenha a vítima aquecida).</li>
-                            </ul>
-                        </div>
-                    </div>
-                `
+                badge: 'GUIA DE APH OFFLINE',
+                title: '1. Hemorragia / Torniquete',
+                source: 'Aguardando dados dos arquivos oficiais',
+                html: `<div class="bg-pmmg-card p-5 rounded-xl border border-pmmg-border text-xs text-gray-400 text-center font-mono">Estrutura limpa pronta para receber os dados dos arquivos oficiais.</div>`
             },
             vias_aereas: {
-                badge: 'PROTOCOLO 02 • MANEJO DE VIAS AÉREAS E COLUNA CERVICAL',
-                title: '2. Vias Aéreas (Abertura, Desobstrução e Posição)',
-                source: 'Fonte / Protocolo: PHTLS 10ª Ed. & Diretrizes CoTCCC • Versão APH-OFFLINE v2.6',
-                html: `
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        <div class="bg-pmmg-card p-3.5 rounded-xl border border-sky-500/40 space-y-2">
-                            <strong class="text-sky-400 uppercase text-xs block">1º) Vítima SEM Suspeita de Trauma Cervical</strong>
-                            <p class="text-xs text-gray-200"><strong>Manobra Chin-Lift (Inclinacão da Cabeça e Elevação do Queixo):</strong></p>
-                            <ul class="space-y-1.5 text-xs text-gray-300 list-disc pl-4">
-                                <li>Apoie uma mão na testa da vítima e incline suavemente a cabeça para trás.</li>
-                                <li>Com as pontas dos dedos da outra mão sob a parte óssea do queixo, eleve a mandíbula para afastar a língua do fundo da garganta.</li>
-                            </ul>
-                        </div>
-                        <div class="bg-pmmg-card p-3.5 rounded-xl border border-amber-500/40 space-y-2">
-                            <strong class="text-amber-400 uppercase text-xs block">2º) Vítima COM Trauma (Acidente, Queda, Baleado)</strong>
-                            <p class="text-xs text-gray-200"><strong>Manobra Jaw-Thrust (Tração da Mandíbula SEM hiperestender o pescoço):</strong></p>
-                            <ul class="space-y-1.5 text-xs text-gray-300 list-disc pl-4">
-                                <li>Estabilize a cabeça manualmente em posição neutra alinhada.</li>
-                                <li>Posicione os dedos atrás dos ângulos da mandíbula e projete o maxilar inferior para cima/frente, abrindo a boca com os polegares.</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="bg-pmmg-card p-3.5 rounded-xl border border-pmmg-border space-y-2">
-                        <strong class="text-pmmg-khaki uppercase text-xs block">3º) Inspeção Rápida e Posicionamento Seguro</strong>
-                        <ul class="space-y-1.5 text-xs text-gray-200 list-disc pl-4">
-                            <li><strong>Limpeza Visual:</strong>Abra a boca e verifique sangue, vômito, dentes quebrados ou próteses soltas. Remova apenas o que for visível (não faça varredura às cegas).</li>
-                            <li><strong>Vítima Consciente com Sangramento Oral/Facial:</strong>Permita que sente-se inclinada para a frente (posição que facilite cuspir/drenar o sangue sem broncoaspirar).</li>
-                            <li><strong>Vítima Inconsciente que Respira (Sem Trauma Raquimedular):</strong>Coloque em <strong>Posição Lateral de Segurança (Decúbito Lateral)</strong>para evitar aspiração de vômito/sangue e queda da língua.</li>
-                        </ul>
-                    </div>
-                `
+                badge: 'GUIA DE APH OFFLINE',
+                title: '2. Vias Aéreas',
+                source: 'Aguardando dados dos arquivos oficiais',
+                html: `<div class="bg-pmmg-card p-5 rounded-xl border border-pmmg-border text-xs text-gray-400 text-center font-mono">Estrutura limpa pronta para receber os dados dos arquivos oficiais.</div>`
             },
             queimaduras: {
-                badge: 'PROTOCOLO 03 • ATENDIMENTO A QUEIMADURAS TÉRMICAS, QUÍMICAS E ELÉTRICAS',
-                title: '3. Queimaduras (Manejo Imediato e Vias Aéreas)',
-                source: 'Fonte / Protocolo: PHTLS 10ª Ed. & Protocolo de Trauma Térmico CBMMG • Versão APH-OFFLINE v2.6',
-                html: `
-                    <div class="bg-orange-950/40 border border-orange-500/60 rounded-xl p-3.5 space-y-1.5">
-                        <strong class="text-orange-300 uppercase text-xs block">Prioridade Crítica — Queimadura de Vias Aéreas:</strong>
-                        <p class="text-xs text-gray-200">Suspeite de lesão inalatória se houver: queimadura na face/pescoço, vibrissas nasais (pelos do nariz) chamuscadas, escarro com fuligem, rouquidão ou estridor. <strong>Acione evacuação médica imediata (HPS João XXIII).</strong></p>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        <div class="bg-pmmg-card p-3.5 rounded-xl border border-pmmg-border space-y-2">
-                            <strong class="text-emerald-400 uppercase text-xs block">O QUE FAZER IMEDIATAMENTE:</strong>
-                            <ul class="space-y-1.5 text-xs text-gray-200 list-disc pl-4">
-                                <li><strong>Interrompa o Processo de Queimadura:</strong>Afaste da fonte térmica; se as vestes estiverem em chamas, abafe com manta ou role a vítima no solo.</li>
-                                <li><strong>Resfriamento Inicial (Até 10 min):</strong>Irrigue com água corrente limpa em temperatura ambiente ou soro fisiológico para interromper o calor residual.</li>
-                                <li><strong>Retire Adornos Rapidamente:</strong>Remova anéis, alianças, relógios, pulseiras e cintos antes que o edema (inchaço) estrangule o membro.</li>
-                                <li><strong>Curativo Seco e Limpo:</strong>Cubra a área queimada com compressa/pano estéril seco e limpo e <strong>previna a hipotermia</strong>cobrindo o restante do corpo.</li>
-                            </ul>
-                        </div>
-                        <div class="bg-pmmg-card p-3.5 rounded-xl border border-pmmg-border space-y-2">
-                            <strong class="text-red-400 uppercase text-xs block">O QUE NUNCA FAZER + CASOS ESPECIAIS:</strong>
-                            <ul class="space-y-1.5 text-xs text-gray-200 list-disc pl-4">
-                                <li><strong>NÃO arranque roupas aderidas à pele:</strong>Recorte o tecido ao redor da lesão.</li>
-                                <li><strong>NÃO fure bolhas (flictenas)</strong>e <strong>NÃO aplique gelo direto</strong>, pomadas, pasta de dente, manteiga ou óleo.</li>
-                                <li><strong>Queimadura Química:</strong>Se for pó seco (ex: cal), escove primeiro antes de lavar. Depois irrigue com água abundante por pelo menos 20 minutos.</li>
-                                <li><strong>Queimadura Elétrica:</strong>Garanta que a rede elétrica esteja desligada antes de tocar na vítima; monitore parada cardiorrespiratória (arritmia).</li>
-                            </ul>
-                        </div>
-                    </div>
-                `
+                badge: 'GUIA DE APH OFFLINE',
+                title: '3. Queimaduras',
+                source: 'Aguardando dados dos arquivos oficiais',
+                html: `<div class="bg-pmmg-card p-5 rounded-xl border border-pmmg-border text-xs text-gray-400 text-center font-mono">Estrutura limpa pronta para receber os dados dos arquivos oficiais.</div>`
             },
             rcp: {
-                badge: 'PROTOCOLO 04 • RESSUSCITAÇÃO CARDIOPULMONAR (SUPORTE BÁSICO DE VIDA)',
-                title: '4. RCP (Adulto, Criança e Bebê / Lactente)',
-                source: 'Fonte / Protocolo: Diretrizes American Heart Association (AHA) & CBMMG • Versão APH-OFFLINE v2.6',
-                html: `
-                    <div class="bg-rose-950/40 border border-rose-500/60 rounded-xl p-3.5 space-y-1.5">
-                        <strong class="text-rose-300 uppercase text-xs block">1º Passo — Reconhecimento Rápido da Parada (PCR):</strong>
-                        <p class="text-xs text-gray-200">Segurança de cena ->Avalie resposta tocando nos ombros (<em>"Senhor, você me ouve?"</em>) ->Verifique respiração e pulso central (carotídeo no adulto/criança ou braquial no bebê) simultaneamente em <strong>5 a 10 segundos</strong>. Vítima <strong>inconsciente + sem respiração normal (ou apenas gasping) + sem pulso</strong> = <strong>INICIE RCP IMEDIATAMENTE!</strong></p>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                        <div class="bg-pmmg-card p-3.5 rounded-xl border border-pmmg-border space-y-1.5">
-                            <span class="text-[10px] bg-rose-950 text-rose-300 font-bold px-2 py-0.5 rounded uppercase">Adulto (Acima da Puberdade)</span>
-                            <h5 class="text-base font-extrabold text-white mt-1">RCP em Adultos</h5>
-                            <ul class="space-y-1 text-xs text-gray-300 list-disc pl-4">
-                                <li><strong>Local:</strong>Centro do tórax (metade inferior do esterno), com 2 mãos entrelaçadas e braços retos (90°).</li>
-                                <li><strong>Frequência:</strong> <strong>100 a 120 comp/min</strong>.</li>
-                                <li><strong>Profundidade:</strong> <strong>5 a 6 cm</strong> (permita o retorno total do tórax).</li>
-                                <li><strong>Relação:</strong> <strong>30 compressões : 2 ventilações</strong> (ou compressões contínuas se sem barreira de ventilação).</li>
-                            </ul>
-                        </div>
-                        <div class="bg-pmmg-card p-3.5 rounded-xl border border-pmmg-border space-y-1.5">
-                            <span class="text-[10px] bg-amber-950 text-amber-300 font-bold px-2 py-0.5 rounded uppercase">Criança (1 ano até Puberdade)</span>
-                            <h5 class="text-base font-extrabold text-white mt-1">RCP Pediátrica</h5>
-                            <ul class="space-y-1 text-xs text-gray-300 list-disc pl-4">
-                                <li><strong>Local:</strong>Metade inferior do esterno com <strong>1 ou 2 mãos</strong> (conforme porte da criança).</li>
-                                <li><strong>Frequência:</strong> <strong>100 a 120 comp/min</strong>.</li>
-                                <li><strong>Profundidade:</strong>Cerca de <strong>5 cm</strong> (1/3 do diâmetro anteroposterior do tórax).</li>
-                                <li><strong>Relação:</strong> <strong>30:2</strong> (1 socorrista) ou <strong>15:2</strong> (com 2 socorristas).</li>
-                            </ul>
-                        </div>
-                        <div class="bg-pmmg-card p-3.5 rounded-xl border border-pmmg-border space-y-1.5">
-                            <span class="text-[10px] bg-sky-950 text-sky-300 font-bold px-2 py-0.5 rounded uppercase">Bebê / Lactente (&lt; 1 ano)</span>
-                            <h5 class="text-base font-extrabold text-white mt-1">RCP em Bebês</h5>
-                            <ul class="space-y-1 text-xs text-gray-300 list-disc pl-4">
-                                <li><strong>Local:</strong>Logo abaixo da linha intermamilar com <strong>2 dedos</strong> (1 socorrista) ou <strong>2 polegares abraçando o tórax</strong> (2 socorristas).</li>
-                                <li><strong>Frequência:</strong> <strong>100 a 120 comp/min</strong>.</li>
-                                <li><strong>Profundidade:</strong>Cerca de <strong>4 cm</strong> (1/3 do tórax).</li>
-                                <li><strong>Relação:</strong> <strong>30:2</strong> (1 socorrista) ou <strong>15:2</strong> (2 socorristas).</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="bg-pmmg-card p-3 rounded-xl border border-pmmg-gold/40 text-xs text-gray-200">
-                        <strong class="text-pmmg-gold">Uso do DEA e Troca de Socorrista:</strong>Assim que o DEA (Desfibrilador) estiver disponível, ligue-o, cole as pás no tórax seco e siga os comandos de voz. <strong>Revezem o socorrista das compressões a cada 2 minutos (5 ciclos de 30:2)</strong>para evitar fadiga.
-                    </div>
-                `
+                badge: 'GUIA DE APH OFFLINE',
+                title: '4. RCP',
+                source: 'Aguardando dados dos arquivos oficiais',
+                html: `<div class="bg-pmmg-card p-5 rounded-xl border border-pmmg-border text-xs text-gray-400 text-center font-mono">Estrutura limpa pronta para receber os dados dos arquivos oficiais.</div>`
             },
             ovace: {
-                badge: 'PROTOCOLO 05 • DESOBSTRUÇÃO DE VIAS AÉREAS POR CORPO ESTRANHO (OVACE)',
-                title: '5. Desengasgamento (OVACE • Adulto, Gestante e Bebê)',
-                source: 'Fonte / Protocolo: Diretrizes AHA & Protocolo de Suporte Básico CBMMG / SAMU • Versão APH-OFFLINE v2.6',
-                html: `
-                    <div class="bg-amber-950/40 border border-amber-500/60 rounded-xl p-3.5 space-y-1">
-                        <strong class="text-amber-300 uppercase text-xs block">Avaliação Inicial — Engasgo Parcial (Leve) vs. Engasgo Total (Grave):</strong>
-                        <p class="text-xs text-gray-200">• <strong>Leve (Tosse eficaz, consegue falar/chorar):</strong>NÃO faça compressões nem dê tapas; apenas acalme e incentive a tossir.<br>• <strong>Grave (Sinal universal de asfixia, tosse silenciosa, não fala, cianose/roxo):</strong>Atue imediatamente conforme a idade abaixo!</p>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        <div class="bg-pmmg-card p-3.5 rounded-xl border border-pmmg-border space-y-2">
-                            <strong class="text-pmmg-gold uppercase text-xs block">1º) Adultos e Crianças (&gt; 1 ano) — Manobra de Heimlich</strong>
-                            <ul class="space-y-1.5 text-xs text-gray-200 list-disc pl-4">
-                                <li>Posicione-se atrás da vítima e envolva a cintura dela com seus braços (em crianças, ajoelhe-se na altura dela).</li>
-                                <li>Feche uma das mãos em punho com o polegar voltado contra o abdome da vítima, posicionando-o <strong>entre a cicatriz umbilical (umbigo) e o apêndice xifoide</strong>.</li>
-                                <li>Segure o punho com a outra mão e aplique <strong>compressões rápidas para dentro e para cima (movimento em "J")</strong>até o objeto sair ou a vítima tornar-se inconsciente.</li>
-                                <li><strong class="text-emerald-400">Gestantes ou Obesos:</strong>Realize as compressões no <strong>centro do tórax (esterno)</strong>em vez do abdome.</li>
-                            </ul>
-                        </div>
-                        <div class="bg-pmmg-card p-3.5 rounded-xl border border-pmmg-border space-y-2">
-                            <strong class="text-sky-400 uppercase text-xs block">2º) Bebês / Lactentes (&lt; 1 ano) — 5 Golpes + 5 Compressões</strong>
-                            <ul class="space-y-1.5 text-xs text-gray-200 list-disc pl-4">
-                                <li><strong>NUNCA faça Heimlich abdominal em menores de 1 ano!</strong></li>
-                                <li><strong>Passo A (5 Tapotagens nas Costas):</strong>Apoie o bebê de bruços sobre seu antebraço (cabeça mais baixa que o tronco, segurando a mandíbula sem pressionar a garganta) e aplique <strong>5 golpes firmes com a base da mão entre as escápulas</strong>.</li>
-                                <li><strong>Passo B (5 Compressões Torácicas):</strong>Vire o bebê de barriga para cima apoiado no outro antebraço e faça <strong>5 compressões no centro do tórax com 2 dedos</strong> (linha intermamilar).</li>
-                                <li>Repita o ciclo <strong>5 golpes nas costas + 5 compressões torácicas</strong>até desengasgar (choro/respiração) ou se ficar inconsciente (inicie RCP).</li>
-                            </ul>
-                        </div>
-                    </div>
-                `
+                badge: 'GUIA DE APH OFFLINE',
+                title: '5. Desengasgamento (OVACE)',
+                source: 'Aguardando dados dos arquivos oficiais',
+                html: `<div class="bg-pmmg-card p-5 rounded-xl border border-pmmg-border text-xs text-gray-400 text-center font-mono">Estrutura limpa pronta para receber os dados dos arquivos oficiais.</div>`
             },
             parto: {
-                badge: 'PROTOCOLO 06 • EMERGÊNCIA OBSTÉTRICA E PARTO IMINENTE EM VIATURA / CAMPO',
+                badge: 'GUIA DE APH OFFLINE',
                 title: '6. Gestantes / Parto de Emergência',
-                source: 'Fonte / Protocolo: Manual de APH Obstétrico SAMU / CBMMG & PHTLS • Versão APH-OFFLINE v2.6',
-                html: `
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        <div class="bg-pmmg-card p-3.5 rounded-xl border border-emerald-500/40 space-y-2">
-                            <strong class="text-emerald-400 uppercase text-xs block">1º) Transporte da Gestante vs. Parto Iminente</strong>
-                            <ul class="space-y-1.5 text-xs text-gray-200 list-disc pl-4">
-                                <li><strong>Transporte de Gestante (Sem Coroamento):</strong>Sempre posicione a gestante em <strong>Decúbito Lateral Esquerdo (deitada sobre o lado esquerdo)</strong>para evitar compressão da veia cava pelo útero.</li>
-                                <li><strong>Quando assistir o parto no local:</strong>Contrações fortes a cada 2 minutos ou menos, vontade incontrolável de fazer força (puxo) e <strong>coroamento visível</strong> (cabeça do bebê apontando no canal vaginal).</li>
-                                <li>Garanta privacidade, calce luvas limpas e forre a superfície com lençóis/panos limpos e secos.</li>
-                            </ul>
-                        </div>
-                        <div class="bg-pmmg-card p-3.5 rounded-xl border border-pmmg-border space-y-2">
-                            <strong class="text-pmmg-gold uppercase text-xs block">2º) Assistência à Expulsão e Cuidados com o Recém-Nascido (RN)</strong>
-                            <ul class="space-y-1.5 text-xs text-gray-200 list-disc pl-4">
-                                <li><strong>Apoie a Cabeça (Não Puxe):</strong>Amparar a cabeça do bebê com as mãos protegendo o períneo da mãe para evitar expulsão explosiva.</li>
-                                <li><strong>Verifique Circular de Cordão:</strong>Se o cordão umbilical estiver enrolado no pescoço, deslize-o suavemente com um dedo por cima da cabeça do bebê.</li>
-                                <li><strong>Cuidado nº 1 com o RN (Aquecer e Secar):</strong>Assim que nascer, <strong>seque imediatamente o bebê</strong> (especialmente a cabeça), troque o pano úmido por manta seca, coloque sobre o tórax/abdome da mãe pele a pele e cubra ambos.</li>
-                                <li><strong>Cordão e Placenta:</strong>Se não houver kit estéril, <strong>não corte o cordão em campo</strong> (apenas mantenha o bebê no mesmo nível da mãe). Se a placenta sair espontaneamente, guarde-a em saco plástico limpo para levar à maternidade e massageie suavemente o fundo do útero da mãe (abaixo do umbigo) para conter sangramento.</li>
-                            </ul>
-                        </div>
-                    </div>
-                `
+                source: 'Aguardando dados dos arquivos oficiais',
+                html: `<div class="bg-pmmg-card p-5 rounded-xl border border-pmmg-border text-xs text-gray-400 text-center font-mono">Estrutura limpa pronta para receber os dados dos arquivos oficiais.</div>`
             }
         };
 
