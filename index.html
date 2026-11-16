@@ -1017,40 +1017,46 @@
                             </div>
                         </div>
 
-                        <!-- CARD RESUMIDO "CONECTIVIDADE"AO LADO DO CARD DE CLIMA (4 ESTADOS: BOA, MODERADA, RUIM, SEM MEDIÇÃO) -->
-                        <div id="localConnectivitySummaryCard"onclick="openGeoConnectivitySubpage()"class="bg-pmmg-dark hover:bg-pmmg-cardHover border border-gray-500/50 border-l-4 border-l-gray-400 rounded-xl p-3.5 cursor-pointer transition-all shadow-md group flex flex-col justify-between">
+                        <!-- CARD RESUMIDO "CONECTIVIDADE" AO LADO DO CARD DE CLIMA (MEDIÇÃO AUTOMÁTICA + BOTÃO DIRETO "NOVO TESTE") -->
+                        <div id="localConnectivitySummaryCard" onclick="openGeoConnectivitySubpage()" class="bg-pmmg-dark hover:bg-pmmg-cardHover border border-pmmg-khaki/50 border-l-4 border-l-pmmg-khaki rounded-xl p-3.5 cursor-pointer transition-all shadow-md group flex flex-col justify-between">
                             <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border/70 pb-2 mb-2.5">
                                 <div class="flex items-center gap-2">
-                                    <div id="connSummaryIconBox"class="p-1.5 rounded-lg bg-gray-800 text-gray-300 border border-gray-500/40 transition-colors">
-                                        <i data-lucide="wifi"class="w-4 h-4"></i>
+                                    <div id="connSummaryIconBox" class="p-1.5 rounded-lg bg-pmmg-card text-pmmg-khaki border border-pmmg-khaki/40 transition-colors">
+                                        <i data-lucide="wifi" class="w-4 h-4"></i>
                                     </div>
                                     <div>
                                         <div class="flex items-center gap-1.5">
                                             <span class="text-[10px] font-extrabold uppercase tracking-wider text-pmmg-khaki block leading-none">CONECTIVIDADE</span>
-                                            <span id="connSummaryStateBadge"class="px-2 py-0.5 rounded text-[9px] font-mono font-extrabold uppercase bg-gray-800 text-gray-300 border border-gray-500/50 transition-all">
-                                                SEM MEDIÇÃO
+                                            <span id="connSummaryStateBadge" class="px-2 py-0.5 rounded text-[9px] font-mono font-extrabold uppercase bg-pmmg-khakiBadge text-pmmg-khaki border border-pmmg-khaki/50 transition-all">
+                                                MEDINDO...
                                             </span>
                                         </div>
-                                        <span class="text-[10px] text-gray-400 block mt-0.5">Qualidade de rede e latência de rede</span>
+                                        <span class="text-[10px] text-gray-400 block mt-0.5">Aferição automática de velocidade e latência</span>
                                     </div>
                                 </div>
-                                <button type="button"onclick="event.stopPropagation(); openGeoConnectivitySubpage();"class="px-2.5 py-1 rounded-lg bg-pmmg-card group-hover:bg-pmmg-khaki text-pmmg-khaki group-hover:text-pmmg-black border border-pmmg-khaki/50 text-[11px] font-extrabold flex items-center gap-1 transition-all">
-                                    <span>Ver Diagnóstico →</span>
-                                </button>
+                                <div class="flex items-center gap-1.5">
+                                    <button type="button" id="btnSummaryRunConnTest" onclick="event.stopPropagation(); runRealConnectivityDiagnostic();" class="px-2.5 py-1 rounded-lg bg-pmmg-khaki hover:bg-pmmg-khakiHover text-pmmg-black font-extrabold text-[11px] flex items-center gap-1 shadow transition-all active:scale-95 cursor-pointer" title="Executar novo teste de conectividade agora">
+                                        <i data-lucide="refresh-cw" id="iconSummaryConnTest" class="w-3 h-3"></i>
+                                        <span id="txtSummaryConnTest">Novo Teste</span>
+                                    </button>
+                                    <button type="button" onclick="event.stopPropagation(); openGeoConnectivitySubpage();" class="px-2.5 py-1 rounded-lg bg-pmmg-card hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-khaki/50 text-[11px] font-extrabold flex items-center gap-1 transition-all cursor-pointer">
+                                        <span>Ver Diagnóstico →</span>
+                                    </button>
+                                </div>
                             </div>
 
                             <div class="grid grid-cols-3 gap-2.5 text-xs">
                                 <div class="bg-pmmg-card/90 p-2.5 rounded-lg border border-pmmg-border">
                                     <span class="text-[10px] text-gray-400 uppercase font-bold block">Qualidade</span>
-                                    <strong id="connSummaryStatusText"class="text-xs sm:text-sm font-mono text-gray-300 font-extrabold block mt-0.5 truncate">SEM MEDIÇÃO</strong>
+                                    <strong id="connSummaryStatusText" class="text-xs sm:text-sm font-mono text-pmmg-khaki font-extrabold block mt-0.5 truncate">MEDINDO...</strong>
                                 </div>
                                 <div class="bg-pmmg-card/90 p-2.5 rounded-lg border border-pmmg-border">
                                     <span class="text-[10px] text-gray-400 uppercase font-bold block">Down / Ping</span>
-                                    <strong id="connSummaryDownPing"class="text-xs sm:text-sm font-mono text-white font-extrabold block mt-0.5 truncate">-- Mbps / -- ms</strong>
+                                    <strong id="connSummaryDownPing" class="text-xs sm:text-sm font-mono text-white font-extrabold block mt-0.5 truncate">Calculando...</strong>
                                 </div>
                                 <div class="bg-pmmg-card/90 p-2.5 rounded-lg border border-pmmg-border">
                                     <span class="text-[10px] text-gray-400 uppercase font-bold block">Tecnologia</span>
-                                    <strong id="connSummaryTech"class="text-xs sm:text-sm font-mono text-pmmg-gold font-extrabold block mt-0.5 truncate">SEM MEDIÇÃO</strong>
+                                    <strong id="connSummaryTech" class="text-xs sm:text-sm font-mono text-pmmg-gold font-extrabold block mt-0.5 truncate">Detectando...</strong>
                                 </div>
                             </div>
                         </div>
@@ -1269,16 +1275,34 @@
                         </div>
                     </div>
 
-                    <!-- Socorro / Hospital Mais Próximo -->
-                    <div class="bg-pmmg-dark p-3.5 rounded-xl border border-pmmg-border border-l-4 border-l-red-500 flex items-center justify-between gap-2">
-                        <div>
-                            <span class="text-[10px] uppercase font-bold text-red-400 block">Socorro / Hospital Mais Próximo</span>
-                            <strong id="hudClosestHospital"class="text-sm sm:text-base text-white block mt-0.5">Calculando unidade...</strong>
-                            <span id="hudClosestHospitalDist"class="text-[11px] text-gray-300 font-medium block">Distância e tempo estimado via satélite</span>
+                </div>
+
+                <!-- HOSPITAL MAIS PRÓXIMO (CAIXA FECHADA POR PADRÃO, ABRE SOMENTE SE O USUÁRIO CLICAR) -->
+                <div id="azimuteGpsClosestHospitalCard" class="bg-pmmg-card/90 backdrop-blur-sm border border-red-500/40 rounded-2xl overflow-hidden shadow-2xl">
+                    <button type="button" onclick="toggleGpsClosestHospitalBox()" id="btnToggleGpsClosestHospitalBox" class="w-full p-4 sm:p-5 flex items-center justify-between gap-3 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
+                        <div class="flex items-center gap-2.5">
+                            <div class="p-2 rounded-lg bg-red-950/80 border border-red-500/50 text-red-400 shrink-0">
+                                <i data-lucide="hospital" class="w-5 h-5"></i>
+                            </div>
+                            <h3 class="text-xl font-military text-white uppercase tracking-wide leading-none">Hospital Mais Próximo</h3>
                         </div>
-                        <a id="hudBtnHospRouteMini"href="#"target="_blank"class="hidden px-3 py-2 bg-red-950/80 hover:bg-red-800 text-red-200 border border-red-500/50 rounded-lg text-xs font-bold shrink-0">
-                             Rota
-                        </a>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <span id="lblGpsClosestHospitalToggle" class="text-[11px] font-bold text-pmmg-khaki">Abrir</span>
+                            <i data-lucide="chevron-down" id="iconGpsClosestHospitalChevron" class="w-4 h-4 text-pmmg-gold transition-transform duration-200"></i>
+                        </div>
+                    </button>
+
+                    <div id="gpsClosestHospitalExpandableBody" class="hidden p-4 sm:p-5 pt-3 border-t border-pmmg-border">
+                        <div class="bg-pmmg-dark p-3.5 rounded-xl border border-pmmg-border border-l-4 border-l-red-500 flex items-center justify-between gap-2">
+                            <div>
+                                <span class="text-[10px] uppercase font-bold text-red-400 block">Socorro / Hospital Mais Próximo</span>
+                                <strong id="hudClosestHospital" class="text-sm sm:text-base text-white block mt-0.5">Calculando unidade...</strong>
+                                <span id="hudClosestHospitalDist" class="text-[11px] text-gray-300 font-medium block">Distância e tempo estimado via satélite</span>
+                            </div>
+                            <a id="hudBtnHospRouteMini" href="#" target="_blank" class="hidden px-3 py-2 bg-red-950/80 hover:bg-red-800 text-red-200 border border-red-500/50 rounded-lg text-xs font-bold shrink-0">
+                                Rota
+                            </a>
+                        </div>
                     </div>
                 </div>
 
@@ -9412,6 +9436,11 @@
             const btn = document.getElementById('btnRunConnectivityTest');
             const txtBtn = document.getElementById('txtRunConnTest');
             const iconBtn = document.getElementById('iconRunConnTest');
+            const sumBtn = document.getElementById('btnSummaryRunConnTest');
+            const sumTxt = document.getElementById('txtSummaryConnTest');
+            const sumIcon = document.getElementById('iconSummaryConnTest');
+            const sumBadge = document.getElementById('connSummaryStateBadge');
+            const sumStatus = document.getElementById('connSummaryStatusText');
             const progBox = document.getElementById('connTestProgressBox');
             const progBar = document.getElementById('connTestProgressBar');
             const progStep = document.getElementById('connTestStepText');
@@ -9420,6 +9449,11 @@
             if (btn) btn.disabled = true;
             if (txtBtn) txtBtn.textContent = 'Medindo rede...';
             if (iconBtn) iconBtn.classList.add('animate-spin');
+            if (sumBtn) sumBtn.disabled = true;
+            if (sumTxt) sumTxt.textContent = 'Medindo...';
+            if (sumIcon) sumIcon.classList.add('animate-spin');
+            if (sumBadge) sumBadge.textContent = 'MEDINDO...';
+            if (sumStatus) sumStatus.textContent = 'MEDINDO...';
             if (progBox) progBox.classList.remove('hidden');
 
             const setProg = (pct, msg) => {
@@ -9451,6 +9485,9 @@
                     if (btn) btn.disabled = false;
                     if (txtBtn) txtBtn.textContent = 'Executar novo teste';
                     if (iconBtn) iconBtn.classList.remove('animate-spin');
+                    if (sumBtn) sumBtn.disabled = false;
+                    if (sumTxt) sumTxt.textContent = 'Novo Teste';
+                    if (sumIcon) sumIcon.classList.remove('animate-spin');
                     azimuteConnTestRunning = false;
                 }, 600);
                 return;
@@ -10255,13 +10292,30 @@
         document.addEventListener('fullscreenchange', updateFullscreenButtonsUi);
         document.addEventListener('webkitfullscreenchange', updateFullscreenButtonsUi);
 
-        window.toggleOfflineMapsGuideBox = function() {
+        window.toggleGpsClosestHospitalBox = function(forceOpen = null) {
+            const box = document.getElementById('gpsClosestHospitalExpandableBody');
+            const lbl = document.getElementById('lblGpsClosestHospitalToggle');
+            const icon = document.getElementById('iconGpsClosestHospitalChevron');
+            if (!box) return;
+            const shouldOpen = forceOpen !== null ? forceOpen : box.classList.contains('hidden');
+            if (shouldOpen) {
+                box.classList.remove('hidden');
+                if (lbl) lbl.textContent = 'Fechar';
+                if (icon) icon.style.transform = 'rotate(180deg)';
+            } else {
+                box.classList.add('hidden');
+                if (lbl) lbl.textContent = 'Abrir';
+                if (icon) icon.style.transform = 'rotate(0deg)';
+            }
+        };
+
+        window.toggleOfflineMapsGuideBox = function(forceOpen = null) {
             const box = document.getElementById('offlineMapsGuideContent');
             const lbl = document.getElementById('lblOfflineMapsToggle');
             const icon = document.getElementById('iconOfflineMapsChevron');
             if (!box) return;
-            const isHidden = box.classList.contains('hidden');
-            if (isHidden) {
+            const shouldOpen = forceOpen !== null ? forceOpen : box.classList.contains('hidden');
+            if (shouldOpen) {
                 box.classList.remove('hidden');
                 if (lbl) lbl.textContent = 'Fechar';
                 if (icon) icon.style.transform = 'rotate(180deg)';
@@ -10587,6 +10641,7 @@
             target.enabled = !target.enabled;
             saveQuickAccessConfig(cfg);
             renderQuickAccessGrid();
+            if (typeof window.runRealConnectivityDiagnostic === 'function') window.runRealConnectivityDiagnostic();
             renderQuickAccessCustomizerList();
         };
 
@@ -10648,6 +10703,14 @@
             if (gpsHud) {
                 if (viewId === 'gps') {
                     gpsHud.classList.remove('hidden');
+                    // Mantém "Hospital Mais Próximo", "Bússola Digital" e "Como Baixar Mapas Offline" fechados por padrão ao abrir a aba
+                    if (typeof window.toggleGpsClosestHospitalBox === 'function') window.toggleGpsClosestHospitalBox(false);
+                    if (typeof window.toggleDigitalCompassBox === 'function') window.toggleDigitalCompassBox(false);
+                    if (typeof window.toggleOfflineMapsGuideBox === 'function') window.toggleOfflineMapsGuideBox(false);
+                    // Inicia a aferição de conectividade AUTOMATICAMENTE ao abrir a aba Geolocalização
+                    if (typeof window.runRealConnectivityDiagnostic === 'function') {
+                        window.runRealConnectivityDiagnostic();
+                    }
                 } else {
                     gpsHud.classList.add('hidden');
                 }
