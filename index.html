@@ -143,33 +143,30 @@
             margin-left: auto;
             margin-right: auto;
         }
-        /* Ativa o Painel de 3 Colunas no Modo GRID EXCLUSIVAMENTE na Tela Início (home) */
+        /* Ativa o Painel de 3 Colunas Limpas no Modo GRID EXCLUSIVAMENTE na Tela Início (home) */
         body.mode-grid #gridModeTacticalCockpit.grid-cockpit-active:not(.hidden) {
             display: grid !important;
-            grid-template-columns: 3fr 5fr 4fr;
-            gap: 0.5rem;
+            grid-template-columns: 2.3fr 4.7fr 5fr;
+            gap: 0.6rem;
             align-items: stretch;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.35rem;
         }
         body.mode-grid #gridModeTacticalCockpit:not(.grid-cockpit-active),
         body.mode-grid #gridModeTacticalCockpit.hidden {
             display: none !important;
         }
-        @media (max-width: 560px) {
+        /* Oculta a seção vertical redundante da Home no Modo GRID quando as 3 colunas já exibem Acesso Rápido e Apoio Mais Próximo */
+        body.mode-grid main#mainContainer > section#view-home.azimute-active-view > #homeNearestSupportSection {
+            display: none !important;
+        }
+        body.mode-grid main#mainContainer > section#view-home.azimute-active-view > #homeQuickAccessSection > div:first-child,
+        body.mode-grid main#mainContainer > section#view-home.azimute-active-view > #homeQuickAccessSection > #homeQuickAccessGrid {
+            display: none !important;
+        }
+        @media (max-width: 640px) {
             body.mode-grid #gridModeTacticalCockpit.grid-cockpit-active:not(.hidden) {
                 grid-template-columns: 1fr;
             }
-        }
-        /* Modo GRID: garante Acesso Rápido posicionado acima de Apoio Mais Próximo (GPS) na Home */
-        body.mode-grid main#mainContainer > section#view-home.azimute-active-view {
-            display: flex !important;
-            flex-direction: column !important;
-        }
-        body.mode-grid #homeQuickAccessSection {
-            order: 1 !important;
-        }
-        body.mode-grid #homeNearestSupportSection {
-            order: 2 !important;
         }
         body.mode-grid .subtabs-bar {
             display: grid !important;
@@ -781,139 +778,153 @@
 
         <!-- ================= PAINEL HORIZONTAL DE 3 COLUNAS (EXCLUSIVO MODO GRID / SUPORTE PEITORAL) ================= -->
         <section id="gridModeTacticalCockpit" class="grid-cockpit-active" aria-label="Painel Modo GRID">
-            <!-- COLUNA ESQUERDA: TELEMETRIA RÁPIDA (GPS, REDE DO BPM, ÁREA ATUAL) -->
-            <div class="bg-pmmg-card border border-pmmg-khaki/50 rounded-xl p-2.5 flex flex-col justify-between space-y-2 shadow-lg">
-                <div class="flex items-center justify-between border-b border-pmmg-border pb-1.5">
-                    <span class="text-[9px] font-extrabold uppercase tracking-wider text-pmmg-khaki flex items-center gap-1">
-                        <i data-lucide="activity"class="w-3 h-3 text-pmmg-gold"></i>Telemetria
+            <!-- COLUNA 1 (ESQUERDA ESTREITA): CARD COMPACTO COM TELEMETRIA, STATUS GPS E REDE DO BPM -->
+            <div class="bg-[#161616] border border-[#C5A869]/45 rounded-xl p-3 flex flex-col justify-between space-y-2.5 shadow-lg">
+                <div class="flex items-center justify-between border-b border-pmmg-border pb-2">
+                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-pmmg-khaki flex items-center gap-1.5">
+                        <i data-lucide="activity" class="w-3.5 h-3.5 text-pmmg-gold"></i>Telemetria
                     </span>
-                    <button type="button"onclick="showView('gps')"id="gridGpsBadge"class="px-2 py-0.5 rounded font-mono font-extrabold text-[10px] uppercase bg-emerald-950 text-emerald-400 border border-emerald-500/60 flex items-center gap-1">
-                        <span id="gridGpsDot"class="w-2 h-2 rounded-full bg-emerald-400 inline-block"></span>
+                    <button type="button" onclick="showView('gps')" id="gridGpsBadge" class="px-2 py-0.5 rounded font-mono font-extrabold text-[10px] uppercase bg-[#0D0D0D] text-pmmg-khaki border border-[#C5A869]/50 flex items-center gap-1.5 cursor-pointer">
+                        <span id="gridGpsDot" class="w-2 h-2 rounded-full bg-emerald-400 inline-block"></span>
                         <span id="gridGpsText">GPS BOM</span>
                     </button>
                 </div>
 
-                <!-- Rede do BPM (clicável para abrir modal da Rede/Batalhão) -->
-                <div onclick="openCurrentNetworkBattalionModal()"class="bg-pmmg-dark p-2 rounded-lg border border-pmmg-gold/40 cursor-pointer hover:border-pmmg-gold transition-all">
-                    <span class="text-[9px] font-bold uppercase text-pmmg-gold block leading-none">Rede do BPM</span>
-                    <strong id="gridTelemetryRede"class="font-mono text-xs sm:text-sm text-white font-extrabold block mt-1 truncate">18º BPM A</strong>
+                <!-- Rede do BPM -->
+                <div onclick="openCurrentNetworkBattalionModal()" class="bg-[#0D0D0D] p-2.5 rounded-lg border border-[#C5A869]/40 cursor-pointer hover:border-[#C5A869] transition-all">
+                    <span class="text-[9px] font-bold uppercase text-pmmg-khaki block leading-none">Rede do BPM</span>
+                    <strong id="gridTelemetryRede" class="font-mono text-sm sm:text-base text-white font-extrabold block mt-1 truncate">5º BPM A</strong>
                 </div>
 
                 <!-- Área Atual -->
-                <div class="bg-pmmg-dark p-2 rounded-lg border border-pmmg-border">
+                <div class="bg-[#0D0D0D] p-2.5 rounded-lg border border-pmmg-border">
                     <div class="flex items-center justify-between">
                         <span class="text-[9px] font-bold uppercase text-pmmg-khaki leading-none">Área Atual</span>
-                        <span id="gridTelemetryAcc"class="text-[9px] font-mono text-gray-400">±15m</span>
+                        <span id="gridTelemetryAcc" class="text-[9px] font-mono text-gray-400">±15m</span>
                     </div>
-                    <strong id="gridTelemetryArea"class="text-[11px] sm:text-xs text-gray-100 font-bold block mt-1 leading-tight line-clamp-2">18º BPM • Contagem</strong>
+                    <strong id="gridTelemetryArea" class="text-xs text-gray-100 font-bold block mt-1 leading-snug line-clamp-2">5º BPM • Belo Horizonte</strong>
                 </div>
             </div>
 
-            <!-- COLUNA CENTRAL: ENDEREÇO ATUAL EM DESTAQUE + UNIDADES PRÓXIMAS EM DESTAQUE MÁXIMO -->
-            <div class="bg-pmmg-card border-2 border-pmmg-khaki rounded-xl p-2.5 sm:p-3 flex flex-col justify-between space-y-2.5 shadow-2xl relative overflow-hidden">
-                <div class="flex items-center justify-between border-b border-pmmg-border pb-1.5 gap-2">
-                    <div class="flex items-center gap-1.5">
-                        <i data-lucide="map-pin" class="w-4 h-4 text-pmmg-gold shrink-0"></i>
-                        <span class="text-[10px] font-extrabold uppercase tracking-wider text-pmmg-khaki">Painel Central • Localização & Unidades</span>
-                    </div>
-                    <div class="flex items-center gap-1.5">
-                        <span id="gridCenterWeatherMini" class="font-mono text-[10px] text-sky-300 font-bold bg-pmmg-dark px-2 py-0.5 rounded border border-pmmg-border shrink-0">-- °C</span>
-                        <span id="gridCenterCoords" class="text-[10px] font-mono font-bold text-pmmg-gold bg-pmmg-dark px-2 py-0.5 rounded border border-pmmg-border">
+            <!-- COLUNA 2 (CENTRO AMPLO EM DESTAQUE PRINCIPAL): ENDEREÇO ATUAL (QTH) + UNIDADES PRÓXIMAS -->
+            <div class="bg-[#161616] border border-[#C5A869]/60 rounded-xl p-3 flex flex-col justify-between space-y-2.5 shadow-xl">
+                <!-- 1. TOPO DA COLUNA 2: CARD "ENDEREÇO ATUAL (QTH)" (RUA, BAIRRO, CIDADE E CEP EM FONTE GRANDE E LIMPA, SEM SELO AZUL DE CLIMA) -->
+                <div class="bg-[#0D0D0D] border border-[#C5A869]/50 rounded-xl p-3 space-y-1">
+                    <div class="flex items-center justify-between gap-2 border-b border-pmmg-border/70 pb-1.5">
+                        <span class="text-[10px] uppercase font-extrabold text-pmmg-khaki tracking-widest flex items-center gap-1.5">
+                            <i data-lucide="map-pin" class="w-3.5 h-3.5 text-pmmg-gold"></i>ENDEREÇO ATUAL (QTH)
+                        </span>
+                        <span id="gridCenterCoords" class="text-[10px] font-mono font-bold text-gray-400">
                             -19.91620, -44.08090
                         </span>
                     </div>
-                </div>
-
-                <!-- 1. ENDEREÇO ATUAL (QTH) COM DESTAQUE VISUAL -->
-                <div class="bg-pmmg-black/95 border border-pmmg-khaki/70 border-l-4 border-l-pmmg-khaki rounded-xl p-2.5 sm:p-3 shadow-md space-y-0.5">
-                    <div class="flex items-center justify-between gap-2">
-                        <span class="text-[9.5px] uppercase font-extrabold text-pmmg-khaki tracking-widest flex items-center gap-1">
-                            <i data-lucide="navigation-2" class="w-3 h-3 text-pmmg-gold"></i>Endereço Atual (QTH)
-                        </span>
-                        <span class="text-[9px] font-mono text-gray-400">Tempo Real</span>
-                    </div>
-                    <h2 id="gridCenterQth" class="text-base sm:text-xl font-extrabold text-white leading-snug line-clamp-2">
+                    <h2 id="gridCenterQth" class="text-lg sm:text-xl font-extrabold text-white leading-snug pt-0.5">
                         Av. João César de Oliveira, 5400
                     </h2>
-                    <p id="gridCenterSuburb" class="text-xs text-pmmg-khakiLight font-bold truncate">
-                        Beatriz • Contagem/MG
+                    <p id="gridCenterSuburb" class="text-xs sm:text-sm text-gray-200 font-semibold">
+                        Beatriz • Contagem/MG • CEP: 32040-000
                     </p>
                 </div>
 
-                <!-- 2. UNIDADES PRÓXIMAS COM DESTAQUE VISUAL AINDA MAIOR -->
-                <div id="gridClosestUnitHighlightBox" class="bg-gradient-to-r from-[#241f14] via-[#1b170f] to-[#241f14] border-2 border-pmmg-gold rounded-xl p-3 sm:p-3.5 shadow-[0_0_24px_rgba(197,168,105,0.28)] space-y-1.5">
-                    <div class="flex flex-wrap items-center justify-between gap-1.5">
+                <!-- 2. BASE DA COLUNA 2: CARD "UNIDADES PRÓXIMAS" EM DESTAQUE PRINCIPAL -->
+                <div id="gridClosestUnitHighlightBox" class="bg-[#0D0D0D] border border-[#C5A869] rounded-xl p-3 space-y-2 flex-1 flex flex-col justify-between">
+                    <div class="flex flex-wrap items-center justify-between gap-1.5 border-b border-pmmg-border/80 pb-1.5">
                         <div class="flex items-center gap-1.5">
-                            <span class="px-2 py-0.5 rounded bg-pmmg-khakiBadge text-pmmg-khaki border border-pmmg-gold/50 font-extrabold text-[10px] uppercase tracking-wider shadow-sm">
+                            <span class="text-[10px] font-extrabold uppercase tracking-wider text-pmmg-khaki">
                                 UNIDADES PRÓXIMAS
                             </span>
-                            <span id="gridClosestUnitTypeBadge" class="px-2 py-0.5 rounded bg-pmmg-black/90 text-pmmg-gold border border-pmmg-gold/60 font-mono font-extrabold text-[9.5px] uppercase">
+                            <span id="gridClosestUnitTypeBadge" class="px-2 py-0.5 rounded bg-[#161616] text-pmmg-khaki border border-[#C5A869]/50 font-mono font-extrabold text-[9px] uppercase">
                                 UNIDADE POLICIAL
                             </span>
                         </div>
-                        <div class="flex items-center gap-1.5">
-                            <span id="gridClosestUnitDistBadge" class="text-xs sm:text-sm font-mono font-extrabold text-white bg-pmmg-black/90 px-2 py-0.5 rounded border border-pmmg-gold/50">
-                                ~-- km
-                            </span>
-                            <a id="gridClosestUnitRouteBtn" href="https://www.google.com/maps/dir/?api=1&destination=-19.9162,-44.0809&travelmode=driving" target="_blank" class="px-2.5 py-1 bg-pmmg-dark hover:bg-pmmg-border text-pmmg-gold border border-pmmg-gold/60 font-extrabold rounded-lg text-[10px] uppercase flex items-center gap-1 shadow transition-all active:scale-95 shrink-0" title="Traçar rota imediata">
-                                <i data-lucide="navigation" class="w-3 h-3"></i>
-                                <span>Rota</span>
-                            </a>
+                        <span id="gridClosestUnitDistBadge" class="text-xs font-mono font-extrabold text-pmmg-khaki bg-[#161616] px-2 py-0.5 rounded border border-[#C5A869]/40">
+                            ~-- km • ~-- min
+                        </span>
+                    </div>
+
+                    <div class="flex items-center justify-between gap-3 py-0.5">
+                        <div class="min-w-0 flex-1">
+                            <strong id="gridCenterClosestUnit" class="text-xl sm:text-2xl font-military tracking-wide text-white font-extrabold uppercase block leading-none truncate">
+                                18º BPM • Sede / 133ª e 283ª Cia
+                            </strong>
+                            <p id="gridCenterClosestUnitAddr" class="text-xs text-gray-300 font-medium truncate mt-1">
+                                Av. João César de Oliveira, 5400 - Beatriz, Contagem
+                            </p>
                         </div>
+                        <a id="gridClosestUnitRouteBtn" href="https://www.google.com/maps/dir/?api=1&destination=-19.9162,-44.0809&travelmode=driving" target="_blank" class="px-3 py-2 bg-[#161616] hover:bg-pmmg-cardHover text-pmmg-khaki border border-[#C5A869] font-extrabold rounded-lg text-xs uppercase flex items-center gap-1.5 transition-all active:scale-95 shrink-0" title="Traçar rota imediata">
+                            <i data-lucide="navigation" class="w-3.5 h-3.5 text-pmmg-gold"></i>
+                            <span>ROTA</span>
+                        </a>
                     </div>
 
-                    <div class="pt-0.5">
-                        <strong id="gridCenterClosestUnit" class="text-xl sm:text-2xl font-military tracking-wide text-pmmg-khakiLight font-extrabold uppercase block leading-none">
-                            18º BPM • Sede / 133ª e 283ª Cia
-                        </strong>
-                        <p id="gridCenterClosestUnitAddr" class="text-[11px] sm:text-xs text-gray-200 font-semibold truncate mt-1">
-                            Av. João César de Oliveira, 5400 - Beatriz, Contagem
-                        </p>
-                    </div>
-
-                    <div class="pt-1.5 border-t border-pmmg-gold/30 flex flex-wrap items-center justify-between gap-2 text-[10px]">
-                        <span id="gridSecondClosestUnitHint" class="text-pmmg-khaki font-semibold truncate">
+                    <div class="pt-1.5 border-t border-pmmg-border/70 flex flex-wrap items-center justify-between gap-2 text-[10px]">
+                        <span id="gridSecondClosestUnitHint" class="text-gray-400 font-semibold truncate">
                             2ª Unidade Policial: Calculando...
                         </span>
-                        <span id="gridBscScheduleStatusBadge" class="font-mono text-[9.5px] text-gray-300 shrink-0">
-                            BSC: 14h às 23h
+                        <span id="gridBscScheduleStatusBadge" class="font-mono text-[9.5px] text-pmmg-khaki shrink-0">
+                            BSC: 14:00 às 23:00
                         </span>
                     </div>
                 </div>
             </div>
 
-            <!-- COLUNA DIREITA: BOTÕES GRANDES DE TOQUE RÁPIDO (COPIAR QTH, LOCALIZAÇÃO EXATA/MAPA, CLIMA, ROTA HOSP) -->
-            <div class="grid grid-cols-2 grid-rows-2 gap-2">
-                <!-- 1. Botão Grande: Copiar QTH -->
-                <button type="button"onclick="copyCurrentQth()"class="bg-pmmg-card hover:bg-pmmg-border active:scale-95 text-pmmg-khaki border border-pmmg-gold/60 font-extrabold rounded-xl p-2.5 flex flex-col items-center justify-center text-center shadow-lg transition-all">
-                    <i data-lucide="copy"class="w-5 h-5 mb-1"></i>
-                    <span class="text-[11px] uppercase tracking-wider leading-tight">Copiar QTH</span>
-                </button>
-
-                <!-- 2. Botão Único: Localização Exata -->
-                <a id="gridBtnExactMap" href="https://www.google.com/maps/search/?api=1&query=-19.9162,-44.0809" target="_blank" class="bg-pmmg-card hover:bg-pmmg-border active:scale-95 text-pmmg-gold border-2 border-pmmg-gold/60 font-extrabold rounded-xl p-2.5 flex flex-col items-center justify-center text-center shadow-lg transition-all" title="Abrir coordenada exata atual no Google Maps">
-                    <i data-lucide="map-pin" class="w-5 h-5 mb-1 text-pmmg-gold"></i>
-                    <span class="text-[10.5px] uppercase tracking-wider leading-tight text-white">Localização Exata</span>
-                </a>
-
-                <!-- 3. Botão Grande: Clima -->
-                <button type="button"onclick="openGridWeatherModal()"class="bg-pmmg-card hover:bg-pmmg-border active:scale-95 text-sky-300 border-2 border-sky-500/60 font-extrabold rounded-xl p-2.5 flex flex-col items-center justify-center text-center shadow-lg transition-all">
-                    <i data-lucide="cloud-sun"class="w-5 h-5 mb-1 text-sky-400"></i>
-                    <span class="text-[11px] uppercase tracking-wider leading-tight text-white">Clima</span>
-                </button>
-
-                <!-- 4. Botão Grande: Rota Hosp -->
-                <a id="gridBtnHospRoute"href="https://www.google.com/maps/dir/?api=1&destination=-19.9322,-44.0758&travelmode=driving"target="_blank"class="bg-pmmg-card hover:bg-pmmg-border active:scale-95 text-pmmg-khaki border border-pmmg-gold/60 font-extrabold rounded-xl p-2.5 flex flex-col items-center justify-center text-center shadow-lg transition-all">
-                    <div class="flex items-center gap-1 mb-1">
-                        <svg xmlns="http://www.w3.org/2000/svg"viewBox="0 0 24 24"fill="currentColor"class="w-4 h-4 text-white">
-                            <path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6V3z"/>
-                        </svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"viewBox="0 0 24 24"fill="none"stroke="#D4AF37"stroke-width="3"stroke-linecap="round"stroke-linejoin="round"class="w-3.5 h-3.5">
-                            <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
-                        </svg>
+            <!-- COLUNA 3 (DIREITA ORGANIZADA): ACESSO RÁPIDO + APOIO MAIS PRÓXIMO (GPS) + COPIAR QTH & LOCALIZAÇÃO EXATA -->
+            <div class="bg-[#161616] border border-[#C5A869]/45 rounded-xl p-3 flex flex-col justify-between space-y-2.5 shadow-lg">
+                <!-- 1. TOPO DA COLUNA 3: BLOCO "ACESSO RÁPIDO" (COM BOTÃO PERSONALIZAR E ATALHOS EM GRADE LIMPA, SEM BÚSSOLA DIGITAL) -->
+                <div class="bg-[#0D0D0D] border border-pmmg-border rounded-xl p-2.5 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] font-extrabold uppercase tracking-widest text-pmmg-khaki">ACESSO RÁPIDO</span>
+                        <button type="button" onclick="toggleQuickAccessCustomizer()" class="px-2 py-0.5 rounded bg-[#161616] hover:bg-pmmg-cardHover text-pmmg-khaki border border-[#C5A869]/50 text-[9.5px] font-bold flex items-center gap-1 transition-all cursor-pointer">
+                            <i data-lucide="sliders-horizontal" class="w-3 h-3 text-pmmg-gold"></i>
+                            <span>Personalizar</span>
+                        </button>
                     </div>
-                    <span class="text-[11px] uppercase tracking-wider leading-tight">Rota Hosp</span>
-                </a>
+                    <div id="gridQuickAccessGrid" class="grid grid-cols-5 gap-1.5">
+                        <!-- Preenchido dinamicamente por renderQuickAccessGrid() -->
+                    </div>
+                </div>
+
+                <!-- 2. MEIO DA COLUNA 3: CARD "APOIO MAIS PRÓXIMO (GPS)" COM ÍCONE DISCRETO DA CRUZ VERMELHA / ROTA HOSPITALAR -->
+                <div class="bg-[#0D0D0D] border border-[#C5A869]/40 rounded-xl p-2.5 space-y-2">
+                    <div class="flex items-center justify-between gap-2 border-b border-pmmg-border/80 pb-1.5">
+                        <span class="text-[10px] font-extrabold uppercase tracking-wider text-pmmg-khaki flex items-center gap-1.5">
+                            <i data-lucide="radar" class="w-3.5 h-3.5 text-pmmg-gold"></i>APOIO MAIS PRÓXIMO (GPS)
+                        </span>
+                        <a id="gridBtnHospRoute" href="https://www.google.com/maps/dir/?api=1&destination=-19.9322,-44.0758&travelmode=driving" target="_blank" class="px-2 py-1 rounded bg-[#161616] hover:bg-pmmg-cardHover border border-[#C5A869]/50 flex items-center gap-1.5 text-[10px] font-bold text-gray-200 transition-all active:scale-95 shrink-0" title="Rota para o Hospital Mais Próximo">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3.5 h-3.5 text-red-500 shrink-0">
+                                <path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6V3z"/>
+                            </svg>
+                            <span id="gridSupportHospName" class="truncate max-w-[130px]">Rota Hospitalar</span>
+                        </a>
+                    </div>
+
+                    <div class="flex items-center justify-between gap-2">
+                        <div class="min-w-0 flex-1">
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-[9.5px] font-bold uppercase text-pmmg-khaki">Abastecimento</span>
+                                <span id="gridSupportFuelDist" class="text-[9.5px] font-mono font-bold text-gray-300">-- km</span>
+                            </div>
+                            <strong id="gridSupportFuelName" class="text-xs font-bold text-white block truncate">18º BPM (Sede Contagem)</strong>
+                        </div>
+                        <a id="gridSupportFuelRouteBtn" href="https://www.google.com/maps/dir/?api=1&destination=-19.9162,-44.0809&travelmode=driving" target="_blank" class="px-2.5 py-1.5 bg-[#161616] hover:bg-pmmg-cardHover text-pmmg-khaki border border-[#C5A869]/60 font-extrabold rounded-lg text-[10px] uppercase flex items-center gap-1 shrink-0 transition-all">
+                            <i data-lucide="fuel" class="w-3 h-3 text-pmmg-gold"></i>
+                            <span>Rota</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 3. BASE DA COLUNA 3: DOIS BOTÕES LADO A LADO ESCUROS COM BORDA FINA ("COPIAR QTH" E "LOCALIZAÇÃO EXATA") -->
+                <div class="grid grid-cols-2 gap-2 pt-0.5">
+                    <button type="button" onclick="copyCurrentQth()" class="bg-[#0D0D0D] hover:bg-pmmg-cardHover active:scale-95 text-pmmg-khaki border border-[#C5A869] font-extrabold rounded-xl py-2.5 px-3 flex items-center justify-center gap-1.5 text-xs uppercase tracking-wider transition-all cursor-pointer">
+                        <i data-lucide="copy" class="w-4 h-4 text-pmmg-gold shrink-0"></i>
+                        <span>COPIAR QTH</span>
+                    </button>
+
+                    <a id="gridBtnExactMap" href="https://www.google.com/maps/search/?api=1&query=-19.9162,-44.0809" target="_blank" class="bg-[#0D0D0D] hover:bg-pmmg-cardHover active:scale-95 text-pmmg-khaki border border-[#C5A869] font-extrabold rounded-xl py-2.5 px-3 flex items-center justify-center gap-1.5 text-xs uppercase tracking-wider transition-all cursor-pointer" title="Abrir coordenada exata atual no Google Maps">
+                        <i data-lucide="map-pin" class="w-4 h-4 text-pmmg-gold shrink-0"></i>
+                        <span>LOCALIZAÇÃO EXATA</span>
+                    </a>
+                </div>
             </div>
         </section>
 
@@ -9147,10 +9158,8 @@
             if (gClosestUnit) gClosestUnit.textContent = closestPolice.nome;
             if (gClosestAddr) gClosestAddr.textContent = closestPolice.endereco;
             if (gTypeBadge) {
-                gTypeBadge.textContent = isClosestBsc ? 'BASE / BSC (14H-23H)' : 'UNIDADE POLICIAL';
-                gTypeBadge.className = isClosestBsc
-                    ? 'px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-400/70 font-mono font-extrabold text-[9.5px] uppercase'
-                    : 'px-2 py-0.5 rounded bg-pmmg-black/90 text-pmmg-gold border border-pmmg-gold/60 font-mono font-extrabold text-[9.5px] uppercase';
+                gTypeBadge.textContent = isClosestBsc ? 'BASE / BSC (14H ÀS 23H)' : 'UNIDADE POLICIAL';
+                gTypeBadge.className = 'px-2 py-0.5 rounded bg-[#161616] text-pmmg-khaki border border-[#C5A869]/60 font-mono font-extrabold text-[9px] uppercase';
             }
             if (gDistBadge) gDistBadge.textContent = '~' + policeDrive.roadKm + 'km • ~' + policeDrive.mins + 'min';
             if (gRouteBtn) gRouteBtn.href = policeUrl;
@@ -9159,10 +9168,8 @@
                 gSecondHint.textContent = secLabel + secondClosestItem.nome + ' (~' + secondClosestItem.drive.roadKm + 'km)';
             }
             if (gBscStatus) {
-                gBscStatus.textContent = bscOpenNow ? 'BSC Ativa (14h-23h)' : 'BSC Ignorada (Fora 14h-23h)';
-                gBscStatus.className = bscOpenNow
-                    ? 'font-mono text-[9.5px] text-emerald-400 font-bold shrink-0'
-                    : 'font-mono text-[9.5px] text-amber-400 font-bold shrink-0';
+                gBscStatus.textContent = bscOpenNow ? 'BSC Ativa (14:00-23:00)' : 'BSC Ignorada (23:01-13:59)';
+                gBscStatus.className = 'font-mono text-[9.5px] text-pmmg-khaki font-bold shrink-0';
             }
 
             // b) Ponto de Abastecimento mais próximo
@@ -9182,6 +9189,15 @@
             if (hfAddr) hfAddr.textContent = closestFuel.endereco;
             if (hfDist) hfDist.textContent = '~' + fuelDrive.roadKm + 'km';
             if (hfBtn) hfBtn.href = fuelUrl;
+
+            const gSuppHospName = document.getElementById('gridSupportHospName');
+            const gSuppFuelName = document.getElementById('gridSupportFuelName');
+            const gSuppFuelDist = document.getElementById('gridSupportFuelDist');
+            const gSuppFuelRoute = document.getElementById('gridSupportFuelRouteBtn');
+            if (gSuppHospName) gSuppHospName.textContent = closestHosp.nome + ' (~' + driveEst.roadKm + 'km)';
+            if (gSuppFuelName) gSuppFuelName.textContent = closestFuel.nome;
+            if (gSuppFuelDist) gSuppFuelDist.textContent = '~' + fuelDrive.roadKm + 'km • ~' + fuelDrive.mins + 'min';
+            if (gSuppFuelRoute) gSuppFuelRoute.href = fuelUrl;
 
             // 3. Atualiza Tela Socorro (Modo Prioridade) com Distância e Tempo Médio de Deslocamento
             const sosRadio = document.getElementById('sosBigRadio');
@@ -10801,39 +10817,56 @@
 
         function renderQuickAccessGrid() {
             const gridEl = document.getElementById('homeQuickAccessGrid');
-            if (!gridEl) return;
+            const gridModeEl = document.getElementById('gridQuickAccessGrid');
 
-            const cfg = getQuickAccessConfig();
+            const cfg = getQuickAccessConfig().filter(entry => entry.id !== 'bussola');
             const catalogMap = {};
-            AZIMUTE_QUICK_ACCESS_CATALOG.forEach(c => { catalogMap[c.id] = c; });
+            AZIMUTE_QUICK_ACCESS_CATALOG.forEach(c => {
+                if (c.id !== 'bussola') catalogMap[c.id] = c;
+            });
 
             const enabledItems = cfg
                 .filter(entry => entry.enabled && catalogMap[entry.id])
                 .map(entry => catalogMap[entry.id]);
 
             if (enabledItems.length === 0) {
-                gridEl.className = 'grid grid-cols-1 gap-2';
-                gridEl.innerHTML = `
-                    <div class="bg-pmmg-dark border border-pmmg-border rounded-xl p-3 text-center text-xs text-gray-400">
-                        Nenhum atalho ativo. Toque em <strong class="text-pmmg-khaki cursor-pointer underline" onclick="toggleQuickAccessCustomizer(true)">Personalizar</strong> para selecionar os itens.
+                const emptyHtml = `
+                    <div class="bg-pmmg-dark border border-pmmg-border rounded-xl p-2.5 text-center text-xs text-gray-400">
+                        Nenhum atalho ativo. Toque em <strong class="text-pmmg-khaki cursor-pointer underline" onclick="toggleQuickAccessCustomizer(true)">Personalizar</strong>.
                     </div>
                 `;
+                if (gridEl) { gridEl.className = 'grid grid-cols-1 gap-2'; gridEl.innerHTML = emptyHtml; }
+                if (gridModeEl) { gridModeEl.className = 'grid grid-cols-1 gap-1.5'; gridModeEl.innerHTML = emptyHtml; }
                 return;
             }
 
             const colCount = Math.min(Math.max(enabledItems.length, 1), 5);
-            gridEl.className = `grid grid-cols-${colCount} gap-2 sm:gap-3`;
 
-            const btnCls = 'aspect-square sm:aspect-auto sm:py-3.5 bg-pmmg-dark hover:bg-pmmg-card border border-pmmg-gold/40 hover:border-pmmg-gold rounded-xl flex flex-col items-center justify-center p-2 text-center transition-all active:scale-95 cursor-pointer group shadow';
+            if (gridEl) {
+                gridEl.className = `grid grid-cols-${colCount} gap-2 sm:gap-3`;
+                const btnCls = 'aspect-square sm:aspect-auto sm:py-3.5 bg-pmmg-dark hover:bg-pmmg-card border border-pmmg-gold/40 hover:border-pmmg-gold rounded-xl flex flex-col items-center justify-center p-2 text-center transition-all active:scale-95 cursor-pointer group shadow';
+                gridEl.innerHTML = enabledItems.map(item => {
+                    const iconHtml = getQuickAccessIconHtml(item, false);
+                    const labelHtml = `<span class="text-[9.5px] sm:text-xs font-bold text-gray-200 group-hover:text-pmmg-khaki leading-tight truncate w-full">${item.label}</span>`;
+                    if (item.type === 'link') {
+                        return `<a href="${item.href}" target="_blank" rel="noopener noreferrer" class="${btnCls}">${iconHtml}${labelHtml}</a>`;
+                    }
+                    return `<button type="button" onclick="${item.onClick}" class="${btnCls}">${iconHtml}${labelHtml}</button>`;
+                }).join('');
+            }
 
-            gridEl.innerHTML = enabledItems.map(item => {
-                const iconHtml = getQuickAccessIconHtml(item, false);
-                const labelHtml = `<span class="text-[9.5px] sm:text-xs font-bold text-gray-200 group-hover:text-pmmg-khaki leading-tight truncate w-full">${item.label}</span>`;
-                if (item.type === 'link') {
-                    return `<a href="${item.href}" target="_blank" rel="noopener noreferrer" class="${btnCls}">${iconHtml}${labelHtml}</a>`;
-                }
-                return `<button type="button" onclick="${item.onClick}" class="${btnCls}">${iconHtml}${labelHtml}</button>`;
-            }).join('');
+            if (gridModeEl) {
+                gridModeEl.className = `grid grid-cols-${colCount} gap-1.5`;
+                const compactCls = 'py-2 px-1 bg-[#161616] hover:bg-pmmg-cardHover border border-[#C5A869]/40 hover:border-[#C5A869] rounded-lg flex flex-col items-center justify-center text-center transition-all active:scale-95 cursor-pointer group';
+                gridModeEl.innerHTML = enabledItems.map(item => {
+                    const iconHtml = getQuickAccessIconHtml(item, true);
+                    const labelHtml = `<span class="text-[9px] font-bold text-gray-200 group-hover:text-pmmg-khaki leading-tight truncate w-full mt-1">${item.label}</span>`;
+                    if (item.type === 'link') {
+                        return `<a href="${item.href}" target="_blank" rel="noopener noreferrer" class="${compactCls}">${iconHtml}${labelHtml}</a>`;
+                    }
+                    return `<button type="button" onclick="${item.onClick}" class="${compactCls}">${iconHtml}${labelHtml}</button>`;
+                }).join('');
+            }
 
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
