@@ -168,8 +168,19 @@
             white-space: normal !important;
         }
 
+        /* GARANTE QUE O CABEÇALHO E OS BOTÕES "App | GRID | PC" FIQUEM SEMPRE NO TOPO E CLICÁVEIS EM QUALQUER MODO */
+        header.sticky {
+            z-index: 60 !important;
+        }
+        #btn-mode-app, #btn-mode-grid, #btn-mode-web, #btnHeaderFullscreen {
+            position: relative;
+            z-index: 70 !important;
+            pointer-events: auto !important;
+            cursor: pointer !important;
+        }
+
         /* SIDEBAR RETRÁTIL EXCLUSIVA DO MODO PC (OCULTA NOS MODOS APP E GRID) */
-        #pcSidebar {
+        #pcSidebar, #btnFloatingOpenPcSidebar {
             display: none;
         }
         /* No Modo PC (Desktop), ativa o Menu Lateral Fixo Retrátil à esquerda e elimina duplicação de barras de menu */
@@ -184,15 +195,15 @@
             display: flex !important;
             flex-direction: column;
             position: fixed;
-            top: 81px;
+            top: 86px;
             left: 0;
             bottom: 0;
             width: 265px;
-            z-index: 35;
+            z-index: 45;
             background: rgba(23, 23, 23, 0.98);
             border-right: 1px solid rgba(194, 178, 128, 0.35);
             box-shadow: 6px 0 24px -4px rgba(0, 0, 0, 0.75);
-            transition: width 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: width 0.22s cubic-bezier(0.16, 1, 0.3, 1), transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
             overflow-y: auto;
             overflow-x: hidden;
         }
@@ -202,7 +213,8 @@
         body.mode-web.pc-sidebar-collapsed #pcSidebar .pc-sb-label,
         body.mode-web.pc-sidebar-collapsed #pcSidebar .pc-sb-sub,
         body.mode-web.pc-sidebar-collapsed #pcSidebar .pc-sb-chevron,
-        body.mode-web.pc-sidebar-collapsed #pcSidebar .pc-sb-footer-text {
+        body.mode-web.pc-sidebar-collapsed #pcSidebar .pc-sb-footer-text,
+        body.mode-web.pc-sidebar-collapsed #pcSidebar #btnClosePcSidebarFull {
             display: none !important;
         }
         body.mode-web.pc-sidebar-collapsed #pcSidebar .pc-sb-item {
@@ -210,18 +222,31 @@
             padding-left: 0.5rem !important;
             padding-right: 0.5rem !important;
         }
+        /* Estado 100% fechado da Sidebar no Modo PC para liberar toda a tela */
+        body.mode-web.pc-sidebar-closed #pcSidebar {
+            display: none !important;
+        }
+        body.mode-web.pc-sidebar-closed #btnFloatingOpenPcSidebar {
+            display: flex !important;
+        }
         body.mode-web .app-main-container {
             margin-left: 265px !important;
             max-width: calc(100% - 265px) !important;
             width: calc(100% - 265px) !important;
-            padding-left: 1.75rem !important;
-            padding-right: 1.75rem !important;
+            padding-left: 1.5rem !important;
+            padding-right: 1.5rem !important;
             transition: margin-left 0.22s cubic-bezier(0.16, 1, 0.3, 1), max-width 0.22s cubic-bezier(0.16, 1, 0.3, 1), width 0.22s cubic-bezier(0.16, 1, 0.3, 1);
         }
         body.mode-web.pc-sidebar-collapsed .app-main-container {
             margin-left: 68px !important;
             max-width: calc(100% - 68px) !important;
             width: calc(100% - 68px) !important;
+        }
+        body.mode-web.pc-sidebar-closed .app-main-container {
+            margin-left: auto !important;
+            margin-right: auto !important;
+            max-width: 1280px !important;
+            width: 100% !important;
         }
         /* Ajuste automático para Celular na Horizontal (Landscape): evita que o cabeçalho tampe a tela */
         @media (orientation: landscape) and (max-height: 600px) {
@@ -579,16 +604,29 @@
         </nav>
     </header>
 
+    <!-- BOTÃO FLUTUANTE PARA REABRIR A BARRA LATERAL QUANDO FECHADA NO MODO PC -->
+    <button type="button" id="btnFloatingOpenPcSidebar" onclick="openPcSidebarCompletely()" class="fixed left-3 bottom-4 z-50 px-3 py-2 rounded-xl bg-pmmg-card hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-gold shadow-2xl text-xs font-extrabold items-center gap-1.5 cursor-pointer transition-all" title="Abrir Barra Lateral do Modo PC">
+        <i data-lucide="panel-left-open" class="w-4 h-4 text-pmmg-gold"></i>
+        <span>Menu PC</span>
+    </button>
+
     <!-- MENU LATERAL FIXO RETRÁTIL (SIDEBAR EXCLUSIVA DO MODO PC COM ACORDEÃO E SUBPASTAS) -->
-    <aside id="pcSidebar"aria-label="Menu Lateral Modo PC">
-        <!-- Topo da Sidebar: Título + Botão Retrátil -->
-        <div class="p-3 border-b border-pmmg-border flex items-center justify-between gap-2 shrink-0">
+    <aside id="pcSidebar" aria-label="Menu Lateral Modo PC">
+        <!-- Topo da Sidebar: Título + Botões Visíveis para Recolher e Fechar a Barra Lateral -->
+        <div class="p-2.5 border-b border-pmmg-border flex items-center justify-between gap-1.5 shrink-0 bg-pmmg-black/60">
             <span class="pc-sb-label text-[10px] font-extrabold uppercase tracking-widest text-pmmg-khaki flex items-center gap-1.5 truncate">
-                <i data-lucide="layout-dashboard"class="w-3.5 h-3.5 text-pmmg-gold shrink-0"></i>Painel Lateral PC
+                <i data-lucide="layout-dashboard" class="w-3.5 h-3.5 text-pmmg-gold shrink-0"></i>Painel PC
             </span>
-            <button type="button"onclick="togglePcSidebarCollapse()"id="btnTogglePcSidebar"class="p-1.5 rounded-lg bg-pmmg-card hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-border transition-colors mx-auto sm:mx-0"title="Recolher / Expandir Menu Lateral">
-                <i data-lucide="panel-left-close"id="iconPcSidebarToggle"class="w-4 h-4"></i>
-            </button>
+            <div class="flex items-center gap-1 mx-auto sm:mx-0">
+                <button type="button" onclick="togglePcSidebarCollapse()" id="btnTogglePcSidebar" class="px-2 py-1.5 rounded-lg bg-pmmg-card hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-gold/50 text-[10px] font-extrabold flex items-center gap-1 transition-colors cursor-pointer" title="Recolher / Expandir Barra Lateral">
+                    <i data-lucide="panel-left-close" id="iconPcSidebarToggle" class="w-3.5 h-3.5 text-pmmg-gold shrink-0"></i>
+                    <span id="txtPcSidebarToggle" class="pc-sb-label">Recolher</span>
+                </button>
+                <button type="button" onclick="closePcSidebarCompletely()" id="btnClosePcSidebarFull" class="px-2 py-1.5 rounded-lg bg-pmmg-dark hover:bg-pmmg-border text-gray-300 hover:text-white border border-pmmg-border text-[10px] font-extrabold flex items-center gap-1 transition-colors cursor-pointer" title="Fechar Barra Lateral Esquerda">
+                    <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                    <span>Fechar</span>
+                </button>
+            </div>
         </div>
 
         <!-- Lista Principal de Seções -->
@@ -10771,57 +10809,104 @@
         };
 
         // ALTERNADOR DOS 3 MODOS DE VISUALIZAÇÃO: App | GRID | PC
-        window.setLayoutMode = function(mode, notify = true, savePreference = true) {
+        let azimuteManualPcActive = false;
+        let azimuteLastOrientationIsLandscape = null;
+
+        window.setLayoutMode = function(mode, notify = true, isManualClick = true) {
             const body = document.body;
             const btnApp = document.getElementById('btn-mode-app');
             const btnGrid = document.getElementById('btn-mode-grid');
             const btnWeb = document.getElementById('btn-mode-web');
 
-            const inactiveCls = 'px-2.5 py-1 rounded-md font-semibold text-gray-400 hover:text-white transition-all';
-            const activeCls = 'px-2.5 py-1 rounded-md font-extrabold bg-pmmg-khaki text-pmmg-black shadow transition-all';
+            const inactiveCls = 'px-2.5 py-1 rounded-md font-semibold text-gray-400 hover:text-white transition-all cursor-pointer';
+            const activeCls = 'px-2.5 py-1 rounded-md font-extrabold bg-pmmg-khaki text-pmmg-black shadow transition-all cursor-pointer';
 
             body.classList.remove('mode-app', 'mode-grid', 'mode-web');
             if (btnApp) btnApp.className = inactiveCls;
             if (btnGrid) btnGrid.className = inactiveCls;
             if (btnWeb) btnWeb.className = inactiveCls;
 
+            if (isManualClick) {
+                azimuteManualPcActive = (mode === 'web');
+                try {
+                    localStorage.setItem('azimute_layout_mode', mode);
+                    localStorage.setItem('azimute_manual_pc', mode === 'web' ? 'true' : 'false');
+                } catch (e) {}
+            }
+
             if (mode === 'web') {
                 body.classList.add('mode-web');
+                body.classList.remove('pc-sidebar-closed');
                 if (btnWeb) btnWeb.className = activeCls;
                 if (notify && typeof showToast === 'function') showToast('Modo PC ativado!');
             } else if (mode === 'grid') {
+                body.classList.remove('pc-sidebar-closed', 'pc-sidebar-collapsed');
                 body.classList.add('mode-grid');
                 if (btnGrid) btnGrid.className = activeCls;
                 if (notify && typeof showToast === 'function') showToast('Modo GRID ativado!');
             } else {
+                body.classList.remove('pc-sidebar-closed', 'pc-sidebar-collapsed');
                 body.classList.add('mode-app');
                 if (btnApp) btnApp.className = activeCls;
                 if (notify && typeof showToast === 'function') showToast('Modo App ativado!');
             }
-            if (savePreference) {
-                try { localStorage.setItem('azimute_layout_mode', mode); } catch (e) {}
-            }
+
             if (typeof lucide !== 'undefined') lucide.createIcons();
         };
 
-        // DETECÇÃO AUTOMÁTICA DE TELA HORIZONTAL NO CELULAR (GIRA NA HORIZONTAL ->ATIVA MODO GRID | VERTICAL ->MODO APP)
-        function handleAutoOrientationMode() {
-            const isMobileOrSupportViewport = window.innerHeight <= 640 || /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
-            if (window.innerWidth >window.innerHeight && isMobileOrSupportViewport) {
-                window.setLayoutMode('grid', false, false);
+        // DETECÇÃO AUTOMÁTICA DE ROTAÇÃO HORIZONTAL / VERTICAL:
+        // - Horizontal (landscape) -> Aciona automaticamente o modo "GRID"
+        // - Vertical (portrait) -> Retorna automaticamente ao modo "App"
+        // - Exceto se o modo "PC" tiver sido ativado manualmente pelo usuário
+        function isDeviceInLandscape() {
+            if (window.screen && window.screen.orientation && typeof window.screen.orientation.type === 'string') {
+                if (window.screen.orientation.type.startsWith('landscape')) return true;
+                if (window.screen.orientation.type.startsWith('portrait')) return false;
+            }
+            if (typeof window.orientation === 'number') {
+                if (Math.abs(window.orientation) === 90) return true;
+                if (window.orientation === 0 || window.orientation === 180) return false;
+            }
+            return window.innerWidth > window.innerHeight;
+        }
+
+        function handleAutoOrientationMode(forceCheck = false) {
+            try {
+                if (localStorage.getItem('azimute_manual_pc') === 'true') {
+                    azimuteManualPcActive = true;
+                }
+            } catch (e) {}
+
+            // Se o modo "PC" foi ativado manualmente, preserva o modo "PC" até o usuário clicar em App ou GRID
+            if (azimuteManualPcActive) {
+                if (!document.body.classList.contains('mode-web')) {
+                    window.setLayoutMode('web', false, false);
+                }
                 return;
             }
-            let saved = 'app';
-            try { saved = localStorage.getItem('azimute_layout_mode') || 'app'; } catch (e) {}
-            if (window.innerHeight >= window.innerWidth && isMobileOrSupportViewport) {
-                window.setLayoutMode(saved === 'grid' ? 'grid' : 'app', false, false);
+
+            const isLandscape = isDeviceInLandscape();
+            if (!forceCheck && azimuteLastOrientationIsLandscape === isLandscape) {
+                return;
+            }
+            azimuteLastOrientationIsLandscape = isLandscape;
+
+            if (isLandscape) {
+                window.setLayoutMode('grid', false, false);
             } else {
-                window.setLayoutMode(saved, false, false);
+                window.setLayoutMode('app', false, false);
             }
         }
-        window.addEventListener('resize', handleAutoOrientationMode);
-        window.addEventListener('orientationchange', () =>setTimeout(handleAutoOrientationMode, 120));
-        document.addEventListener('DOMContentLoaded', handleAutoOrientationMode);
+
+        window.addEventListener('resize', () => handleAutoOrientationMode(false));
+        window.addEventListener('orientationchange', () => {
+            setTimeout(() => handleAutoOrientationMode(true), 80);
+            setTimeout(() => handleAutoOrientationMode(true), 250);
+        });
+        if (window.screen && window.screen.orientation && window.screen.orientation.addEventListener) {
+            window.screen.orientation.addEventListener('change', () => handleAutoOrientationMode(true));
+        }
+        document.addEventListener('DOMContentLoaded', () => handleAutoOrientationMode(true));
 
         // TELA CHEIA AUTOMÁTICA NO PRIMEIRO TOQUE/INTERAÇÃO + BOTÃO TELA CHEIA MANUAL (FULLSCREEN API EM APP, GRID E PC)
         let azimuteAutoFullscreenDone = false;
@@ -11080,12 +11165,34 @@
         // FUNÇÕES DE CONTROLE DO MENU LATERAL RETRÁTIL (MODO PC) E ACORDEÃO DE SUBPASTAS
         window.togglePcSidebarCollapse = function() {
             const body = document.body;
+            body.classList.remove('pc-sidebar-closed');
             body.classList.toggle('pc-sidebar-collapsed');
             const isCollapsed = body.classList.contains('pc-sidebar-collapsed');
             const icon = document.getElementById('iconPcSidebarToggle');
+            const txt = document.getElementById('txtPcSidebarToggle');
             if (icon) {
                 icon.setAttribute('data-lucide', isCollapsed ? 'panel-left-open' : 'panel-left-close');
             }
+            if (txt) {
+                txt.textContent = isCollapsed ? 'Expandir' : 'Recolher';
+            }
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        };
+
+        window.closePcSidebarCompletely = function() {
+            const body = document.body;
+            body.classList.remove('pc-sidebar-collapsed');
+            body.classList.add('pc-sidebar-closed');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        };
+
+        window.openPcSidebarCompletely = function() {
+            const body = document.body;
+            body.classList.remove('pc-sidebar-closed', 'pc-sidebar-collapsed');
+            const icon = document.getElementById('iconPcSidebarToggle');
+            const txt = document.getElementById('txtPcSidebarToggle');
+            if (icon) icon.setAttribute('data-lucide', 'panel-left-close');
+            if (txt) txt.textContent = 'Recolher';
             if (typeof lucide !== 'undefined') lucide.createIcons();
         };
 
