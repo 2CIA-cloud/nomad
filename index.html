@@ -543,7 +543,7 @@
                     <span class="text-pmmg-border select-none hidden sm:inline">|</span>
 
                     <!-- 3. Botão quadrado compacto contendo APENAS o ícone de uma Cruz Vermelha (sem texto "ROTA HOSP") -->
-                    <a id="statusBarBtnHosp" href="https://www.google.com/maps/dir/?api=1&destination=Hospital+Jo%C3%A3o+XXIII%2C+Av.+Prof.+Alfredo+Balena%2C+400+-+Santa+Efig%C3%AAnia%2C+Belo+Horizonte+-+MG%2C+30130-100&travelmode=driving" target="_blank" class="w-8 h-8 rounded-lg bg-pmmg-card hover:bg-pmmg-border border border-red-500/60 flex items-center justify-center shrink-0 shadow transition-all active:scale-95" title="Rota para Hospital João XXIII, Av. Prof. Alfredo Balena, 400 - Santa Efigênia, Belo Horizonte - MG, 30130-100">
+                    <a id="statusBarBtnHosp" href="https://www.google.com/maps/dir/?api=1&destination=-19.9242,-43.9317&travelmode=driving" target="_blank" class="w-8 h-8 rounded-lg bg-pmmg-card hover:bg-pmmg-border border border-red-500/60 flex items-center justify-center shrink-0 shadow transition-all active:scale-95" title="Rota para Hospital João XXIII, Av. Prof. Alfredo Balena, 400 - Santa Efigênia, Belo Horizonte - MG, 30130-100">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 text-red-500 shrink-0">
                             <path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6V3z"/>
                         </svg>
@@ -4357,121 +4357,80 @@
         </section>
 
         <!-- ================= VIEW SAÚDE / APH (POSIÇÃO CENTRAL DO MENU GLOBAL) ================= -->
-        <section id="view-saude"class="hidden space-y-6">
+        <section id="view-saude" class="hidden space-y-6">
             <div class="flex flex-wrap items-center justify-between border-b border-pmmg-border pb-3 gap-2">
-                <div>
-                    <div class="flex items-center gap-2">
-                        <span class="bg-red-950 text-red-400 text-[10px] px-2.5 py-0.5 rounded font-bold uppercase border border-red-500/40">Socorro & APH Offline</span>
-                        <h2 class="text-3xl font-military text-red-400 uppercase tracking-wide">Saúde / APH & Hospitais de Referência</h2>
-                    </div>
-                    <p class="text-xs text-gray-400">Monitoramento inteligente de hospitais via GPS, Modo Prioridade (SOS) e rede de trauma da RMBH</p>
-                </div>
+                <h2 class="text-3xl font-military text-red-400 uppercase tracking-wide leading-none">SAÚDE / APH</h2>
                 <div class="flex items-center gap-2">
-                    <button type="button"onclick="openPrioritySosModal()"class="px-3.5 py-2 bg-red-600 hover:bg-red-500 text-white font-extrabold rounded-xl text-xs flex items-center gap-1.5 shadow-lg uppercase">
+                    <button type="button" onclick="openPrioritySosModal()" class="px-3.5 py-2 bg-red-600 hover:bg-red-500 text-white font-extrabold rounded-xl text-xs flex items-center gap-1.5 shadow-lg uppercase cursor-pointer">
                         <span>MODO PRIORIDADE (SOS)</span>
                     </button>
-                    <button onclick="showView('home')"class="text-xs text-pmmg-khaki hover:underline flex items-center gap-1"><i data-lucide="arrow-left"class="w-4 h-4"></i>Início</button>
+                    <button onclick="showView('home')" class="text-xs text-pmmg-khaki hover:underline flex items-center gap-1 font-bold"><i data-lucide="arrow-left" class="w-4 h-4"></i>Início</button>
                 </div>
             </div>
 
-            <!-- PAINEL DE MONITORAMENTO HOSPITALAR INTELIGENTE (COMPARATIVO: HOSPITAL DE REFERÊNCIA DA RPM vs. MAIS PRÓXIMO REAL NO GPS) -->
-            <div id="saudeSmartHospitalPanel"class="bg-pmmg-card border-2 border-red-500/70 rounded-2xl p-4 sm:p-5 shadow-2xl space-y-4">
-                <!-- Topo do Painel: Título + Coordenada / Área Detectada -->
-                <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border pb-3">
-                    <div class="flex items-center gap-2.5">
-                        <div class="p-2 rounded-xl bg-red-950 text-red-400 border border-red-500/40">
-                            <i data-lucide="radar"class="w-5 h-5"></i>
-                        </div>
-                        <div>
-                            <span class="text-[10px] font-extrabold uppercase tracking-wider text-red-400 block leading-none">Monitoramento Hospitalar Inteligente (Tempo Real via Satélite)</span>
-                            <h3 class="text-xl sm:text-2xl font-military text-white uppercase tracking-wide leading-none mt-1">Comparativo: Referência da Área/RPM vs. Mais Próximo Real (GPS)</h3>
-                        </div>
-                    </div>
-                    <span id="saudePanelCurrentAreaBadge"class="px-2.5 py-1 rounded-lg bg-pmmg-dark border border-pmmg-khaki/40 text-[11px] font-mono font-bold text-pmmg-khaki">
-                        Área GPS: 2ª RPM • Contagem (18º BPM)
-                    </span>
-                </div>
-
-                <!-- Grade Comparativa Dupla: (a) Hospital de Referência da Área/RPM vs. (b) MAIS PRÓXIMO REAL (GPS) -->
+            <!-- PAINEL DE MONITORAMENTO HOSPITALAR LIMPO: APENAS "HOSPITAL DE REFERÊNCIA DA ÁREA" E "HOSPITAL MAIS PRÓXIMO (GPS)" -->
+            <div id="saudeSmartHospitalPanel" class="bg-pmmg-card border border-pmmg-khaki/50 rounded-2xl p-4 sm:p-5 shadow-2xl">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch">
-                    <!-- a) HOSPITAL DE REFERÊNCIA DA ÁREA / RPM -->
-                    <div id="saudeAreaRefCard"class="bg-pmmg-dark p-4 rounded-xl border border-pmmg-khaki/50 border-l-4 border-l-pmmg-khaki flex flex-col justify-between space-y-3">
-                        <div class="space-y-1.5">
-                            <div class="flex items-center justify-between gap-2 flex-wrap">
-                                <span class="text-[10px] font-extrabold uppercase tracking-wider bg-pmmg-khakiBadge text-pmmg-khaki px-2 py-0.5 rounded border border-pmmg-khaki/40">
-                                     Hospital de Referência da Área / RPM
-                                </span>
-                                <span id="saudeRefRpmLabel"class="text-[10px] font-mono font-bold text-pmmg-gold">
-                                    2ª RPM • Contagem
-                                </span>
-                            </div>
-                            <h4 id="saudeRefHospName"class="text-lg sm:text-xl font-extrabold text-white leading-tight pt-0.5">
-                                Hospital Municipal de Contagem (HMC)
+                    <!-- 1. Hospital de Referência da Área -->
+                    <div id="saudeAreaRefCard" class="bg-pmmg-dark p-4 rounded-xl border border-pmmg-khaki/50 border-l-4 border-l-pmmg-khaki flex flex-col justify-between space-y-3">
+                        <div class="space-y-1">
+                            <span class="text-[10px] font-extrabold uppercase tracking-wider text-pmmg-khaki block">
+                                Hospital de Referência da Área
+                            </span>
+                            <h4 id="saudeRefHospName" class="text-lg sm:text-xl font-extrabold text-white leading-tight">
+                                Hospital João XXIII
                             </h4>
-                            <p id="saudeRefHospAddr"class="text-xs text-gray-400">
-                                Av. Geraldo Rocha, 3220 - Chácaras Cotia, Contagem
+                            <p id="saudeRefHospAddr" class="text-xs text-gray-400">
+                                Av. Prof. Alfredo Balena, 400 - Santa Efigênia, Belo Horizonte - MG (-19.9242, -43.9317)
                             </p>
                         </div>
 
-                        <div class="pt-3 border-t border-pmmg-border/80 flex flex-wrap items-center justify-between gap-2">
-                            <div class="space-y-0.5">
-                                <span class="text-[10px] uppercase font-bold text-gray-400 block">Distância GPS até a Referência da Área:</span>
-                                <strong id="saudeRefHospMetrics"class="text-xs sm:text-sm font-mono text-pmmg-khaki font-extrabold block">
-                                    ~-- km (linear: -- km) • ~-- min
-                                </strong>
-                            </div>
-                            <a id="saudeRefHospRouteBtn"href="https://www.google.com/maps/dir/?api=1&destination=-19.9322,-44.0758&travelmode=driving"target="_blank"class="px-3.5 py-2 bg-pmmg-card hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-khaki/50 font-extrabold rounded-xl text-xs flex items-center gap-1.5 shadow transition-all active:scale-95 shrink-0 uppercase">
-                                <i data-lucide="navigation"class="w-3.5 h-3.5 text-pmmg-gold"></i>
-                                <span>Rota Referência</span>
+                        <div class="pt-3 border-t border-pmmg-border/80 flex items-center justify-between gap-2">
+                            <strong id="saudeRefHospMetrics" class="text-xs sm:text-sm font-mono text-pmmg-khaki font-extrabold">
+                                ~-- km • ~-- min
+                            </strong>
+                            <a id="saudeRefHospRouteBtn" href="https://www.google.com/maps/dir/?api=1&destination=-19.9242,-43.9317&travelmode=driving" target="_blank" class="px-3.5 py-2 bg-pmmg-khaki hover:bg-pmmg-khakiHover text-pmmg-black font-extrabold rounded-xl text-xs flex items-center gap-1.5 shadow transition-all active:scale-95 shrink-0 uppercase">
+                                <i data-lucide="navigation" class="w-3.5 h-3.5"></i>
+                                <span>Rota</span>
                             </a>
                         </div>
                     </div>
 
-                    <!-- b) MAIS PRÓXIMO REAL (GPS) - DESTAQUE PRINCIPAL COM ROTA IMEDIATA -->
-                    <div id="saudeRealClosestCard"class="bg-red-950/25 p-4 rounded-xl border-2 border-red-500 border-l-8 border-l-red-500 flex flex-col justify-between space-y-3 shadow-xl relative">
-                        <div class="space-y-1.5">
-                            <div class="flex items-center justify-between gap-2 flex-wrap">
-                                <span class="text-[10px] font-extrabold uppercase tracking-wider bg-red-600 text-white px-2.5 py-0.5 rounded shadow">
-                                     MAIS PRÓXIMO REAL (GPS)
-                                </span>
-                                <span id="saudeRealClosestDiffBadge"class="text-[10px] font-mono font-extrabold text-emerald-400 bg-emerald-950/90 px-2 py-0.5 rounded border border-emerald-500/40">
-                                    Menor Distância Real
-                                </span>
-                            </div>
-                            <h4 id="saudeClosestHospName"class="text-xl sm:text-2xl font-extrabold text-white leading-tight pt-0.5">
+                    <!-- 2. Hospital Mais Próximo (GPS) -->
+                    <div id="saudeRealClosestCard" class="bg-pmmg-dark p-4 rounded-xl border border-red-500/60 border-l-4 border-l-red-500 flex flex-col justify-between space-y-3">
+                        <div class="space-y-1">
+                            <span class="text-[10px] font-extrabold uppercase tracking-wider text-red-400 block">
+                                Hospital Mais Próximo (GPS)
+                            </span>
+                            <h4 id="saudeClosestHospName" class="text-lg sm:text-xl font-extrabold text-white leading-tight">
                                 Calculando hospital mais próximo...
                             </h4>
-                            <p id="saudeRealClosestAddr"class="text-xs text-gray-300">
-                                Av. Geraldo Rocha, 3220 - Chácaras Cotia, Contagem
+                            <p id="saudeRealClosestAddr" class="text-xs text-gray-400">
+                                Sincronizando coordenada via satélite...
                             </p>
                         </div>
 
-                        <div class="pt-3 border-t border-red-500/30 flex flex-wrap items-center justify-between gap-2">
-                            <div class="space-y-0.5">
-                                <span class="text-[10px] uppercase font-bold text-red-300 block">Distância Real via GPS & Tempo Estimado:</span>
-                                <strong id="saudeClosestHospMeta"class="text-xs sm:text-sm font-mono text-white font-extrabold block">
-                                    Distância e tempo médio calculados via satélite
-                                </strong>
-                            </div>
-                            <a id="saudeClosestHospBtn"href="https://www.google.com/maps/dir/?api=1&destination=-19.9322,-44.0758&travelmode=driving"target="_blank"class="px-4 py-2.5 bg-red-600 hover:bg-red-500 text-white font-extrabold rounded-xl text-xs sm:text-sm flex items-center justify-center gap-1.5 shrink-0 shadow-lg uppercase tracking-wider transition-all active:scale-95">
-                                <i data-lucide="navigation"class="w-4 h-4"></i>
-                                <span>ROTA IMEDIATA</span>
+                        <div class="pt-3 border-t border-pmmg-border/80 flex items-center justify-between gap-2">
+                            <strong id="saudeClosestHospMeta" class="text-xs sm:text-sm font-mono text-white font-extrabold">
+                                ~-- km • ~-- min
+                            </strong>
+                            <a id="saudeClosestHospBtn" href="https://www.google.com/maps/dir/?api=1&destination=-19.9242,-43.9317&travelmode=driving" target="_blank" class="px-3.5 py-2 bg-red-600 hover:bg-red-500 text-white font-extrabold rounded-xl text-xs flex items-center gap-1.5 shadow transition-all active:scale-95 shrink-0 uppercase">
+                                <i data-lucide="navigation" class="w-3.5 h-3.5"></i>
+                                <span>Rota</span>
                             </a>
                         </div>
                     </div>
                 </div>
 
-                <!-- Alerta Automático de Comparação (Destaca quando um hospital de outra área está mais perto que o de referência da área) -->
-                <div id="saudeComparisonAlertBanner"class="bg-pmmg-dark/90 border border-pmmg-border rounded-xl p-3 text-xs flex items-center justify-between gap-3">
-                    <div class="flex items-center gap-2.5">
-                        <i data-lucide="info"class="w-4 h-4 text-pmmg-gold shrink-0"></i>
-                        <span id="saudeComparisonAlertText"class="text-gray-200 font-medium">
-                            Monitorando sua posição GPS em relação a todos os hospitais de referência cadastrados...
-                        </span>
+                <!-- Elementos ocultos de compatibilidade para preservar 100% do script existente sem repetição visual -->
+                <div class="hidden">
+                    <span id="saudePanelCurrentAreaBadge"></span>
+                    <span id="saudeRefRpmLabel"></span>
+                    <span id="saudeRealClosestDiffBadge"></span>
+                    <div id="saudeComparisonAlertBanner">
+                        <span id="saudeComparisonAlertText"></span>
+                        <span id="saudeSecondClosestHint"></span>
                     </div>
-                    <span id="saudeSecondClosestHint"class="text-[11px] font-mono text-gray-400 shrink-0 hidden sm:inline">
-                        2º mais próx.: --
-                    </span>
                 </div>
             </div>
 
@@ -4832,11 +4791,11 @@
             </div>
 
             <!-- 2. CARD ASSISTENTE DE SOCORRO (NOTEBOOKLM - CONSULTA AUXILIAR POR ÁUDIO, TEXTO OU FOTO) -->
-            <div id="saudeNotebookLmAssistantCard"class="bg-pmmg-card border-2 border-pmmg-gold/60 rounded-2xl p-4 sm:p-5 shadow-xl space-y-3">
+            <div id="saudeNotebookLmAssistantCard" class="bg-pmmg-card border-2 border-pmmg-gold/60 rounded-2xl p-4 sm:p-5 shadow-xl space-y-3">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div class="flex items-start gap-3">
                         <div class="p-3 rounded-xl bg-pmmg-khakiBadge text-pmmg-gold border border-pmmg-gold/50 shrink-0">
-                            <i data-lucide="bot"class="w-6 h-6"></i>
+                            <i data-lucide="bot" class="w-6 h-6"></i>
                         </div>
                         <div class="space-y-1">
                             <div class="flex items-center gap-2 flex-wrap">
@@ -4846,7 +4805,7 @@
                                 <span class="text-[10px] font-mono text-gray-400">Áudio • Texto • Foto</span>
                             </div>
                             <h3 class="text-xl sm:text-2xl font-military text-white uppercase tracking-wide leading-none">
-                                Assistente de Socorro & APH (NotebookLM)
+                                Assistente de Socorro (NotebookLM)
                             </h3>
                             <p class="text-xs text-gray-200 leading-relaxed">
                                 Em caso de dúvida na ocorrência, acesse o assistente para enviar áudio, texto ou foto e receber orientação complementar baseada nos protocolos de APH (consulta auxiliar).
@@ -4855,24 +4814,24 @@
                     </div>
 
                     <div class="flex flex-wrap items-center gap-2 shrink-0">
-                        <a id="btnOpenNotebookLmAph"href="https://notebooklm.google.com/"target="_blank"rel="noopener noreferrer"class="px-4 py-2.5 bg-pmmg-gold hover:bg-pmmg-khakiHover active:scale-95 text-pmmg-black font-extrabold rounded-xl text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg uppercase tracking-wider transition-all">
-                            <i data-lucide="external-link"class="w-4 h-4"></i>
+                        <a id="btnOpenNotebookLmAph" href="https://notebook.google.com/notebook/1a62ae4d-eed3-405b-bfb7-f3cdf3fd961e" target="_blank" rel="noopener noreferrer" class="px-4 py-2.5 bg-pmmg-gold hover:bg-pmmg-khakiHover active:scale-95 text-pmmg-black font-extrabold rounded-xl text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg uppercase tracking-wider transition-all">
+                            <i data-lucide="external-link" class="w-4 h-4"></i>
                             <span>Acessar Assistente (NotebookLM)</span>
                         </a>
-                        <button type="button"onclick="toggleConfigNotebookLmUrl()"class="p-2.5 bg-pmmg-dark hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-border rounded-xl text-xs font-bold transition-colors"title="Configurar / Colar Link do Caderno NotebookLM de APH">
-                            <i data-lucide="settings"class="w-4 h-4"></i>
+                        <button type="button" onclick="toggleConfigNotebookLmUrl()" class="p-2.5 bg-pmmg-dark hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-border rounded-xl text-xs font-bold transition-colors" title="Configurar / Colar Link do Caderno NotebookLM de APH">
+                            <i data-lucide="settings" class="w-4 h-4"></i>
                         </button>
                     </div>
                 </div>
 
                 <!-- Gaveta opcional para vincular URL específica do Caderno NotebookLM da Unidade -->
-                <div id="notebookLmUrlConfigBox"class="hidden pt-3 border-t border-pmmg-border space-y-2">
+                <div id="notebookLmUrlConfigBox" class="hidden pt-3 border-t border-pmmg-border space-y-2">
                     <label class="text-[10px] font-bold uppercase tracking-wider text-pmmg-khaki block">
-                         Link do Caderno NotebookLM de APH (Salvo no Aparelho):
+                        Link do Caderno NotebookLM de APH (Salvo no Aparelho):
                     </label>
                     <div class="flex flex-col sm:flex-row gap-2">
-                        <input type="url"id="inputNotebookLmAphUrl"placeholder="https://notebooklm.google.com/notebook/..."class="flex-1 px-3 py-2 bg-pmmg-dark text-xs text-white rounded-lg border border-pmmg-border focus:outline-none focus:border-pmmg-gold font-mono">
-                        <button type="button"onclick="saveNotebookLmAphUrl()"class="px-4 py-2 bg-pmmg-khaki hover:bg-pmmg-khakiHover text-pmmg-black font-extrabold rounded-lg text-xs uppercase shrink-0">
+                        <input type="url" id="inputNotebookLmAphUrl" value="https://notebook.google.com/notebook/1a62ae4d-eed3-405b-bfb7-f3cdf3fd961e" placeholder="https://notebook.google.com/notebook/1a62ae4d-eed3-405b-bfb7-f3cdf3fd961e" class="flex-1 px-3 py-2 bg-pmmg-dark text-xs text-white rounded-lg border border-pmmg-border focus:outline-none focus:border-pmmg-gold font-mono">
+                        <button type="button" onclick="saveNotebookLmAphUrl()" class="px-4 py-2 bg-pmmg-khaki hover:bg-pmmg-khakiHover text-pmmg-black font-extrabold rounded-lg text-xs uppercase shrink-0">
                             Salvar Link
                         </button>
                     </div>
@@ -4938,7 +4897,7 @@
                         </div>
                         <div class="pt-2 border-t border-pmmg-border flex items-center justify-between text-xs">
                             <a href="tel:03132399200"class="text-pmmg-khaki font-mono font-bold hover:underline">(31) 3239-9200</a>
-                            <a href="https://www.google.com/maps/dir/?api=1&destination=Hospital+Jo%C3%A3o+XXIII%2C+Av.+Prof.+Alfredo+Balena%2C+400+-+Santa+Efig%C3%AAnia%2C+Belo+Horizonte+-+MG%2C+30130-100&travelmode=driving"target="_blank"class="px-3 py-1.5 bg-red-950/80 hover:bg-red-800 text-red-200 border border-red-500/40 rounded-lg font-bold flex items-center gap-1">Rota</a>
+                            <a href="https://www.google.com/maps/dir/?api=1&destination=-19.9242,-43.9317&travelmode=driving"target="_blank"class="px-3 py-1.5 bg-red-950/80 hover:bg-red-800 text-red-200 border border-red-500/40 rounded-lg font-bold flex items-center gap-1">Rota</a>
                         </div>
                     </div>
 
@@ -7647,7 +7606,7 @@
     <script>
         const AZIMUTE_HOSPITAIS_RMBH = [
             { nome: "Hosp. Municipal de Contagem (HMC)", lat: -19.9322, lon: -44.0758 },
-            { nome: "Hospital João XXIII, Av. Prof. Alfredo Balena, 400 - Santa Efigênia, Belo Horizonte - MG, 30130-100", lat: -19.9242, lon: -43.9317, routeUrl: "https://www.google.com/maps/dir/?api=1&destination=Hospital+Jo%C3%A3o+XXIII%2C+Av.+Prof.+Alfredo+Balena%2C+400+-+Santa+Efig%C3%AAnia%2C+Belo+Horizonte+-+MG%2C+30130-100&travelmode=driving" },
+            { nome: "Hospital João XXIII, Av. Prof. Alfredo Balena, 400 - Santa Efigênia, Belo Horizonte - MG, 30130-100", lat: -19.9242, lon: -43.9317, routeUrl: "https://www.google.com/maps/dir/?api=1&destination=-19.9242,-43.9317&travelmode=driving" },
             { nome: "Hospital da Polícia Militar (HPM)", lat: -19.9235, lon: -43.9182 },
             { nome: "Hosp. Risoleta Neves (Venda Nova)", lat: -19.8195, lon: -43.9535 },
             { nome: "Hosp. Regional de Betim", lat: -19.9567, lon: -44.1925 },
@@ -7889,7 +7848,7 @@
                 endereco: 'Hospital João XXIII, Av. Prof. Alfredo Balena, 400 - Santa Efigênia, Belo Horizonte - MG, 30130-100',
                 lat: -19.9242,
                 lon: -43.9317,
-                routeUrl: 'https://www.google.com/maps/dir/?api=1&destination=Hospital+Jo%C3%A3o+XXIII%2C+Av.+Prof.+Alfredo+Balena%2C+400+-+Santa+Efig%C3%AAnia%2C+Belo+Horizonte+-+MG%2C+30130-100&travelmode=driving'
+                routeUrl: 'https://www.google.com/maps/dir/?api=1&destination=-19.9242,-43.9317&travelmode=driving'
             },
             {
                 id: 'hmc',
@@ -8161,6 +8120,8 @@
             if (modal) modal.classList.add('hidden');
         };
 
+        const DEFAULT_APH_NOTEBOOKLM_URL = 'https://notebook.google.com/notebook/1a62ae4d-eed3-405b-bfb7-f3cdf3fd961e';
+
         window.toggleConfigNotebookLmUrl = function() {
             const box = document.getElementById('notebookLmUrlConfigBox');
             const inp = document.getElementById('inputNotebookLmAphUrl');
@@ -8168,7 +8129,7 @@
             box.classList.toggle('hidden');
             if (!box.classList.contains('hidden') && inp) {
                 try {
-                    inp.value = localStorage.getItem('azimute_notebooklm_aph_url') || 'https://notebooklm.google.com/';
+                    inp.value = localStorage.getItem('azimute_notebooklm_aph_url_v2') || DEFAULT_APH_NOTEBOOKLM_URL;
                 } catch (e) {}
             }
         };
@@ -8178,22 +8139,20 @@
             const btn = document.getElementById('btnOpenNotebookLmAph');
             const box = document.getElementById('notebookLmUrlConfigBox');
             if (!inp || !btn) return;
-            const url = (inp.value || '').trim() || 'https://notebooklm.google.com/';
+            const url = (inp.value || '').trim() || DEFAULT_APH_NOTEBOOKLM_URL;
             btn.href = url;
-            try { localStorage.setItem('azimute_notebooklm_aph_url', url); } catch (e) {}
+            try { localStorage.setItem('azimute_notebooklm_aph_url_v2', url); } catch (e) {}
             if (box) box.classList.add('hidden');
             if (typeof showToast === 'function') showToast('Link do Assistente NotebookLM salvo!');
         };
 
         (function initSavedNotebookLmUrl() {
             try {
-                const savedUrl = localStorage.getItem('azimute_notebooklm_aph_url');
-                if (savedUrl) {
-                    document.addEventListener('DOMContentLoaded', () => {
-                        const btn = document.getElementById('btnOpenNotebookLmAph');
-                        if (btn) btn.href = savedUrl;
-                    });
-                }
+                const savedUrl = localStorage.getItem('azimute_notebooklm_aph_url_v2') || DEFAULT_APH_NOTEBOOKLM_URL;
+                document.addEventListener('DOMContentLoaded', () => {
+                    const btn = document.getElementById('btnOpenNotebookLmAph');
+                    if (btn) btn.href = savedUrl;
+                });
             } catch (e) {}
         })();
 
@@ -9670,7 +9629,7 @@
             // Atualiza Barra de Status no Topo (ROTA HOSP e REDE resumida)
             const sbHospBtn = document.getElementById('statusBarBtnHosp');
             const sbRedeTxt = document.getElementById('statusBarRedeText');
-            if (sbHospBtn) sbHospBtn.href = 'https://www.google.com/maps/dir/?api=1&destination=Hospital+Jo%C3%A3o+XXIII%2C+Av.+Prof.+Alfredo+Balena%2C+400+-+Santa+Efig%C3%AAnia%2C+Belo+Horizonte+-+MG%2C+30130-100&travelmode=driving';
+            if (sbHospBtn) sbHospBtn.href = 'https://www.google.com/maps/dir/?api=1&destination=-19.9242,-43.9317&travelmode=driving';
             if (sbRedeTxt) sbRedeTxt.textContent = formatShortRedeName(closestArea.rede);
 
             // Atualiza Painel de 3 Colunas do Modo GRID
