@@ -1271,104 +1271,114 @@
                     </div>
                 </div>
 
-                <!-- BÚSSOLA DIGITAL REAL EM PORTUGUÊS (SENSORES DO APARELHO • N, S, L, O, NE, NO, SE, SO) -->
-                <div id="azimuteDigitalCompassCard"class="bg-pmmg-card/90 backdrop-blur-sm border-2 border-pmmg-khaki/60 rounded-2xl p-4 sm:p-5 shadow-2xl space-y-4">
-                    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border pb-3">
-                        <div class="flex items-center gap-2">
-                            <div class="p-2 rounded-lg bg-pmmg-khaki/15 border border-pmmg-khaki/50 text-pmmg-khaki">
-                                <i data-lucide="compass"class="w-5 h-5"></i>
+                <!-- BÚSSOLA DIGITAL (CAIXA FECHADA POR PADRÃO, SIMPLIFICADA) -->
+                <div id="azimuteDigitalCompassCard" class="bg-pmmg-card/90 backdrop-blur-sm border border-pmmg-khaki/50 rounded-2xl overflow-hidden shadow-2xl">
+                    <!-- Cabeçalho Clicável (Fechado por padrão, apenas título "BÚSSOLA DIGITAL", sem subtítulos) -->
+                    <button type="button" onclick="toggleDigitalCompassBox()" id="btnToggleDigitalCompassBox" class="w-full p-4 sm:p-5 flex items-center justify-between gap-3 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
+                        <div class="flex items-center gap-2.5">
+                            <div class="p-2 rounded-lg bg-pmmg-khaki/15 border border-pmmg-khaki/50 text-pmmg-khaki shrink-0">
+                                <i data-lucide="compass" class="w-5 h-5"></i>
                             </div>
-                            <div>
-                                <span class="text-[10px] font-bold uppercase tracking-wider text-pmmg-khaki block">Orientação Magnética • Sensor Real do Aparelho</span>
-                                <h3 class="text-xl font-military text-white uppercase tracking-wide leading-none mt-0.5">Bússola Digital (Azimute)</h3>
-                            </div>
+                            <h3 class="text-xl font-military text-white uppercase tracking-wide leading-none">BÚSSOLA DIGITAL</h3>
                         </div>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <span id="lblDigitalCompassToggle" class="text-[11px] font-bold text-pmmg-khaki">Abrir</span>
+                            <i data-lucide="chevron-down" id="iconDigitalCompassChevron" class="w-4 h-4 text-pmmg-gold transition-transform duration-200"></i>
+                        </div>
+                    </button>
 
-                        <div class="flex items-center gap-2 flex-wrap">
-                            <span id="compassAxisCompBadge"class="text-[10px] font-mono bg-pmmg-dark text-gray-300 px-2.5 py-1 rounded-lg border border-pmmg-border">
+                    <!-- Conteúdo Interno da Bússola (Oculto por padrão até o usuário clicar para expandir) -->
+                    <div id="digitalCompassExpandableBody" class="hidden p-4 sm:p-5 pt-3 border-t border-pmmg-border space-y-4">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <span id="compassAxisCompBadge" class="text-[10px] font-mono bg-pmmg-dark text-gray-300 px-2.5 py-1 rounded-lg border border-pmmg-border">
                                 Eixo: Vertical Padrão
                             </span>
-                            <button type="button"id="btnRequestCompassSensor"onclick="requestAzimuteCompassPermission()"class="px-3 py-1.5 bg-pmmg-khaki hover:bg-pmmg-khakiHover text-pmmg-black font-extrabold rounded-lg text-xs flex items-center gap-1.5 shadow transition-all active:scale-95">
-                                <i data-lucide="compass"class="w-3.5 h-3.5"></i>
-                                <span>Ativar / Permitir Sensor (iOS / Android)</span>
+                            <button type="button" id="btnRequestCompassSensor" onclick="requestAzimuteCompassPermission()" class="px-3.5 py-1.5 bg-pmmg-khaki hover:bg-pmmg-khakiHover text-pmmg-black font-extrabold rounded-lg text-xs flex items-center gap-1.5 shadow transition-all active:scale-95 cursor-pointer">
+                                <i data-lucide="compass" class="w-3.5 h-3.5"></i>
+                                <span>Ativar</span>
                             </button>
                         </div>
-                    </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
-                        <!-- Rosa dos Ventos Vetorial em Português (N, NE, L, SE, S, SO, O, NO) -->
-                        <div class="flex flex-col items-center justify-center bg-pmmg-black/80 rounded-2xl p-4 border border-pmmg-border relative">
-                            <!-- Indicador fixo de linha de fé (topo) -->
-                            <div class="w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-t-[12px] border-t-pmmg-gold mb-1 drop-shadow"></div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+                            <!-- Rosa dos Ventos Vetorial em Português com botão translúcido "(i)" no canto -->
+                            <div class="flex flex-col items-center justify-center bg-pmmg-black/80 rounded-2xl p-4 border border-pmmg-border relative">
+                                <!-- Pequeno botão translúcido "(i)" no canto da bússola -->
+                                <button type="button" onclick="showCompassHorizontalInfoTip(event)" id="btnCompassInfoIcon" class="absolute top-2.5 right-2.5 w-6 h-6 rounded-full bg-white/10 hover:bg-pmmg-khaki/25 text-pmmg-khaki/80 hover:text-pmmg-gold border border-pmmg-khaki/30 text-[11px] font-mono font-bold flex items-center justify-center backdrop-blur-sm transition-all cursor-pointer z-20" title="Instrução de uso na horizontal">
+                                    (i)
+                                </button>
 
-                            <div class="relative w-48 h-48 sm:w-52 sm:h-52 flex items-center justify-center">
-                                <svg id="compassDialSvg"viewBox="0 0 220 220"class="w-full h-full transition-transform duration-150 ease-out select-none">
-                                    <!-- Anel Externo Graduado -->
-                                    <circle cx="110"cy="110"r="102"fill="#141413"stroke="#C2B280"stroke-width="2.5" />
-                                    <circle cx="110"cy="110"r="88"fill="none"stroke="#3d3a33"stroke-width="1.2"stroke-dasharray="3,5" />
-
-                                    <!-- Marcações de Graus Principais -->
-                                    <line x1="110"y1="8"x2="110"y2="20"stroke="#ef4444"stroke-width="3" />
-                                    <line x1="212"y1="110"x2="200"y2="110"stroke="#C2B280"stroke-width="2.5" />
-                                    <line x1="110"y1="212"x2="110"y2="200"stroke="#C2B280"stroke-width="2.5" />
-                                    <line x1="8"y1="110"x2="20"y2="110"stroke="#C2B280"stroke-width="2.5" />
-
-                                    <!-- Marcações Colaterais (45°, 135°, 225°, 315°) -->
-                                    <line x1="182"y1="38"x2="174"y2="46"stroke="#D4AF37"stroke-width="2" />
-                                    <line x1="182"y1="182"x2="174"y2="174"stroke="#D4AF37"stroke-width="2" />
-                                    <line x1="38"y1="182"x2="46"y2="174"stroke="#D4AF37"stroke-width="2" />
-                                    <line x1="38"y1="38"x2="46"y2="46"stroke="#D4AF37"stroke-width="2" />
-
-                                    <!-- Pontos Cardeais em PORTUGUÊS (N, L, S, O) -->
-                                    <text x="110"y="38"fill="#ef4444"font-size="18"font-weight="900"text-anchor="middle"font-family="Inter, sans-serif">N</text>
-                                    <text x="188"y="116"fill="#C2B280"font-size="16"font-weight="800"text-anchor="middle"font-family="Inter, sans-serif">L</text>
-                                    <text x="110"y="196"fill="#C2B280"font-size="16"font-weight="800"text-anchor="middle"font-family="Inter, sans-serif">S</text>
-                                    <text x="32"y="116"fill="#C2B280"font-size="16"font-weight="800"text-anchor="middle"font-family="Inter, sans-serif">O</text>
-
-                                    <!-- Pontos Colaterais em PORTUGUÊS (NE, SE, SO, NO) -->
-                                    <text x="163"y="62"fill="#D4AF37"font-size="11"font-weight="800"text-anchor="middle"font-family="Inter, sans-serif">NE</text>
-                                    <text x="163"y="166"fill="#D4AF37"font-size="11"font-weight="800"text-anchor="middle"font-family="Inter, sans-serif">SE</text>
-                                    <text x="57"y="166"fill="#D4AF37"font-size="11"font-weight="800"text-anchor="middle"font-family="Inter, sans-serif">SO</text>
-                                    <text x="57"y="62"fill="#D4AF37"font-size="11"font-weight="800"text-anchor="middle"font-family="Inter, sans-serif">NO</text>
-
-                                    <!-- Agulha Central -->
-                                    <polygon points="110,46 118,110 102,110"fill="#ef4444" />
-                                    <polygon points="110,174 118,110 102,110"fill="#6b7280" />
-                                    <circle cx="110"cy="110"r="7"fill="#D4AF37"stroke="#0F0F0F"stroke-width="2" />
-                                </svg>
-                            </div>
-                        </div>
-
-                        <!-- Leitura Digital do Azimute / Aviso de Sensor Indisponível -->
-                        <div class="bg-pmmg-dark p-4 rounded-2xl border border-pmmg-border flex flex-col justify-between space-y-3 h-full">
-                            <div class="space-y-1">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-[10px] font-bold uppercase tracking-wider text-pmmg-khaki">Leitura de Azimute Magnético</span>
-                                    <span id="compassSensorStateBadge"class="px-2 py-0.5 rounded text-[10px] font-extrabold uppercase bg-red-950 text-red-400 border border-red-500/50">
-                                        SENSOR INDISPONÍVEL
-                                    </span>
+                                <!-- Aviso temporário de 5 segundos ao clicar em (i) -->
+                                <div id="compassHorizontalInfoToast" class="hidden absolute top-10 right-2.5 left-2.5 z-30 bg-pmmg-dark/95 backdrop-blur-md border border-pmmg-gold/70 text-pmmg-khakiLight text-[11px] font-semibold px-3 py-2 rounded-xl shadow-2xl text-center">
+                                    Posição horizontal: mantenha a câmera frontal virada para o lado esquerdo
                                 </div>
 
-                                <!-- Exibição Principal: Grau + Cardeal ou SENSOR INDISPONÍVEL (Nunca exibe grau inventado) -->
-                                <div id="compassReadoutContainer"class="py-3 text-center bg-pmmg-black/90 rounded-xl border border-pmmg-border my-2">
-                                    <div id="compassUnavailableAlert"class="px-2 py-2 space-y-1">
-                                        <span class="text-base sm:text-lg font-extrabold text-red-400 uppercase tracking-wider block">SENSOR INDISPONÍVEL</span>
-                                        <span id="compassUnavailableSubtext"class="text-[11px] text-gray-400 block">Aguardando leitura real do magnetômetro ou toque em "Ativar / Permitir Sensor".</span>
+                                <!-- Indicador fixo de linha de fé (topo) -->
+                                <div class="w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-t-[12px] border-t-pmmg-gold mb-1 drop-shadow"></div>
+
+                                <div class="relative w-48 h-48 sm:w-52 sm:h-52 flex items-center justify-center">
+                                    <svg id="compassDialSvg" viewBox="0 0 220 220" class="w-full h-full transition-transform duration-150 ease-out select-none">
+                                        <!-- Anel Externo Graduado -->
+                                        <circle cx="110" cy="110" r="102" fill="#141413" stroke="#C2B280" stroke-width="2.5" />
+                                        <circle cx="110" cy="110" r="88" fill="none" stroke="#3d3a33" stroke-width="1.2" stroke-dasharray="3,5" />
+
+                                        <!-- Marcações de Graus Principais -->
+                                        <line x1="110" y1="8" x2="110" y2="20" stroke="#ef4444" stroke-width="3" />
+                                        <line x1="212" y1="110" x2="200" y2="110" stroke="#C2B280" stroke-width="2.5" />
+                                        <line x1="110" y1="212" x2="110" y2="200" stroke="#C2B280" stroke-width="2.5" />
+                                        <line x1="8" y1="110" x2="20" y2="110" stroke="#C2B280" stroke-width="2.5" />
+
+                                        <!-- Marcações Colaterais (45°, 135°, 225°, 315°) -->
+                                        <line x1="182" y1="38" x2="174" y2="46" stroke="#D4AF37" stroke-width="2" />
+                                        <line x1="182" y1="182" x2="174" y2="174" stroke="#D4AF37" stroke-width="2" />
+                                        <line x1="38" y1="182" x2="46" y2="174" stroke="#D4AF37" stroke-width="2" />
+                                        <line x1="38" y1="38" x2="46" y2="46" stroke="#D4AF37" stroke-width="2" />
+
+                                        <!-- Pontos Cardeais (N, L, S, O) -->
+                                        <text x="110" y="38" fill="#ef4444" font-size="18" font-weight="900" text-anchor="middle" font-family="Inter, sans-serif">N</text>
+                                        <text x="188" y="116" fill="#C2B280" font-size="16" font-weight="800" text-anchor="middle" font-family="Inter, sans-serif">L</text>
+                                        <text x="110" y="196" fill="#C2B280" font-size="16" font-weight="800" text-anchor="middle" font-family="Inter, sans-serif">S</text>
+                                        <text x="32" y="116" fill="#C2B280" font-size="16" font-weight="800" text-anchor="middle" font-family="Inter, sans-serif">O</text>
+
+                                        <!-- Pontos Colaterais (NE, SE, SO, NO) -->
+                                        <text x="163" y="62" fill="#D4AF37" font-size="11" font-weight="800" text-anchor="middle" font-family="Inter, sans-serif">NE</text>
+                                        <text x="163" y="166" fill="#D4AF37" font-size="11" font-weight="800" text-anchor="middle" font-family="Inter, sans-serif">SE</text>
+                                        <text x="57" y="166" fill="#D4AF37" font-size="11" font-weight="800" text-anchor="middle" font-family="Inter, sans-serif">SO</text>
+                                        <text x="57" y="62" fill="#D4AF37" font-size="11" font-weight="800" text-anchor="middle" font-family="Inter, sans-serif">NO</text>
+
+                                        <!-- Agulha Central -->
+                                        <polygon points="110,46 118,110 102,110" fill="#ef4444" />
+                                        <polygon points="110,174 118,110 102,110" fill="#6b7280" />
+                                        <circle cx="110" cy="110" r="7" fill="#D4AF37" stroke="#0F0F0F" stroke-width="2" />
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <!-- Leitura Digital do Azimute (Sem o texto que lista os pontos cardeais por extenso) -->
+                            <div class="bg-pmmg-dark p-4 rounded-2xl border border-pmmg-border flex flex-col justify-between space-y-3 h-full">
+                                <div class="space-y-1">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-[10px] font-bold uppercase tracking-wider text-pmmg-khaki">Azimute Magnético</span>
+                                        <span id="compassSensorStateBadge" class="px-2 py-0.5 rounded text-[10px] font-extrabold uppercase bg-red-950 text-red-400 border border-red-500/50">
+                                            SENSOR INDISPONÍVEL
+                                        </span>
                                     </div>
 
-                                    <div id="compassActiveReadout"class="hidden space-y-0.5">
-                                        <div class="flex items-baseline justify-center gap-2">
-                                            <strong id="compassDegreeValue"class="text-4xl sm:text-5xl font-mono font-extrabold text-white">--°</strong>
-                                            <strong id="compassCardinalPt"class="text-2xl sm:text-3xl font-military text-pmmg-gold uppercase tracking-wider">--</strong>
+                                    <!-- Exibição Principal: Grau + Cardeal ou SENSOR INDISPONÍVEL -->
+                                    <div id="compassReadoutContainer" class="py-3 text-center bg-pmmg-black/90 rounded-xl border border-pmmg-border my-2">
+                                        <div id="compassUnavailableAlert" class="px-2 py-2 space-y-1">
+                                            <span class="text-base sm:text-lg font-extrabold text-red-400 uppercase tracking-wider block">SENSOR INDISPONÍVEL</span>
+                                            <span id="compassUnavailableSubtext" class="text-[11px] text-gray-400 block">Aguardando leitura real do magnetômetro ou toque em "Ativar".</span>
                                         </div>
-                                        <p id="compassCardinalFullPt"class="text-xs text-pmmg-khaki font-semibold uppercase tracking-wide">--</p>
+
+                                        <div id="compassActiveReadout" class="hidden space-y-0.5">
+                                            <div class="flex items-baseline justify-center gap-2">
+                                                <strong id="compassDegreeValue" class="text-4xl sm:text-5xl font-mono font-extrabold text-white">--°</strong>
+                                                <strong id="compassCardinalPt" class="text-2xl sm:text-3xl font-military text-pmmg-gold uppercase tracking-wider">--</strong>
+                                            </div>
+                                            <p id="compassCardinalFullPt" class="hidden text-xs text-pmmg-khaki font-semibold uppercase tracking-wide">--</p>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="text-[11px] text-gray-400 space-y-1 border-t border-pmmg-border/70 pt-2">
-                                <p>• <strong class="text-gray-200">Pontos em Português:</strong>N (Norte), NE (Nordeste), L (Leste), SE (Sudeste), S (Sul), SO (Sudoeste), O (Oeste), NO (Noroeste).</p>
-                                <p>• <strong class="text-gray-200">Compensação Horizontal:</strong>Ajuste automático de eixo quando o celular está na horizontal (Modo GRID).</p>
                             </div>
                         </div>
                     </div>
@@ -11082,8 +11092,41 @@
                 if (icon) icon.style.transform = 'rotate(0deg)';
             }
         };
+        let compassInfoTipTimer = null;
+
+        window.toggleDigitalCompassBox = function(forceOpen = null) {
+            const body = document.getElementById('digitalCompassExpandableBody');
+            const lbl = document.getElementById('lblDigitalCompassToggle');
+            const icon = document.getElementById('iconDigitalCompassChevron');
+            if (!body) return;
+            const shouldOpen = forceOpen !== null ? forceOpen : body.classList.contains('hidden');
+            if (shouldOpen) {
+                body.classList.remove('hidden');
+                if (lbl) lbl.textContent = 'Fechar';
+                if (icon) icon.style.transform = 'rotate(180deg)';
+            } else {
+                body.classList.add('hidden');
+                if (lbl) lbl.textContent = 'Abrir';
+                if (icon) icon.style.transform = 'rotate(0deg)';
+            }
+        };
+
+        window.showCompassHorizontalInfoTip = function(ev) {
+            if (ev && typeof ev.stopPropagation === 'function') {
+                ev.stopPropagation();
+            }
+            const tipEl = document.getElementById('compassHorizontalInfoToast');
+            if (!tipEl) return;
+            tipEl.classList.remove('hidden');
+            if (compassInfoTipTimer) clearTimeout(compassInfoTipTimer);
+            compassInfoTipTimer = setTimeout(() => {
+                tipEl.classList.add('hidden');
+            }, 5000);
+        };
+
         window.openHomeCompassPill = function() {
             showView('gps');
+            window.toggleDigitalCompassBox(true);
             setTimeout(() => {
                 const compCard = document.getElementById('azimuteDigitalCompassCard');
                 if (compCard) compCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
