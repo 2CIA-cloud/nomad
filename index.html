@@ -4545,8 +4545,108 @@
                     </div>
                 </button>
 
-                <!-- Conteúdo interno fechado por padrão, mantendo apenas os botões/estrutura limpa -->
-                <div id="offlineAphGuideExpandableBody" class="hidden p-4 sm:p-5 pt-3 border-t border-pmmg-border space-y-3">
+                <!-- Conteúdo interno fechado por padrão: Card Didático Protocolo MARCH no topo + Grade de Protocolos -->
+                <div id="offlineAphGuideExpandableBody" class="hidden p-4 sm:p-5 pt-3 border-t border-pmmg-border space-y-4">
+                    
+                    <!-- CARD DIDÁTICO RÁPIDO E VISUAL: SEQUÊNCIA DO PROTOCOLO MARCH (MANUAL PMMG) -->
+                    <div id="aphMarchProtocolDidacticCard" class="bg-[#0D0D0D] border border-[#C5A869]/60 border-l-4 border-l-red-500 rounded-2xl p-4 sm:p-5 space-y-3.5 shadow-xl">
+                        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border pb-2.5">
+                            <div class="flex items-center gap-2.5">
+                                <span class="px-2.5 py-1 rounded-lg bg-red-950/90 text-red-400 border border-red-500/50 font-mono font-extrabold text-xs tracking-widest uppercase">
+                                    M • A • R • C • H
+                                </span>
+                                <div>
+                                    <h4 class="text-lg sm:text-xl font-military text-white uppercase tracking-wider leading-none">
+                                        Protocolo MARCH • Sequência de Atendimento (Manual PMMG)
+                                    </h4>
+                                    <span class="text-[11px] text-gray-400 block mt-0.5">
+                                        Ordem prioritária de avaliação e intervenção rápida no atendimento pré-hospitalar
+                                    </span>
+                                </div>
+                            </div>
+                            <span class="text-[10px] font-mono font-bold uppercase text-pmmg-khaki bg-[#161616] px-2.5 py-1 rounded border border-[#C5A869]/40">
+                                Consulta Rápida Offline
+                            </span>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5 text-xs">
+                            <!-- M — Maciço -->
+                            <div class="bg-[#161616] p-3 rounded-xl border border-red-500/40 flex flex-col justify-between space-y-1.5">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-7 h-7 rounded-lg bg-red-950 text-red-400 border border-red-500/50 font-military text-xl font-bold flex items-center justify-center shrink-0 leading-none">
+                                        M
+                                    </span>
+                                    <strong class="text-white font-extrabold uppercase tracking-wide text-xs sm:text-sm">
+                                        M — Maciço
+                                    </strong>
+                                </div>
+                                <p class="text-[11px] text-gray-300 leading-relaxed">
+                                    Controle imediato de sangramento maciço / Torniquete e preenchimento.
+                                </p>
+                            </div>
+
+                            <!-- A — Aéreas -->
+                            <div class="bg-[#161616] p-3 rounded-xl border border-sky-500/40 flex flex-col justify-between space-y-1.5">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-7 h-7 rounded-lg bg-sky-950 text-sky-400 border border-sky-500/50 font-military text-xl font-bold flex items-center justify-center shrink-0 leading-none">
+                                        A
+                                    </span>
+                                    <strong class="text-white font-extrabold uppercase tracking-wide text-xs sm:text-sm">
+                                        A — Aéreas
+                                    </strong>
+                                </div>
+                                <p class="text-[11px] text-gray-300 leading-relaxed">
+                                    Controle e desobstrução das vias aéreas / Posicionamento e cânula.
+                                </p>
+                            </div>
+
+                            <!-- R — Respiração -->
+                            <div class="bg-[#161616] p-3 rounded-xl border border-amber-500/40 flex flex-col justify-between space-y-1.5">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-7 h-7 rounded-lg bg-amber-950 text-amber-300 border border-amber-500/50 font-military text-xl font-bold flex items-center justify-center shrink-0 leading-none">
+                                        R
+                                    </span>
+                                    <strong class="text-white font-extrabold uppercase tracking-wide text-xs sm:text-sm">
+                                        R — Respiração
+                                    </strong>
+                                </div>
+                                <p class="text-[11px] text-gray-300 leading-relaxed">
+                                    Manutenção da respiração / Selo de tórax valvulado em ferida soprante.
+                                </p>
+                            </div>
+
+                            <!-- C — Circulação -->
+                            <div class="bg-[#161616] p-3 rounded-xl border border-rose-500/40 flex flex-col justify-between space-y-1.5">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-7 h-7 rounded-lg bg-rose-950 text-rose-400 border border-rose-500/50 font-military text-xl font-bold flex items-center justify-center shrink-0 leading-none">
+                                        C
+                                    </span>
+                                    <strong class="text-white font-extrabold uppercase tracking-wide text-xs sm:text-sm">
+                                        C — Circulação
+                                    </strong>
+                                </div>
+                                <p class="text-[11px] text-gray-300 leading-relaxed">
+                                    Avaliação de choque — pulso radial, perfusão capilar, consciência — e revisão de torniquete.
+                                </p>
+                            </div>
+
+                            <!-- H — Hipotermia -->
+                            <div class="bg-[#161616] p-3 rounded-xl border border-[#C5A869]/50 flex flex-col justify-between space-y-1.5 sm:col-span-2 lg:col-span-1">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-7 h-7 rounded-lg bg-pmmg-khakiBadge text-pmmg-khaki border border-[#C5A869]/50 font-military text-xl font-bold flex items-center justify-center shrink-0 leading-none">
+                                        H
+                                    </span>
+                                    <strong class="text-white font-extrabold uppercase tracking-wide text-xs sm:text-sm">
+                                        H — Hipotermia
+                                    </strong>
+                                </div>
+                                <p class="text-[11px] text-gray-300 leading-relaxed">
+                                    Prevenção da hipotermia e controle da Tríade da Morte.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                         <!-- 1. Hemorragia / Torniquete -->
                         <button type="button" onclick="openOfflineAphProtocol('hemorragia')" class="bg-pmmg-dark hover:bg-pmmg-cardHover active:scale-[0.99] p-4 rounded-xl border border-red-500/50 border-l-4 border-l-red-500 text-left flex items-center justify-between gap-3 shadow-md transition-all group cursor-pointer">
