@@ -143,20 +143,34 @@
             margin-left: auto;
             margin-right: auto;
         }
-        /* Ativa o Painel de 3 Colunas no Modo GRID */
-        body.mode-grid #gridModeTacticalCockpit {
+        /* Ativa o Painel de 3 Colunas no Modo GRID EXCLUSIVAMENTE na Tela Início (home) */
+        body.mode-grid #gridModeTacticalCockpit.grid-cockpit-active:not(.hidden) {
             display: grid !important;
             grid-template-columns: 3fr 5fr 4fr;
             gap: 0.5rem;
             align-items: stretch;
             margin-bottom: 0.5rem;
         }
+        body.mode-grid #gridModeTacticalCockpit:not(.grid-cockpit-active),
+        body.mode-grid #gridModeTacticalCockpit.hidden {
+            display: none !important;
+        }
         @media (max-width: 560px) {
-            body.mode-grid #gridModeTacticalCockpit {
+            body.mode-grid #gridModeTacticalCockpit.grid-cockpit-active:not(.hidden) {
                 grid-template-columns: 1fr;
             }
         }
-        /* Modo GRID exibe Acesso Rápido e Apoio Mais Próximo na ordem definida */
+        /* Modo GRID: garante Acesso Rápido posicionado acima de Apoio Mais Próximo (GPS) na Home */
+        body.mode-grid main#mainContainer > section#view-home.azimute-active-view {
+            display: flex !important;
+            flex-direction: column !important;
+        }
+        body.mode-grid #homeQuickAccessSection {
+            order: 1 !important;
+        }
+        body.mode-grid #homeNearestSupportSection {
+            order: 2 !important;
+        }
         body.mode-grid .subtabs-bar {
             display: grid !important;
             grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
@@ -768,7 +782,7 @@
     <main id="mainContainer"class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-4 app-main-container">
 
         <!-- ================= PAINEL HORIZONTAL DE 3 COLUNAS (EXCLUSIVO MODO GRID / SUPORTE PEITORAL) ================= -->
-        <section id="gridModeTacticalCockpit"aria-label="Painel Modo GRID">
+        <section id="gridModeTacticalCockpit" class="grid-cockpit-active" aria-label="Painel Modo GRID">
             <!-- COLUNA ESQUERDA: TELEMETRIA RÁPIDA (GPS, REDE DO BPM, ÁREA ATUAL) -->
             <div class="bg-pmmg-card border border-pmmg-khaki/50 rounded-xl p-2.5 flex flex-col justify-between space-y-2 shadow-lg">
                 <div class="flex items-center justify-between border-b border-pmmg-border pb-1.5">
@@ -878,10 +892,10 @@
                     <span class="text-[11px] uppercase tracking-wider leading-tight">Copiar QTH</span>
                 </button>
 
-                <!-- 2. Botão Grande: Localização Exata / Mapa -->
-                <a id="gridBtnExactMap"href="https://www.google.com/maps/search/?api=1&query=-19.9162,-44.0809"target="_blank"class="bg-pmmg-card hover:bg-pmmg-border active:scale-95 text-pmmg-gold border-2 border-pmmg-gold/60 font-extrabold rounded-xl p-2.5 flex flex-col items-center justify-center text-center shadow-lg transition-all">
-                    <i data-lucide="map-pin"class="w-5 h-5 mb-1 text-pmmg-gold"></i>
-                    <span class="text-[10.5px] uppercase tracking-wider leading-tight text-white">Localização / Mapa</span>
+                <!-- 2. Botão Único: Localização Exata -->
+                <a id="gridBtnExactMap" href="https://www.google.com/maps/search/?api=1&query=-19.9162,-44.0809" target="_blank" class="bg-pmmg-card hover:bg-pmmg-border active:scale-95 text-pmmg-gold border-2 border-pmmg-gold/60 font-extrabold rounded-xl p-2.5 flex flex-col items-center justify-center text-center shadow-lg transition-all" title="Abrir coordenada exata atual no Google Maps">
+                    <i data-lucide="map-pin" class="w-5 h-5 mb-1 text-pmmg-gold"></i>
+                    <span class="text-[10.5px] uppercase tracking-wider leading-tight text-white">Localização Exata</span>
                 </a>
 
                 <!-- 3. Botão Grande: Clima -->
@@ -1580,13 +1594,7 @@
                     <span class="text-[10px] font-extrabold uppercase tracking-wider text-pmmg-khaki flex items-center gap-1.5">
                         <i data-lucide="radar" class="w-3.5 h-3.5 text-pmmg-gold"></i>Apoio Mais Próximo (GPS)
                     </span>
-                    <div class="flex items-center gap-2">
-                        <a id="btnHomePillExactLoc" href="https://www.google.com/maps/search/?api=1&query=-19.9162,-44.0809" target="_blank" class="px-2.5 py-0.5 rounded-full bg-pmmg-dark hover:bg-pmmg-cardHover text-pmmg-khaki border border-pmmg-gold/50 hover:border-pmmg-gold font-bold text-[10px] flex items-center gap-1 transition-all cursor-pointer" title="Abrir coordenada exata atual no Google Maps">
-                            <i data-lucide="map-pin" class="w-3 h-3 text-pmmg-gold shrink-0"></i>
-                            <span>Localização Exata</span>
-                        </a>
-                        <span id="homeSupportGpsStatus" class="text-[10px] font-mono text-emerald-400 font-bold hidden sm:inline">Cálculo Automático via Satélite</span>
-                    </div>
+                    <span id="homeSupportGpsStatus" class="text-[10px] font-mono text-emerald-400 font-bold">Cálculo Automático via Satélite</span>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -1627,7 +1635,7 @@
                     <span id="homeQuickQth"></span><span id="homeQuickSuburb"></span>
                     <span id="homeQuickRadio"></span><span id="homeQuickArea"></span>
                     <span id="homeHospDistBadge"></span><span id="homeQuickHospName"></span>
-                    <span id="homeQuickHospEta"></span><a id="homeBtnHospRoute" href="#"></a>
+                    <span id="homeQuickHospEta"></span><a id="homeBtnHospRoute" href="#"></a><a id="btnHomePillExactLoc" href="#"></a>
                 </div>
             </div>
         </section>
@@ -10369,6 +10377,7 @@
                 body.classList.remove('pc-sidebar-closed', 'pc-sidebar-collapsed');
                 body.classList.add('mode-grid');
                 if (btnGrid) btnGrid.className = activeCls;
+                if (typeof syncGridCockpitVisibility === 'function') syncGridCockpitVisibility(azimuteCurrentViewId || 'home');
                 if (notify && typeof showToast === 'function') showToast('Modo GRID ativado!');
             } else {
                 body.classList.remove('pc-sidebar-closed', 'pc-sidebar-collapsed');
@@ -10917,8 +10926,29 @@
         document.addEventListener('DOMContentLoaded', () => {
             renderQuickAccessGrid();
         });
+        let azimuteCurrentViewId = 'home';
+
+        function syncGridCockpitVisibility(viewId) {
+            const gridCockpit = document.getElementById('gridModeTacticalCockpit');
+            if (!gridCockpit) return;
+            if (viewId === 'home') {
+                gridCockpit.classList.add('grid-cockpit-active');
+                gridCockpit.classList.remove('hidden');
+                gridCockpit.style.removeProperty('display');
+            } else {
+                gridCockpit.classList.remove('grid-cockpit-active');
+                gridCockpit.classList.add('hidden');
+                gridCockpit.style.setProperty('display', 'none', 'important');
+            }
+        }
+
         function showView(viewId) {
             if (viewId === 'unidades') viewId = 'regioes';
+            azimuteCurrentViewId = viewId;
+
+            // No Modo GRID (e geral), exibe os blocos superiores de Telemetria, Orientação e Copiar QTH (#gridModeTacticalCockpit) SOMENTE na Tela Início ('home')
+            syncGridCockpitVisibility(viewId);
+
             // Exibe a barra superior (#operationalStatusBar) SOMENTE na Tela Início ('home')
             const topStatusBar = document.getElementById('operationalStatusBar');
             if (topStatusBar) {
