@@ -427,6 +427,7 @@
                     modal.classList.add('hidden');
                     modal.style.setProperty('display', 'none', 'important');
                 }
+                if (typeof requestAzimuteFullscreenSilent === 'function') requestAzimuteFullscreenSilent();
                 if (typeof showToast === 'function') showToast('Acesso liberado! Bem-vindo ao AZIMUTE.');
             } else {
                 if (errDiv) {
@@ -482,145 +483,89 @@
         <span id="toastText">Copiado para a área de transferência!</span>
     </div>
 
-    <!-- CABEÇALHO SUPERIOR COMPACTO GLOBAL (AZIMUTE) -->
-    <header class="sticky top-0 z-40 bg-pmmg-dark/95 backdrop-blur border-b border-pmmg-khaki/40 shadow-xl">
-        <!-- FAIXA 1: LOGO AZIMUTE + BUSCA RÁPIDA + SELETOR (App | GRID | PC) -->
-        <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2">
-            <div class="flex flex-wrap items-center justify-between gap-2">
-                
-                <!-- Logo/Título AZIMUTE Compacto -->
-                <div class="flex items-center gap-2 cursor-pointer shrink-0"onclick="showView('home')">
-                    <div class="w-8 h-8 rounded-lg bg-pmmg-khaki/15 border border-pmmg-khaki/60 flex items-center justify-center text-pmmg-khaki shadow-inner shrink-0">
-                        <i data-lucide="compass"class="w-5 h-5"></i>
-                    </div>
-                    <h1 class="text-2xl sm:text-3xl font-military tracking-widest text-pmmg-khaki uppercase leading-none">AZIMUTE</h1>
-                </div>
-
-                <!-- Busca Rápida Global -->
-                <div class="order-3 sm:order-2 w-full sm:w-auto sm:flex-1 sm:max-w-md relative">
-                    <i data-lucide="search"class="absolute left-3 top-2 w-3.5 h-3.5 text-pmmg-khaki pointer-events-none"></i>
-                    <input 
-                        type="text" 
-                        id="globalSearch" 
-                        autocomplete="off"
-                        placeholder="Buscar rua, bairro, drone, gasolina, bnmp, cia..." 
-                        class="w-full pl-8 pr-7 py-1.5 bg-pmmg-card text-xs text-gray-100 placeholder-gray-400 rounded-lg border border-pmmg-border focus:outline-none focus:border-pmmg-khaki focus:ring-1 focus:ring-pmmg-khaki transition-all"
-                        oninput="handleGlobalSearch()"
-                        onfocus="handleGlobalSearch()"
-                    >
-                    <button id="clearGlobalSearchBtn"onclick="clearGlobalSearch()"class="hidden absolute right-2 top-1.5 text-gray-400 hover:text-pmmg-khaki p-0.5"title="Limpar pesquisa">
-                        <i data-lucide="x"class="w-3.5 h-3.5"></i>
-                    </button>
-
-                    <!-- PAINEL SUSPENSO DE RESULTADOS DA BUSCA INTELIGENTE -->
-                    <div id="globalSearchDropdown"class="hidden fixed sm:absolute left-2 right-2 sm:left-0 sm:right-auto sm:w-[460px] top-[98px] sm:top-full mt-1.5 z-50 bg-pmmg-dark/98 backdrop-blur-md border-2 border-pmmg-khaki/70 rounded-xl shadow-2xl max-h-[72vh] overflow-y-auto divide-y divide-pmmg-border">
-                        <!-- Preenchido dinamicamente pelo motor de busca -->
-                    </div>
-                </div>
-
-                <!-- Seletor dos 3 Modos de Visualização (App | GRID | PC) + Botão Tela Cheia Visível no Topo -->
-                <div class="order-2 sm:order-3 flex items-center gap-1.5 shrink-0">
-                    <div class="flex items-center bg-pmmg-black p-0.5 rounded-lg border border-pmmg-border text-[11px]">
-                        <button type="button" onclick="setLayoutMode('app')" id="btn-mode-app" class="px-2.5 py-1 rounded-md font-extrabold bg-pmmg-dark text-pmmg-khaki border border-pmmg-gold shadow-sm transition-all" title="Modo App (Smartphone)">
-                            App
-                        </button>
-                        <span class="text-pmmg-border select-none px-0.5">|</span>
-                        <button type="button" onclick="setLayoutMode('grid')" id="btn-mode-grid" class="px-2.5 py-1 rounded-md font-semibold text-gray-400 hover:text-white transition-all" title="Modo GRID (Painel em Grade)">
-                            GRID
-                        </button>
-                        <span class="text-pmmg-border select-none px-0.5">|</span>
-                        <button type="button" onclick="setLayoutMode('web')" id="btn-mode-web" class="px-2.5 py-1 rounded-md font-semibold text-gray-400 hover:text-white transition-all" title="Modo PC (Desktop Amplo)">
-                            PC
-                        </button>
-                    </div>
-                    <button type="button" id="btnHeaderFullscreen" onclick="toggleAzimuteFullscreen(event)" class="px-2.5 py-1.5 bg-pmmg-black hover:bg-pmmg-card text-pmmg-khaki border border-pmmg-gold/50 rounded-lg text-[11px] font-bold flex items-center gap-1 transition-all shrink-0 cursor-pointer" title="Alternar ou Sair da Tela Cheia">
-                        <i data-lucide="maximize" id="iconHeaderFullscreen" class="w-3.5 h-3.5 text-pmmg-gold"></i>
-                        <span id="txtHeaderFullscreen">Tela Cheia</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- FAIXA 2: BARRA DE STATUS UNIFICADA NO TOPO (EXCLUSIVA DA TELA INÍCIO) -->
-        <div id="operationalStatusBar" class="bg-pmmg-black/95 border-t border-pmmg-border/80 px-2.5 sm:px-6 py-1.5">
-            <div class="max-w-7xl mx-auto">
-                <div class="bg-pmmg-dark border border-pmmg-border rounded-xl px-3 py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs shadow-inner">
-                    
-                    <!-- Linha Superior no Modo App: GPS + Rede + Botão SOS/Cruz Vermelha -->
-                    <div class="flex items-center justify-between w-full sm:w-auto gap-2 shrink-0">
-                        <!-- 1. Palavra "GPS" em verde -->
-                        <button type="button" onclick="showView('gps')" id="statusBarGpsIndicator" class="px-2.5 py-1 rounded font-mono font-extrabold text-[11px] uppercase tracking-wider border bg-emerald-950/90 text-emerald-400 border-emerald-500/60 shrink-0 transition-all cursor-pointer" title="Abrir aba Geolocalização">
-                            GPS
-                        </button>
-
-                        <div class="flex items-center gap-2">
-                            <!-- 2. Rede: [Batalhão atual, ex: 18º BPM A] -->
-                            <button type="button" onclick="openCurrentNetworkBattalionModal()" id="statusBarBtnRede" class="px-2.5 py-1 rounded-lg bg-pmmg-card hover:bg-pmmg-border border border-pmmg-gold/50 text-pmmg-gold font-mono font-extrabold text-[11px] flex items-center gap-1 shrink-0 transition-all cursor-pointer" title="Ver dados detalhados do Batalhão da Rede atual">
-                                <span class="text-pmmg-khaki font-sans font-bold">Rede:</span>
-                                <span id="statusBarRedeText">18º BPM A</span>
-                            </button>
-
-                            <!-- 3. Botão quadrado compacto contendo APENAS o ícone de uma Cruz Vermelha -->
-                            <a id="statusBarBtnHosp" href="https://www.google.com/maps/dir/?api=1&destination=-19.9242,-43.9317&travelmode=driving" target="_blank" class="w-8 h-8 rounded-lg bg-pmmg-card hover:bg-pmmg-border border border-red-500/60 flex items-center justify-center shrink-0 shadow transition-all active:scale-95" title="Rota para Hospital João XXIII, Av. Prof. Alfredo Balena, 400 - Santa Efigênia, Belo Horizonte - MG, 30130-100">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 text-red-500 shrink-0">
-                                    <path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6V3z"/>
-                                </svg>
-                            </a>
+    <!-- CABEÇALHO SUPERIOR COMPACTO GLOBAL (EXCLUSIVO DA TELA INÍCIO) -->
+    <header id="mainTopHeader" class="sticky top-0 z-40 bg-pmmg-dark/95 backdrop-blur border-b border-pmmg-khaki/40 shadow-xl">
+        <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2 space-y-2">
+            
+            <!-- LINHA 1 DO TOPO: ESQUERDA ("AZIMUTE | 5º BPM A") + DIREITA (CRUZ VERMELHA JOÃO XXIII + RECARREGAR PÁGINA) -->
+            <div class="flex items-center justify-between gap-2">
+                <!-- Esquerda: AZIMUTE | 5º BPM A -->
+                <div class="flex items-center gap-2 min-w-0">
+                    <div class="flex items-center gap-2 cursor-pointer shrink-0" onclick="showView('home')">
+                        <div class="w-7 h-7 rounded-lg bg-pmmg-khaki/15 border border-pmmg-khaki/60 flex items-center justify-center text-pmmg-khaki shadow-inner shrink-0">
+                            <i data-lucide="compass" class="w-4 h-4"></i>
                         </div>
+                        <h1 class="text-2xl sm:text-3xl font-military tracking-widest text-pmmg-khaki uppercase leading-none">AZIMUTE</h1>
                     </div>
+                    <span class="text-pmmg-khaki/50 font-light text-lg select-none shrink-0">|</span>
+                    <button type="button" onclick="openCurrentNetworkBattalionModal()" id="statusBarBtnRede" class="px-2 py-0.5 rounded-md bg-pmmg-black hover:bg-pmmg-card border border-pmmg-gold/40 text-pmmg-khaki font-mono font-extrabold text-xs sm:text-sm flex items-center gap-1 truncate transition-all cursor-pointer" title="Ver dados do Batalhão da Rede atual">
+                        <span id="statusBarRedeText" class="truncate">5º BPM A</span>
+                    </button>
+                </div>
 
-                    <span class="text-pmmg-border select-none hidden sm:inline">|</span>
-
-                    <!-- Caixa de Endereço (QTH) Redimensionada para Largura Total no Modo App: Nome da Rua Completo + Bairro + Cidade -->
-                    <div id="statusBarQthBox" onclick="showView('gps')" class="w-full sm:flex-1 bg-pmmg-black/70 sm:bg-transparent px-2.5 py-2 sm:p-0 rounded-lg border border-pmmg-border/70 sm:border-0 font-sans text-xs text-gray-200 cursor-pointer hover:text-pmmg-khaki transition-colors whitespace-normal break-words leading-snug" title="Abrir detalhes de Geolocalização">
-                        <span class="font-bold text-pmmg-khaki">QTH:</span>
-                        <span id="statusBarQth" class="font-semibold text-white ml-1">--</span>
-                    </div>
-
+                <!-- Direita: Botão Compacto Cruz Vermelha (Hospital João XXIII: -19.9242, -43.9317) + Botão Discreto Recarregar Página -->
+                <div class="flex items-center gap-1.5 shrink-0">
+                    <a id="statusBarBtnHosp" href="https://www.google.com/maps/dir/?api=1&destination=-19.9242,-43.9317&travelmode=driving" target="_blank" class="w-8 h-8 rounded-lg bg-pmmg-black hover:bg-pmmg-card border border-pmmg-gold/50 flex items-center justify-center shrink-0 shadow transition-all active:scale-95" title="Rota rápida para o Hospital João XXIII (Lat -19.9242, Lng -43.9317)">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 text-red-500 shrink-0">
+                            <path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6V3z"/>
+                        </svg>
+                    </a>
+                    <button type="button" onclick="window.location.reload()" class="px-2.5 h-8 bg-pmmg-black hover:bg-pmmg-card text-gray-300 hover:text-pmmg-khaki border border-pmmg-border rounded-lg text-[11px] font-bold flex items-center gap-1.5 transition-all shrink-0 cursor-pointer" title="Recarregar Página">
+                        <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-pmmg-khaki shrink-0"></i>
+                        <span>Recarregar</span>
+                    </button>
                 </div>
             </div>
+
+            <!-- LINHA 2 (ACIMA DA CAIXA DE PESQUISA): BARRA DE LOCALIZAÇÃO ("GPS | QTH: Rua, Bairro - Cidade") -->
+            <div id="operationalStatusBar" class="bg-pmmg-black/90 border border-pmmg-border rounded-xl px-2.5 py-1.5 flex items-center gap-2 text-xs shadow-inner">
+                <button type="button" onclick="showView('gps')" id="statusBarGpsIndicator" class="px-2 py-0.5 rounded font-mono font-extrabold text-[10.5px] uppercase tracking-wider border bg-emerald-950/90 text-emerald-400 border-emerald-500/60 shrink-0 transition-all cursor-pointer" title="Abrir aba Geolocalização">
+                    GPS
+                </button>
+                <span class="text-pmmg-khaki/40 font-light select-none shrink-0">|</span>
+                <div id="statusBarQthBox" onclick="showView('gps')" class="flex-1 min-w-0 font-sans text-xs text-gray-200 cursor-pointer hover:text-pmmg-khaki transition-colors whitespace-normal break-words leading-snug" title="Abrir detalhes de Geolocalização">
+                    <span class="font-bold text-pmmg-khaki">QTH:</span>
+                    <span id="statusBarQth" class="font-semibold text-white ml-1">--</span>
+                </div>
+            </div>
+
+            <!-- LINHA 3 (ABAIXO DO QTH): CAIXA DE PESQUISA GLOBAL ("Buscar rua, bairro, drone...") -->
+            <div id="homeSearchBoxContainer" class="w-full relative">
+                <i data-lucide="search" class="absolute left-3 top-2.5 w-3.5 h-3.5 text-pmmg-khaki pointer-events-none"></i>
+                <input 
+                    type="text" 
+                    id="globalSearch" 
+                    autocomplete="off"
+                    placeholder="Buscar rua, bairro, drone, gasolina, bnmp, cia..." 
+                    class="w-full pl-8 pr-7 py-2 bg-pmmg-black/90 text-xs text-gray-100 placeholder-gray-400 rounded-xl border border-pmmg-border focus:outline-none focus:border-pmmg-khaki focus:ring-1 focus:ring-pmmg-khaki transition-all"
+                    oninput="handleGlobalSearch()"
+                    onfocus="handleGlobalSearch()"
+                >
+                <button id="clearGlobalSearchBtn" onclick="clearGlobalSearch()" class="hidden absolute right-2.5 top-2 text-gray-400 hover:text-pmmg-khaki p-0.5" title="Limpar pesquisa">
+                    <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                </button>
+
+                <!-- PAINEL SUSPENSO DE RESULTADOS DA BUSCA INTELIGENTE -->
+                <div id="globalSearchDropdown" class="hidden fixed sm:absolute left-2 right-2 sm:left-0 sm:right-0 top-[148px] sm:top-full mt-1.5 z-50 bg-pmmg-dark/98 backdrop-blur-md border-2 border-pmmg-khaki/70 rounded-xl shadow-2xl max-h-[72vh] overflow-y-auto divide-y divide-pmmg-border">
+                    <!-- Preenchido dinamicamente pelo motor de busca -->
+                </div>
+            </div>
+
         </div>
 
-        <!-- NAVEGAÇÃO SUPERIOR (VISÍVEL APENAS NOS MODOS GRID E PC PARA NÃO DUPLICAR COM O MENU INFERIOR DO MODO APP) -->
-        <nav id="topNavBar"class="bg-pmmg-card/90 border-t border-pmmg-border px-3 py-1.5 overflow-x-auto">
-            <div class="max-w-7xl mx-auto flex items-center justify-between text-xs font-medium gap-2">
-                <div id="topNavLinks" class="flex items-center gap-2 min-w-max">
-                    <button onclick="showView('home')" id="nav-btn-home" class="px-3 py-1.5 rounded-md bg-pmmg-card text-pmmg-khaki border border-pmmg-gold font-extrabold flex items-center gap-1.5 shadow-sm">
-                        <i data-lucide="home" class="w-3.5 h-3.5 shrink-0"></i> <span>Início</span>
-                    </button>
-                    <button onclick="showView('regioes')" id="nav-btn-regioes" class="px-3 py-1.5 rounded-md bg-pmmg-dark text-gray-400 border border-pmmg-border hover:text-gray-200 font-semibold flex items-center gap-1.5">
-                        <i data-lucide="shield" class="w-3.5 h-3.5 shrink-0"></i> <span>Unidades</span>
-                    </button>
-                    <button onclick="showView('saude')" id="nav-btn-saude" class="px-3 py-1.5 rounded-md bg-pmmg-dark text-gray-400 border border-pmmg-border hover:text-gray-200 font-semibold flex items-center gap-1.5">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5 shrink-0"><path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6V3z"/></svg> <span>APH/SAÚDE</span>
-                    </button>
-                    <button onclick="showView('rpas')" id="nav-btn-rpas" class="px-3 py-1.5 rounded-md bg-pmmg-dark text-gray-400 border border-pmmg-border hover:text-gray-200 font-semibold flex items-center gap-1.5">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5 shrink-0">
-                            <rect x="9" y="9" width="6" height="6" rx="1"/>
-                            <path d="M9 9 5.5 5.5"/><path d="M15 9l3.5-3.5"/><path d="M9 15l-3.5 3.5"/><path d="M15 15l3.5 3.5"/>
-                            <circle cx="4.5" cy="4.5" r="2.5"/><circle cx="19.5" cy="4.5" r="2.5"/><circle cx="4.5" cy="19.5" r="2.5"/><circle cx="19.5" cy="19.5" r="2.5"/>
-                        </svg>
-                        <span>Drones</span>
-                    </button>
-                    <button onclick="showView('atalhos')" id="nav-btn-atalhos" class="px-3 py-1.5 rounded-md bg-pmmg-dark text-gray-400 border border-pmmg-border hover:text-gray-200 font-semibold flex items-center gap-1.5">
-                        <i data-lucide="folder" class="w-3.5 h-3.5 shrink-0"></i> <span>Apoio</span>
-                    </button>
-                    <button onclick="showView('gps')" id="nav-btn-gps" class="px-3 py-1.5 rounded-md bg-pmmg-dark text-gray-400 border border-pmmg-border hover:text-gray-200 font-semibold flex items-center gap-1.5">
-                        <i data-lucide="locate-fixed" class="w-3.5 h-3.5 shrink-0"></i> <span>Geolocalização</span>
-                    </button>
-                    <button onclick="showView('especializadas')" id="nav-btn-especializadas" class="px-3 py-1.5 rounded-md bg-pmmg-dark text-gray-400 border border-pmmg-border hover:text-gray-200 font-semibold flex items-center gap-1.5">
-                        <i data-lucide="crosshair" class="w-3.5 h-3.5 shrink-0"></i> <span>Especializadas</span>
-                    </button>
-                    <button onclick="showView('estadios')" id="nav-btn-estadios" class="px-3 py-1.5 rounded-md bg-pmmg-dark text-gray-400 border border-pmmg-border hover:text-gray-200 font-semibold flex items-center gap-1.5">
-                        <i data-lucide="trophy" class="w-3.5 h-3.5 shrink-0"></i> <span>Estádios</span>
-                    </button>
-                </div>
-
-                <div id="activeUnitBadge"class="hidden lg:flex items-center gap-2 text-pmmg-khaki text-xs font-mono font-bold shrink-0">
-                    <i data-lucide="chevron-right"class="w-4 h-4 text-gray-500"></i>
-                    <span id="activeUnitName">18º BPM</span>
-                </div>
+        <!-- NAVEGAÇÃO SUPERIOR OCULTA DE COMPATIBILIDADE -->
+        <nav id="topNavBar" class="hidden">
+            <div id="topNavLinks">
+                <button id="nav-btn-home"></button>
+                <button id="nav-btn-regioes"></button>
+                <button id="nav-btn-saude"></button>
+                <button id="nav-btn-rpas"></button>
+                <button id="nav-btn-atalhos"></button>
+                <button id="nav-btn-gps"></button>
+                <button id="nav-btn-especializadas"></button>
+                <button id="nav-btn-estadios"></button>
             </div>
+            <div id="activeUnitBadge" class="hidden"><span id="activeUnitName">18º BPM</span></div>
         </nav>
     </header>
 
@@ -4923,10 +4868,36 @@
                     <button type="button" onclick="toggleQCodeModal()" class="px-3 py-1.5 bg-pmmg-khaki/20 hover:bg-pmmg-khaki/30 text-pmmg-khaki border border-pmmg-khaki/50 rounded-lg text-xs font-bold flex items-center gap-1.5 cursor-pointer">
                         <i data-lucide="book-open" class="w-4 h-4"></i> <span>Códigos Q & Fonético</span>
                     </button>
-                    <button type="button" onclick="toggleAzimuteFullscreen()" class="px-3 py-1.5 bg-pmmg-dark hover:bg-pmmg-border text-gray-300 border border-pmmg-border rounded-lg text-xs font-bold flex items-center gap-1.5 cursor-pointer" title="Alternar Tela Cheia">
-                        <i data-lucide="maximize" class="w-3.5 h-3.5 text-pmmg-khaki"></i> <span>Tela Cheia</span>
-                    </button>
                     <button onclick="showView('home')" class="text-xs text-pmmg-khaki hover:underline flex items-center gap-1 font-bold"><i data-lucide="arrow-left" class="w-4 h-4"></i>Início</button>
+                </div>
+            </div>
+
+            <!-- ÁREA DE AJUSTES DE TELA E EXIBIÇÃO (MODOS App | GRID | PC E TELA CHEIA) -->
+            <div class="bg-pmmg-card border border-pmmg-khaki/50 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-lg">
+                <div class="space-y-0.5">
+                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-pmmg-khaki flex items-center gap-1.5">
+                        <i data-lucide="sliders-horizontal" class="w-3.5 h-3.5 text-pmmg-gold"></i>Ajustes de Tela & Exibição
+                    </span>
+                    <p class="text-[11px] text-gray-400">A rotação física do aparelho alterna automaticamente entre Vertical (App) e Horizontal (GRID).</p>
+                </div>
+                <div class="flex flex-wrap items-center gap-2 shrink-0">
+                    <div class="flex items-center bg-pmmg-black p-1 rounded-xl border border-pmmg-border text-xs">
+                        <button type="button" onclick="setLayoutMode('app')" id="btn-mode-app" class="px-3 py-1.5 rounded-lg font-extrabold bg-pmmg-dark text-pmmg-khaki border border-pmmg-gold shadow-sm transition-all cursor-pointer" title="Modo App (Vertical)">
+                            App
+                        </button>
+                        <span class="text-pmmg-border select-none px-1">|</span>
+                        <button type="button" onclick="setLayoutMode('grid')" id="btn-mode-grid" class="px-3 py-1.5 rounded-lg font-semibold text-gray-400 border border-transparent hover:text-gray-200 transition-all cursor-pointer" title="Modo GRID (Horizontal)">
+                            GRID
+                        </button>
+                        <span class="text-pmmg-border select-none px-1">|</span>
+                        <button type="button" onclick="setLayoutMode('web')" id="btn-mode-web" class="px-3 py-1.5 rounded-lg font-semibold text-gray-400 border border-transparent hover:text-gray-200 transition-all cursor-pointer" title="Modo PC (Desktop)">
+                            PC
+                        </button>
+                    </div>
+                    <button type="button" id="btnHeaderFullscreen" onclick="toggleAzimuteFullscreen(event)" class="px-3 py-2 bg-pmmg-black hover:bg-pmmg-dark text-pmmg-khaki border border-pmmg-gold/60 rounded-xl text-xs font-extrabold flex items-center gap-1.5 transition-all shrink-0 cursor-pointer" title="Alternar ou Sair da Tela Cheia">
+                        <i data-lucide="maximize" id="iconHeaderFullscreen" class="w-4 h-4 text-pmmg-gold"></i>
+                        <span id="txtHeaderFullscreen">Tela Cheia</span>
+                    </button>
                 </div>
             </div>
 
@@ -10419,15 +10390,14 @@
             return window.innerWidth > window.innerHeight;
         }
 
-        function handleAutoOrientationMode(forceCheck = false) {
-            try {
-                if (localStorage.getItem('azimute_manual_pc') === 'true') {
-                    azimuteManualPcActive = true;
-                }
-            } catch (e) {}
+        function handleAutoOrientationMode(forceCheck = false, fromPhysicalRotation = false) {
+            // Se o aparelho girou fisicamente, desativa eventual trava manual de PC e obedece à posição física
+            if (fromPhysicalRotation) {
+                azimuteManualPcActive = false;
+                try { localStorage.setItem('azimute_manual_pc', 'false'); } catch (e) {}
+            }
 
-            // Se o modo "PC" foi ativado manualmente, preserva o modo "PC" até o usuário clicar em App ou GRID
-            if (azimuteManualPcActive) {
+            if (azimuteManualPcActive && !fromPhysicalRotation) {
                 if (!document.body.classList.contains('mode-web')) {
                     window.setLayoutMode('web', false, false);
                 }
@@ -10440,6 +10410,7 @@
             }
             azimuteLastOrientationIsLandscape = isLandscape;
 
+            // Horizontal (landscape) -> modo "GRID" | Vertical (portrait) -> modo "App"
             if (isLandscape) {
                 window.setLayoutMode('grid', false, false);
             } else {
@@ -10447,15 +10418,33 @@
             }
         }
 
-        window.addEventListener('resize', () => handleAutoOrientationMode(false));
+        window.addEventListener('resize', () => handleAutoOrientationMode(false, false));
         window.addEventListener('orientationchange', () => {
-            setTimeout(() => handleAutoOrientationMode(true), 80);
-            setTimeout(() => handleAutoOrientationMode(true), 250);
+            handleAutoOrientationMode(true, true);
+            setTimeout(() => handleAutoOrientationMode(true, true), 80);
+            setTimeout(() => handleAutoOrientationMode(true, true), 250);
         });
         if (window.screen && window.screen.orientation && window.screen.orientation.addEventListener) {
-            window.screen.orientation.addEventListener('change', () => handleAutoOrientationMode(true));
+            window.screen.orientation.addEventListener('change', () => handleAutoOrientationMode(true, true));
         }
-        document.addEventListener('DOMContentLoaded', () => handleAutoOrientationMode(true));
+        if (window.matchMedia) {
+            try {
+                const mqlLandscape = window.matchMedia('(orientation: landscape)');
+                if (mqlLandscape.addEventListener) {
+                    mqlLandscape.addEventListener('change', () => handleAutoOrientationMode(true, true));
+                } else if (mqlLandscape.addListener) {
+                    mqlLandscape.addListener(() => handleAutoOrientationMode(true, true));
+                }
+            } catch (e) {}
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            azimuteManualPcActive = false;
+            try { localStorage.setItem('azimute_manual_pc', 'false'); } catch (e) {}
+            handleAutoOrientationMode(true, true);
+            if (typeof requestAzimuteFullscreenSilent === 'function') {
+                requestAzimuteFullscreenSilent();
+            }
+        });
 
         // TELA CHEIA AUTOMÁTICA NO PRIMEIRO TOQUE/INTERAÇÃO + BOTÃO TELA CHEIA MANUAL (FULLSCREEN API EM APP, GRID E PC)
         let azimuteAutoFullscreenDone = false;
@@ -10530,11 +10519,11 @@
         };
 
         function handleFirstUserInteractionFullscreen(e) {
-            if (azimuteAutoFullscreenDone) {
+            if (azimuteAutoFullscreenDone || isAzimuteCurrentlyFullscreen()) {
+                azimuteAutoFullscreenDone = true;
                 removeFirstInteractionFullscreenListeners();
                 return;
             }
-            // Se o primeiro clique foi diretamente no botão de Tela Cheia, deixa o próprio botão tratar
             if (e && e.target && e.target.closest && e.target.closest('#btnHeaderFullscreen')) {
                 azimuteAutoFullscreenDone = true;
                 removeFirstInteractionFullscreenListeners();
@@ -10980,15 +10969,35 @@
             // No Modo GRID (e geral), exibe os blocos superiores de Telemetria, Orientação e Copiar QTH (#gridModeTacticalCockpit) SOMENTE na Tela Início ('home')
             syncGridCockpitVisibility(viewId);
 
-            // Exibe a barra superior (#operationalStatusBar) SOMENTE na Tela Início ('home')
+            // Exibe o cabeçalho superior e a barra GPS/QTH/Pesquisa SOMENTE na Tela Início ('home'), ocultando nas demais abas
+            const mainTopHdr = document.getElementById('mainTopHeader');
             const topStatusBar = document.getElementById('operationalStatusBar');
-            if (topStatusBar) {
-                if (viewId === 'home') {
+            const searchContainer = document.getElementById('homeSearchBoxContainer');
+            if (viewId === 'home') {
+                if (mainTopHdr) {
+                    mainTopHdr.classList.remove('hidden');
+                    mainTopHdr.style.removeProperty('display');
+                }
+                if (topStatusBar) {
                     topStatusBar.classList.remove('hidden');
                     topStatusBar.style.removeProperty('display');
-                } else {
+                }
+                if (searchContainer) {
+                    searchContainer.classList.remove('hidden');
+                    searchContainer.style.removeProperty('display');
+                }
+            } else {
+                if (mainTopHdr) {
+                    mainTopHdr.classList.add('hidden');
+                    mainTopHdr.style.setProperty('display', 'none', 'important');
+                }
+                if (topStatusBar) {
                     topStatusBar.classList.add('hidden');
                     topStatusBar.style.setProperty('display', 'none', 'important');
+                }
+                if (searchContainer) {
+                    searchContainer.classList.add('hidden');
+                    searchContainer.style.setProperty('display', 'none', 'important');
                 }
             }
             const views = ['home', 'regioes', 'rpm1', 'rpm2', 'rpm3', 'especializadas', 'estadios', 'rpas', 'atalhos', 'saude', 'skeleton', '18bpm', 'gps'];
