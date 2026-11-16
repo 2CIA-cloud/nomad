@@ -156,10 +156,7 @@
                 grid-template-columns: 1fr;
             }
         }
-        /* No Modo GRID na Home, oculta elementos redundantes para evitar rolagem excessiva */
-        body.mode-grid #view-home >div:first-child {
-            display: none !important;
-        }
+        /* Modo GRID exibe Acesso Rápido e Apoio Mais Próximo na ordem definida */
         body.mode-grid .subtabs-bar {
             display: grid !important;
             grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
@@ -535,40 +532,41 @@
             </div>
         </div>
 
-        <!-- FAIXA 2: BARRA DE STATUS UNIFICADA NO TOPO -->
+        <!-- FAIXA 2: BARRA DE STATUS UNIFICADA NO TOPO (EXCLUSIVA DA TELA INÍCIO) -->
         <div id="operationalStatusBar" class="bg-pmmg-black/95 border-t border-pmmg-border/80 px-2.5 sm:px-6 py-1.5">
             <div class="max-w-7xl mx-auto">
-                <div class="bg-pmmg-dark border border-pmmg-border rounded-xl px-3 py-2 flex flex-wrap sm:flex-nowrap items-center justify-between gap-2.5 text-xs shadow-inner">
+                <div class="bg-pmmg-dark border border-pmmg-border rounded-xl px-3 py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs shadow-inner">
                     
-                    <!-- 1. Palavra "GPS" em verde -->
-                    <button type="button" onclick="showView('gps')" id="statusBarGpsIndicator" class="px-2.5 py-1 rounded font-mono font-extrabold text-[11px] uppercase tracking-wider border bg-emerald-950/90 text-emerald-400 border-emerald-500/60 shrink-0 transition-all cursor-pointer" title="Abrir aba Geolocalização">
-                        GPS
-                    </button>
+                    <!-- Linha Superior no Modo App: GPS + Rede + Botão SOS/Cruz Vermelha -->
+                    <div class="flex items-center justify-between w-full sm:w-auto gap-2 shrink-0">
+                        <!-- 1. Palavra "GPS" em verde -->
+                        <button type="button" onclick="showView('gps')" id="statusBarGpsIndicator" class="px-2.5 py-1 rounded font-mono font-extrabold text-[11px] uppercase tracking-wider border bg-emerald-950/90 text-emerald-400 border-emerald-500/60 shrink-0 transition-all cursor-pointer" title="Abrir aba Geolocalização">
+                            GPS
+                        </button>
 
-                    <span class="text-pmmg-border select-none hidden sm:inline">|</span>
+                        <div class="flex items-center gap-2">
+                            <!-- 2. Rede: [Batalhão atual, ex: 18º BPM A] -->
+                            <button type="button" onclick="openCurrentNetworkBattalionModal()" id="statusBarBtnRede" class="px-2.5 py-1 rounded-lg bg-pmmg-card hover:bg-pmmg-border border border-pmmg-gold/50 text-pmmg-gold font-mono font-extrabold text-[11px] flex items-center gap-1 shrink-0 transition-all cursor-pointer" title="Ver dados detalhados do Batalhão da Rede atual">
+                                <span class="text-pmmg-khaki font-sans font-bold">Rede:</span>
+                                <span id="statusBarRedeText">18º BPM A</span>
+                            </button>
 
-                    <!-- 2. QTH: [Nome completo da rua sem cortar com reticências] -->
-                    <div onclick="showView('gps')" class="font-sans text-xs text-gray-200 cursor-pointer hover:text-pmmg-khaki transition-colors flex-1 min-w-[180px] whitespace-normal break-words leading-snug" title="Abrir detalhes de Geolocalização">
-                        <span class="font-bold text-pmmg-khaki">QTH:</span>
-                        <span id="statusBarQth" class="font-semibold text-white ml-0.5">--</span>
+                            <!-- 3. Botão quadrado compacto contendo APENAS o ícone de uma Cruz Vermelha -->
+                            <a id="statusBarBtnHosp" href="https://www.google.com/maps/dir/?api=1&destination=-19.9242,-43.9317&travelmode=driving" target="_blank" class="w-8 h-8 rounded-lg bg-pmmg-card hover:bg-pmmg-border border border-red-500/60 flex items-center justify-center shrink-0 shadow transition-all active:scale-95" title="Rota para Hospital João XXIII, Av. Prof. Alfredo Balena, 400 - Santa Efigênia, Belo Horizonte - MG, 30130-100">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 text-red-500 shrink-0">
+                                    <path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6V3z"/>
+                                </svg>
+                            </a>
+                        </div>
                     </div>
 
                     <span class="text-pmmg-border select-none hidden sm:inline">|</span>
 
-                    <!-- 3. Botão quadrado compacto contendo APENAS o ícone de uma Cruz Vermelha (sem texto "ROTA HOSP") -->
-                    <a id="statusBarBtnHosp" href="https://www.google.com/maps/dir/?api=1&destination=-19.9242,-43.9317&travelmode=driving" target="_blank" class="w-8 h-8 rounded-lg bg-pmmg-card hover:bg-pmmg-border border border-red-500/60 flex items-center justify-center shrink-0 shadow transition-all active:scale-95" title="Rota para Hospital João XXIII, Av. Prof. Alfredo Balena, 400 - Santa Efigênia, Belo Horizonte - MG, 30130-100">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 text-red-500 shrink-0">
-                            <path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6V3z"/>
-                        </svg>
-                    </a>
-
-                    <span class="text-pmmg-border select-none hidden sm:inline">|</span>
-
-                    <!-- 4. Rede: [Batalhão atual, ex: 5º BPM A] -->
-                    <button type="button" onclick="openCurrentNetworkBattalionModal()" id="statusBarBtnRede" class="px-2.5 py-1 rounded-lg bg-pmmg-card hover:bg-pmmg-border border border-pmmg-gold/50 text-pmmg-gold font-mono font-extrabold text-[11px] flex items-center gap-1 shrink-0 transition-all cursor-pointer" title="Ver dados detalhados do Batalhão da Rede atual">
-                        <span class="text-pmmg-khaki font-sans font-bold">Rede:</span>
-                        <span id="statusBarRedeText">18º BPM A</span>
-                    </button>
+                    <!-- Caixa de Endereço (QTH) Redimensionada para Largura Total no Modo App: Nome da Rua Completo + Bairro + Cidade -->
+                    <div id="statusBarQthBox" onclick="showView('gps')" class="w-full sm:flex-1 bg-pmmg-black/70 sm:bg-transparent px-2.5 py-2 sm:p-0 rounded-lg border border-pmmg-border/70 sm:border-0 font-sans text-xs text-gray-200 cursor-pointer hover:text-pmmg-khaki transition-colors whitespace-normal break-words leading-snug" title="Abrir detalhes de Geolocalização">
+                        <span class="font-bold text-pmmg-khaki">QTH:</span>
+                        <span id="statusBarQth" class="font-semibold text-white ml-1">--</span>
+                    </div>
 
                 </div>
             </div>
@@ -584,8 +582,8 @@
                     <button onclick="showView('regioes')"id="nav-btn-regioes"class="px-3 py-1.5 rounded-md bg-pmmg-dark text-gray-300 border border-pmmg-border hover:bg-pmmg-border font-bold flex items-center gap-1.5">
                         <i data-lucide="shield"class="w-3.5 h-3.5 text-pmmg-khaki shrink-0"></i> <span>Unidades</span>
                     </button>
-                    <button onclick="showView('saude')"id="nav-btn-saude"class="px-3 py-1.5 rounded-md bg-pmmg-dark text-red-400 border border-red-500/40 hover:bg-pmmg-border font-bold flex items-center gap-1.5">
-                        <i data-lucide="heart-pulse"class="w-3.5 h-3.5 text-red-400 shrink-0"></i> <span>Saúde / APH</span>
+                    <button onclick="showView('saude')" id="nav-btn-saude" class="px-3 py-1.5 rounded-md bg-pmmg-dark text-red-400 border border-red-500/40 hover:bg-pmmg-border font-bold flex items-center gap-1.5">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5 text-red-400 shrink-0"><path d="M12 2v20M3.34 7l17.32 10M3.34 17L20.66 7"/><circle cx="12" cy="12" r="2.8" fill="#161616" stroke="currentColor" stroke-width="1.5"/></svg> <span>APH/SAÚDE</span>
                     </button>
                     <button onclick="showView('rpas')"id="nav-btn-rpas"class="px-3 py-1.5 rounded-md bg-pmmg-dark text-sky-400 border border-sky-500/40 hover:bg-pmmg-border font-bold flex items-center gap-1.5">
                         <svg xmlns="http://www.w3.org/2000/svg"viewBox="0 0 24 24"fill="none"stroke="currentColor"stroke-width="2"stroke-linecap="round"stroke-linejoin="round"class="w-3.5 h-3.5 text-sky-400 shrink-0">
@@ -719,10 +717,10 @@
                 </div>
             </div>
 
-            <!-- 3. Saúde / APH -->
-            <button type="button"onclick="showView('saude')"id="pcsb-btn-saude"class="pc-sb-item w-full px-3 py-2.5 rounded-xl bg-pmmg-card hover:bg-pmmg-border text-red-400 border border-red-500/30 font-bold flex items-center gap-3 transition-all"title="Saúde / APH">
-                <i data-lucide="heart-pulse"class="w-4 h-4 text-red-400 shrink-0"></i>
-                <span class="pc-sb-label truncate">Saúde / APH</span>
+            <!-- 3. APH/SAÚDE -->
+            <button type="button" onclick="showView('saude')" id="pcsb-btn-saude" class="pc-sb-item w-full px-3 py-2.5 rounded-xl bg-pmmg-card hover:bg-pmmg-border text-red-400 border border-red-500/30 font-bold flex items-center gap-3 transition-all" title="APH/SAÚDE">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-red-400 shrink-0"><path d="M12 2v20M3.34 7l17.32 10M3.34 17L20.66 7"/><circle cx="12" cy="12" r="2.8" fill="#161616" stroke="currentColor" stroke-width="1.5"/></svg>
+                <span class="pc-sb-label truncate">APH/SAÚDE</span>
             </button>
 
             <!-- 4. Drones / RPAS -->
@@ -803,7 +801,7 @@
             <div class="bg-pmmg-card border-2 border-pmmg-khaki rounded-xl p-3 flex flex-col justify-between space-y-2 shadow-xl relative overflow-hidden">
                 <div class="flex items-center justify-between border-b border-pmmg-border pb-1.5 gap-2">
                     <div class="flex items-center gap-1.5">
-                        <i data-lucide="compass"class="w-4 h-4 text-pmmg-gold shrink-0"></i>
+                        <i data-lucide="map-pin" class="w-4 h-4 text-pmmg-gold shrink-0"></i>
                         <span class="text-[10px] font-extrabold uppercase tracking-wider text-pmmg-khaki">Orientação Principal & QTH</span>
                     </div>
                     <span id="gridCenterCoords"class="text-[10px] font-mono font-bold text-pmmg-gold bg-pmmg-dark px-2 py-0.5 rounded border border-pmmg-border">
@@ -1445,27 +1443,40 @@
 
         <!-- ================= VIEW 1: HOME (PAINEL INICIAL) ================= -->
         <section id="view-home" class="azimute-active-view space-y-4">
-            <!-- 1. BOTÕES FECHADOS EM FORMATO DE PÍLULA (SEM IMAGEM CENTRAL DE MAPA OU MILITARES) -->
-            <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-center gap-3 py-1">
-                <!-- Pílula 1: Bússola Digital (Fechada) -->
-                <button type="button" onclick="openHomeCompassPill()" id="btnHomePillCompass" class="px-5 py-2.5 rounded-full bg-pmmg-dark hover:bg-pmmg-card text-pmmg-khaki border border-pmmg-gold/60 hover:border-pmmg-gold font-bold text-xs flex items-center gap-2 shadow-md transition-all active:scale-95 cursor-pointer">
-                    <i data-lucide="compass" class="w-4 h-4 text-pmmg-gold shrink-0"></i>
-                    <span>Bússola Digital</span>
-                </button>
-
-                <!-- Pílula 2: Localização Exata (Fechada) -->
-                <a id="btnHomePillExactLoc" href="https://www.google.com/maps/search/?api=1&query=-19.9162,-44.0809" target="_blank" class="px-5 py-2.5 rounded-full bg-pmmg-dark hover:bg-pmmg-card text-pmmg-khaki border border-pmmg-gold/60 hover:border-pmmg-gold font-bold text-xs flex items-center gap-2 shadow-md transition-all active:scale-95 cursor-pointer" title="Abrir coordenada exata atual no Google Maps">
-                    <i data-lucide="map-pin" class="w-4 h-4 text-pmmg-gold shrink-0"></i>
-                    <span>Localização Exata</span>
-                </a>
-            </div>
-
-            <!-- 2. SEÇÃO "ACESSO RÁPIDO" COM 5 BOTÕES QUADRADOS ESCUROS E ÍCONES DOURADOS DE LINHA FINA -->
-            <div class="max-w-7xl mx-auto space-y-2">
+            <!-- 1. SEÇÃO "ACESSO RÁPIDO" (POSICIONADA ACIMA DE APOIO MAIS PRÓXIMO + MODO PERSONALIZAR COM LOCALSTORAGE) -->
+            <div id="homeQuickAccessSection" class="max-w-7xl mx-auto space-y-2.5">
                 <div class="flex items-center justify-between px-1">
                     <span class="text-[10px] font-extrabold uppercase tracking-widest text-pmmg-khaki">ACESSO RÁPIDO</span>
+                    <button type="button" onclick="toggleQuickAccessCustomizer()" id="btnToggleQuickAccessCustomizer" class="px-2.5 py-1 rounded-lg bg-pmmg-dark hover:bg-pmmg-cardHover text-pmmg-khaki border border-pmmg-gold/40 hover:border-pmmg-gold text-[10px] font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-sm" title="Ativar/desativar atalhos e alterar a ordem de exibição">
+                        <i data-lucide="sliders-horizontal" class="w-3 h-3 text-pmmg-gold"></i>
+                        <span id="lblQuickAccessCustomizerBtn">Personalizar</span>
+                    </button>
                 </div>
-                <div class="grid grid-cols-5 gap-2 sm:gap-3">
+
+                <!-- PAINEL DE PERSONALIZAÇÃO DO ACESSO RÁPIDO (OCULTO POR PADRÃO, SALVO NO LOCALSTORAGE) -->
+                <div id="quickAccessCustomizerPanel" class="hidden bg-pmmg-card border border-pmmg-gold/60 rounded-2xl p-3.5 sm:p-4 space-y-3 shadow-2xl">
+                    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border pb-2">
+                        <div>
+                            <span class="text-[10px] font-extrabold uppercase tracking-wider text-pmmg-gold block">Personalizar Acesso Rápido</span>
+                            <p class="text-[11px] text-gray-400">Marque os itens que deseja exibir na Tela Início e use as setas para definir a ordem.</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button type="button" onclick="resetQuickAccessConfig()" class="px-2.5 py-1 rounded-lg bg-pmmg-dark hover:bg-pmmg-border text-gray-300 hover:text-white border border-pmmg-border text-[10px] font-bold transition-colors cursor-pointer">
+                                Restaurar Padrão
+                            </button>
+                            <button type="button" onclick="toggleQuickAccessCustomizer(false)" class="px-3 py-1 rounded-lg bg-pmmg-khaki hover:bg-pmmg-khakiHover text-pmmg-black text-[10px] font-extrabold uppercase transition-colors cursor-pointer">
+                                Concluir
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="quickAccessCustomizerList" class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-80 overflow-y-auto pr-1">
+                        <!-- Preenchido dinamicamente pelo gerenciador de personalização -->
+                    </div>
+                </div>
+
+                <!-- GRADE DINÂMICA DE BOTÕES DO ACESSO RÁPIDO -->
+                <div id="homeQuickAccessGrid" class="grid grid-cols-5 gap-2 sm:gap-3">
                     <!-- 1º Geolocalização -->
                     <button type="button" onclick="showView('gps')" class="aspect-square sm:aspect-auto sm:py-3.5 bg-pmmg-dark hover:bg-pmmg-card border border-pmmg-gold/40 hover:border-pmmg-gold rounded-xl flex flex-col items-center justify-center p-2 text-center transition-all active:scale-95 cursor-pointer group shadow">
                         <i data-lucide="locate-fixed" stroke-width="1.5" class="w-5 h-5 sm:w-6 sm:h-6 text-pmmg-gold mb-1.5 group-hover:scale-105 transition-transform"></i>
@@ -1473,38 +1484,44 @@
                     </button>
 
                     <!-- 2º REDS -->
-                    <a href="https://api-sso.sids.mg.gov.br/authenticationendpoint/login.do?client_id=kT8uHiArnyXY4UrLHxYwEcaJsIUa&commonAuthCallerPath=%2Foauth2%2Fauthorize&forceAuth=false&passiveAuth=false&redirect_uri=https%3A%2F%2Fweb.sids.mg.gov.br%2Freds%2Findex.do&response_type=code&scope=openid&tenantDomain=carbon.super&sessionDataKey=0d7a6245-ae7c-4816-a15e-68d8167dfe8d&relyingParty=kT8uHiArnyXY4UrLHxYwEcaJsIUa&type=oidc&sp=REDS&isSaaSApp=false&authenticators=BasicAuthenticator%3ALOCAL" target="_blank" class="aspect-square sm:aspect-auto sm:py-3.5 bg-pmmg-dark hover:bg-pmmg-card border border-pmmg-gold/40 hover:border-pmmg-gold rounded-xl flex flex-col items-center justify-center p-2 text-center transition-all active:scale-95 cursor-pointer group shadow">
+                    <a href="https://api-sso.sids.mg.gov.br/authenticationendpoint/login.do?client_id=kT8uHiArnyXY4UrLHxYwEcaJsIUa&commonAuthCallerPath=%2Foauth2%2Fauthorize&forceAuth=false&passiveAuth=false&redirect_uri=https%3A%2F%2Fweb.sids.mg.gov.br%2Freds%2Findex.do&response_type=code&scope=openid&tenantDomain=carbon.super&sessionDataKey=0d7a6245-ae7c-4816-a15e-68d8167dfe8d&relyingParty=kT8uHiArnyXY4UrLHxYwEcaJsIUa&type=oidc&sp=REDS&isSaaSApp=false&authenticators=BasicAuthenticator%3ALOCAL" target="_blank" rel="noopener noreferrer" class="aspect-square sm:aspect-auto sm:py-3.5 bg-pmmg-dark hover:bg-pmmg-card border border-pmmg-gold/40 hover:border-pmmg-gold rounded-xl flex flex-col items-center justify-center p-2 text-center transition-all active:scale-95 cursor-pointer group shadow">
                         <i data-lucide="file-text" stroke-width="1.5" class="w-5 h-5 sm:w-6 sm:h-6 text-pmmg-gold mb-1.5 group-hover:scale-105 transition-transform"></i>
                         <span class="text-[9.5px] sm:text-xs font-bold text-gray-200 group-hover:text-pmmg-khaki leading-tight truncate w-full">REDS</span>
                     </a>
 
                     <!-- 3º Consultar IMEI -->
-                    <a href="https://www.consultaaparelhoimpedido.com.br/public-web/home?cid=174624" target="_blank" class="aspect-square sm:aspect-auto sm:py-3.5 bg-pmmg-dark hover:bg-pmmg-card border border-pmmg-gold/40 hover:border-pmmg-gold rounded-xl flex flex-col items-center justify-center p-2 text-center transition-all active:scale-95 cursor-pointer group shadow">
+                    <a href="https://www.consultaaparelhoimpedido.com.br/public-web/home?cid=174624" target="_blank" rel="noopener noreferrer" class="aspect-square sm:aspect-auto sm:py-3.5 bg-pmmg-dark hover:bg-pmmg-card border border-pmmg-gold/40 hover:border-pmmg-gold rounded-xl flex flex-col items-center justify-center p-2 text-center transition-all active:scale-95 cursor-pointer group shadow">
                         <i data-lucide="smartphone" stroke-width="1.5" class="w-5 h-5 sm:w-6 sm:h-6 text-pmmg-gold mb-1.5 group-hover:scale-105 transition-transform"></i>
                         <span class="text-[9.5px] sm:text-xs font-bold text-gray-200 group-hover:text-pmmg-khaki leading-tight truncate w-full">Consultar IMEI</span>
                     </a>
 
-                    <!-- 4º APH (abrindo direto a aba Saúde / APH) -->
+                    <!-- 4º APH/SAÚDE -->
                     <button type="button" onclick="showView('saude')" class="aspect-square sm:aspect-auto sm:py-3.5 bg-pmmg-dark hover:bg-pmmg-card border border-pmmg-gold/40 hover:border-pmmg-gold rounded-xl flex flex-col items-center justify-center p-2 text-center transition-all active:scale-95 cursor-pointer group shadow">
-                        <i data-lucide="heart-pulse" stroke-width="1.5" class="w-5 h-5 sm:w-6 sm:h-6 text-pmmg-gold mb-1.5 group-hover:scale-105 transition-transform"></i>
-                        <span class="text-[9.5px] sm:text-xs font-bold text-gray-200 group-hover:text-pmmg-khaki leading-tight truncate w-full">APH</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 sm:w-6 sm:h-6 text-pmmg-gold mb-1.5 group-hover:scale-105 transition-transform"><path d="M12 2v20M3.34 7l17.32 10M3.34 17L20.66 7"/><circle cx="12" cy="12" r="3" fill="#161616" stroke="currentColor" stroke-width="1.5"/></svg>
+                        <span class="text-[9.5px] sm:text-xs font-bold text-gray-200 group-hover:text-pmmg-khaki leading-tight truncate w-full">APH/SAÚDE</span>
                     </button>
 
                     <!-- 5º Ementário -->
-                    <a href="https://ementario.policiamilitar.mg.gov.br/principal" target="_blank" class="aspect-square sm:aspect-auto sm:py-3.5 bg-pmmg-dark hover:bg-pmmg-card border border-pmmg-gold/40 hover:border-pmmg-gold rounded-xl flex flex-col items-center justify-center p-2 text-center transition-all active:scale-95 cursor-pointer group shadow">
+                    <a href="https://ementario.policiamilitar.mg.gov.br/principal" target="_blank" rel="noopener noreferrer" class="aspect-square sm:aspect-auto sm:py-3.5 bg-pmmg-dark hover:bg-pmmg-card border border-pmmg-gold/40 hover:border-pmmg-gold rounded-xl flex flex-col items-center justify-center p-2 text-center transition-all active:scale-95 cursor-pointer group shadow">
                         <i data-lucide="book-open" stroke-width="1.5" class="w-5 h-5 sm:w-6 sm:h-6 text-pmmg-gold mb-1.5 group-hover:scale-105 transition-transform"></i>
                         <span class="text-[9.5px] sm:text-xs font-bold text-gray-200 group-hover:text-pmmg-khaki leading-tight truncate w-full">Ementário</span>
                     </a>
                 </div>
             </div>
 
-            <!-- 3. FAIXA COMPACTA: APOIO MAIS PRÓXIMO (GPS) -->
-            <div class="bg-pmmg-card border border-pmmg-khaki/50 rounded-2xl p-3 sm:p-3.5 shadow-xl max-w-7xl mx-auto space-y-2.5">
-                <div class="flex items-center justify-between border-b border-pmmg-border pb-1.5">
+            <!-- 2. FAIXA COMPACTA: APOIO MAIS PRÓXIMO (GPS) (POSICIONADA ABAIXO DE ACESSO RÁPIDO) -->
+            <div id="homeNearestSupportSection" class="bg-pmmg-card border border-pmmg-khaki/50 rounded-2xl p-3 sm:p-3.5 shadow-xl max-w-7xl mx-auto space-y-2.5">
+                <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border pb-1.5">
                     <span class="text-[10px] font-extrabold uppercase tracking-wider text-pmmg-khaki flex items-center gap-1.5">
                         <i data-lucide="radar" class="w-3.5 h-3.5 text-pmmg-gold"></i>Apoio Mais Próximo (GPS)
                     </span>
-                    <span id="homeSupportGpsStatus" class="text-[10px] font-mono text-emerald-400 font-bold">Cálculo Automático via Satélite</span>
+                    <div class="flex items-center gap-2">
+                        <a id="btnHomePillExactLoc" href="https://www.google.com/maps/search/?api=1&query=-19.9162,-44.0809" target="_blank" class="px-2.5 py-0.5 rounded-full bg-pmmg-dark hover:bg-pmmg-cardHover text-pmmg-khaki border border-pmmg-gold/50 hover:border-pmmg-gold font-bold text-[10px] flex items-center gap-1 transition-all cursor-pointer" title="Abrir coordenada exata atual no Google Maps">
+                            <i data-lucide="map-pin" class="w-3 h-3 text-pmmg-gold shrink-0"></i>
+                            <span>Localização Exata</span>
+                        </a>
+                        <span id="homeSupportGpsStatus" class="text-[10px] font-mono text-emerald-400 font-bold hidden sm:inline">Cálculo Automático via Satélite</span>
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -4180,7 +4197,7 @@
         <!-- ================= VIEW SAÚDE / APH (POSIÇÃO CENTRAL DO MENU GLOBAL) ================= -->
         <section id="view-saude" class="hidden space-y-6">
             <div class="flex flex-wrap items-center justify-between border-b border-pmmg-border pb-3 gap-2">
-                <h2 class="text-3xl font-military text-red-400 uppercase tracking-wide leading-none">SAÚDE / APH</h2>
+                <h2 class="text-3xl font-military text-red-400 uppercase tracking-wide leading-none flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-red-400 shrink-0"><path d="M12 2v20M3.34 7l17.32 10M3.34 17L20.66 7"/><circle cx="12" cy="12" r="2.8" fill="#161616" stroke="currentColor" stroke-width="1.5"/></svg><span>APH/SAÚDE</span></h2>
                 <div class="flex items-center gap-2">
                     <button type="button" onclick="openPrioritySosModal()" class="px-3.5 py-2 bg-red-600 hover:bg-red-500 text-white font-extrabold rounded-xl text-xs flex items-center gap-1.5 shadow-lg uppercase cursor-pointer">
                         <span>MODO PRIORIDADE (SOS)</span>
@@ -7188,10 +7205,10 @@
                 <i data-lucide="locate-fixed" class="w-4 h-4 mb-0.5"></i>
                 <span class="truncate">Geolocal.</span>
             </button>
-            <!-- 4. Saúde / APH (Movido para a esquerda, invertendo posição com Estádios, e único item com realce) -->
+            <!-- 4. APH/SAÚDE (Movido para a esquerda, invertendo posição com Estádios, e único item com realce) -->
             <button type="button" onclick="showView('saude')" id="bnav-saude" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-lg transition-all cursor-pointer">
-                <i data-lucide="heart-pulse" class="w-4 h-4 mb-0.5"></i>
-                <span class="truncate">Saúde/APH</span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mb-0.5"><path d="M12 2v20M3.34 7l17.32 10M3.34 17L20.66 7"/><circle cx="12" cy="12" r="2.8" fill="#1c1614" stroke="currentColor" stroke-width="1.5"/></svg>
+                <span class="truncate">APH/SAÚDE</span>
             </button>
             <!-- 5. Estádios (Invertido com Saúde / APH) -->
             <button type="button" onclick="showView('estadios')" id="bnav-estadios" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-lg transition-all cursor-pointer">
@@ -7470,6 +7487,20 @@
             }
         }
 
+        function formatFullStatusBarQth(street, suburbRaw) {
+            if (!street) return '--';
+            if (!suburbRaw) return street;
+            const cleanSuburbCity = String(suburbRaw)
+                .replace(/\s*•\s*CEP:.*$/i, '')
+                .split('•')
+                .map(s => s.trim())
+                .filter(Boolean)
+                .join(' - ');
+            if (!cleanSuburbCity) return street;
+            if (street.toLowerCase().includes(cleanSuburbCity.toLowerCase())) return street;
+            return street + ' • ' + cleanSuburbCity;
+        }
+
         // Salva e restaura o último QTH válido no LocalStorage
         function saveLastValidQthToCache(qthObj) {
             try {
@@ -7500,7 +7531,7 @@
                     const sbQth = document.getElementById('statusBarQth');
                     if (hQth) hQth.textContent = saved.street;
                     if (hSub) hSub.textContent = saved.suburb || '';
-                    if (sbQth) sbQth.textContent = saved.street;
+                    if (sbQth) sbQth.textContent = formatFullStatusBarQth(saved.street, saved.suburb);
                     const gQth = document.getElementById('gridCenterQth');
                     const gSub = document.getElementById('gridCenterSuburb');
                     const gCoords = document.getElementById('gridCenterCoords');
@@ -9000,7 +9031,7 @@
                             const sbQth = document.getElementById('statusBarQth');
                             if (hQth) hQth.textContent = azimuteLastStreet;
                             if (hSub) hSub.textContent = subText;
-                            if (sbQth) sbQth.textContent = azimuteLastStreet;
+                            if (sbQth) sbQth.textContent = formatFullStatusBarQth(azimuteLastStreet, subText);
                             const gQth = document.getElementById('gridCenterQth');
                             const gSub = document.getElementById('gridCenterSuburb');
                             if (gQth) gQth.textContent = azimuteLastStreet;
@@ -10272,16 +10303,330 @@
             }, 5000);
         };
 
-        window.openHomeCompassPill = function() {
-            showView('gps');
-            window.toggleDigitalCompassBox(true);
-            setTimeout(() => {
-                const compCard = document.getElementById('azimuteDigitalCompassCard');
-                if (compCard) compCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }, 120);
+        // ================= PERSONALIZAÇÃO DO ACESSO RÁPIDO (SALVO NO LOCALSTORAGE) =================
+        const AZIMUTE_QUICK_ACCESS_STORAGE_KEY = 'azimute_quick_access_config_v1';
+
+        const AZIMUTE_QUICK_ACCESS_CATALOG = [
+            {
+                id: 'geolocalizacao',
+                label: 'Geolocalização',
+                defaultEnabled: true,
+                type: 'action',
+                onClick: "showView('gps')",
+                iconType: 'lucide',
+                icon: 'locate-fixed'
+            },
+            {
+                id: 'reds',
+                label: 'REDS',
+                defaultEnabled: true,
+                type: 'link',
+                href: 'https://api-sso.sids.mg.gov.br/authenticationendpoint/login.do?client_id=kT8uHiArnyXY4UrLHxYwEcaJsIUa&commonAuthCallerPath=%2Foauth2%2Fauthorize&forceAuth=false&passiveAuth=false&redirect_uri=https%3A%2F%2Fweb.sids.mg.gov.br%2Freds%2Findex.do&response_type=code&scope=openid&tenantDomain=carbon.super&sessionDataKey=0d7a6245-ae7c-4816-a15e-68d8167dfe8d&relyingParty=kT8uHiArnyXY4UrLHxYwEcaJsIUa&type=oidc&sp=REDS&isSaaSApp=false&authenticators=BasicAuthenticator%3ALOCAL',
+                iconType: 'lucide',
+                icon: 'file-text'
+            },
+            {
+                id: 'imei',
+                label: 'Consultar IMEI',
+                defaultEnabled: true,
+                type: 'link',
+                href: 'https://www.consultaaparelhoimpedido.com.br/public-web/home?cid=174624',
+                iconType: 'lucide',
+                icon: 'smartphone'
+            },
+            {
+                id: 'aph',
+                label: 'APH/SAÚDE',
+                defaultEnabled: true,
+                type: 'action',
+                onClick: "showView('saude')",
+                iconType: 'aph_svg'
+            },
+            {
+                id: 'ementario',
+                label: 'Ementário',
+                defaultEnabled: true,
+                type: 'link',
+                href: 'https://ementario.policiamilitar.mg.gov.br/principal',
+                iconType: 'lucide',
+                icon: 'book-open'
+            },
+            {
+                id: 'bnmp',
+                label: 'BNMP',
+                defaultEnabled: false,
+                type: 'link',
+                href: 'https://portalbnmp.cnj.jus.br/#/captcha/%2Fpesquisa-peca',
+                iconType: 'lucide',
+                icon: 'scale'
+            },
+            {
+                id: 'codigos_q',
+                label: 'Códigos Q',
+                defaultEnabled: false,
+                type: 'action',
+                onClick: "toggleQCodeModal()",
+                iconType: 'lucide',
+                icon: 'radio'
+            },
+            {
+                id: 'unidades',
+                label: 'Unidades',
+                defaultEnabled: false,
+                type: 'action',
+                onClick: "showView('regioes')",
+                iconType: 'lucide',
+                icon: 'shield'
+            },
+            {
+                id: 'estadios',
+                label: 'Estádios',
+                defaultEnabled: false,
+                type: 'action',
+                onClick: "showView('estadios')",
+                iconType: 'lucide',
+                icon: 'trophy'
+            },
+            {
+                id: 'drones',
+                label: 'Drones',
+                defaultEnabled: false,
+                type: 'action',
+                onClick: "showView('rpas')",
+                iconType: 'drone_svg'
+            },
+            {
+                id: 'viaturas',
+                label: 'Viaturas',
+                defaultEnabled: false,
+                type: 'action',
+                onClick: "showView('atalhos'); openViaturasManutencaoSubpage();",
+                iconType: 'lucide',
+                icon: 'wrench'
+            },
+            {
+                id: 'assistente_reds',
+                label: 'Assistente REDS',
+                defaultEnabled: false,
+                type: 'link',
+                href: 'https://chatgpt.com/g/g-68a72c60b49081918fe5a2dbb207baae-policial-assistente-reds-pmmg',
+                iconType: 'lucide',
+                icon: 'pen-tool'
+            },
+            {
+                id: 'sarpas',
+                label: 'SARPAS',
+                defaultEnabled: false,
+                type: 'link',
+                href: 'https://sarpas.decea.mil.br/login?expired=true',
+                iconType: 'lucide',
+                icon: 'plane'
+            },
+            {
+                id: 'apoio',
+                label: 'Apoio',
+                defaultEnabled: false,
+                type: 'action',
+                onClick: "showView('atalhos')",
+                iconType: 'lucide',
+                icon: 'folder'
+            }
+        ];
+
+        function getQuickAccessConfig() {
+            const defaultList = AZIMUTE_QUICK_ACCESS_CATALOG.map(item => ({
+                id: item.id,
+                enabled: item.defaultEnabled
+            }));
+            try {
+                const raw = localStorage.getItem(AZIMUTE_QUICK_ACCESS_STORAGE_KEY);
+                if (!raw) return defaultList;
+                const parsed = JSON.parse(raw);
+                if (!Array.isArray(parsed) || parsed.length === 0) return defaultList;
+
+                const validIds = new Set(AZIMUTE_QUICK_ACCESS_CATALOG.map(c => c.id));
+                const seen = new Set();
+                const merged = [];
+
+                parsed.forEach(entry => {
+                    if (entry && validIds.has(entry.id) && !seen.has(entry.id)) {
+                        seen.add(entry.id);
+                        merged.push({
+                            id: entry.id,
+                            enabled: Boolean(entry.enabled)
+                        });
+                    }
+                });
+
+                AZIMUTE_QUICK_ACCESS_CATALOG.forEach(catItem => {
+                    if (!seen.has(catItem.id)) {
+                        merged.push({
+                            id: catItem.id,
+                            enabled: catItem.defaultEnabled
+                        });
+                    }
+                });
+
+                return merged;
+            } catch (e) {
+                return defaultList;
+            }
+        }
+
+        function saveQuickAccessConfig(cfgList) {
+            try {
+                localStorage.setItem(AZIMUTE_QUICK_ACCESS_STORAGE_KEY, JSON.stringify(cfgList));
+            } catch (e) {}
+        }
+
+        function getQuickAccessIconHtml(catItem, small = false) {
+            const sizeCls = small ? 'w-4 h-4 text-pmmg-gold shrink-0' : 'w-5 h-5 sm:w-6 sm:h-6 text-pmmg-gold mb-1.5 group-hover:scale-105 transition-transform';
+            if (catItem.iconType === 'aph_svg') {
+                return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="${sizeCls}"><path d="M12 2v20M3.34 7l17.32 10M3.34 17L20.66 7"/><circle cx="12" cy="12" r="3" fill="#161616" stroke="currentColor" stroke-width="1.5"/></svg>`;
+            }
+            if (catItem.iconType === 'drone_svg') {
+                return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="${sizeCls}"><rect x="9" y="9" width="6" height="6" rx="1"/><path d="M9 9 5.5 5.5"/><path d="M15 9l3.5-3.5"/><path d="M9 15l-3.5 3.5"/><path d="M15 15l3.5 3.5"/><circle cx="4.5" cy="4.5" r="2.5"/><circle cx="19.5" cy="4.5" r="2.5"/><circle cx="4.5" cy="19.5" r="2.5"/><circle cx="19.5" cy="19.5" r="2.5"/></svg>`;
+            }
+            return `<i data-lucide="${catItem.icon}" stroke-width="1.5" class="${sizeCls}"></i>`;
+        }
+
+        function renderQuickAccessGrid() {
+            const gridEl = document.getElementById('homeQuickAccessGrid');
+            if (!gridEl) return;
+
+            const cfg = getQuickAccessConfig();
+            const catalogMap = {};
+            AZIMUTE_QUICK_ACCESS_CATALOG.forEach(c => { catalogMap[c.id] = c; });
+
+            const enabledItems = cfg
+                .filter(entry => entry.enabled && catalogMap[entry.id])
+                .map(entry => catalogMap[entry.id]);
+
+            if (enabledItems.length === 0) {
+                gridEl.className = 'grid grid-cols-1 gap-2';
+                gridEl.innerHTML = `
+                    <div class="bg-pmmg-dark border border-pmmg-border rounded-xl p-3 text-center text-xs text-gray-400">
+                        Nenhum atalho ativo. Toque em <strong class="text-pmmg-khaki cursor-pointer underline" onclick="toggleQuickAccessCustomizer(true)">Personalizar</strong> para selecionar os itens.
+                    </div>
+                `;
+                return;
+            }
+
+            const colCount = Math.min(Math.max(enabledItems.length, 1), 5);
+            gridEl.className = `grid grid-cols-${colCount} gap-2 sm:gap-3`;
+
+            const btnCls = 'aspect-square sm:aspect-auto sm:py-3.5 bg-pmmg-dark hover:bg-pmmg-card border border-pmmg-gold/40 hover:border-pmmg-gold rounded-xl flex flex-col items-center justify-center p-2 text-center transition-all active:scale-95 cursor-pointer group shadow';
+
+            gridEl.innerHTML = enabledItems.map(item => {
+                const iconHtml = getQuickAccessIconHtml(item, false);
+                const labelHtml = `<span class="text-[9.5px] sm:text-xs font-bold text-gray-200 group-hover:text-pmmg-khaki leading-tight truncate w-full">${item.label}</span>`;
+                if (item.type === 'link') {
+                    return `<a href="${item.href}" target="_blank" rel="noopener noreferrer" class="${btnCls}">${iconHtml}${labelHtml}</a>`;
+                }
+                return `<button type="button" onclick="${item.onClick}" class="${btnCls}">${iconHtml}${labelHtml}</button>`;
+            }).join('');
+
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        function renderQuickAccessCustomizerList() {
+            const listEl = document.getElementById('quickAccessCustomizerList');
+            if (!listEl) return;
+
+            const cfg = getQuickAccessConfig();
+            const catalogMap = {};
+            AZIMUTE_QUICK_ACCESS_CATALOG.forEach(c => { catalogMap[c.id] = c; });
+
+            listEl.innerHTML = cfg.map((entry, idx) => {
+                const item = catalogMap[entry.id];
+                if (!item) return '';
+                const isFirst = idx === 0;
+                const isLast = idx === cfg.length - 1;
+                return `
+                    <div class="flex items-center justify-between gap-2 p-2 rounded-xl border ${entry.enabled ? 'bg-pmmg-dark border-pmmg-gold/50' : 'bg-pmmg-black/60 border-pmmg-border opacity-70'} transition-all">
+                        <label class="flex items-center gap-2.5 cursor-pointer select-none min-w-0 flex-1">
+                            <input type="checkbox" ${entry.enabled ? 'checked' : ''} onchange="toggleQuickAccessItemEnabled('${item.id}')" class="w-4 h-4 rounded border-pmmg-border bg-pmmg-black text-pmmg-khaki focus:ring-pmmg-khaki accent-[#C5A869] cursor-pointer shrink-0">
+                            <span class="text-[10px] font-mono text-gray-400 w-5 shrink-0">${idx + 1}º</span>
+                            ${getQuickAccessIconHtml(item, true)}
+                            <span class="text-xs font-bold ${entry.enabled ? 'text-white' : 'text-gray-400'} truncate">${item.label}</span>
+                        </label>
+                        <div class="flex items-center gap-1 shrink-0">
+                            <button type="button" onclick="moveQuickAccessItem(${idx}, -1)" ${isFirst ? 'disabled' : ''} class="px-2 py-1 rounded bg-pmmg-card hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-border text-[10px] font-extrabold ${isFirst ? 'opacity-30 cursor-not-allowed' : 'cursor-pointer'}" title="Mover para cima / esquerda">
+                                ↑
+                            </button>
+                            <button type="button" onclick="moveQuickAccessItem(${idx}, 1)" ${isLast ? 'disabled' : ''} class="px-2 py-1 rounded bg-pmmg-card hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-border text-[10px] font-extrabold ${isLast ? 'opacity-30 cursor-not-allowed' : 'cursor-pointer'}" title="Mover para baixo / direita">
+                                ↓
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        window.toggleQuickAccessCustomizer = function(forceState = null) {
+            const panel = document.getElementById('quickAccessCustomizerPanel');
+            const lbl = document.getElementById('lblQuickAccessCustomizerBtn');
+            if (!panel) return;
+            const shouldOpen = forceState !== null ? forceState : panel.classList.contains('hidden');
+            if (shouldOpen) {
+                renderQuickAccessCustomizerList();
+                panel.classList.remove('hidden');
+                if (lbl) lbl.textContent = 'Fechar';
+            } else {
+                panel.classList.add('hidden');
+                if (lbl) lbl.textContent = 'Personalizar';
+            }
         };
+
+        window.toggleQuickAccessItemEnabled = function(itemId) {
+            const cfg = getQuickAccessConfig();
+            const target = cfg.find(c => c.id === itemId);
+            if (!target) return;
+            target.enabled = !target.enabled;
+            saveQuickAccessConfig(cfg);
+            renderQuickAccessGrid();
+            renderQuickAccessCustomizerList();
+        };
+
+        window.moveQuickAccessItem = function(index, delta) {
+            const cfg = getQuickAccessConfig();
+            const newIndex = index + delta;
+            if (newIndex < 0 || newIndex >= cfg.length) return;
+            const temp = cfg[index];
+            cfg[index] = cfg[newIndex];
+            cfg[newIndex] = temp;
+            saveQuickAccessConfig(cfg);
+            renderQuickAccessGrid();
+            renderQuickAccessCustomizerList();
+        };
+
+        window.resetQuickAccessConfig = function() {
+            try {
+                localStorage.removeItem(AZIMUTE_QUICK_ACCESS_STORAGE_KEY);
+            } catch (e) {}
+            renderQuickAccessGrid();
+            renderQuickAccessCustomizerList();
+            if (typeof showToast === 'function') showToast('Acesso Rápido restaurado para o padrão.');
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderQuickAccessGrid();
+        });
         function showView(viewId) {
             if (viewId === 'unidades') viewId = 'regioes';
+            // Exibe a barra superior (#operationalStatusBar) SOMENTE na Tela Início ('home')
+            const topStatusBar = document.getElementById('operationalStatusBar');
+            if (topStatusBar) {
+                if (viewId === 'home') {
+                    topStatusBar.classList.remove('hidden');
+                    topStatusBar.style.removeProperty('display');
+                } else {
+                    topStatusBar.classList.add('hidden');
+                    topStatusBar.style.setProperty('display', 'none', 'important');
+                }
+            }
             const views = ['home', 'regioes', 'rpm1', 'rpm2', 'rpm3', 'especializadas', 'estadios', 'rpas', 'atalhos', 'saude', 'skeleton', '18bpm', 'gps'];
             views.forEach(v => {
                 const el = document.getElementById(`view-${v}`);
@@ -10366,7 +10711,7 @@
                 }
             } else if (viewId === 'saude') {
                 if (activeBadge) activeBadge.classList.remove('hidden');
-                if (activeName) activeName.textContent = 'Saúde / APH';
+                if (activeName) activeName.textContent = 'APH/SAÚDE';
             } else if (viewId === 'gps') {
                 if (activeBadge) activeBadge.classList.remove('hidden');
                 if (activeName) activeName.textContent = 'Geolocalização';
