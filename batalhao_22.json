@@ -1,0 +1,152 @@
+{
+    "batalhao": "22º BPM",
+    "rede": "22 BPM A",
+    "sede": {
+        "endereco": "Avenida Arthur Bernardes, 1337 – Santa Lúcia, Belo Horizonte - MG",
+        "telefones": [
+            "(31) 2123-1800",
+            "(31) 3284-8445"
+        ]
+    },
+    "cias": [
+        {
+            "nome": "124ª Companhia PM",
+            "bairros": [
+                "Morro do Papagaio",
+                "Santa Lúcia",
+                "Santo Antônio",
+                "Belvedere",
+                "Santa Rita de Cássia",
+                "Vila Barragem Santa Lúcia",
+                "Vila Estrela",
+                "Cidade Jardim",
+                "São Bento",
+                "São Pedro"
+            ],
+            "sede": "Avenida Arthur Bernardes, 1337 – Santa Lúcia",
+            "telefones": [
+                "(31) 2123-1809"
+            ]
+        },
+        {
+            "nome": "125ª Companhia PM",
+            "bairros": [
+                "Morro das Pedras",
+                "Prado",
+                "Nova Suíssa",
+                "Gutierrez",
+                "Calafate",
+                "Vila Santa Sofia",
+                "Vila São Jorge",
+                "Vila Leonina",
+                "Jardim América",
+                "Nova Granada",
+                "Barroca"
+            ],
+            "sede": "Rua Oscar Trompowsky, 1396 - Grajaú",
+            "telefones": [
+                "(31) 3371-4488",
+                "(31) 3332-4343"
+            ]
+        },
+        {
+            "nome": "127ª Companhia PM",
+            "bairros": [
+                "Aglomerado da Serra",
+                "Serra",
+                "Sion",
+                "Cruzeiro",
+                "Vila Nossa Senhora de Fátima",
+                "Vila Marcola",
+                "Vila Santana do Cafezal",
+                "Mangabeiras",
+                "São Lucas",
+                "Carmo",
+                "Anchieta"
+            ],
+            "sede": "Rua Trifana, 839 - Serra",
+            "telefones": [
+                "(31) 3282-7393"
+            ]
+        },
+        {
+            "nome": "128ª Companhia PM",
+            "bairros": [
+                "Alto Vera Cruz",
+                "Paraíso",
+                "Saudade",
+                "Esplanada",
+                "Conjunto Taquaril",
+                "Santa Efigênia",
+                "Pompéia"
+            ],
+            "telefones": [
+                "(31) 2123-1814"
+            ]
+        }
+    ],
+    "divisas": [
+        "1º BPM (Belo Horizonte - Santa Efigênia)",
+        "5º BPM (Belo Horizonte - Gameleira / Região Oeste)",
+        "16º BPM (Belo Horizonte - Santa Tereza / Região Leste)",
+        "34º BPM (Belo Horizonte - Caiçaras / Região Noroeste)",
+        "41º BPM (Belo Horizonte - Barreiro)",
+        "61º BPM (Sabará)",
+        "1ª Cia PM Ind (Nova Lima)"
+    ],
+    "corredores": [
+        "Avenida Raja Gabaglia",
+        "Avenida Nossa Senhora do Carmo",
+        "Avenida Arthur Bernardes",
+        "Avenida Prudente de Morais",
+        "Avenida Luiz Paulo Franco",
+        "Avenida Barão Homem de Melo",
+        "Avenida Silva Lobo",
+        "Avenida Francisco Sá",
+        "Avenida Amazonas",
+        "Avenida Tereza Cristina",
+        "Avenida Afonso Pena (trecho sul)",
+        "Avenida dos Andradas",
+        "Avenida Mem de Sá",
+        "Avenida do Contorno (Sul e Leste)",
+        "Avenida Jefferson Coelho da Silva"
+    ],
+    "bases_comunitarias": [
+        {
+            "cia": "124ª Cia",
+            "local": "Belvedere: Avenida Luiz Paulo Franco (em frente ao nº 678)"
+        },
+        {
+            "cia": "124ª Cia",
+            "local": "Santa Lúcia: Praça José Cavalini"
+        },
+        {
+            "cia": "124ª Cia",
+            "local": "Santo Antônio: Praça da Harmonia"
+        },
+        {
+            "cia": "125ª Cia",
+            "local": "Gutierrez: Rua Benjamim Jacob, nº 10"
+        },
+        {
+            "cia": "125ª Cia",
+            "local": "Nova Suíssa: Cruzamento da Rua Teodoro de Abreu com Avenida Desembargador Barcelos"
+        },
+        {
+            "cia": "125ª Cia",
+            "local": "Prado: Cruzamento da Avenida Campos Sales com Rua José de Alencar"
+        },
+        {
+            "cia": "127ª Cia",
+            "local": "Cruzeiro: Cruzamento da Rua Francisco Deslandes com Rua Grajaú"
+        },
+        {
+            "cia": "127ª Cia",
+            "local": "Mangabeiras: Cruzamento da Rua Mestre Lucas com Avenida Afonso Pena"
+        },
+        {
+            "cia": "127ª Cia",
+            "local": "Aglomerado da Serra: Praça do Cardoso"
+        }
+    ]
+}
