@@ -1609,118 +1609,134 @@
                 </div>
             </div>
 
-            <!-- 1. PAINEL FIXO E LIMPO PARA A ÚNICA AERONAVE DA UNIDADE (SEM SELETOR E SEM CAIXAS DIGITÁVEIS) -->
+            <!-- 1. PARÂMETROS DE VOO (FECHADO POR PADRÃO, ABRE APENAS AO CLICAR) -->
             <div id="rpasSubtabPainel" class="space-y-6">
-                <div id="rpasFlightAssessmentContainer" class="bg-pmmg-card border-2 border-sky-500/60 rounded-2xl p-4 sm:p-5 shadow-2xl space-y-4">
-                    <!-- Cabeçalho Fixo da Aeronave da Unidade -->
-                    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border pb-3">
+                <div id="rpasFlightAssessmentContainer" class="bg-pmmg-card border border-sky-500/50 rounded-2xl overflow-hidden shadow-2xl">
+                    <button type="button" onclick="toggleRpasFlightParamsBox()" id="btnToggleRpasFlightParamsBox" class="w-full p-4 sm:p-5 flex items-center justify-between gap-3 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
                         <div class="flex items-center gap-2.5">
                             <div class="p-2 rounded-xl bg-sky-950 text-sky-400 border border-sky-500/40 shrink-0">
                                 <i data-lucide="wind" class="w-5 h-5"></i>
                             </div>
+                            <div class="flex items-center gap-2.5 flex-wrap">
+                                <h3 class="text-xl sm:text-2xl font-military text-white uppercase tracking-wide leading-none">
+                                    Parâmetros de Voo
+                                </h3>
+                                <span class="px-2 py-0.5 rounded bg-pmmg-dark text-[10px] font-mono font-bold text-sky-400 border border-sky-500/30">DJI Mavic 3 Enterprise</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <span id="lblRpasFlightParamsToggle" class="text-[11px] font-bold text-pmmg-khaki">Abrir</span>
+                            <i data-lucide="chevron-down" id="iconRpasFlightParamsChevron" class="w-4 h-4 text-pmmg-gold transition-transform duration-200"></i>
+                        </div>
+                    </button>
+
+                    <!-- Corpo Expansível dos Parâmetros de Voo (Oculto por padrão) -->
+                    <div id="rpasFlightParamsExpandableBody" class="hidden p-4 sm:p-5 pt-3 border-t border-pmmg-border space-y-4">
+                        <!-- Cabeçalho Fixo da Aeronave da Unidade -->
+                        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border pb-3">
                             <div>
                                 <span class="text-[10px] font-extrabold uppercase tracking-wider text-sky-400 block leading-none">
                                     Aeronave da Unidade • Limites Fixos do Manual
                                 </span>
-                                <h3 class="text-xl sm:text-2xl font-military text-white uppercase tracking-wide leading-none mt-1">
+                                <h4 class="text-lg sm:text-xl font-military text-white uppercase tracking-wide leading-none mt-1">
                                     DJI Mavic 3 Enterprise (M3E / M3T)
-                                </h3>
+                                </h4>
+                            </div>
+
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <button type="button" onclick="toggleRpasSoundAlertMute()" id="btnRpasAudioMute" class="px-2.5 py-1.5 rounded-lg bg-pmmg-dark hover:bg-pmmg-border text-pmmg-gold border border-pmmg-gold/40 text-[11px] font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer" title="Ativar / Silenciar Alerta Sonoro de Mudança Climática">
+                                    <i data-lucide="volume-2" class="w-3.5 h-3.5"></i>
+                                    <span id="txtRpasAudioMute">Áudio Alerta: ON</span>
+                                </button>
                             </div>
                         </div>
 
-                        <div class="flex items-center gap-2 flex-wrap">
-                            <button type="button" onclick="toggleRpasSoundAlertMute()" id="btnRpasAudioMute" class="px-2.5 py-1.5 rounded-lg bg-pmmg-dark hover:bg-pmmg-border text-pmmg-gold border border-pmmg-gold/40 text-[11px] font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer" title="Ativar / Silenciar Alerta Sonoro de Mudança Climática">
-                                <i data-lucide="volume-2" class="w-3.5 h-3.5"></i>
-                                <span id="txtRpasAudioMute">Áudio Alerta: ON</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Banner de Alerta Visual e Sonoro de Mudança Climática Brusca / Limite Excedido -->
-                    <div id="rpasWeatherChangeAlertBanner" class="hidden bg-red-950/95 border-2 border-red-400 rounded-2xl p-4 space-y-2 animate-pulse shadow-[0_0_25px_rgba(239,68,68,0.5)]">
-                        <div class="flex items-center justify-between gap-2 flex-wrap">
-                            <div class="flex items-center gap-2">
-                                <span class="px-2.5 py-0.5 rounded bg-red-600 text-white text-[10px] font-mono font-extrabold uppercase">
-                                    ALERTA DE MUDANÇA CLIMÁTICA
-                                </span>
-                                <strong class="text-sm sm:text-base font-military uppercase tracking-wider text-amber-300">
-                                    Alteração Meteorológica Detectada
-                                </strong>
-                            </div>
-                            <button type="button" onclick="acknowledgeRpasWeatherAlert()" class="px-3 py-1 bg-amber-400 hover:bg-amber-300 text-pmmg-black font-extrabold rounded-lg text-xs uppercase shrink-0 cursor-pointer">
-                                Ciente / Silenciar
-                            </button>
-                        </div>
-                        <ul id="rpasWeatherChangeAlertList" class="text-xs text-white font-semibold space-y-1 list-disc pl-5"></ul>
-                    </div>
-
-                    <!-- Painel de Condições Técnicas (GPS x Clima Local) -->
-                    <div id="rpasEvaluationStateBox" class="bg-amber-950/30 border-2 border-amber-500/70 border-l-8 border-l-amber-400 rounded-2xl p-4 sm:p-5 space-y-3 transition-all">
-                        <div class="flex flex-wrap items-center justify-between gap-2">
-                            <div class="flex items-center gap-2.5">
-                                <div id="rpasEvalIconBadge" class="p-2.5 rounded-xl bg-amber-950 text-amber-300 border border-amber-500/50">
-                                    <i data-lucide="alert-circle" class="w-6 h-6"></i>
-                                </div>
-                                <div>
-                                    <span class="text-[10px] font-mono font-extrabold uppercase tracking-wider text-gray-300 block">
-                                        Parâmetros Meteorológicos (GPS x Clima Local)
+                        <!-- Banner de Alerta Visual e Sonoro de Mudança Climática Brusca / Limite Excedido -->
+                        <div id="rpasWeatherChangeAlertBanner" class="hidden bg-red-950/95 border-2 border-red-400 rounded-2xl p-4 space-y-2 animate-pulse shadow-[0_0_25px_rgba(239,68,68,0.5)]">
+                            <div class="flex items-center justify-between gap-2 flex-wrap">
+                                <div class="flex items-center gap-2">
+                                    <span class="px-2.5 py-0.5 rounded bg-red-600 text-white text-[10px] font-mono font-extrabold uppercase">
+                                        ALERTA DE MUDANÇA CLIMÁTICA
                                     </span>
-                                    <h4 id="rpasEvalStateTitle" class="text-xl sm:text-2xl font-military uppercase tracking-wider text-amber-300 leading-none mt-0.5">
-                                        AVALIAÇÃO INDETERMINADA
-                                    </h4>
+                                    <strong class="text-sm sm:text-base font-military uppercase tracking-wider text-amber-300">
+                                        Alteração Meteorológica Detectada
+                                    </strong>
                                 </div>
+                                <button type="button" onclick="acknowledgeRpasWeatherAlert()" class="px-3 py-1 bg-amber-400 hover:bg-amber-300 text-pmmg-black font-extrabold rounded-lg text-xs uppercase shrink-0 cursor-pointer">
+                                    Ciente / Silenciar
+                                </button>
                             </div>
-                            <span id="rpasEvalTimestampBadge" class="text-[11px] font-mono bg-pmmg-dark px-2.5 py-1 rounded-lg border border-pmmg-border text-gray-300">
-                                Aguardando leitura GPS / Clima...
-                            </span>
+                            <ul id="rpasWeatherChangeAlertList" class="text-xs text-white font-semibold space-y-1 list-disc pl-5"></ul>
                         </div>
 
-                        <div id="rpasEvalReasonsContainer" class="bg-pmmg-black/80 p-3.5 rounded-xl border border-pmmg-border text-xs text-gray-200 space-y-1.5">
-                            <p class="font-semibold text-amber-200">
-                                Aguardando dados simultâneos de coordenada GPS e meteorologia local para cruzar com os parâmetros da aeronave.
-                            </p>
-                        </div>
-
-                        <!-- Telemetria Cruzada em Tempo Real (4 Cartões Fixos) -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-1 text-xs">
-                            <!-- Coordenada GPS & Altitude -->
-                            <div class="bg-pmmg-dark p-3 rounded-xl border border-pmmg-border space-y-1">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-[10px] font-bold uppercase text-pmmg-khaki">Posição GPS</span>
-                                    <span id="rpasTelemetryGpsBadge" class="px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-gray-800 text-gray-300">SINCRONIZANDO</span>
+                        <!-- Painel de Condições Técnicas (GPS x Clima Local) -->
+                        <div id="rpasEvaluationStateBox" class="bg-amber-950/30 border-2 border-amber-500/70 border-l-8 border-l-amber-400 rounded-2xl p-4 sm:p-5 space-y-3 transition-all">
+                            <div class="flex flex-wrap items-center justify-between gap-2">
+                                <div class="flex items-center gap-2.5">
+                                    <div id="rpasEvalIconBadge" class="p-2.5 rounded-xl bg-amber-950 text-amber-300 border border-amber-500/50">
+                                        <i data-lucide="alert-circle" class="w-6 h-6"></i>
+                                    </div>
+                                    <div>
+                                        <span class="text-[10px] font-mono font-extrabold uppercase tracking-wider text-gray-300 block">
+                                            Parâmetros Meteorológicos (GPS x Clima Local)
+                                        </span>
+                                        <h4 id="rpasEvalStateTitle" class="text-xl sm:text-2xl font-military uppercase tracking-wider text-amber-300 leading-none mt-0.5">
+                                            AVALIAÇÃO INDETERMINADA
+                                        </h4>
+                                    </div>
                                 </div>
-                                <strong id="rpasTelemetryCoords" class="text-xs sm:text-sm font-mono text-white block truncate">-- , --</strong>
-                                <span id="rpasTelemetryAltitude" class="text-[11px] text-gray-400 block truncate">Altitude local: -- m</span>
+                                <span id="rpasEvalTimestampBadge" class="text-[11px] font-mono bg-pmmg-dark px-2.5 py-1 rounded-lg border border-pmmg-border text-gray-300">
+                                    Aguardando leitura GPS / Clima...
+                                </span>
                             </div>
 
-                            <!-- Vento Atual & Rajadas vs Limite Fixo (43 km/h) -->
-                            <div id="rpasMetricCardWind" class="bg-pmmg-dark p-3 rounded-xl border border-pmmg-border space-y-1">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-[10px] font-bold uppercase text-gray-300">Vento & Rajadas</span>
-                                    <span id="rpasMetricLimitWind" class="text-[10px] font-mono text-sky-300 font-bold">Máx: 43 km/h</span>
-                                </div>
-                                <strong id="rpasTelemetryWind" class="text-sm sm:text-base font-mono text-white font-extrabold block">-- km/h (Raj: -- km/h)</strong>
-                                <span id="rpasMetricStatusWind" class="text-[10px] font-mono text-gray-400 block">Sem leitura atual</span>
+                            <div id="rpasEvalReasonsContainer" class="bg-pmmg-black/80 p-3.5 rounded-xl border border-pmmg-border text-xs text-gray-200 space-y-1.5">
+                                <p class="font-semibold text-amber-200">
+                                    Aguardando dados simultâneos de coordenada GPS e meteorologia local para cruzar com os parâmetros da aeronave.
+                                </p>
                             </div>
 
-                            <!-- Temperatura Local vs Limite Fixo (-10°C a 40°C) -->
-                            <div id="rpasMetricCardTemp" class="bg-pmmg-dark p-3 rounded-xl border border-pmmg-border space-y-1">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-[10px] font-bold uppercase text-gray-300">Temperatura Local</span>
-                                    <span id="rpasMetricLimitTemp" class="text-[10px] font-mono text-sky-300 font-bold">-10°C a 40°C</span>
+                            <!-- Telemetria Cruzada em Tempo Real (4 Cartões Fixos) -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-1 text-xs">
+                                <!-- Coordenada GPS & Altitude -->
+                                <div class="bg-pmmg-dark p-3 rounded-xl border border-pmmg-border space-y-1">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-[10px] font-bold uppercase text-pmmg-khaki">Posição GPS</span>
+                                        <span id="rpasTelemetryGpsBadge" class="px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-gray-800 text-gray-300">SINCRONIZANDO</span>
+                                    </div>
+                                    <strong id="rpasTelemetryCoords" class="text-xs sm:text-sm font-mono text-white block truncate">-- , --</strong>
+                                    <span id="rpasTelemetryAltitude" class="text-[11px] text-gray-400 block truncate">Altitude local: -- m</span>
                                 </div>
-                                <strong id="rpasTelemetryTemp" class="text-sm sm:text-base font-mono text-white font-extrabold block">-- °C</strong>
-                                <span id="rpasMetricStatusTemp" class="text-[10px] font-mono text-gray-400 block">Sem leitura atual</span>
-                            </div>
 
-                            <!-- Chuva / Precipitação & Condição vs Limite Fixo (0 mm / 40%) -->
-                            <div id="rpasMetricCardRain" class="bg-pmmg-dark p-3 rounded-xl border border-pmmg-border space-y-1">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-[10px] font-bold uppercase text-gray-300">Chuva & Condição</span>
-                                    <span id="rpasMetricLimitRain" class="text-[10px] font-mono text-sky-300 font-bold">Máx: 0 mm / 40%</span>
+                                <!-- Vento Atual & Rajadas vs Limite Fixo (43 km/h) -->
+                                <div id="rpasMetricCardWind" class="bg-pmmg-dark p-3 rounded-xl border border-pmmg-border space-y-1">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-[10px] font-bold uppercase text-gray-300">Vento & Rajadas</span>
+                                        <span id="rpasMetricLimitWind" class="text-[10px] font-mono text-sky-300 font-bold">Máx: 43 km/h</span>
+                                    </div>
+                                    <strong id="rpasTelemetryWind" class="text-sm sm:text-base font-mono text-white font-extrabold block">-- km/h (Raj: -- km/h)</strong>
+                                    <span id="rpasMetricStatusWind" class="text-[10px] font-mono text-gray-400 block">Sem leitura atual</span>
                                 </div>
-                                <strong id="rpasTelemetryRain" class="text-sm sm:text-base font-mono text-white font-extrabold block truncate">-- mm • Prob: --%</strong>
-                                <span id="rpasTelemetryCond" class="text-[10px] font-mono text-sky-300 block truncate">Condição: --</span>
+
+                                <!-- Temperatura Local vs Limite Fixo (-10°C a 40°C) -->
+                                <div id="rpasMetricCardTemp" class="bg-pmmg-dark p-3 rounded-xl border border-pmmg-border space-y-1">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-[10px] font-bold uppercase text-gray-300">Temperatura Local</span>
+                                        <span id="rpasMetricLimitTemp" class="text-[10px] font-mono text-sky-300 font-bold">-10°C a 40°C</span>
+                                    </div>
+                                    <strong id="rpasTelemetryTemp" class="text-sm sm:text-base font-mono text-white font-extrabold block">-- °C</strong>
+                                    <span id="rpasMetricStatusTemp" class="text-[10px] font-mono text-gray-400 block">Sem leitura atual</span>
+                                </div>
+
+                                <!-- Chuva / Precipitação & Condição vs Limite Fixo (0 mm / 40%) -->
+                                <div id="rpasMetricCardRain" class="bg-pmmg-dark p-3 rounded-xl border border-pmmg-border space-y-1">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-[10px] font-bold uppercase text-gray-300">Chuva & Condição</span>
+                                        <span id="rpasMetricLimitRain" class="text-[10px] font-mono text-sky-300 font-bold">Máx: 0 mm / 40%</span>
+                                    </div>
+                                    <strong id="rpasTelemetryRain" class="text-sm sm:text-base font-mono text-white font-extrabold block truncate">-- mm • Prob: --%</strong>
+                                    <span id="rpasTelemetryCond" class="text-[10px] font-mono text-sky-300 block truncate">Condição: --</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -4230,68 +4246,85 @@
                 </div>
             </div>
 
-            <!-- PAINEL DE MONITORAMENTO HOSPITALAR LIMPO: APENAS "HOSPITAL DE REFERÊNCIA DA ÁREA" E "HOSPITAL MAIS PRÓXIMO (GPS)" -->
-            <div id="saudeSmartHospitalPanel" class="bg-pmmg-card border border-pmmg-khaki/50 rounded-2xl p-4 sm:p-5 shadow-2xl">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch">
-                    <!-- 1. Hospital de Referência da Área -->
-                    <div id="saudeAreaRefCard" class="bg-pmmg-dark p-4 rounded-xl border border-pmmg-khaki/50 border-l-4 border-l-pmmg-khaki flex flex-col justify-between space-y-3">
-                        <div class="space-y-1">
-                            <span class="text-[10px] font-extrabold uppercase tracking-wider text-pmmg-khaki block">
-                                Hospital de Referência da Área
-                            </span>
-                            <h4 id="saudeRefHospName" class="text-lg sm:text-xl font-extrabold text-white leading-tight">
-                                Hospital João XXIII
-                            </h4>
-                            <p id="saudeRefHospAddr" class="text-xs text-gray-400">
-                                Av. Prof. Alfredo Balena, 400 - Santa Efigênia, Belo Horizonte - MG (-19.9242, -43.9317)
-                            </p>
+            <!-- 1. HOSPITAL DE REFERÊNCIA DA ÁREA / HOSPITAL MAIS PRÓXIMO (CAIXA FECHADA POR PADRÃO) -->
+            <div id="saudeSmartHospitalPanel" class="bg-pmmg-card border border-pmmg-khaki/50 rounded-2xl overflow-hidden shadow-2xl">
+                <button type="button" onclick="toggleSaudeSmartHospitalBox()" id="btnToggleSaudeSmartHospital" class="w-full p-4 sm:p-5 flex items-center justify-between gap-3 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
+                    <div class="flex items-center gap-2.5">
+                        <div class="p-2 rounded-xl bg-red-950 text-red-400 border border-red-500/40 shrink-0">
+                            <i data-lucide="hospital" class="w-5 h-5"></i>
+                        </div>
+                        <h3 class="text-xl sm:text-2xl font-military text-white uppercase tracking-wide leading-none">
+                            Hospital de Referência da Área / Hospital Mais Próximo
+                        </h3>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <span id="lblSaudeSmartHospitalToggle" class="text-[11px] font-bold text-pmmg-khaki">Abrir</span>
+                        <i data-lucide="chevron-down" id="iconSaudeSmartHospitalChevron" class="w-4 h-4 text-pmmg-gold transition-transform duration-200"></i>
+                    </div>
+                </button>
+
+                <div id="saudeSmartHospitalExpandableBody" class="hidden p-4 sm:p-5 pt-3 border-t border-pmmg-border">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch">
+                        <!-- 1. Hospital de Referência da Área -->
+                        <div id="saudeAreaRefCard" class="bg-pmmg-dark p-4 rounded-xl border border-pmmg-khaki/50 border-l-4 border-l-pmmg-khaki flex flex-col justify-between space-y-3">
+                            <div class="space-y-1">
+                                <span class="text-[10px] font-extrabold uppercase tracking-wider text-pmmg-khaki block">
+                                    Hospital de Referência da Área
+                                </span>
+                                <h4 id="saudeRefHospName" class="text-lg sm:text-xl font-extrabold text-white leading-tight">
+                                    Hospital João XXIII
+                                </h4>
+                                <p id="saudeRefHospAddr" class="text-xs text-gray-400">
+                                    Av. Prof. Alfredo Balena, 400 - Santa Efigênia, BH (Lat: -19.9242, Lng: -43.9317)
+                                </p>
+                            </div>
+
+                            <div class="pt-3 border-t border-pmmg-border/80 flex items-center justify-between gap-2">
+                                <strong id="saudeRefHospMetrics" class="text-xs sm:text-sm font-mono text-pmmg-khaki font-extrabold">
+                                    ~-- km • ~-- min
+                                </strong>
+                                <a id="saudeRefHospRouteBtn" href="https://www.google.com/maps/dir/?api=1&destination=-19.9242,-43.9317&travelmode=driving" target="_blank" class="px-3.5 py-2 bg-pmmg-khaki hover:bg-pmmg-khakiHover text-pmmg-black font-extrabold rounded-xl text-xs flex items-center gap-1.5 shadow transition-all active:scale-95 shrink-0 uppercase">
+                                    <i data-lucide="navigation" class="w-3.5 h-3.5"></i>
+                                    <span>Rota</span>
+                                </a>
+                            </div>
                         </div>
 
-                        <div class="pt-3 border-t border-pmmg-border/80 flex items-center justify-between gap-2">
-                            <strong id="saudeRefHospMetrics" class="text-xs sm:text-sm font-mono text-pmmg-khaki font-extrabold">
-                                ~-- km • ~-- min
-                            </strong>
-                            <a id="saudeRefHospRouteBtn" href="https://www.google.com/maps/dir/?api=1&destination=-19.9242,-43.9317&travelmode=driving" target="_blank" class="px-3.5 py-2 bg-pmmg-khaki hover:bg-pmmg-khakiHover text-pmmg-black font-extrabold rounded-xl text-xs flex items-center gap-1.5 shadow transition-all active:scale-95 shrink-0 uppercase">
-                                <i data-lucide="navigation" class="w-3.5 h-3.5"></i>
-                                <span>Rota</span>
-                            </a>
+                        <!-- 2. Hospital Mais Próximo (GPS) -->
+                        <div id="saudeRealClosestCard" class="bg-pmmg-dark p-4 rounded-xl border border-red-500/60 border-l-4 border-l-red-500 flex flex-col justify-between space-y-3">
+                            <div class="space-y-1">
+                                <span class="text-[10px] font-extrabold uppercase tracking-wider text-red-400 block">
+                                    Hospital Mais Próximo (GPS)
+                                </span>
+                                <h4 id="saudeClosestHospName" class="text-lg sm:text-xl font-extrabold text-white leading-tight">
+                                    Calculando hospital mais próximo...
+                                </h4>
+                                <p id="saudeRealClosestAddr" class="text-xs text-gray-400">
+                                    Sincronizando coordenada via satélite...
+                                </p>
+                            </div>
+
+                            <div class="pt-3 border-t border-pmmg-border/80 flex items-center justify-between gap-2">
+                                <strong id="saudeClosestHospMeta" class="text-xs sm:text-sm font-mono text-white font-extrabold">
+                                    ~-- km • ~-- min
+                                </strong>
+                                <a id="saudeClosestHospBtn" href="https://www.google.com/maps/dir/?api=1&destination=-19.9242,-43.9317&travelmode=driving" target="_blank" class="px-3.5 py-2 bg-red-600 hover:bg-red-500 text-white font-extrabold rounded-xl text-xs flex items-center gap-1.5 shadow transition-all active:scale-95 shrink-0 uppercase">
+                                    <i data-lucide="navigation" class="w-3.5 h-3.5"></i>
+                                    <span>Rota</span>
+                                </a>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- 2. Hospital Mais Próximo (GPS) -->
-                    <div id="saudeRealClosestCard" class="bg-pmmg-dark p-4 rounded-xl border border-red-500/60 border-l-4 border-l-red-500 flex flex-col justify-between space-y-3">
-                        <div class="space-y-1">
-                            <span class="text-[10px] font-extrabold uppercase tracking-wider text-red-400 block">
-                                Hospital Mais Próximo (GPS)
-                            </span>
-                            <h4 id="saudeClosestHospName" class="text-lg sm:text-xl font-extrabold text-white leading-tight">
-                                Calculando hospital mais próximo...
-                            </h4>
-                            <p id="saudeRealClosestAddr" class="text-xs text-gray-400">
-                                Sincronizando coordenada via satélite...
-                            </p>
+                    <!-- Elementos ocultos de compatibilidade para preservar 100% do script existente sem repetição visual -->
+                    <div class="hidden">
+                        <span id="saudePanelCurrentAreaBadge"></span>
+                        <span id="saudeRefRpmLabel"></span>
+                        <span id="saudeRealClosestDiffBadge"></span>
+                        <div id="saudeComparisonAlertBanner">
+                            <span id="saudeComparisonAlertText"></span>
+                            <span id="saudeSecondClosestHint"></span>
                         </div>
-
-                        <div class="pt-3 border-t border-pmmg-border/80 flex items-center justify-between gap-2">
-                            <strong id="saudeClosestHospMeta" class="text-xs sm:text-sm font-mono text-white font-extrabold">
-                                ~-- km • ~-- min
-                            </strong>
-                            <a id="saudeClosestHospBtn" href="https://www.google.com/maps/dir/?api=1&destination=-19.9242,-43.9317&travelmode=driving" target="_blank" class="px-3.5 py-2 bg-red-600 hover:bg-red-500 text-white font-extrabold rounded-xl text-xs flex items-center gap-1.5 shadow transition-all active:scale-95 shrink-0 uppercase">
-                                <i data-lucide="navigation" class="w-3.5 h-3.5"></i>
-                                <span>Rota</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Elementos ocultos de compatibilidade para preservar 100% do script existente sem repetição visual -->
-                <div class="hidden">
-                    <span id="saudePanelCurrentAreaBadge"></span>
-                    <span id="saudeRefRpmLabel"></span>
-                    <span id="saudeRealClosestDiffBadge"></span>
-                    <div id="saudeComparisonAlertBanner">
-                        <span id="saudeComparisonAlertText"></span>
-                        <span id="saudeSecondClosestHint"></span>
                     </div>
                 </div>
             </div>
@@ -4604,13 +4637,25 @@
                 </div>
             </div>
 
-            <!-- 2. CARD ASSISTENTE DE SOCORRO (NOTEBOOKLM - CONSULTA AUXILIAR POR ÁUDIO, TEXTO OU FOTO) -->
-            <div id="saudeNotebookLmAssistantCard" class="bg-pmmg-card border-2 border-pmmg-gold/60 rounded-2xl p-4 sm:p-5 shadow-xl space-y-3">
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div class="flex items-start gap-3">
-                        <div class="p-3 rounded-xl bg-pmmg-khakiBadge text-pmmg-gold border border-pmmg-gold/50 shrink-0">
-                            <i data-lucide="bot" class="w-6 h-6"></i>
+            <!-- ASSISTENTE IA (NOTEBOOKLM - CAIXA FECHADA POR PADRÃO, ABRE APENAS AO CLICAR) -->
+            <div id="saudeNotebookLmAssistantCard" class="bg-pmmg-card border border-pmmg-gold/60 rounded-2xl overflow-hidden shadow-2xl">
+                <button type="button" onclick="toggleSaudeAssistantIaBox()" id="btnToggleSaudeAssistantIa" class="w-full p-4 sm:p-5 flex items-center justify-between gap-3 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
+                    <div class="flex items-center gap-2.5">
+                        <div class="p-2 rounded-xl bg-pmmg-khakiBadge text-pmmg-gold border border-pmmg-gold/50 shrink-0">
+                            <i data-lucide="bot" class="w-5 h-5"></i>
                         </div>
+                        <h3 class="text-xl sm:text-2xl font-military text-white uppercase tracking-wide leading-none">
+                            Assistente IA
+                        </h3>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <span id="lblSaudeAssistantIaToggle" class="text-[11px] font-bold text-pmmg-khaki">Abrir</span>
+                        <i data-lucide="chevron-down" id="iconSaudeAssistantIaChevron" class="w-4 h-4 text-pmmg-gold transition-transform duration-200"></i>
+                    </div>
+                </button>
+
+                <div id="saudeAssistantIaExpandableBody" class="hidden p-4 sm:p-5 pt-3 border-t border-pmmg-border space-y-3">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div class="space-y-1">
                             <div class="flex items-center gap-2 flex-wrap">
                                 <span class="text-[10px] font-extrabold uppercase tracking-wider bg-pmmg-khakiBadge text-pmmg-gold px-2 py-0.5 rounded border border-pmmg-gold/40">
@@ -4618,36 +4663,36 @@
                                 </span>
                                 <span class="text-[10px] font-mono text-gray-400">Áudio • Texto • Foto</span>
                             </div>
-                            <h3 class="text-xl sm:text-2xl font-military text-white uppercase tracking-wide leading-none">
+                            <h4 class="text-lg sm:text-xl font-military text-white uppercase tracking-wide leading-none mt-1">
                                 Assistente de Socorro (NotebookLM)
-                            </h3>
+                            </h4>
                             <p class="text-xs text-gray-200 leading-relaxed">
                                 Em caso de dúvida na ocorrência, acesse o assistente para enviar áudio, texto ou foto e receber orientação complementar baseada nos protocolos de APH (consulta auxiliar).
                             </p>
                         </div>
+
+                        <div class="flex flex-wrap items-center gap-2 shrink-0">
+                            <a id="btnOpenNotebookLmAph" href="https://notebook.google.com/notebook/1a62ae4d-eed3-405b-bfb7-f3cdf3fd961e" target="_blank" rel="noopener noreferrer" class="px-4 py-2.5 bg-pmmg-gold hover:bg-pmmg-khakiHover active:scale-95 text-pmmg-black font-extrabold rounded-xl text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg uppercase tracking-wider transition-all">
+                                <i data-lucide="external-link" class="w-4 h-4"></i>
+                                <span>Acessar Assistente IA</span>
+                            </a>
+                            <button type="button" onclick="toggleConfigNotebookLmUrl()" class="p-2.5 bg-pmmg-dark hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-border rounded-xl text-xs font-bold transition-colors cursor-pointer" title="Configurar / Colar Link do Caderno NotebookLM de APH">
+                                <i data-lucide="settings" class="w-4 h-4"></i>
+                            </button>
+                        </div>
                     </div>
 
-                    <div class="flex flex-wrap items-center gap-2 shrink-0">
-                        <a id="btnOpenNotebookLmAph" href="https://notebook.google.com/notebook/1a62ae4d-eed3-405b-bfb7-f3cdf3fd961e" target="_blank" rel="noopener noreferrer" class="px-4 py-2.5 bg-pmmg-gold hover:bg-pmmg-khakiHover active:scale-95 text-pmmg-black font-extrabold rounded-xl text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg uppercase tracking-wider transition-all">
-                            <i data-lucide="external-link" class="w-4 h-4"></i>
-                            <span>Acessar Assistente (NotebookLM)</span>
-                        </a>
-                        <button type="button" onclick="toggleConfigNotebookLmUrl()" class="p-2.5 bg-pmmg-dark hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-border rounded-xl text-xs font-bold transition-colors" title="Configurar / Colar Link do Caderno NotebookLM de APH">
-                            <i data-lucide="settings" class="w-4 h-4"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Gaveta opcional para vincular URL específica do Caderno NotebookLM da Unidade -->
-                <div id="notebookLmUrlConfigBox" class="hidden pt-3 border-t border-pmmg-border space-y-2">
-                    <label class="text-[10px] font-bold uppercase tracking-wider text-pmmg-khaki block">
-                        Link do Caderno NotebookLM de APH (Salvo no Aparelho):
-                    </label>
-                    <div class="flex flex-col sm:flex-row gap-2">
-                        <input type="url" id="inputNotebookLmAphUrl" value="https://notebook.google.com/notebook/1a62ae4d-eed3-405b-bfb7-f3cdf3fd961e" placeholder="https://notebook.google.com/notebook/1a62ae4d-eed3-405b-bfb7-f3cdf3fd961e" class="flex-1 px-3 py-2 bg-pmmg-dark text-xs text-white rounded-lg border border-pmmg-border focus:outline-none focus:border-pmmg-gold font-mono">
-                        <button type="button" onclick="saveNotebookLmAphUrl()" class="px-4 py-2 bg-pmmg-khaki hover:bg-pmmg-khakiHover text-pmmg-black font-extrabold rounded-lg text-xs uppercase shrink-0">
-                            Salvar Link
-                        </button>
+                    <!-- Gaveta opcional para vincular URL específica do Caderno NotebookLM da Unidade -->
+                    <div id="notebookLmUrlConfigBox" class="hidden pt-3 border-t border-pmmg-border space-y-2">
+                        <label class="text-[10px] font-bold uppercase tracking-wider text-pmmg-khaki block">
+                            Link do Caderno NotebookLM de APH (Salvo no Aparelho):
+                        </label>
+                        <div class="flex flex-col sm:flex-row gap-2">
+                            <input type="url" id="inputNotebookLmAphUrl" value="https://notebook.google.com/notebook/1a62ae4d-eed3-405b-bfb7-f3cdf3fd961e" placeholder="https://notebook.google.com/notebook/1a62ae4d-eed3-405b-bfb7-f3cdf3fd961e" class="flex-1 px-3 py-2 bg-pmmg-dark text-xs text-white rounded-lg border border-pmmg-border focus:outline-none focus:border-pmmg-gold font-mono">
+                            <button type="button" onclick="saveNotebookLmAphUrl()" class="px-4 py-2 bg-pmmg-khaki hover:bg-pmmg-khakiHover text-pmmg-black font-extrabold rounded-lg text-xs uppercase shrink-0 cursor-pointer">
+                                Salvar Link
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -4690,100 +4735,117 @@
                 </div>
             </div>
 
-            <!-- GRADE DE HOSPITAIS DE TRAUMA E PRONTO ATENDIMENTO 24H (RMBH) COM DISTÂNCIA GPS EM TEMPO REAL -->
-            <div class="space-y-3">
-                <div class="flex flex-wrap items-center justify-between border-b border-pmmg-border pb-1.5 gap-2">
-                    <h3 class="text-xl font-military text-pmmg-khaki uppercase tracking-wide">Rede Hospitalar de Trauma e Urgência (RMBH) • Distâncias em Tempo Real</h3>
-                    <span class="text-[11px] text-gray-400 font-mono">Cálculo contínuo via coordenada GPS atual</span>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <div id="saude-card-joao23"class="bg-pmmg-card p-4 rounded-xl tactical-border border-l-4 border-l-red-500 flex flex-col justify-between space-y-3 transition-all">
-                        <div>
-                            <div class="flex items-center justify-between gap-1.5 flex-wrap">
-                                <span class="text-[10px] bg-red-950 text-red-300 font-bold px-2 py-0.5 rounded uppercase">Referência 1ª RPM / BH • Trauma</span>
-                                <span id="saude-dist-joao23"class="text-[11px] font-mono font-extrabold text-pmmg-gold bg-pmmg-dark px-2 py-0.5 rounded border border-pmmg-border">-- km</span>
-                            </div>
-                            <h4 class="text-xl font-military text-white uppercase mt-1">Hospital João XXIII (BH)</h4>
-                            <p class="text-xs text-gray-400">Hospital João XXIII, Av. Prof. Alfredo Balena, 400 - Santa Efigênia, Belo Horizonte - MG, 30130-100</p>
+            <!-- LISTA DE REDE HOSPITALAR (DISTÂNCIA E TEMPO REAL) - CAIXA FECHADA POR PADRÃO -->
+            <div id="saudeHospitalNetworkListSection" class="bg-pmmg-card border border-pmmg-khaki/50 rounded-2xl overflow-hidden shadow-2xl">
+                <button type="button" onclick="toggleSaudeHospitalNetworkListBox()" id="btnToggleSaudeHospitalNetworkList" class="w-full p-4 sm:p-5 flex items-center justify-between gap-3 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
+                    <div class="flex items-center gap-2.5">
+                        <div class="p-2 rounded-xl bg-pmmg-khaki/15 border border-pmmg-khaki/50 text-pmmg-khaki shrink-0">
+                            <i data-lucide="building-2" class="w-5 h-5"></i>
                         </div>
-                        <div class="pt-2 border-t border-pmmg-border flex items-center justify-between text-xs">
-                            <a href="tel:03132399200"class="text-pmmg-khaki font-mono font-bold hover:underline">(31) 3239-9200</a>
-                            <a href="https://www.google.com/maps/dir/?api=1&destination=-19.9242,-43.9317&travelmode=driving"target="_blank"class="px-3 py-1.5 bg-red-950/80 hover:bg-red-800 text-red-200 border border-red-500/40 rounded-lg font-bold flex items-center gap-1">Rota</a>
-                        </div>
+                        <h3 class="text-xl sm:text-2xl font-military text-white uppercase tracking-wide leading-none">
+                            Lista de Rede Hospitalar (Distância e Tempo Real)
+                        </h3>
                     </div>
-
-                    <div id="saude-card-hpm"class="bg-pmmg-card p-4 rounded-xl tactical-border border-l-4 border-l-pmmg-gold flex flex-col justify-between space-y-3 transition-all">
-                        <div>
-                            <div class="flex items-center justify-between gap-1.5 flex-wrap">
-                                <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-gold font-bold px-2 py-0.5 rounded uppercase">Exclusivo Militares / Família Militar</span>
-                                <span id="saude-dist-hpm"class="text-[11px] font-mono font-extrabold text-pmmg-gold bg-pmmg-dark px-2 py-0.5 rounded border border-pmmg-border">-- km</span>
-                            </div>
-                            <h4 class="text-xl font-military text-white uppercase mt-1">Hospital da Polícia Militar (HPM)</h4>
-                            <p class="text-xs text-gray-400">Av. do Contorno, 2787 - Santa Efigênia, BH</p>
-                        </div>
-                        <div class="pt-2 border-t border-pmmg-border flex items-center justify-between text-xs">
-                            <a href="tel:03121231000"class="text-pmmg-khaki font-mono font-bold hover:underline">(31) 2123-1000</a>
-                            <a href="https://www.google.com/maps/dir/?api=1&destination=-19.9235,-43.9182&travelmode=driving"target="_blank"class="px-3 py-1.5 bg-red-950/80 hover:bg-red-800 text-red-200 border border-red-500/40 rounded-lg font-bold flex items-center gap-1">Rota</a>
-                        </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <span id="lblSaudeHospitalNetworkListToggle" class="text-[11px] font-bold text-pmmg-khaki">Abrir</span>
+                        <i data-lucide="chevron-down" id="iconSaudeHospitalNetworkListChevron" class="w-4 h-4 text-pmmg-gold transition-transform duration-200"></i>
                     </div>
+                </button>
 
-                    <div id="saude-card-hmc"class="bg-pmmg-card p-4 rounded-xl tactical-border border-l-4 border-l-red-500 flex flex-col justify-between space-y-3 transition-all">
-                        <div>
-                            <div class="flex items-center justify-between gap-1.5 flex-wrap">
-                                <span class="text-[10px] bg-red-950 text-red-300 font-bold px-2 py-0.5 rounded uppercase">Referência 2ª RPM / Contagem</span>
-                                <span id="saude-dist-hmc"class="text-[11px] font-mono font-extrabold text-pmmg-gold bg-pmmg-dark px-2 py-0.5 rounded border border-pmmg-border">-- km</span>
-                            </div>
-                            <h4 class="text-xl font-military text-white uppercase mt-1">Hosp. Municipal de Contagem (HMC)</h4>
-                            <p class="text-xs text-gray-400">Av. Geraldo Rocha, 3220 - Chácaras Cotia, Contagem</p>
-                        </div>
-                        <div class="pt-2 border-t border-pmmg-border flex items-center justify-between text-xs">
-                            <a href="tel:03133566000"class="text-pmmg-khaki font-mono font-bold hover:underline">(31) 3356-6000</a>
-                            <a href="https://www.google.com/maps/dir/?api=1&destination=-19.9322,-44.0758&travelmode=driving"target="_blank"class="px-3 py-1.5 bg-red-950/80 hover:bg-red-800 text-red-200 border border-red-500/40 rounded-lg font-bold flex items-center gap-1">Rota</a>
-                        </div>
+                <div id="saudeHospitalNetworkListExpandableBody" class="hidden p-4 sm:p-5 pt-3 border-t border-pmmg-border space-y-3">
+                    <div class="flex flex-wrap items-center justify-between border-b border-pmmg-border pb-1.5 gap-2">
+                        <span class="text-xs font-bold text-pmmg-khaki uppercase tracking-wide">Rede Hospitalar de Trauma e Urgência (RMBH)</span>
+                        <span class="text-[11px] text-gray-400 font-mono">Cálculo contínuo via coordenada GPS atual</span>
                     </div>
-
-                    <div id="saude-card-risoleta"class="bg-pmmg-card p-4 rounded-xl tactical-border border-l-4 border-l-red-500 flex flex-col justify-between space-y-3 transition-all">
-                        <div>
-                            <div class="flex items-center justify-between gap-1.5 flex-wrap">
-                                <span class="text-[10px] bg-red-950 text-red-300 font-bold px-2 py-0.5 rounded uppercase">Referência Trauma Norte / Venda Nova</span>
-                                <span id="saude-dist-risoleta"class="text-[11px] font-mono font-extrabold text-pmmg-gold bg-pmmg-dark px-2 py-0.5 rounded border border-pmmg-border">-- km</span>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div id="saude-card-joao23" class="bg-pmmg-dark p-4 rounded-xl tactical-border border-l-4 border-l-red-500 flex flex-col justify-between space-y-3 transition-all">
+                            <div>
+                                <div class="flex items-center justify-between gap-1.5 flex-wrap">
+                                    <span class="text-[10px] bg-red-950 text-red-300 font-bold px-2 py-0.5 rounded uppercase">Referência 1ª RPM / BH • Trauma</span>
+                                    <span id="saude-dist-joao23" class="text-[11px] font-mono font-extrabold text-pmmg-gold bg-pmmg-card px-2 py-0.5 rounded border border-pmmg-border">-- km</span>
+                                </div>
+                                <h4 class="text-xl font-military text-white uppercase mt-1">Hospital João XXIII (BH)</h4>
+                                <p class="text-xs text-gray-400">Av. Prof. Alfredo Balena, 400 - Santa Efigênia, BH (Lat: -19.9242, Lng: -43.9317)</p>
                             </div>
-                            <h4 class="text-xl font-military text-white uppercase mt-1">Hosp. Risoleta Tolentino Neves</h4>
-                            <p class="text-xs text-gray-400">Rua das Gabirobas, 1 - Vila Clóris, BH</p>
-                        </div>
-                        <div class="pt-2 border-t border-pmmg-border flex items-center justify-between text-xs">
-                            <a href="tel:03134593200"class="text-pmmg-khaki font-mono font-bold hover:underline">(31) 3459-3200</a>
-                            <a href="https://www.google.com/maps/dir/?api=1&destination=-19.8195,-43.9535&travelmode=driving"target="_blank"class="px-3 py-1.5 bg-red-950/80 hover:bg-red-800 text-red-200 border border-red-500/40 rounded-lg font-bold flex items-center gap-1">Rota</a>
-                        </div>
-                    </div>
-
-                    <div id="saude-card-betim"class="bg-pmmg-card p-4 rounded-xl tactical-border border-l-4 border-l-red-500 flex flex-col justify-between space-y-3 transition-all">
-                        <div>
-                            <div class="flex items-center justify-between gap-1.5 flex-wrap">
-                                <span class="text-[10px] bg-red-950 text-red-300 font-bold px-2 py-0.5 rounded uppercase">Referência Trauma Betim (2ª RPM)</span>
-                                <span id="saude-dist-betim"class="text-[11px] font-mono font-extrabold text-pmmg-gold bg-pmmg-dark px-2 py-0.5 rounded border border-pmmg-border">-- km</span>
+                            <div class="pt-2 border-t border-pmmg-border flex items-center justify-between text-xs">
+                                <a href="tel:03132399200" class="text-pmmg-khaki font-mono font-bold hover:underline">(31) 3239-9200</a>
+                                <a href="https://www.google.com/maps/dir/?api=1&destination=-19.9242,-43.9317&travelmode=driving" target="_blank" class="px-3 py-1.5 bg-red-950/80 hover:bg-red-800 text-red-200 border border-red-500/40 rounded-lg font-bold flex items-center gap-1">Rota</a>
                             </div>
-                            <h4 class="text-xl font-military text-white uppercase mt-1">Hosp. Regional de Betim</h4>
-                            <p class="text-xs text-gray-400">Av. Edméia Mattos Lazzarotti, 3800 - Betim</p>
                         </div>
-                        <div class="pt-2 border-t border-pmmg-border flex items-center justify-between text-xs">
-                            <a href="tel:03135398100"class="text-pmmg-khaki font-mono font-bold hover:underline">(31) 3539-8100</a>
-                            <a href="https://www.google.com/maps/dir/?api=1&destination=-19.9567,-44.1925&travelmode=driving"target="_blank"class="px-3 py-1.5 bg-red-950/80 hover:bg-red-800 text-red-200 border border-red-500/40 rounded-lg font-bold flex items-center gap-1">Rota</a>
-                        </div>
-                    </div>
 
-                    <div id="saude-card-jk"class="bg-pmmg-card p-4 rounded-xl tactical-border border-l-4 border-l-red-500 flex flex-col justify-between space-y-3 transition-all">
-                        <div>
-                            <div class="flex items-center justify-between gap-1.5 flex-wrap">
-                                <span class="text-[10px] bg-red-950 text-red-300 font-bold px-2 py-0.5 rounded uppercase">Referência Barreiro / Ibirité</span>
-                                <span id="saude-dist-jk"class="text-[11px] font-mono font-extrabold text-pmmg-gold bg-pmmg-dark px-2 py-0.5 rounded border border-pmmg-border">-- km</span>
+                        <div id="saude-card-hpm" class="bg-pmmg-dark p-4 rounded-xl tactical-border border-l-4 border-l-pmmg-gold flex flex-col justify-between space-y-3 transition-all">
+                            <div>
+                                <div class="flex items-center justify-between gap-1.5 flex-wrap">
+                                    <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-gold font-bold px-2 py-0.5 rounded uppercase">Exclusivo Militares / Família Militar</span>
+                                    <span id="saude-dist-hpm" class="text-[11px] font-mono font-extrabold text-pmmg-gold bg-pmmg-card px-2 py-0.5 rounded border border-pmmg-border">-- km</span>
+                                </div>
+                                <h4 class="text-xl font-military text-white uppercase mt-1">Hospital da Polícia Militar (HPM)</h4>
+                                <p class="text-xs text-gray-400">Av. do Contorno, 2787 - Santa Efigênia, BH</p>
                             </div>
-                            <h4 class="text-xl font-military text-white uppercase mt-1">Hosp. Júlia Kubitschek</h4>
-                            <p class="text-xs text-gray-400">Av. Dr. Cristiano Rezende, 2745 - Milionários, BH</p>
+                            <div class="pt-2 border-t border-pmmg-border flex items-center justify-between text-xs">
+                                <a href="tel:03121231000" class="text-pmmg-khaki font-mono font-bold hover:underline">(31) 2123-1000</a>
+                                <a href="https://www.google.com/maps/dir/?api=1&destination=-19.9235,-43.9182&travelmode=driving" target="_blank" class="px-3 py-1.5 bg-red-950/80 hover:bg-red-800 text-red-200 border border-red-500/40 rounded-lg font-bold flex items-center gap-1">Rota</a>
+                            </div>
                         </div>
-                        <div class="pt-2 border-t border-pmmg-border flex items-center justify-between text-xs">
-                            <a href="tel:03133897800"class="text-pmmg-khaki font-mono font-bold hover:underline">(31) 3389-7800</a>
-                            <a href="https://www.google.com/maps/dir/?api=1&destination=-19.9897,-44.0114&travelmode=driving"target="_blank"class="px-3 py-1.5 bg-red-950/80 hover:bg-red-800 text-red-200 border border-red-500/40 rounded-lg font-bold flex items-center gap-1">Rota</a>
+
+                        <div id="saude-card-hmc" class="bg-pmmg-dark p-4 rounded-xl tactical-border border-l-4 border-l-red-500 flex flex-col justify-between space-y-3 transition-all">
+                            <div>
+                                <div class="flex items-center justify-between gap-1.5 flex-wrap">
+                                    <span class="text-[10px] bg-red-950 text-red-300 font-bold px-2 py-0.5 rounded uppercase">Referência 2ª RPM / Contagem</span>
+                                    <span id="saude-dist-hmc" class="text-[11px] font-mono font-extrabold text-pmmg-gold bg-pmmg-card px-2 py-0.5 rounded border border-pmmg-border">-- km</span>
+                                </div>
+                                <h4 class="text-xl font-military text-white uppercase mt-1">Hosp. Municipal de Contagem (HMC)</h4>
+                                <p class="text-xs text-gray-400">Av. Geraldo Rocha, 3220 - Chácaras Cotia, Contagem</p>
+                            </div>
+                            <div class="pt-2 border-t border-pmmg-border flex items-center justify-between text-xs">
+                                <a href="tel:03133566000" class="text-pmmg-khaki font-mono font-bold hover:underline">(31) 3356-6000</a>
+                                <a href="https://www.google.com/maps/dir/?api=1&destination=-19.9322,-44.0758&travelmode=driving" target="_blank" class="px-3 py-1.5 bg-red-950/80 hover:bg-red-800 text-red-200 border border-red-500/40 rounded-lg font-bold flex items-center gap-1">Rota</a>
+                            </div>
+                        </div>
+
+                        <div id="saude-card-risoleta" class="bg-pmmg-dark p-4 rounded-xl tactical-border border-l-4 border-l-red-500 flex flex-col justify-between space-y-3 transition-all">
+                            <div>
+                                <div class="flex items-center justify-between gap-1.5 flex-wrap">
+                                    <span class="text-[10px] bg-red-950 text-red-300 font-bold px-2 py-0.5 rounded uppercase">Referência Trauma Norte / Venda Nova</span>
+                                    <span id="saude-dist-risoleta" class="text-[11px] font-mono font-extrabold text-pmmg-gold bg-pmmg-card px-2 py-0.5 rounded border border-pmmg-border">-- km</span>
+                                </div>
+                                <h4 class="text-xl font-military text-white uppercase mt-1">Hosp. Risoleta Tolentino Neves</h4>
+                                <p class="text-xs text-gray-400">Rua das Gabirobas, 1 - Vila Clóris, BH</p>
+                            </div>
+                            <div class="pt-2 border-t border-pmmg-border flex items-center justify-between text-xs">
+                                <a href="tel:03134593200" class="text-pmmg-khaki font-mono font-bold hover:underline">(31) 3459-3200</a>
+                                <a href="https://www.google.com/maps/dir/?api=1&destination=-19.8195,-43.9535&travelmode=driving" target="_blank" class="px-3 py-1.5 bg-red-950/80 hover:bg-red-800 text-red-200 border border-red-500/40 rounded-lg font-bold flex items-center gap-1">Rota</a>
+                            </div>
+                        </div>
+
+                        <div id="saude-card-betim" class="bg-pmmg-dark p-4 rounded-xl tactical-border border-l-4 border-l-red-500 flex flex-col justify-between space-y-3 transition-all">
+                            <div>
+                                <div class="flex items-center justify-between gap-1.5 flex-wrap">
+                                    <span class="text-[10px] bg-red-950 text-red-300 font-bold px-2 py-0.5 rounded uppercase">Referência Trauma Betim (2ª RPM)</span>
+                                    <span id="saude-dist-betim" class="text-[11px] font-mono font-extrabold text-pmmg-gold bg-pmmg-card px-2 py-0.5 rounded border border-pmmg-border">-- km</span>
+                                </div>
+                                <h4 class="text-xl font-military text-white uppercase mt-1">Hosp. Regional de Betim</h4>
+                                <p class="text-xs text-gray-400">Av. Edméia Mattos Lazzarotti, 3800 - Betim</p>
+                            </div>
+                            <div class="pt-2 border-t border-pmmg-border flex items-center justify-between text-xs">
+                                <a href="tel:03135398100" class="text-pmmg-khaki font-mono font-bold hover:underline">(31) 3539-8100</a>
+                                <a href="https://www.google.com/maps/dir/?api=1&destination=-19.9567,-44.1925&travelmode=driving" target="_blank" class="px-3 py-1.5 bg-red-950/80 hover:bg-red-800 text-red-200 border border-red-500/40 rounded-lg font-bold flex items-center gap-1">Rota</a>
+                            </div>
+                        </div>
+
+                        <div id="saude-card-jk" class="bg-pmmg-dark p-4 rounded-xl tactical-border border-l-4 border-l-red-500 flex flex-col justify-between space-y-3 transition-all">
+                            <div>
+                                <div class="flex items-center justify-between gap-1.5 flex-wrap">
+                                    <span class="text-[10px] bg-red-950 text-red-300 font-bold px-2 py-0.5 rounded uppercase">Referência Barreiro / Ibirité</span>
+                                    <span id="saude-dist-jk" class="text-[11px] font-mono font-extrabold text-pmmg-gold bg-pmmg-card px-2 py-0.5 rounded border border-pmmg-border">-- km</span>
+                                </div>
+                                <h4 class="text-xl font-military text-white uppercase mt-1">Hosp. Júlia Kubitschek</h4>
+                                <p class="text-xs text-gray-400">Av. Dr. Cristiano Rezende, 2745 - Milionários, BH</p>
+                            </div>
+                            <div class="pt-2 border-t border-pmmg-border flex items-center justify-between text-xs">
+                                <a href="tel:03133897800" class="text-pmmg-khaki font-mono font-bold hover:underline">(31) 3389-7800</a>
+                                <a href="https://www.google.com/maps/dir/?api=1&destination=-19.9897,-44.0114&travelmode=driving" target="_blank" class="px-3 py-1.5 bg-red-950/80 hover:bg-red-800 text-red-200 border border-red-500/40 rounded-lg font-bold flex items-center gap-1">Rota</a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -4811,11 +4873,11 @@
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                <!-- Consultar IMEI (*#06#) -->
+                <!-- CONSULTAR IMEI (*#06#) -->
                 <a href="https://www.consultaaparelhoimpedido.com.br/public-web/home?cid=174624" target="_blank" rel="noopener noreferrer" class="bg-pmmg-card p-5 rounded-xl tactical-border tactical-card flex items-center justify-between group">
                     <div>
                         <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-khaki font-bold px-2 py-0.5 rounded border border-pmmg-khaki/30 uppercase">Anatel</span>
-                        <h3 class="text-2xl font-military text-white font-bold mt-1 group-hover:text-pmmg-khaki transition-colors">Consultar IMEI</h3>
+                        <h3 class="text-2xl font-military text-white font-bold uppercase mt-1 group-hover:text-pmmg-khaki transition-colors">CONSULTAR IMEI</h3>
                         <p class="text-[11px] text-gray-400">Aparelhos impedidos • Comando na tela: <strong class="text-pmmg-khaki font-mono">(*#06#)</strong></p>
                     </div>
                     <div class="p-3 bg-pmmg-dark text-pmmg-khaki border border-pmmg-border rounded-lg group-hover:bg-pmmg-khaki group-hover:text-pmmg-black transition-colors">
@@ -4919,11 +4981,11 @@
                     </div>
                 </a>
 
-                <!-- Ementário -->
+                <!-- EMENTÁRIO -->
                 <a href="https://ementario.policiamilitar.mg.gov.br/principal" target="_blank" rel="noopener noreferrer" class="bg-pmmg-card p-5 rounded-xl tactical-border tactical-card flex items-center justify-between group">
                     <div>
                         <span class="text-[10px] bg-emerald-950 text-emerald-400 font-bold px-2 py-0.5 rounded border border-emerald-500/30 uppercase">Jurídico / PMMG</span>
-                        <h3 class="text-2xl font-military text-white font-bold mt-1 group-hover:text-emerald-400 transition-colors">Ementário</h3>
+                        <h3 class="text-2xl font-military text-white font-bold uppercase mt-1 group-hover:text-emerald-400 transition-colors">EMENTÁRIO</h3>
                         <p class="text-[11px] text-gray-400">Consulta de Ementário PMMG</p>
                     </div>
                     <div class="p-3 bg-pmmg-dark text-emerald-400 border border-emerald-500/40 rounded-lg group-hover:bg-emerald-400 group-hover:text-pmmg-black transition-colors">
@@ -7632,6 +7694,57 @@
         ];
 
         // ================= PROTOCOLOS APH 100% OFFLINE (6 PROTOCOLOS OBJETIVOS) & ASSISTENTE NOTEBOOKLM =================
+        window.toggleSaudeSmartHospitalBox = function(forceOpen = null) {
+            const body = document.getElementById('saudeSmartHospitalExpandableBody');
+            const lbl = document.getElementById('lblSaudeSmartHospitalToggle');
+            const icon = document.getElementById('iconSaudeSmartHospitalChevron');
+            if (!body) return;
+            const shouldOpen = forceOpen !== null ? forceOpen : body.classList.contains('hidden');
+            if (shouldOpen) {
+                body.classList.remove('hidden');
+                if (lbl) lbl.textContent = 'Fechar';
+                if (icon) icon.style.transform = 'rotate(180deg)';
+            } else {
+                body.classList.add('hidden');
+                if (lbl) lbl.textContent = 'Abrir';
+                if (icon) icon.style.transform = 'rotate(0deg)';
+            }
+        };
+
+        window.toggleSaudeAssistantIaBox = function(forceOpen = null) {
+            const body = document.getElementById('saudeAssistantIaExpandableBody');
+            const lbl = document.getElementById('lblSaudeAssistantIaToggle');
+            const icon = document.getElementById('iconSaudeAssistantIaChevron');
+            if (!body) return;
+            const shouldOpen = forceOpen !== null ? forceOpen : body.classList.contains('hidden');
+            if (shouldOpen) {
+                body.classList.remove('hidden');
+                if (lbl) lbl.textContent = 'Fechar';
+                if (icon) icon.style.transform = 'rotate(180deg)';
+            } else {
+                body.classList.add('hidden');
+                if (lbl) lbl.textContent = 'Abrir';
+                if (icon) icon.style.transform = 'rotate(0deg)';
+            }
+        };
+
+        window.toggleSaudeHospitalNetworkListBox = function(forceOpen = null) {
+            const body = document.getElementById('saudeHospitalNetworkListExpandableBody');
+            const lbl = document.getElementById('lblSaudeHospitalNetworkListToggle');
+            const icon = document.getElementById('iconSaudeHospitalNetworkListChevron');
+            if (!body) return;
+            const shouldOpen = forceOpen !== null ? forceOpen : body.classList.contains('hidden');
+            if (shouldOpen) {
+                body.classList.remove('hidden');
+                if (lbl) lbl.textContent = 'Fechar';
+                if (icon) icon.style.transform = 'rotate(180deg)';
+            } else {
+                body.classList.add('hidden');
+                if (lbl) lbl.textContent = 'Abrir';
+                if (icon) icon.style.transform = 'rotate(0deg)';
+            }
+        };
+
         window.toggleOfflineAphGuideBox = function(forceOpen = null) {
             const body = document.getElementById('offlineAphGuideExpandableBody');
             const lbl = document.getElementById('lblOfflineAphGuideToggle');
@@ -7781,6 +7894,23 @@
             'chkRpas-imu',
             'chkRpas-espaco'
         ];
+
+        window.toggleRpasFlightParamsBox = function(forceOpen = null) {
+            const body = document.getElementById('rpasFlightParamsExpandableBody');
+            const lbl = document.getElementById('lblRpasFlightParamsToggle');
+            const icon = document.getElementById('iconRpasFlightParamsChevron');
+            if (!body) return;
+            const shouldOpen = forceOpen !== null ? forceOpen : body.classList.contains('hidden');
+            if (shouldOpen) {
+                body.classList.remove('hidden');
+                if (lbl) lbl.textContent = 'Fechar';
+                if (icon) icon.style.transform = 'rotate(180deg)';
+            } else {
+                body.classList.add('hidden');
+                if (lbl) lbl.textContent = 'Abrir';
+                if (icon) icon.style.transform = 'rotate(0deg)';
+            }
+        };
 
         window.toggleRpasChecklistBox = function(forceOpen = null) {
             const body = document.getElementById('rpasChecklistExpandableBody');
@@ -10714,6 +10844,17 @@
                 } else {
                     gpsHud.classList.add('hidden');
                 }
+            }
+
+            if (viewId === 'saude') {
+                if (typeof window.toggleSaudeSmartHospitalBox === 'function') window.toggleSaudeSmartHospitalBox(false);
+                if (typeof window.toggleOfflineAphGuideBox === 'function') window.toggleOfflineAphGuideBox(false);
+                if (typeof window.toggleRcpMetronomeModuleBox === 'function') window.toggleRcpMetronomeModuleBox(false);
+                if (typeof window.toggleSaudeAssistantIaBox === 'function') window.toggleSaudeAssistantIaBox(false);
+                if (typeof window.toggleSaudeHospitalNetworkListBox === 'function') window.toggleSaudeHospitalNetworkListBox(false);
+            } else if (viewId === 'rpas') {
+                if (typeof window.toggleRpasFlightParamsBox === 'function') window.toggleRpasFlightParamsBox(false);
+                if (typeof window.toggleRpasChecklistBox === 'function') window.toggleRpasChecklistBox(false);
             }
 
             const target = document.getElementById(`view-${viewId}`);
