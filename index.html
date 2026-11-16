@@ -797,35 +797,76 @@
                 </div>
             </div>
 
-            <!-- COLUNA CENTRAL: ORIENTAÇÃO PRINCIPAL E QTH EM DESTAQUE -->
-            <div class="bg-pmmg-card border-2 border-pmmg-khaki rounded-xl p-3 flex flex-col justify-between space-y-2 shadow-xl relative overflow-hidden">
+            <!-- COLUNA CENTRAL: ENDEREÇO ATUAL EM DESTAQUE + UNIDADES PRÓXIMAS EM DESTAQUE MÁXIMO -->
+            <div class="bg-pmmg-card border-2 border-pmmg-khaki rounded-xl p-2.5 sm:p-3 flex flex-col justify-between space-y-2.5 shadow-2xl relative overflow-hidden">
                 <div class="flex items-center justify-between border-b border-pmmg-border pb-1.5 gap-2">
                     <div class="flex items-center gap-1.5">
                         <i data-lucide="map-pin" class="w-4 h-4 text-pmmg-gold shrink-0"></i>
-                        <span class="text-[10px] font-extrabold uppercase tracking-wider text-pmmg-khaki">Orientação Principal & QTH</span>
+                        <span class="text-[10px] font-extrabold uppercase tracking-wider text-pmmg-khaki">Painel Central • Localização & Unidades</span>
                     </div>
-                    <span id="gridCenterCoords"class="text-[10px] font-mono font-bold text-pmmg-gold bg-pmmg-dark px-2 py-0.5 rounded border border-pmmg-border">
-                        -19.91620, -44.08090
-                    </span>
+                    <div class="flex items-center gap-1.5">
+                        <span id="gridCenterWeatherMini" class="font-mono text-[10px] text-sky-300 font-bold bg-pmmg-dark px-2 py-0.5 rounded border border-pmmg-border shrink-0">-- °C</span>
+                        <span id="gridCenterCoords" class="text-[10px] font-mono font-bold text-pmmg-gold bg-pmmg-dark px-2 py-0.5 rounded border border-pmmg-border">
+                            -19.91620, -44.08090
+                        </span>
+                    </div>
                 </div>
 
-                <!-- QTH em Destaque -->
-                <div class="my-auto py-1">
-                    <div class="text-[9px] uppercase font-bold text-gray-400 tracking-wider">Logradouro / Cruzamento:</div>
-                    <h2 id="gridCenterQth"class="text-base sm:text-xl font-extrabold text-white leading-tight mt-0.5 line-clamp-2">
+                <!-- 1. ENDEREÇO ATUAL (QTH) COM DESTAQUE VISUAL -->
+                <div class="bg-pmmg-black/95 border border-pmmg-khaki/70 border-l-4 border-l-pmmg-khaki rounded-xl p-2.5 sm:p-3 shadow-md space-y-0.5">
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="text-[9.5px] uppercase font-extrabold text-pmmg-khaki tracking-widest flex items-center gap-1">
+                            <i data-lucide="navigation-2" class="w-3 h-3 text-pmmg-gold"></i>Endereço Atual (QTH)
+                        </span>
+                        <span class="text-[9px] font-mono text-gray-400">Tempo Real</span>
+                    </div>
+                    <h2 id="gridCenterQth" class="text-base sm:text-xl font-extrabold text-white leading-snug line-clamp-2">
                         Av. João César de Oliveira, 5400
                     </h2>
-                    <p id="gridCenterSuburb"class="text-[11px] text-pmmg-khakiLight font-medium truncate mt-0.5">
+                    <p id="gridCenterSuburb" class="text-xs text-pmmg-khakiLight font-bold truncate">
                         Beatriz • Contagem/MG
                     </p>
                 </div>
 
-                <!-- Barra de Orientação / Apoio Mais Próximo Compacta no Rodapé Central -->
-                <div class="pt-1.5 border-t border-pmmg-border/70 flex items-center justify-between gap-2 text-[10px]">
-                    <span class="text-gray-300 truncate">
-                        <strong class="text-pmmg-khaki">Base Próx.:</strong> <span id="gridCenterClosestUnit">18º BPM (Sede)</span>
-                    </span>
-                    <span id="gridCenterWeatherMini"class="font-mono text-sky-300 font-bold shrink-0">-- °C</span>
+                <!-- 2. UNIDADES PRÓXIMAS COM DESTAQUE VISUAL AINDA MAIOR -->
+                <div id="gridClosestUnitHighlightBox" class="bg-gradient-to-r from-[#241f14] via-[#1b170f] to-[#241f14] border-2 border-pmmg-gold rounded-xl p-3 sm:p-3.5 shadow-[0_0_24px_rgba(197,168,105,0.28)] space-y-1.5">
+                    <div class="flex flex-wrap items-center justify-between gap-1.5">
+                        <div class="flex items-center gap-1.5">
+                            <span class="px-2 py-0.5 rounded bg-pmmg-khaki text-pmmg-black font-extrabold text-[10px] uppercase tracking-wider shadow-sm">
+                                UNIDADES PRÓXIMAS
+                            </span>
+                            <span id="gridClosestUnitTypeBadge" class="px-2 py-0.5 rounded bg-pmmg-black/90 text-pmmg-gold border border-pmmg-gold/60 font-mono font-extrabold text-[9.5px] uppercase">
+                                UNIDADE POLICIAL
+                            </span>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <span id="gridClosestUnitDistBadge" class="text-xs sm:text-sm font-mono font-extrabold text-white bg-pmmg-black/90 px-2 py-0.5 rounded border border-pmmg-gold/50">
+                                ~-- km
+                            </span>
+                            <a id="gridClosestUnitRouteBtn" href="https://www.google.com/maps/dir/?api=1&destination=-19.9162,-44.0809&travelmode=driving" target="_blank" class="px-2.5 py-1 bg-pmmg-gold hover:bg-pmmg-khakiHover text-pmmg-black font-extrabold rounded-lg text-[10px] uppercase flex items-center gap-1 shadow transition-all active:scale-95 shrink-0" title="Traçar rota imediata">
+                                <i data-lucide="navigation" class="w-3 h-3"></i>
+                                <span>Rota</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="pt-0.5">
+                        <strong id="gridCenterClosestUnit" class="text-xl sm:text-2xl font-military tracking-wide text-pmmg-khakiLight font-extrabold uppercase block leading-none">
+                            18º BPM • Sede / 133ª e 283ª Cia
+                        </strong>
+                        <p id="gridCenterClosestUnitAddr" class="text-[11px] sm:text-xs text-gray-200 font-semibold truncate mt-1">
+                            Av. João César de Oliveira, 5400 - Beatriz, Contagem
+                        </p>
+                    </div>
+
+                    <div class="pt-1.5 border-t border-pmmg-gold/30 flex flex-wrap items-center justify-between gap-2 text-[10px]">
+                        <span id="gridSecondClosestUnitHint" class="text-pmmg-khaki font-semibold truncate">
+                            2ª Unidade Policial: Calculando...
+                        </span>
+                        <span id="gridBscScheduleStatusBadge" class="font-mono text-[9.5px] text-gray-300 shrink-0">
+                            BSC: 14h às 23h
+                        </span>
+                    </div>
                 </div>
             </div>
 
@@ -1549,17 +1590,17 @@
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                    <!-- a) Unidade Policial mais próxima (Batalhão, Cia ou Base Comunitária) + distância + botão rápido de rota -->
+                    <!-- a) Unidade Policial mais próxima (Batalhão/Cia) ou Base / BSC (exclusivamente das 14h às 23h) -->
                     <div class="bg-pmmg-dark p-2.5 rounded-xl border border-pmmg-border border-l-4 border-l-pmmg-khaki flex items-center justify-between gap-2">
                         <div class="min-w-0 flex-1">
-                            <div class="flex items-center gap-1.5">
-                                <span class="text-[10px] font-bold uppercase text-pmmg-khaki">Unidade Policial Mais Próxima</span>
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                <span id="homeClosestPoliceTypeLabel" class="text-[10px] font-bold uppercase text-pmmg-khaki">Unidade Policial Mais Próxima</span>
                                 <span id="homeClosestPoliceDist" class="text-[10px] font-mono font-extrabold bg-pmmg-card text-pmmg-gold px-1.5 py-0.5 rounded border border-pmmg-gold/40 shrink-0">-- km</span>
                             </div>
                             <strong id="homeClosestPoliceName" class="text-xs sm:text-sm font-extrabold text-white block truncate mt-0.5">18º BPM • Sede (Beatriz)</strong>
                             <span id="homeClosestPoliceAddr" class="text-[10px] text-gray-400 block truncate">Av. João César de Oliveira, 5400 - Contagem</span>
                         </div>
-                        <a id="homeClosestPoliceRouteBtn" href="https://www.google.com/maps/dir/?api=1&destination=-19.9162,-44.0809&travelmode=driving" target="_blank" class="px-2.5 py-2 bg-pmmg-khaki hover:bg-pmmg-khakiHover text-pmmg-black font-extrabold rounded-lg text-[11px] flex items-center gap-1 shrink-0 shadow transition-all active:scale-95" title="Traçar rota para a Unidade Policial mais próxima">
+                        <a id="homeClosestPoliceRouteBtn" href="https://www.google.com/maps/dir/?api=1&destination=-19.9162,-44.0809&travelmode=driving" target="_blank" class="px-2.5 py-2 bg-pmmg-khaki hover:bg-pmmg-khakiHover text-pmmg-black font-extrabold rounded-lg text-[11px] flex items-center gap-1 shrink-0 shadow transition-all active:scale-95" title="Traçar rota imediata">
                             <i data-lucide="navigation" class="w-3.5 h-3.5"></i> <span>Rota</span>
                         </a>
                     </div>
@@ -5794,7 +5835,7 @@
                             </div>
                         </div>
                         <div class="text-[11px] space-y-1 text-gray-300">
-                            <strong class="text-pmmg-khaki block">Bases Comunitárias (BSC):</strong>
+                            <strong class="text-pmmg-khaki block">Bases de Segurança Comunitária (BSC • 14h às 23h):</strong>
                             <p>• 18.131.1: Av. João Gomes Cardoso, 2244 – Praça do Divino, Jardim Laguna</p>
                             <p>• 18.131.3: Av. Severino Ballesteros, 850 – Shopping Contagem, São Joaquim</p>
                         </div>
@@ -5858,7 +5899,7 @@
                             <p class="text-gray-300"><strong>Sede:</strong>Av. João César de Oliveira, 5400 – Beatriz</p>
                             <p class="text-gray-300"><strong>Telefone:</strong> <span class="font-mono text-white font-bold">(31) 2191-6110</span></p>
                             <div class="flex items-center justify-between text-gray-400">
-                                <p><strong>Base Comunitária Histórica:</strong>Praça Silviano Brandão – Centro</p>
+                                <p><strong>Base de Segurança Comunitária (BSC):</strong> Praça Silviano Brandão – Centro (14h às 23h)</p>
                                 <a href="https://www.google.com/maps/search/?api=1&query=Praca+Silviano+Brandao+Contagem+MG"target="_blank"class="p-1.5 bg-pmmg-dark text-pmmg-khaki border border-pmmg-border rounded hover:bg-pmmg-border flex items-center gap-1 text-[10px] font-bold"title="Abrir Praça Silviano Brandão no Maps">
                                     <i data-lucide="map-pin"class="w-3 h-3"></i>Maps
                                 </a>
@@ -5928,7 +5969,7 @@
                             <p class="text-gray-300"><strong>Sede:</strong>No Batalhão (Av. João César, 5400)</p>
                             <p class="text-gray-300"><strong>Telefone:</strong> <span class="font-mono text-white font-bold">(31) 2191-6110</span></p>
                             <div class="flex items-center justify-between text-gray-400">
-                                <p><strong>Base Comunitária Histórica:</strong>Praça do Petrolândia</p>
+                                <p><strong>Base de Segurança Comunitária (BSC):</strong> Praça do Petrolândia (14h às 23h)</p>
                                 <a href="https://www.google.com/maps/search/?api=1&query=Praça+do+Petrolândia+Contagem+MG"target="_blank"class="p-1.5 bg-pmmg-dark text-pmmg-khaki border border-pmmg-border rounded hover:bg-pmmg-border flex items-center gap-1 text-[10px] font-bold"title="Abrir Praça do Petrolândia no Maps">
                                     <i data-lucide="map-pin"class="w-3 h-3"></i>Maps
                                 </a>
@@ -5987,7 +6028,7 @@
                             <p class="text-gray-300"><strong>Sede:</strong>Rua Maria José Chiodi, 960 – Nova Contagem</p>
                             <p class="text-gray-300"><strong>Telefone AISP:</strong> <span class="font-mono text-white font-bold">(31) 3911-5260</span></p>
                             <div class="flex items-center justify-between text-gray-300">
-                                <p><strong>Base BSC (18.38.1):</strong>Av. VP-1, nº 1.375 – Nova Contagem</p>
+                                <p><strong>Base de Segurança Comunitária (BSC 18.38.1):</strong> Av. VP-1, nº 1.375 – Nova Contagem (14h às 23h)</p>
                                 <a href="https://www.google.com/maps/search/?api=1&query=Avenida+VP-1+1375+Nova+Contagem+Contagem+MG"target="_blank"class="p-1.5 bg-pmmg-dark text-pmmg-khaki border border-pmmg-border rounded hover:bg-pmmg-border flex items-center gap-1 text-[10px] font-bold"title="Abrir Base BSC VP-1 no Maps">
                                     <i data-lucide="map-pin"class="w-3 h-3"></i>Maps
                                 </a>
@@ -6286,7 +6327,7 @@
                             <div class="bg-pmmg-dark p-2.5 rounded border border-pmmg-border flex items-center justify-between gap-2">
                                 <div>
                                     <strong class="text-white text-xs block">Praça Silviano Brandão</strong>
-                                    <p class="text-[11px] text-gray-400">Base Comunitária Centro</p>
+                                    <p class="text-[11px] text-gray-400">Base de Segurança Comunitária (BSC Centro • 14h às 23h)</p>
                                 </div>
                                 <a href="https://www.google.com/maps/search/?api=1&query=Praca+Silviano+Brandao+Contagem+MG"target="_blank"class="p-2 bg-pmmg-card text-pmmg-khaki border border-pmmg-border rounded hover:bg-pmmg-border flex items-center gap-1 text-xs font-bold shrink-0">
                                     <i data-lucide="map-pin"class="w-3.5 h-3.5"></i>Mapa
@@ -6312,7 +6353,7 @@
                             <div class="bg-pmmg-dark p-2.5 rounded border border-pmmg-border flex items-center justify-between gap-2">
                                 <div>
                                     <strong class="text-white text-xs block">Praça do Petrolândia</strong>
-                                    <p class="text-[11px] text-gray-400">Base Comunitária Petrolândia</p>
+                                    <p class="text-[11px] text-gray-400">Base de Segurança Comunitária (BSC Petrolândia • 14h às 23h)</p>
                                 </div>
                                 <a href="https://www.google.com/maps/search/?api=1&query=Praca+do+Petrolandia+Contagem+MG"target="_blank"class="p-2 bg-pmmg-card text-pmmg-khaki border border-pmmg-border rounded hover:bg-pmmg-border flex items-center gap-1 text-xs font-bold shrink-0">
                                     <i data-lucide="map-pin"class="w-3.5 h-3.5"></i>Mapa
@@ -7411,36 +7452,45 @@
             { nome: "Hosp. Júlia Kubitschek (Barreiro)", lat: -19.9897, lon: -44.0114 }
         ];
 
+        // Unidades Policiais (Batalhões e Companhias PMMG - funcionamento 24h)
+        // Base na PMMG é "BSC" (Base de Segurança Comunitária) e NÃO é Unidade Policial (funciona apenas das 14:00 às 23:00)
         const AZIMUTE_UNIDADES_POLICIAIS = [
-            { nome: "18º BPM • Sede / 133ª e 283ª Cia", endereco: "Av. João César de Oliveira, 5400 - Beatriz, Contagem", lat: -19.9162, lon: -44.0809 },
-            { nome: "131ª Cia PM (18º BPM - Ressaca)", endereco: "Rua Diamante, 950 - São Joaquim, Contagem", lat: -19.8885, lon: -44.0405 },
-            { nome: "Base Comunitária BSC 18.131.1 (Praça do Divino)", endereco: "Av. João Gomes Cardoso, 2244 - Jardim Laguna, Contagem", lat: -19.8842, lon: -44.0358 },
-            { nome: "Base Comunitária BSC 18.131.3 (Shopping Contagem)", endereco: "Av. Severino Ballesteros, 850 - São Joaquim, Contagem", lat: -19.8788, lon: -44.0321 },
-            { nome: "ZQC Padre Feijó (Ponto de Apoio 131ª Cia)", endereco: "Av. João Gomes Cardoso, 1366 - Jardim Laguna, Contagem", lat: -19.8868, lon: -44.0381 },
-            { nome: "Base Comunitária Praça Silviano Brandão (133ª Cia)", endereco: "Praça Silviano Brandão - Centro, Contagem", lat: -19.9160, lon: -44.0858 },
-            { nome: "Base Comunitária Praça do Petrolândia (283ª Cia)", endereco: "Praça do Petrolândia - Petrolândia, Contagem", lat: -19.9340, lon: -44.1180 },
-            { nome: "38ª Cia PM Especial (18º BPM - Nova Contagem)", endereco: "Rua Maria José Chiodi, 960 - Nova Contagem", lat: -19.8350, lon: -44.1480 },
-            { nome: "Base Comunitária BSC 18.38.1 (Nova Contagem)", endereco: "Av. VP-1, 1375 - Nova Contagem", lat: -19.8312, lon: -44.1510 },
-            { nome: "39ª Cia PM (18º BPM - Kennedy / Ceasa)", endereco: "Av. Carandaí - Kennedy / Posto Ceasa, Contagem", lat: -19.8690, lon: -44.0430 },
-            { nome: "Batalhão GER (2ª RPM - Contagem)", endereco: "Rua Iguaçu, 233 - São Joaquim, Contagem", lat: -19.8895, lon: -44.0390 },
-            { nome: "39º BPM (Industrial / Eldorado - Contagem)", endereco: "Rua Tiradentes, 2750 - Industrial, Contagem", lat: -19.9540, lon: -44.0320 },
-            { nome: "66º BPM (Betim - Divisa 18º BPM)", endereco: "Rua Barão do Rio Branco, 235 - Centro, Betim", lat: -19.9610, lon: -44.1350 },
-            { nome: "33º BPM (Betim)", endereco: "Rua Conceição Rosa Lima, 455 - Angola, Betim", lat: -19.9670, lon: -44.1980 },
-            { nome: "40º BPM (Ribeirão das Neves)", endereco: "Rodovia LMG-806, KM 04 - Fazenda Castro, Neves", lat: -19.7670, lon: -44.0860 },
-            { nome: "48º BPM (Ibirité)", endereco: "Av. Marechal Hermes, 228 - Durval de Barros, Ibirité", lat: -20.0210, lon: -44.0580 },
-            { nome: "5º BPM / BEPE / BPChq (Gameleira - BH)", endereco: "Av. Amazonas, 6455 - Gameleira, BH", lat: -19.9320, lon: -43.9930 },
-            { nome: "BPTran / BPMRv (Gameleira - BH)", endereco: "Av. Amazonas, 6227 - Gameleira, BH", lat: -19.9310, lon: -43.9910 },
-            { nome: "34º BPM (Caiçara / Pampulha - BH)", endereco: "Av. Américo Vespúcio, 2391 - Caiçara, BH", lat: -19.8658, lon: -43.9711 },
-            { nome: "Batalhão ROTAM (Centro - BH)", endereco: "Av. do Contorno, 777 - Centro, BH", lat: -19.9142, lon: -43.9378 },
-            { nome: "1º BPM (Santa Efigênia - BH)", endereco: "Praça Floriano Peixoto, s/n - Santa Efigênia, BH", lat: -19.9220, lon: -43.9240 },
-            { nome: "16º BPM (Santa Tereza / Horto - BH)", endereco: "Rua Tenente Vitorino, 71 - Santa Tereza, BH", lat: -19.9083, lon: -43.9178 },
-            { nome: "22º BPM (Santa Lúcia - BH)", endereco: "Av. Arthur Bernardes, 1337 - Santa Lúcia, BH", lat: -19.9460, lon: -43.9300 },
-            { nome: "41º BPM (Barreiro - BH)", endereco: "Av. Afonso Vaz de Melo, 650 - Barreiro, BH", lat: -19.9760, lon: -44.0180 },
-            { nome: "13º BPM (Planalto - BH)", endereco: "Av. Dr. Cristiano Guimarães, 2300 - Planalto, BH", lat: -19.8320, lon: -43.9450 },
-            { nome: "49º BPM (Venda Nova - BH)", endereco: "Av. Érico Veríssimo, 561 - São João Batista, BH", lat: -19.8140, lon: -43.9680 },
-            { nome: "BOPE / ROCCA (Prado - BH)", endereco: "Rua Diabase, 200 - Prado, BH", lat: -19.9265, lon: -43.9615 },
-            { nome: "RCAT Cavalaria (Prado - BH)", endereco: "Rua Platina, 580 - Prado, BH", lat: -19.9240, lon: -43.9640 }
+            { nome: "18º BPM • Sede / 133ª e 283ª Cia", endereco: "Av. João César de Oliveira, 5400 - Beatriz, Contagem", lat: -19.9162, lon: -44.0809, tipo: "unidade" },
+            { nome: "131ª Cia PM (18º BPM - Ressaca)", endereco: "Rua Diamante, 950 - São Joaquim, Contagem", lat: -19.8885, lon: -44.0405, tipo: "unidade" },
+            { nome: "BSC 18.131.1 • Praça do Divino (Base de Segurança Comunitária)", endereco: "Av. João Gomes Cardoso, 2244 - Jardim Laguna, Contagem", lat: -19.8842, lon: -44.0358, tipo: "bsc" },
+            { nome: "BSC 18.131.3 • Shopping Contagem (Base de Segurança Comunitária)", endereco: "Av. Severino Ballesteros, 850 - São Joaquim, Contagem", lat: -19.8788, lon: -44.0321, tipo: "bsc" },
+            { nome: "BSC Praça Silviano Brandão (Base de Segurança Comunitária)", endereco: "Praça Silviano Brandão - Centro, Contagem", lat: -19.9160, lon: -44.0858, tipo: "bsc" },
+            { nome: "BSC Praça do Petrolândia (Base de Segurança Comunitária)", endereco: "Praça do Petrolândia - Petrolândia, Contagem", lat: -19.9340, lon: -44.1180, tipo: "bsc" },
+            { nome: "38ª Cia PM Especial (18º BPM - Nova Contagem)", endereco: "Rua Maria José Chiodi, 960 - Nova Contagem", lat: -19.8350, lon: -44.1480, tipo: "unidade" },
+            { nome: "BSC 18.38.1 • Nova Contagem (Base de Segurança Comunitária)", endereco: "Av. VP-1, 1375 - Nova Contagem", lat: -19.8312, lon: -44.1510, tipo: "bsc" },
+            { nome: "39ª Cia PM (18º BPM - Kennedy / Ceasa)", endereco: "Av. Carandaí - Kennedy / Posto Ceasa, Contagem", lat: -19.8690, lon: -44.0430, tipo: "unidade" },
+            { nome: "Batalhão GER (2ª RPM - Contagem)", endereco: "Rua Iguaçu, 233 - São Joaquim, Contagem", lat: -19.8895, lon: -44.0390, tipo: "unidade" },
+            { nome: "39º BPM (Industrial / Eldorado - Contagem)", endereco: "Rua Tiradentes, 2750 - Industrial, Contagem", lat: -19.9540, lon: -44.0320, tipo: "unidade" },
+            { nome: "66º BPM (Betim - Divisa 18º BPM)", endereco: "Rua Barão do Rio Branco, 235 - Centro, Betim", lat: -19.9610, lon: -44.1350, tipo: "unidade" },
+            { nome: "33º BPM (Betim)", endereco: "Rua Conceição Rosa Lima, 455 - Angola, Betim", lat: -19.9670, lon: -44.1980, tipo: "unidade" },
+            { nome: "40º BPM (Ribeirão das Neves)", endereco: "Rodovia LMG-806, KM 04 - Fazenda Castro, Neves", lat: -19.7670, lon: -44.0860, tipo: "unidade" },
+            { nome: "48º BPM (Ibirité)", endereco: "Av. Marechal Hermes, 228 - Durval de Barros, Ibirité", lat: -20.0210, lon: -44.0580, tipo: "unidade" },
+            { nome: "5º BPM / BEPE / BPChq (Gameleira - BH)", endereco: "Av. Amazonas, 6455 - Gameleira, BH", lat: -19.9320, lon: -43.9930, tipo: "unidade" },
+            { nome: "BPTran / BPMRv (Gameleira - BH)", endereco: "Av. Amazonas, 6227 - Gameleira, BH", lat: -19.9310, lon: -43.9910, tipo: "unidade" },
+            { nome: "34º BPM (Caiçara / Pampulha - BH)", endereco: "Av. Américo Vespúcio, 2391 - Caiçara, BH", lat: -19.8658, lon: -43.9711, tipo: "unidade" },
+            { nome: "Batalhão ROTAM (Centro - BH)", endereco: "Av. do Contorno, 777 - Centro, BH", lat: -19.9142, lon: -43.9378, tipo: "unidade" },
+            { nome: "1º BPM (Santa Efigênia - BH)", endereco: "Praça Floriano Peixoto, s/n - Santa Efigênia, BH", lat: -19.9220, lon: -43.9240, tipo: "unidade" },
+            { nome: "16º BPM (Santa Tereza / Horto - BH)", endereco: "Rua Tenente Vitorino, 71 - Santa Tereza, BH", lat: -19.9083, lon: -43.9178, tipo: "unidade" },
+            { nome: "22º BPM (Santa Lúcia - BH)", endereco: "Av. Arthur Bernardes, 1337 - Santa Lúcia, BH", lat: -19.9460, lon: -43.9300, tipo: "unidade" },
+            { nome: "41º BPM (Barreiro - BH)", endereco: "Av. Afonso Vaz de Melo, 650 - Barreiro, BH", lat: -19.9760, lon: -44.0180, tipo: "unidade" },
+            { nome: "13º BPM (Planalto - BH)", endereco: "Av. Dr. Cristiano Guimarães, 2300 - Planalto, BH", lat: -19.8320, lon: -43.9450, tipo: "unidade" },
+            { nome: "49º BPM (Venda Nova - BH)", endereco: "Av. Érico Veríssimo, 561 - São João Batista, BH", lat: -19.8140, lon: -43.9680, tipo: "unidade" },
+            { nome: "BOPE / ROCCA (Prado - BH)", endereco: "Rua Diabase, 200 - Prado, BH", lat: -19.9265, lon: -43.9615, tipo: "unidade" },
+            { nome: "RCAT Cavalaria (Prado - BH)", endereco: "Rua Platina, 580 - Prado, BH", lat: -19.9240, lon: -43.9640, tipo: "unidade" }
         ];
+
+        // Regra de horário das BSCs (Base de Segurança Comunitária):
+        // Das 14:00 às 23:00 (inclusive): BSCs ativas.
+        // Das 23:01 às 13:59 (fora do horário): ignora todas as BSCs e considera apenas Unidades Policiais (Batalhão ou Companhia).
+        function isAzimuteBscActiveNow(nowDate = new Date()) {
+            const totalMins = nowDate.getHours() * 60 + nowDate.getMinutes();
+            return totalMins >= (14 * 60) && totalMins <= (23 * 60);
+        }
 
         const AZIMUTE_PONTOS_ABASTECIMENTO = [
             { nome: "18º BPM (Sede Contagem)", endereco: "Av. João César de Oliveira, 5400 - Beatriz, Contagem", lat: -19.9162, lon: -44.0809 },
@@ -9023,26 +9073,91 @@
             // Atualiza também a aba Saúde / APH (Painel de Monitoramento Hospitalar Inteligente)
             updateSaudeSmartHospitalComparison(lat, lon, closestArea);
 
-            // 4. Faixa "APOIO MAIS PRÓXIMO (GPS)"na Home:
-            // a) Unidade Policial mais próxima (Batalhão, Cia ou Base Comunitária)
-            let closestPolice = AZIMUTE_UNIDADES_POLICIAIS[0];
-            let minPoliceDist = 99999;
-            AZIMUTE_UNIDADES_POLICIAIS.forEach(u => {
-                const d = azimuteCalcDistKm(lat, lon, u.lat, u.lon);
-                if (d < minPoliceDist) { minPoliceDist = d; closestPolice = u; }
+            // 4. Lógica de Proximidade (BSC vs. Unidade Policial) com Regra de Horário (14:00 às 23:00):
+            // - Das 14:00 às 23:00: considera Unidades Policiais e BSCs; se o mais próximo for uma BSC, exibe como "Base / BSC".
+            // - Das 23:01 às 13:59: IGNORA todas as BSCs e busca/exibe obrigatoriamente a Unidade Policial mais próxima (Batalhão ou Companhia).
+            const bscOpenNow = isAzimuteBscActiveNow(new Date());
+            const eligibleSupportList = AZIMUTE_UNIDADES_POLICIAIS.filter(item => {
+                if (item.tipo === 'bsc') return bscOpenNow;
+                return true;
             });
-            const policeDrive = calcEstimatedDriveMinutes(minPoliceDist);
+
+            const rankedSupport = eligibleSupportList.map(u => {
+                const d = azimuteCalcDistKm(lat, lon, u.lat, u.lon);
+                return { ...u, linearKm: d, drive: calcEstimatedDriveMinutes(d) };
+            }).sort((a, b) => a.linearKm - b.linearKm);
+
+            // Também calcula a Unidade Policial (Batalhão/Cia) mais próxima caso o 1º colocado entre 14h-23h seja uma BSC
+            const rankedOnlyUnits = AZIMUTE_UNIDADES_POLICIAIS
+                .filter(u => u.tipo === 'unidade')
+                .map(u => {
+                    const d = azimuteCalcDistKm(lat, lon, u.lat, u.lon);
+                    return { ...u, linearKm: d, drive: calcEstimatedDriveMinutes(d) };
+                })
+                .sort((a, b) => a.linearKm - b.linearKm);
+
+            const closestPolice = rankedSupport[0] || rankedOnlyUnits[0];
+            const secondClosestItem = (closestPolice && closestPolice.tipo === 'bsc')
+                ? rankedOnlyUnits[0]
+                : (rankedOnlyUnits[1] || rankedSupport[1] || null);
+
+            const isClosestBsc = closestPolice && closestPolice.tipo === 'bsc';
+            const policeDrive = closestPolice.drive;
             const policeUrl = 'https://www.google.com/maps/dir/?api=1&destination=' + closestPolice.lat + ',' + closestPolice.lon + '&travelmode=driving';
+
+            // Atualiza Caixa "Apoio Mais Próximo (GPS)" no Modo App / Home
+            const hpTypeLbl = document.getElementById('homeClosestPoliceTypeLabel');
             const hpName = document.getElementById('homeClosestPoliceName');
             const hpAddr = document.getElementById('homeClosestPoliceAddr');
             const hpDist = document.getElementById('homeClosestPoliceDist');
             const hpBtn = document.getElementById('homeClosestPoliceRouteBtn');
+            const hpStatus = document.getElementById('homeSupportGpsStatus');
+
+            if (hpTypeLbl) {
+                hpTypeLbl.textContent = isClosestBsc ? 'Base / BSC (14h às 23h)' : 'Unidade Policial Mais Próxima';
+                hpTypeLbl.className = isClosestBsc
+                    ? 'text-[10px] font-extrabold uppercase text-amber-300'
+                    : 'text-[10px] font-bold uppercase text-pmmg-khaki';
+            }
             if (hpName) hpName.textContent = closestPolice.nome;
-            const gClosestUnit = document.getElementById('gridCenterClosestUnit');
-            if (gClosestUnit) gClosestUnit.textContent = closestPolice.nome + ' (~' + policeDrive.roadKm + 'km)';
             if (hpAddr) hpAddr.textContent = closestPolice.endereco;
-            if (hpDist) hpDist.textContent = '~' + policeDrive.roadKm + 'km';
+            if (hpDist) hpDist.textContent = '~' + policeDrive.roadKm + 'km • ~' + policeDrive.mins + 'min';
             if (hpBtn) hpBtn.href = policeUrl;
+            if (hpStatus) {
+                hpStatus.textContent = bscOpenNow
+                    ? 'GPS Ativo • BSCs em funcionamento (14h às 23h)'
+                    : 'GPS Ativo • BSCs fechadas (Exibindo apenas Unidades Policiais)';
+            }
+
+            // Atualiza Card de Destaque Máximo "Unidades Próximas" no Modo GRID
+            const gClosestUnit = document.getElementById('gridCenterClosestUnit');
+            const gClosestAddr = document.getElementById('gridCenterClosestUnitAddr');
+            const gTypeBadge = document.getElementById('gridClosestUnitTypeBadge');
+            const gDistBadge = document.getElementById('gridClosestUnitDistBadge');
+            const gRouteBtn = document.getElementById('gridClosestUnitRouteBtn');
+            const gSecondHint = document.getElementById('gridSecondClosestUnitHint');
+            const gBscStatus = document.getElementById('gridBscScheduleStatusBadge');
+
+            if (gClosestUnit) gClosestUnit.textContent = closestPolice.nome;
+            if (gClosestAddr) gClosestAddr.textContent = closestPolice.endereco;
+            if (gTypeBadge) {
+                gTypeBadge.textContent = isClosestBsc ? 'BASE / BSC (14H-23H)' : 'UNIDADE POLICIAL';
+                gTypeBadge.className = isClosestBsc
+                    ? 'px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-400/70 font-mono font-extrabold text-[9.5px] uppercase'
+                    : 'px-2 py-0.5 rounded bg-pmmg-black/90 text-pmmg-gold border border-pmmg-gold/60 font-mono font-extrabold text-[9.5px] uppercase';
+            }
+            if (gDistBadge) gDistBadge.textContent = '~' + policeDrive.roadKm + 'km • ~' + policeDrive.mins + 'min';
+            if (gRouteBtn) gRouteBtn.href = policeUrl;
+            if (gSecondHint && secondClosestItem) {
+                const secLabel = isClosestBsc ? 'Unidade Policial Próx.: ' : '2ª Unidade Policial: ';
+                gSecondHint.textContent = secLabel + secondClosestItem.nome + ' (~' + secondClosestItem.drive.roadKm + 'km)';
+            }
+            if (gBscStatus) {
+                gBscStatus.textContent = bscOpenNow ? 'BSC Ativa (14h-23h)' : 'BSC Ignorada (Fora 14h-23h)';
+                gBscStatus.className = bscOpenNow
+                    ? 'font-mono text-[9.5px] text-emerald-400 font-bold shrink-0'
+                    : 'font-mono text-[9.5px] text-amber-400 font-bold shrink-0';
+            }
 
             // b) Ponto de Abastecimento mais próximo
             let closestFuel = AZIMUTE_PONTOS_ABASTECIMENTO[0];
@@ -10099,6 +10214,9 @@
         // Inicia o GPS continuamente assim que o sistema carrega e preenche o Apoio Mais Próximo inicial
         document.addEventListener('DOMContentLoaded', () => {
             updateOfflineProximityData(azimuteLastGeoLat || -19.9162, azimuteLastGeoLon || -44.0809, 15);
+            setInterval(() => {
+                updateOfflineProximityData(azimuteLastGeoLat || -19.9162, azimuteLastGeoLon || -44.0809, 15);
+            }, 30000);
             fetchRealtimeWeatherDetails(azimuteLastGeoLat || -19.9162, azimuteLastGeoLon || -44.0809);
             startAzimuteLiveGps();
             getAzimuteScreenOrientationOffset();
