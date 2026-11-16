@@ -474,18 +474,24 @@
                     </div>
                 </div>
 
-                <!-- Seletor dos 3 Modos de Visualização: App | GRID | PC -->
-                <div class="order-2 sm:order-3 flex items-center bg-pmmg-black p-0.5 rounded-lg border border-pmmg-border shrink-0 text-[11px]">
-                    <button type="button"onclick="setLayoutMode('app')"id="btn-mode-app"class="px-2.5 py-1 rounded-md font-extrabold bg-pmmg-khaki text-pmmg-black shadow transition-all"title="Modo App (Smartphone)">
-                        App
-                    </button>
-                    <span class="text-pmmg-border select-none px-0.5">|</span>
-                    <button type="button"onclick="setLayoutMode('grid')"id="btn-mode-grid"class="px-2.5 py-1 rounded-md font-semibold text-gray-400 hover:text-white transition-all"title="Modo GRID (Painel em Grade)">
-                        GRID
-                    </button>
-                    <span class="text-pmmg-border select-none px-0.5">|</span>
-                    <button type="button"onclick="setLayoutMode('web')"id="btn-mode-web"class="px-2.5 py-1 rounded-md font-semibold text-gray-400 hover:text-white transition-all"title="Modo PC (Desktop Amplo)">
-                        PC
+                <!-- Seletor dos 3 Modos de Visualização (App | GRID | PC) + Botão Tela Cheia Visível no Topo -->
+                <div class="order-2 sm:order-3 flex items-center gap-1.5 shrink-0">
+                    <div class="flex items-center bg-pmmg-black p-0.5 rounded-lg border border-pmmg-border text-[11px]">
+                        <button type="button" onclick="setLayoutMode('app')" id="btn-mode-app" class="px-2.5 py-1 rounded-md font-extrabold bg-pmmg-khaki text-pmmg-black shadow transition-all" title="Modo App (Smartphone)">
+                            App
+                        </button>
+                        <span class="text-pmmg-border select-none px-0.5">|</span>
+                        <button type="button" onclick="setLayoutMode('grid')" id="btn-mode-grid" class="px-2.5 py-1 rounded-md font-semibold text-gray-400 hover:text-white transition-all" title="Modo GRID (Painel em Grade)">
+                            GRID
+                        </button>
+                        <span class="text-pmmg-border select-none px-0.5">|</span>
+                        <button type="button" onclick="setLayoutMode('web')" id="btn-mode-web" class="px-2.5 py-1 rounded-md font-semibold text-gray-400 hover:text-white transition-all" title="Modo PC (Desktop Amplo)">
+                            PC
+                        </button>
+                    </div>
+                    <button type="button" id="btnHeaderFullscreen" onclick="toggleAzimuteFullscreen(event)" class="px-2.5 py-1.5 bg-pmmg-black hover:bg-pmmg-card text-pmmg-khaki border border-pmmg-gold/50 rounded-lg text-[11px] font-bold flex items-center gap-1 transition-all shrink-0 cursor-pointer" title="Alternar ou Sair da Tela Cheia">
+                        <i data-lucide="maximize" id="iconHeaderFullscreen" class="w-3.5 h-3.5 text-pmmg-gold"></i>
+                        <span id="txtHeaderFullscreen">Tela Cheia</span>
                     </button>
                 </div>
             </div>
@@ -10817,30 +10823,111 @@
         window.addEventListener('orientationchange', () =>setTimeout(handleAutoOrientationMode, 120));
         document.addEventListener('DOMContentLoaded', handleAutoOrientationMode);
 
-        // BOTÃO TELA CHEIA (FULLSCREEN API)
-        window.toggleAzimuteFullscreen = function() {
+        // TELA CHEIA AUTOMÁTICA NO PRIMEIRO TOQUE/INTERAÇÃO + BOTÃO TELA CHEIA MANUAL (FULLSCREEN API EM APP, GRID E PC)
+        let azimuteAutoFullscreenDone = false;
+
+        function isAzimuteCurrentlyFullscreen() {
+            return !!(document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement);
+        }
+
+        function requestAzimuteFullscreenSilent() {
             const docEl = document.documentElement;
-            const isFull = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
-            if (!isFull) {
+            if (isAzimuteCurrentlyFullscreen()) return Promise.resolve(true);
+            try {
                 if (docEl.requestFullscreen) {
-                    docEl.requestFullscreen().catch(() => {});
+                    return docEl.requestFullscreen().then(() => true).catch(() => false);
                 } else if (docEl.webkitRequestFullscreen) {
                     docEl.webkitRequestFullscreen();
+                    return Promise.resolve(true);
                 } else if (docEl.msRequestFullscreen) {
                     docEl.msRequestFullscreen();
+                    return Promise.resolve(true);
+                }
+            } catch (e) {}
+            return Promise.resolve(false);
+        }
+
+        function updateFullscreenButtonsUi() {
+            const isFull = isAzimuteCurrentlyFullscreen();
+            const txtTop = document.getElementById('txtHeaderFullscreen');
+            const btnTop = document.getElementById('btnHeaderFullscreen');
+            if (txtTop) {
+                txtTop.textContent = isFull ? 'Sair Tela Cheia' : 'Tela Cheia';
+            }
+            if (btnTop) {
+                btnTop.className = isFull
+                    ? 'px-2.5 py-1.5 bg-pmmg-card hover:bg-pmmg-border text-pmmg-gold border border-pmmg-gold rounded-lg text-[11px] font-extrabold flex items-center gap-1 transition-all shrink-0 cursor-pointer'
+                    : 'px-2.5 py-1.5 bg-pmmg-black hover:bg-pmmg-card text-pmmg-khaki border border-pmmg-gold/50 rounded-lg text-[11px] font-bold flex items-center gap-1 transition-all shrink-0 cursor-pointer';
+            }
+        }
+
+        window.toggleAzimuteFullscreen = function(ev) {
+            if (ev && typeof ev.stopPropagation === 'function') {
+                ev.stopPropagation();
+            }
+            azimuteAutoFullscreenDone = true;
+            removeFirstInteractionFullscreenListeners();
+
+            const docEl = document.documentElement;
+            const isFull = isAzimuteCurrentlyFullscreen();
+            if (!isFull) {
+                if (docEl.requestFullscreen) {
+                    docEl.requestFullscreen().then(updateFullscreenButtonsUi).catch(() => {});
+                } else if (docEl.webkitRequestFullscreen) {
+                    docEl.webkitRequestFullscreen();
+                    setTimeout(updateFullscreenButtonsUi, 100);
+                } else if (docEl.msRequestFullscreen) {
+                    docEl.msRequestFullscreen();
+                    setTimeout(updateFullscreenButtonsUi, 100);
                 }
                 if (typeof showToast === 'function') showToast('Modo Tela Cheia ativado!');
             } else {
                 if (document.exitFullscreen) {
-                    document.exitFullscreen().catch(() => {});
+                    document.exitFullscreen().then(updateFullscreenButtonsUi).catch(() => {});
                 } else if (document.webkitExitFullscreen) {
                     document.webkitExitFullscreen();
+                    setTimeout(updateFullscreenButtonsUi, 100);
                 } else if (document.msExitFullscreen) {
                     document.msExitFullscreen();
+                    setTimeout(updateFullscreenButtonsUi, 100);
                 }
                 if (typeof showToast === 'function') showToast('Tela Cheia desativada.');
             }
         };
+
+        function handleFirstUserInteractionFullscreen(e) {
+            if (azimuteAutoFullscreenDone) {
+                removeFirstInteractionFullscreenListeners();
+                return;
+            }
+            // Se o primeiro clique foi diretamente no botão de Tela Cheia, deixa o próprio botão tratar
+            if (e && e.target && e.target.closest && e.target.closest('#btnHeaderFullscreen')) {
+                azimuteAutoFullscreenDone = true;
+                removeFirstInteractionFullscreenListeners();
+                return;
+            }
+            requestAzimuteFullscreenSilent().then((entered) => {
+                if (entered || isAzimuteCurrentlyFullscreen()) {
+                    azimuteAutoFullscreenDone = true;
+                    removeFirstInteractionFullscreenListeners();
+                    updateFullscreenButtonsUi();
+                }
+            });
+        }
+
+        function removeFirstInteractionFullscreenListeners() {
+            ['click', 'touchend', 'pointerup', 'keydown'].forEach(evtName => {
+                document.removeEventListener(evtName, handleFirstUserInteractionFullscreen, true);
+            });
+        }
+
+        // Registra os gatilhos de primeiro toque/interação em todos os modos (App, GRID e PC)
+        ['click', 'touchend', 'pointerup', 'keydown'].forEach(evtName => {
+            document.addEventListener(evtName, handleFirstUserInteractionFullscreen, { capture: true, passive: true });
+        });
+
+        document.addEventListener('fullscreenchange', updateFullscreenButtonsUi);
+        document.addEventListener('webkitfullscreenchange', updateFullscreenButtonsUi);
 
         function showView(viewId) {
             const views = ['home', 'regioes', 'rpm1', 'rpm2', 'rpm3', 'especializadas', 'estadios', 'rpas', 'atalhos', 'saude', 'skeleton', '18bpm', 'gps'];
