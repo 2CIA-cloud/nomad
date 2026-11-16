@@ -929,11 +929,7 @@
                 </svg>
             </div>
 
-            <!-- CABEÇALHO LIMPO DA ABA: APENAS "GEOLOCALIZAÇÃO" -->
-            <div class="relative z-10 flex items-center justify-between border-b border-pmmg-border pb-3">
-                <h2 class="text-3xl font-military text-pmmg-khaki uppercase tracking-wide leading-none">GEOLOCALIZAÇÃO</h2>
-                <button onclick="showView('home')"class="text-xs text-pmmg-khaki hover:underline flex items-center gap-1 font-bold"><i data-lucide="arrow-left"class="w-4 h-4"></i>Início</button>
-            </div>
+
 
             <div id="azimuteLiveGpsHud"class="relative z-10 w-full space-y-5">
                 <!-- BLOCO COMPACTO "REDE DE RÁDIO"MOVIDO PARA O TOPO DA ABA (SEM FREQUÊNCIAS FICTÍCIAS) -->
@@ -1595,36 +1591,21 @@
         </section>
 
         <!-- ================= VIEW AERONAVES REMOTAMENTE PILOTADAS (RPAS) ================= -->
-        <section id="view-rpas" class="hidden space-y-6">
-            <div class="flex flex-wrap items-center justify-between border-b border-pmmg-border pb-3 gap-2">
-                <div>
-                    <div class="flex items-center gap-2">
-                        <span class="bg-sky-950 text-sky-400 text-[10px] px-2.5 py-0.5 rounded font-bold uppercase border border-sky-500/30">RPAS • Drones PMMG</span>
-                        <h2 class="text-3xl font-military text-sky-400 uppercase tracking-wide">Aeronaves Remotamente Pilotadas</h2>
-                    </div>
-                </div>
-                <div class="flex items-center gap-2">
-                    <button type="button" onclick="evaluateRpasFlightConditions(true)" class="px-3 py-1.5 bg-sky-950/80 hover:bg-sky-800 text-sky-300 border border-sky-500/50 rounded-lg text-xs font-extrabold flex items-center gap-1.5 transition-all cursor-pointer" title="Sincronizar GPS + Clima Local agora">
-                        <i data-lucide="refresh-cw" id="rpasSyncSpinnerIcon" class="w-3.5 h-3.5"></i>
-                        <span>Atualizar Telemetria</span>
-                    </button>
-                    <button onclick="showView('home')" class="text-xs text-pmmg-khaki hover:underline flex items-center gap-1 font-bold"><i data-lucide="arrow-left" class="w-4 h-4"></i>Início</button>
-                </div>
-            </div>
-
-            <!-- 1. PARÂMETROS DE VOO (FECHADO POR PADRÃO, ABRE APENAS AO CLICAR) -->
-            <div id="rpasSubtabPainel" class="space-y-6">
-                <div id="rpasFlightAssessmentContainer" class="bg-pmmg-card border border-sky-500/50 rounded-2xl overflow-hidden shadow-2xl">
+        <section id="view-rpas" class="hidden space-y-4">
+            <div id="rpasSubtabPainel" class="space-y-4">
+                
+                <!-- 1. PARÂMETROS DE VOO & CONDIÇÕES METEOROLÓGICAS (CAIXA FECHADA POR PADRÃO, VISUAL ESCURO E LIMPO) -->
+                <div id="rpasFlightAssessmentContainer" class="bg-[#161616] border border-[#C5A869]/45 rounded-2xl overflow-hidden shadow-xl">
                     <button type="button" onclick="toggleRpasFlightParamsBox()" id="btnToggleRpasFlightParamsBox" class="w-full p-4 sm:p-5 flex items-center justify-between gap-3 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
                         <div class="flex items-center gap-2.5">
-                            <div class="p-2 rounded-xl bg-sky-950 text-sky-400 border border-sky-500/40 shrink-0">
-                                <i data-lucide="wind" class="w-5 h-5"></i>
+                            <div class="p-2 rounded-xl bg-[#0D0D0D] text-pmmg-khaki border border-[#C5A869]/40 shrink-0">
+                                <i data-lucide="wind" class="w-5 h-5 text-pmmg-gold"></i>
                             </div>
                             <div class="flex items-center gap-2.5 flex-wrap">
                                 <h3 class="text-xl sm:text-2xl font-military text-white uppercase tracking-wide leading-none">
                                     Parâmetros de Voo
                                 </h3>
-                                <span class="px-2 py-0.5 rounded bg-pmmg-dark text-[10px] font-mono font-bold text-sky-400 border border-sky-500/30">DJI Mavic 3 Enterprise</span>
+                                <span class="px-2 py-0.5 rounded bg-[#0D0D0D] text-[10px] font-mono font-bold text-pmmg-khaki border border-[#C5A869]/40">GPS x Clima Local</span>
                             </div>
                         </div>
                         <div class="flex items-center gap-2 shrink-0">
@@ -1635,66 +1616,70 @@
 
                     <!-- Corpo Expansível dos Parâmetros de Voo (Oculto por padrão) -->
                     <div id="rpasFlightParamsExpandableBody" class="hidden p-4 sm:p-5 pt-3 border-t border-pmmg-border space-y-4">
-                        <!-- Cabeçalho Fixo da Aeronave da Unidade -->
-                        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border pb-3">
-                            <div>
-                                <span class="text-[10px] font-extrabold uppercase tracking-wider text-sky-400 block leading-none">
-                                    Aeronave da Unidade • Limites Fixos do Manual
+                        <!-- Barra de Controles Internos: Atualizar Telemetria + Áudio Desativado por Padrão + Recomendação Discreta em Texto -->
+                        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-pmmg-border pb-3">
+                            <div class="space-y-0.5">
+                                <span class="text-[10px] font-extrabold uppercase tracking-wider text-pmmg-khaki block leading-none">
+                                    Monitoramento de Vento, Rajadas, Temperatura e Precipitação
                                 </span>
-                                <h4 class="text-lg sm:text-xl font-military text-white uppercase tracking-wide leading-none mt-1">
-                                    DJI Mavic 3 Enterprise (M3E / M3T)
-                                </h4>
+                                <p class="text-[11px] text-gray-400 italic">
+                                    Alerta sonoro desativado por padrão (se desejar aviso sonoro de mudança climática, ative o som no botão ao lado).
+                                </p>
                             </div>
 
                             <div class="flex items-center gap-2 flex-wrap">
-                                <button type="button" onclick="toggleRpasSoundAlertMute()" id="btnRpasAudioMute" class="px-2.5 py-1.5 rounded-lg bg-pmmg-dark hover:bg-pmmg-border text-pmmg-gold border border-pmmg-gold/40 text-[11px] font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer" title="Ativar / Silenciar Alerta Sonoro de Mudança Climática">
-                                    <i data-lucide="volume-2" class="w-3.5 h-3.5"></i>
-                                    <span id="txtRpasAudioMute">Áudio Alerta: ON</span>
+                                <button type="button" onclick="evaluateRpasFlightConditions(true)" class="px-3 py-1.5 bg-[#0D0D0D] hover:bg-pmmg-border text-pmmg-khaki border border-[#C5A869]/50 rounded-lg text-xs font-extrabold flex items-center gap-1.5 transition-all cursor-pointer" title="Sincronizar GPS + Clima Local agora">
+                                    <i data-lucide="refresh-cw" id="rpasSyncSpinnerIcon" class="w-3.5 h-3.5 text-pmmg-gold"></i>
+                                    <span>Atualizar Telemetria</span>
+                                </button>
+                                <button type="button" onclick="toggleRpasSoundAlertMute()" id="btnRpasAudioMute" class="px-2.5 py-1.5 rounded-lg bg-[#0D0D0D] hover:bg-pmmg-border text-gray-400 border border-pmmg-border text-[11px] font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer" title="Ativar / Silenciar Alerta Sonoro de Mudança Climática">
+                                    <i data-lucide="volume-x" id="iconRpasAudioMute" class="w-3.5 h-3.5"></i>
+                                    <span id="txtRpasAudioMute">Áudio Alerta: MUDO</span>
                                 </button>
                             </div>
                         </div>
 
-                        <!-- Banner de Alerta Visual e Sonoro de Mudança Climática Brusca / Limite Excedido -->
-                        <div id="rpasWeatherChangeAlertBanner" class="hidden bg-red-950/95 border-2 border-red-400 rounded-2xl p-4 space-y-2 animate-pulse shadow-[0_0_25px_rgba(239,68,68,0.5)]">
+                        <!-- Banner Visual de Mudança Climática Brusca / Limite Excedido -->
+                        <div id="rpasWeatherChangeAlertBanner" class="hidden bg-[#0D0D0D] border border-[#C5A869] rounded-2xl p-4 space-y-2 shadow-lg">
                             <div class="flex items-center justify-between gap-2 flex-wrap">
                                 <div class="flex items-center gap-2">
-                                    <span class="px-2.5 py-0.5 rounded bg-red-600 text-white text-[10px] font-mono font-extrabold uppercase">
+                                    <span class="px-2.5 py-0.5 rounded bg-pmmg-khakiBadge text-pmmg-khaki border border-[#C5A869]/50 text-[10px] font-mono font-extrabold uppercase">
                                         ALERTA DE MUDANÇA CLIMÁTICA
                                     </span>
-                                    <strong class="text-sm sm:text-base font-military uppercase tracking-wider text-amber-300">
+                                    <strong class="text-sm sm:text-base font-military uppercase tracking-wider text-white">
                                         Alteração Meteorológica Detectada
                                     </strong>
                                 </div>
-                                <button type="button" onclick="acknowledgeRpasWeatherAlert()" class="px-3 py-1 bg-amber-400 hover:bg-amber-300 text-pmmg-black font-extrabold rounded-lg text-xs uppercase shrink-0 cursor-pointer">
-                                    Ciente / Silenciar
+                                <button type="button" onclick="acknowledgeRpasWeatherAlert()" class="px-3 py-1 bg-[#161616] hover:bg-pmmg-border text-pmmg-khaki border border-[#C5A869]/60 font-extrabold rounded-lg text-xs uppercase shrink-0 cursor-pointer">
+                                    Ciente
                                 </button>
                             </div>
-                            <ul id="rpasWeatherChangeAlertList" class="text-xs text-white font-semibold space-y-1 list-disc pl-5"></ul>
+                            <ul id="rpasWeatherChangeAlertList" class="text-xs text-gray-200 font-semibold space-y-1 list-disc pl-5"></ul>
                         </div>
 
                         <!-- Painel de Condições Técnicas (GPS x Clima Local) -->
-                        <div id="rpasEvaluationStateBox" class="bg-amber-950/30 border-2 border-amber-500/70 border-l-8 border-l-amber-400 rounded-2xl p-4 sm:p-5 space-y-3 transition-all">
+                        <div id="rpasEvaluationStateBox" class="bg-[#0D0D0D] border border-[#C5A869]/60 border-l-4 border-l-[#C5A869] rounded-2xl p-4 sm:p-5 space-y-3 transition-all">
                             <div class="flex flex-wrap items-center justify-between gap-2">
                                 <div class="flex items-center gap-2.5">
-                                    <div id="rpasEvalIconBadge" class="p-2.5 rounded-xl bg-amber-950 text-amber-300 border border-amber-500/50">
+                                    <div id="rpasEvalIconBadge" class="p-2.5 rounded-xl bg-[#161616] text-pmmg-khaki border border-[#C5A869]/50">
                                         <i data-lucide="alert-circle" class="w-6 h-6"></i>
                                     </div>
                                     <div>
-                                        <span class="text-[10px] font-mono font-extrabold uppercase tracking-wider text-gray-300 block">
+                                        <span class="text-[10px] font-mono font-extrabold uppercase tracking-wider text-gray-400 block">
                                             Parâmetros Meteorológicos (GPS x Clima Local)
                                         </span>
-                                        <h4 id="rpasEvalStateTitle" class="text-xl sm:text-2xl font-military uppercase tracking-wider text-amber-300 leading-none mt-0.5">
+                                        <h4 id="rpasEvalStateTitle" class="text-xl sm:text-2xl font-military uppercase tracking-wider text-pmmg-khaki leading-none mt-0.5">
                                             AVALIAÇÃO INDETERMINADA
                                         </h4>
                                     </div>
                                 </div>
-                                <span id="rpasEvalTimestampBadge" class="text-[11px] font-mono bg-pmmg-dark px-2.5 py-1 rounded-lg border border-pmmg-border text-gray-300">
+                                <span id="rpasEvalTimestampBadge" class="text-[11px] font-mono bg-[#161616] px-2.5 py-1 rounded-lg border border-pmmg-border text-gray-300">
                                     Aguardando leitura GPS / Clima...
                                 </span>
                             </div>
 
-                            <div id="rpasEvalReasonsContainer" class="bg-pmmg-black/80 p-3.5 rounded-xl border border-pmmg-border text-xs text-gray-200 space-y-1.5">
-                                <p class="font-semibold text-amber-200">
+                            <div id="rpasEvalReasonsContainer" class="bg-[#161616] p-3.5 rounded-xl border border-pmmg-border text-xs text-gray-200 space-y-1.5">
+                                <p class="font-semibold text-gray-300">
                                     Aguardando dados simultâneos de coordenada GPS e meteorologia local para cruzar com os parâmetros da aeronave.
                                 </p>
                             </div>
@@ -1702,61 +1687,61 @@
                             <!-- Telemetria Cruzada em Tempo Real (4 Cartões Fixos) -->
                             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-1 text-xs">
                                 <!-- Coordenada GPS & Altitude -->
-                                <div class="bg-pmmg-dark p-3 rounded-xl border border-pmmg-border space-y-1">
+                                <div class="bg-[#161616] p-3 rounded-xl border border-pmmg-border space-y-1">
                                     <div class="flex items-center justify-between">
                                         <span class="text-[10px] font-bold uppercase text-pmmg-khaki">Posição GPS</span>
-                                        <span id="rpasTelemetryGpsBadge" class="px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-gray-800 text-gray-300">SINCRONIZANDO</span>
+                                        <span id="rpasTelemetryGpsBadge" class="px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-[#0D0D0D] text-gray-300 border border-pmmg-border">SINCRONIZANDO</span>
                                     </div>
                                     <strong id="rpasTelemetryCoords" class="text-xs sm:text-sm font-mono text-white block truncate">-- , --</strong>
                                     <span id="rpasTelemetryAltitude" class="text-[11px] text-gray-400 block truncate">Altitude local: -- m</span>
                                 </div>
 
                                 <!-- Vento Atual & Rajadas vs Limite Fixo (43 km/h) -->
-                                <div id="rpasMetricCardWind" class="bg-pmmg-dark p-3 rounded-xl border border-pmmg-border space-y-1">
+                                <div id="rpasMetricCardWind" class="bg-[#161616] p-3 rounded-xl border border-pmmg-border space-y-1">
                                     <div class="flex items-center justify-between">
                                         <span class="text-[10px] font-bold uppercase text-gray-300">Vento & Rajadas</span>
-                                        <span id="rpasMetricLimitWind" class="text-[10px] font-mono text-sky-300 font-bold">Máx: 43 km/h</span>
+                                        <span id="rpasMetricLimitWind" class="text-[10px] font-mono text-pmmg-khaki font-bold">Máx: 43 km/h</span>
                                     </div>
                                     <strong id="rpasTelemetryWind" class="text-sm sm:text-base font-mono text-white font-extrabold block">-- km/h (Raj: -- km/h)</strong>
                                     <span id="rpasMetricStatusWind" class="text-[10px] font-mono text-gray-400 block">Sem leitura atual</span>
                                 </div>
 
                                 <!-- Temperatura Local vs Limite Fixo (-10°C a 40°C) -->
-                                <div id="rpasMetricCardTemp" class="bg-pmmg-dark p-3 rounded-xl border border-pmmg-border space-y-1">
+                                <div id="rpasMetricCardTemp" class="bg-[#161616] p-3 rounded-xl border border-pmmg-border space-y-1">
                                     <div class="flex items-center justify-between">
                                         <span class="text-[10px] font-bold uppercase text-gray-300">Temperatura Local</span>
-                                        <span id="rpasMetricLimitTemp" class="text-[10px] font-mono text-sky-300 font-bold">-10°C a 40°C</span>
+                                        <span id="rpasMetricLimitTemp" class="text-[10px] font-mono text-pmmg-khaki font-bold">-10°C a 40°C</span>
                                     </div>
                                     <strong id="rpasTelemetryTemp" class="text-sm sm:text-base font-mono text-white font-extrabold block">-- °C</strong>
                                     <span id="rpasMetricStatusTemp" class="text-[10px] font-mono text-gray-400 block">Sem leitura atual</span>
                                 </div>
 
                                 <!-- Chuva / Precipitação & Condição vs Limite Fixo (0 mm / 40%) -->
-                                <div id="rpasMetricCardRain" class="bg-pmmg-dark p-3 rounded-xl border border-pmmg-border space-y-1">
+                                <div id="rpasMetricCardRain" class="bg-[#161616] p-3 rounded-xl border border-pmmg-border space-y-1">
                                     <div class="flex items-center justify-between">
                                         <span class="text-[10px] font-bold uppercase text-gray-300">Chuva & Condição</span>
-                                        <span id="rpasMetricLimitRain" class="text-[10px] font-mono text-sky-300 font-bold">Máx: 0 mm / 40%</span>
+                                        <span id="rpasMetricLimitRain" class="text-[10px] font-mono text-pmmg-khaki font-bold">Máx: 0 mm / 40%</span>
                                     </div>
                                     <strong id="rpasTelemetryRain" class="text-sm sm:text-base font-mono text-white font-extrabold block truncate">-- mm • Prob: --%</strong>
-                                    <span id="rpasTelemetryCond" class="text-[10px] font-mono text-sky-300 block truncate">Condição: --</span>
+                                    <span id="rpasTelemetryCond" class="text-[10px] font-mono text-pmmg-khaki block truncate">Condição: --</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 2. CHECKLIST PRÉ-VOO FECHADO POR PADRÃO (ABRE AO CLICAR, COM BOTÃO "SALVAR" AO LADO DE "LIMPAR") -->
-                <div id="rpasSubtabChecklist" class="bg-pmmg-card border border-emerald-500/50 rounded-2xl overflow-hidden shadow-2xl">
+                <!-- 2. CHECKLIST PRÉ-VOO (CAIXA FECHADA POR PADRÃO, COM BOTÃO SALVAR E LIMPAR) -->
+                <div id="rpasSubtabChecklist" class="bg-[#161616] border border-[#C5A869]/45 rounded-2xl overflow-hidden shadow-xl">
                     <button type="button" onclick="toggleRpasChecklistBox()" id="btnToggleRpasChecklistBox" class="w-full p-4 sm:p-5 flex items-center justify-between gap-3 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
                         <div class="flex items-center gap-2.5">
-                            <div class="p-2 rounded-xl bg-emerald-950 text-emerald-400 border border-emerald-500/40 shrink-0">
-                                <i data-lucide="clipboard-check" class="w-5 h-5"></i>
+                            <div class="p-2 rounded-xl bg-[#0D0D0D] text-pmmg-khaki border border-[#C5A869]/40 shrink-0">
+                                <i data-lucide="clipboard-check" class="w-5 h-5 text-pmmg-gold"></i>
                             </div>
                             <div class="flex items-center gap-2.5 flex-wrap">
                                 <h3 class="text-xl sm:text-2xl font-military text-white uppercase tracking-wide leading-none">
                                     Checklist Pré-Voo
                                 </h3>
-                                <span id="rpasTabChecklistMiniBadge" class="px-2 py-0.5 rounded bg-pmmg-dark text-[10px] font-mono font-bold text-pmmg-khaki border border-pmmg-border">0%</span>
+                                <span id="rpasTabChecklistMiniBadge" class="px-2 py-0.5 rounded bg-[#0D0D0D] text-[10px] font-mono font-bold text-pmmg-khaki border border-[#C5A869]/40">0%</span>
                             </div>
                         </div>
                         <div class="flex items-center gap-2 shrink-0">
@@ -1770,11 +1755,11 @@
                         <div class="flex flex-wrap items-center justify-between gap-2">
                             <span id="rpasChecklistCountText" class="text-xs font-bold text-gray-200 uppercase tracking-wider">Progresso: 0 de 6 itens marcados</span>
                             <div class="flex items-center gap-2">
-                                <button type="button" onclick="saveRpasPreflightChecklist()" class="px-3.5 py-2 bg-pmmg-dark hover:bg-pmmg-border active:scale-95 text-pmmg-khaki border border-pmmg-gold/60 font-extrabold rounded-xl text-xs flex items-center gap-1.5 shadow transition-all cursor-pointer">
-                                    <i data-lucide="save" class="w-3.5 h-3.5"></i>
+                                <button type="button" onclick="saveRpasPreflightChecklist()" class="px-3.5 py-2 bg-[#0D0D0D] hover:bg-pmmg-border active:scale-95 text-pmmg-khaki border border-[#C5A869] font-extrabold rounded-xl text-xs flex items-center gap-1.5 shadow transition-all cursor-pointer">
+                                    <i data-lucide="save" class="w-3.5 h-3.5 text-pmmg-gold"></i>
                                     <span>Salvar</span>
                                 </button>
-                                <button type="button" onclick="resetRpasPreflightChecklist()" class="px-3.5 py-2 bg-pmmg-dark hover:bg-pmmg-border active:scale-95 text-pmmg-khaki border border-pmmg-khaki/50 font-extrabold rounded-xl text-xs flex items-center gap-1.5 shadow transition-all cursor-pointer">
+                                <button type="button" onclick="resetRpasPreflightChecklist()" class="px-3.5 py-2 bg-[#0D0D0D] hover:bg-pmmg-border active:scale-95 text-gray-300 border border-pmmg-border font-extrabold rounded-xl text-xs flex items-center gap-1.5 shadow transition-all cursor-pointer">
                                     <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
                                     <span>Limpar</span>
                                 </button>
@@ -1782,66 +1767,60 @@
                         </div>
 
                         <!-- Barra de Progresso -->
-                        <div class="bg-pmmg-dark p-3.5 rounded-xl border border-pmmg-border space-y-2">
+                        <div class="bg-[#0D0D0D] p-3.5 rounded-xl border border-pmmg-border space-y-2">
                             <div class="flex items-center justify-between text-xs">
                                 <span id="rpasChecklistFinalStatusText" class="font-mono font-bold text-gray-300 uppercase">0 de 6 itens conferidos</span>
                                 <strong id="rpasChecklistPctText" class="text-sm font-mono font-extrabold text-pmmg-gold">0%</strong>
                             </div>
-                            <div class="w-full h-2.5 bg-pmmg-black rounded-full overflow-hidden border border-pmmg-border">
-                                <div id="rpasChecklistProgressBar" class="h-full bg-emerald-500 transition-all duration-300" style="width: 0%"></div>
+                            <div class="w-full h-2.5 bg-[#161616] rounded-full overflow-hidden border border-pmmg-border">
+                                <div id="rpasChecklistProgressBar" class="h-full bg-[#C5A869] transition-all duration-300" style="width: 0%"></div>
                             </div>
                         </div>
 
-                        <!-- Caixas de Seleção dos 6 Itens do Checklist Pré-Voo (Sem frases de autorização de voo) -->
+                        <!-- Caixas de Seleção dos 6 Itens do Checklist Pré-Voo -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-                            <!-- 1. Hélices -->
-                            <label for="chkRpas-helices" id="lblChkRpas-helices" class="bg-pmmg-dark hover:bg-pmmg-cardHover p-3.5 rounded-xl border border-pmmg-border flex items-start gap-3 cursor-pointer transition-all select-none">
-                                <input type="checkbox" id="chkRpas-helices" onchange="updateRpasPreflightChecklist()" class="mt-0.5 w-5 h-5 rounded border-pmmg-border bg-pmmg-black text-emerald-500 focus:ring-emerald-500 accent-emerald-500 cursor-pointer shrink-0">
+                            <label for="chkRpas-helices" id="lblChkRpas-helices" class="bg-[#0D0D0D] hover:bg-pmmg-cardHover p-3.5 rounded-xl border border-pmmg-border flex items-start gap-3 cursor-pointer transition-all select-none">
+                                <input type="checkbox" id="chkRpas-helices" onchange="updateRpasPreflightChecklist()" class="mt-0.5 w-5 h-5 rounded border-pmmg-border bg-[#161616] text-pmmg-khaki focus:ring-pmmg-khaki accent-[#C5A869] cursor-pointer shrink-0">
                                 <div class="space-y-0.5">
                                     <strong class="text-sm text-white font-extrabold block">1. Hélices e Motores</strong>
                                     <span class="text-[11px] text-gray-400 block leading-relaxed">Pás íntegras (sem fissuras ou empenos), travamento firme nos motores e rotação livre de obstruções.</span>
                                 </div>
                             </label>
 
-                            <!-- 2. Baterias aeronave/rádio -->
-                            <label for="chkRpas-baterias" id="lblChkRpas-baterias" class="bg-pmmg-dark hover:bg-pmmg-cardHover p-3.5 rounded-xl border border-pmmg-border flex items-start gap-3 cursor-pointer transition-all select-none">
-                                <input type="checkbox" id="chkRpas-baterias" onchange="updateRpasPreflightChecklist()" class="mt-0.5 w-5 h-5 rounded border-pmmg-border bg-pmmg-black text-emerald-500 focus:ring-emerald-500 accent-emerald-500 cursor-pointer shrink-0">
+                            <label for="chkRpas-baterias" id="lblChkRpas-baterias" class="bg-[#0D0D0D] hover:bg-pmmg-cardHover p-3.5 rounded-xl border border-pmmg-border flex items-start gap-3 cursor-pointer transition-all select-none">
+                                <input type="checkbox" id="chkRpas-baterias" onchange="updateRpasPreflightChecklist()" class="mt-0.5 w-5 h-5 rounded border-pmmg-border bg-[#161616] text-pmmg-khaki focus:ring-pmmg-khaki accent-[#C5A869] cursor-pointer shrink-0">
                                 <div class="space-y-0.5">
                                     <strong class="text-sm text-white font-extrabold block">2. Baterias (Aeronave e Rádio Controle)</strong>
                                     <span class="text-[11px] text-gray-400 block leading-relaxed">Carga verificada, bateria da aeronave travada sem folgas, sem estufamento e temperatura normal.</span>
                                 </div>
                             </label>
 
-                            <!-- 3. Trava do gimbal -->
-                            <label for="chkRpas-gimbal" id="lblChkRpas-gimbal" class="bg-pmmg-dark hover:bg-pmmg-cardHover p-3.5 rounded-xl border border-pmmg-border flex items-start gap-3 cursor-pointer transition-all select-none">
-                                <input type="checkbox" id="chkRpas-gimbal" onchange="updateRpasPreflightChecklist()" class="mt-0.5 w-5 h-5 rounded border-pmmg-border bg-pmmg-black text-emerald-500 focus:ring-emerald-500 accent-emerald-500 cursor-pointer shrink-0">
+                            <label for="chkRpas-gimbal" id="lblChkRpas-gimbal" class="bg-[#0D0D0D] hover:bg-pmmg-cardHover p-3.5 rounded-xl border border-pmmg-border flex items-start gap-3 cursor-pointer transition-all select-none">
+                                <input type="checkbox" id="chkRpas-gimbal" onchange="updateRpasPreflightChecklist()" class="mt-0.5 w-5 h-5 rounded border-pmmg-border bg-[#161616] text-pmmg-khaki focus:ring-pmmg-khaki accent-[#C5A869] cursor-pointer shrink-0">
                                 <div class="space-y-0.5">
                                     <strong class="text-sm text-white font-extrabold block">3. Trava do Gimbal e Câmera</strong>
                                     <span class="text-[11px] text-gray-400 block leading-relaxed">Protetor físico/trava do gimbal removido antes de ligar a aeronave, movimento livre nos 3 eixos e lente limpa.</span>
                                 </div>
                             </label>
 
-                            <!-- 4. Cartão SD -->
-                            <label for="chkRpas-sd" id="lblChkRpas-sd" class="bg-pmmg-dark hover:bg-pmmg-cardHover p-3.5 rounded-xl border border-pmmg-border flex items-start gap-3 cursor-pointer transition-all select-none">
-                                <input type="checkbox" id="chkRpas-sd" onchange="updateRpasPreflightChecklist()" class="mt-0.5 w-5 h-5 rounded border-pmmg-border bg-pmmg-black text-emerald-500 focus:ring-emerald-500 accent-emerald-500 cursor-pointer shrink-0">
+                            <label for="chkRpas-sd" id="lblChkRpas-sd" class="bg-[#0D0D0D] hover:bg-pmmg-cardHover p-3.5 rounded-xl border border-pmmg-border flex items-start gap-3 cursor-pointer transition-all select-none">
+                                <input type="checkbox" id="chkRpas-sd" onchange="updateRpasPreflightChecklist()" class="mt-0.5 w-5 h-5 rounded border-pmmg-border bg-[#161616] text-pmmg-khaki focus:ring-pmmg-khaki accent-[#C5A869] cursor-pointer shrink-0">
                                 <div class="space-y-0.5">
                                     <strong class="text-sm text-white font-extrabold block">4. Cartão SD e Armazenamento</strong>
                                     <span class="text-[11px] text-gray-400 block leading-relaxed">Cartão MicroSD inserido corretamente e com espaço livre para registro de imagens.</span>
                                 </div>
                             </label>
 
-                            <!-- 5. Bússola / IMU -->
-                            <label for="chkRpas-imu" id="lblChkRpas-imu" class="bg-pmmg-dark hover:bg-pmmg-cardHover p-3.5 rounded-xl border border-pmmg-border flex items-start gap-3 cursor-pointer transition-all select-none">
-                                <input type="checkbox" id="chkRpas-imu" onchange="updateRpasPreflightChecklist()" class="mt-0.5 w-5 h-5 rounded border-pmmg-border bg-pmmg-black text-emerald-500 focus:ring-emerald-500 accent-emerald-500 cursor-pointer shrink-0">
+                            <label for="chkRpas-imu" id="lblChkRpas-imu" class="bg-[#0D0D0D] hover:bg-pmmg-cardHover p-3.5 rounded-xl border border-pmmg-border flex items-start gap-3 cursor-pointer transition-all select-none">
+                                <input type="checkbox" id="chkRpas-imu" onchange="updateRpasPreflightChecklist()" class="mt-0.5 w-5 h-5 rounded border-pmmg-border bg-[#161616] text-pmmg-khaki focus:ring-pmmg-khaki accent-[#C5A869] cursor-pointer shrink-0">
                                 <div class="space-y-0.5">
                                     <strong class="text-sm text-white font-extrabold block">5. Bússola, IMU e Home Point (GPS)</strong>
                                     <span class="text-[11px] text-gray-400 block leading-relaxed">Bússola e IMU sem interferência magnética, satélites GNSS conectados, RTH ajustado e Home Point gravado.</span>
                                 </div>
                             </label>
 
-                            <!-- 6. Entorno Físico -->
-                            <label for="chkRpas-espaco" id="lblChkRpas-espaco" class="bg-pmmg-dark hover:bg-pmmg-cardHover p-3.5 rounded-xl border border-pmmg-border flex items-start gap-3 cursor-pointer transition-all select-none">
-                                <input type="checkbox" id="chkRpas-espaco" onchange="updateRpasPreflightChecklist()" class="mt-0.5 w-5 h-5 rounded border-pmmg-border bg-pmmg-black text-emerald-500 focus:ring-emerald-500 accent-emerald-500 cursor-pointer shrink-0">
+                            <label for="chkRpas-espaco" id="lblChkRpas-espaco" class="bg-[#0D0D0D] hover:bg-pmmg-cardHover p-3.5 rounded-xl border border-pmmg-border flex items-start gap-3 cursor-pointer transition-all select-none">
+                                <input type="checkbox" id="chkRpas-espaco" onchange="updateRpasPreflightChecklist()" class="mt-0.5 w-5 h-5 rounded border-pmmg-border bg-[#161616] text-pmmg-khaki focus:ring-pmmg-khaki accent-[#C5A869] cursor-pointer shrink-0">
                                 <div class="space-y-0.5">
                                     <strong class="text-sm text-white font-extrabold block">6. Verificação do Entorno e Obstáculos</strong>
                                     <span class="text-[11px] text-gray-400 block leading-relaxed">Área de pouso e decolagem livre de fios, cabos, árvores e obstáculos próximos.</span>
@@ -1851,125 +1830,169 @@
                     </div>
                 </div>
 
-                <!-- 3. BOTÕES DE ACESSO RÁPIDO: MANUAIS E MATERIAIS PARA PILOTOS -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <!-- MANUAL DJI MAVIC 3 ENTERPRISE SERIES -->
-                    <a href="https://dl.djicdn.com/downloads/DJI_Mavic_3_Enterprise/20250916/DJI_Mavic_3_Enterprise_Series_User_Manual_PT.pdf" target="_blank" class="bg-pmmg-card p-5 rounded-xl tactical-border tactical-card flex items-center justify-between group border-l-4 border-l-sky-500">
-                        <div>
-                            <span class="text-[10px] bg-sky-950 text-sky-400 font-bold px-2 py-0.5 rounded border border-sky-500/40 uppercase">Manual da Aeronave</span>
-                            <h3 class="text-2xl font-military text-white font-bold uppercase mt-1 group-hover:text-sky-400 transition-colors">DJI MAVIC 3 ENTERPRISE</h3>
-                            <p class="text-[11px] text-gray-400">Manual Oficial da Série M3E / M3T (PDF PT-BR)</p>
+                <!-- 3. DADOS DA AERONAVE DA UNIDADE, MANUAIS & SARPAS (CAIXA FECHADA POR PADRÃO, VISUAL ESCURO E LIMPO) -->
+                <div id="rpasAircraftDataCollapsibleCard" class="bg-[#161616] border border-[#C5A869]/45 rounded-2xl overflow-hidden shadow-xl">
+                    <button type="button" onclick="toggleRpasAircraftDataBox()" id="btnToggleRpasAircraftDataBox" class="w-full p-4 sm:p-5 flex items-center justify-between gap-3 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
+                        <div class="flex items-center gap-2.5">
+                            <div class="p-2 rounded-xl bg-[#0D0D0D] text-pmmg-khaki border border-[#C5A869]/40 shrink-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-pmmg-gold">
+                                    <rect x="9" y="9" width="6" height="6" rx="1"/>
+                                    <path d="M9 9 5.5 5.5"/><path d="M15 9l3.5-3.5"/><path d="M9 15l-3.5 3.5"/><path d="M15 15l3.5 3.5"/>
+                                    <circle cx="4.5" cy="4.5" r="2.5"/><circle cx="19.5" cy="4.5" r="2.5"/><circle cx="4.5" cy="19.5" r="2.5"/><circle cx="19.5" cy="19.5" r="2.5"/>
+                                </svg>
+                            </div>
+                            <div class="flex items-center gap-2.5 flex-wrap">
+                                <h3 class="text-xl sm:text-2xl font-military text-white uppercase tracking-wide leading-none">
+                                    Dados da Aeronave da Unidade, Manuais & SARPAS
+                                </h3>
+                                <span class="px-2 py-0.5 rounded bg-[#0D0D0D] text-[10px] font-mono font-bold text-pmmg-khaki border border-[#C5A869]/40">DJI Mavic 3 Enterprise</span>
+                            </div>
                         </div>
-                        <div class="p-3 bg-sky-950/60 text-sky-400 border border-sky-500/40 rounded-lg group-hover:bg-sky-400 group-hover:text-pmmg-black transition-colors shrink-0">
-                            <i data-lucide="file-down" class="w-6 h-6"></i>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <span id="lblRpasAircraftDataToggle" class="text-[11px] font-bold text-pmmg-khaki">Abrir</span>
+                            <i data-lucide="chevron-down" id="iconRpasAircraftDataChevron" class="w-4 h-4 text-pmmg-gold transition-transform duration-200"></i>
                         </div>
-                    </a>
+                    </button>
 
-                    <!-- MATERIAIS PARA PILOTOS (ACESSO RESTRITO A PILOTOS / CADASTRADOS NO EAD) -->
-                    <a href="https://ead.policiamilitar.mg.gov.br/course/view.php?id=115" target="_blank" class="bg-pmmg-card p-5 rounded-xl tactical-border tactical-card flex items-center justify-between group border-l-4 border-l-pmmg-gold">
-                        <div>
-                            <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-gold font-bold px-2 py-0.5 rounded border border-pmmg-gold/40 uppercase">EAD PMMG • Acesso Restrito</span>
-                            <h3 class="text-2xl font-military text-white font-bold uppercase mt-1 group-hover:text-pmmg-gold transition-colors">MATERIAIS PARA PILOTOS</h3>
-                            <p class="text-[11px] text-gray-400">Exclusivo para pilotos e militares cadastrados</p>
+                    <!-- Corpo Expansível dos Dados da Aeronave, Manuais e SARPAS (Oculto por padrão) -->
+                    <div id="rpasAircraftDataExpandableBody" class="hidden p-4 sm:p-5 pt-3 border-t border-pmmg-border space-y-4">
+                        <!-- Especificações Técnicas Fixas da Aeronave da Unidade -->
+                        <div class="bg-[#0D0D0D] p-4 rounded-xl border border-pmmg-border space-y-3">
+                            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border pb-2">
+                                <div>
+                                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-pmmg-khaki block">Ficha Técnica • Aeronave Padrão da Unidade</span>
+                                    <h4 class="text-lg font-military text-white uppercase tracking-wide leading-none mt-0.5">DJI Mavic 3 Enterprise Series (M3E / M3T)</h4>
+                                </div>
+                                <span class="text-[10px] font-mono text-pmmg-gold bg-[#161616] px-2.5 py-1 rounded border border-[#C5A869]/40">Classe 3 • ANAC / DECEA</span>
+                            </div>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs">
+                                <div class="bg-[#161616] p-2.5 rounded-lg border border-pmmg-border">
+                                    <span class="text-[10px] text-gray-400 uppercase font-bold block">Resistência Vento</span>
+                                    <strong class="text-white font-mono">12 m/s (43,2 km/h)</strong>
+                                </div>
+                                <div class="bg-[#161616] p-2.5 rounded-lg border border-pmmg-border">
+                                    <span class="text-[10px] text-gray-400 uppercase font-bold block">Temp. de Trabalho</span>
+                                    <strong class="text-white font-mono">-10°C a 40°C</strong>
+                                </div>
+                                <div class="bg-[#161616] p-2.5 rounded-lg border border-pmmg-border">
+                                    <span class="text-[10px] text-gray-400 uppercase font-bold block">Autonomia Máx.</span>
+                                    <strong class="text-white font-mono">~45 min (sem vento)</strong>
+                                </div>
+                                <div class="bg-[#161616] p-2.5 rounded-lg border border-pmmg-border">
+                                    <span class="text-[10px] text-gray-400 uppercase font-bold block">Peso de Decolagem</span>
+                                    <strong class="text-white font-mono">915 g / 920 g (M3T)</strong>
+                                </div>
+                            </div>
                         </div>
-                        <div class="p-3 bg-pmmg-dark text-pmmg-gold border border-pmmg-border rounded-lg group-hover:bg-pmmg-gold group-hover:text-pmmg-black transition-colors shrink-0">
-                            <i data-lucide="folder-lock" class="w-6 h-6"></i>
-                        </div>
-                    </a>
 
-                    <!-- ATALHO DIRETO SARPAS NA ABA RPAS -->
-                    <a href="https://sarpas.decea.mil.br/login?expired=true" target="_blank" class="bg-pmmg-card p-5 rounded-xl tactical-border tactical-card flex items-center justify-between group">
-                        <div>
-                            <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-khaki font-bold px-2 py-0.5 rounded border border-pmmg-khaki/30 uppercase">DECEA • Espaço Aéreo</span>
-                            <h3 class="text-2xl font-military text-white font-bold uppercase mt-1 group-hover:text-pmmg-khaki transition-colors">SISTEMA SARPAS</h3>
-                            <p class="text-[11px] text-gray-400">Solicitação de acesso ao espaço aéreo</p>
+                        <!-- 3 Cartões de Acesso Rápido: Manual PDF, Materiais EAD e Sistema SARPAS -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <!-- MANUAL DJI MAVIC 3 ENTERPRISE SERIES -->
+                            <a href="https://dl.djicdn.com/downloads/DJI_Mavic_3_Enterprise/20250916/DJI_Mavic_3_Enterprise_Series_User_Manual_PT.pdf" target="_blank" class="bg-[#0D0D0D] p-4 rounded-xl border border-[#C5A869]/40 hover:border-[#C5A869] flex items-center justify-between group transition-all">
+                                <div>
+                                    <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-khaki font-bold px-2 py-0.5 rounded border border-pmmg-khaki/30 uppercase">Manual da Aeronave</span>
+                                    <h3 class="text-2xl font-military text-white font-bold uppercase mt-1 group-hover:text-pmmg-khaki transition-colors">DJI MAVIC 3 ENTERPRISE</h3>
+                                    <p class="text-[11px] text-gray-400">Manual Oficial da Série M3E / M3T (PDF PT-BR)</p>
+                                </div>
+                                <div class="p-3 bg-[#161616] text-pmmg-khaki border border-pmmg-border rounded-lg group-hover:border-[#C5A869] transition-colors shrink-0">
+                                    <i data-lucide="file-down" class="w-5 h-5"></i>
+                                </div>
+                            </a>
+
+                            <!-- MATERIAIS PARA PILOTOS (ACESSO RESTRITO A PILOTOS / CADASTRADOS NO EAD) -->
+                            <a href="https://ead.policiamilitar.mg.gov.br/course/view.php?id=115" target="_blank" class="bg-[#0D0D0D] p-4 rounded-xl border border-[#C5A869]/40 hover:border-[#C5A869] flex items-center justify-between group transition-all">
+                                <div>
+                                    <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-gold font-bold px-2 py-0.5 rounded border border-pmmg-gold/40 uppercase">EAD PMMG • Acesso Restrito</span>
+                                    <h3 class="text-2xl font-military text-white font-bold uppercase mt-1 group-hover:text-pmmg-gold transition-colors">MATERIAIS PARA PILOTOS</h3>
+                                    <p class="text-[11px] text-gray-400">Exclusivo para pilotos e militares cadastrados</p>
+                                </div>
+                                <div class="p-3 bg-[#161616] text-pmmg-gold border border-pmmg-border rounded-lg group-hover:border-[#C5A869] transition-colors shrink-0">
+                                    <i data-lucide="folder-lock" class="w-5 h-5"></i>
+                                </div>
+                            </a>
+
+                            <!-- ATALHO DIRETO SARPAS NA ABA RPAS -->
+                            <a href="https://sarpas.decea.mil.br/login?expired=true" target="_blank" class="bg-[#0D0D0D] p-4 rounded-xl border border-[#C5A869]/40 hover:border-[#C5A869] flex items-center justify-between group transition-all">
+                                <div>
+                                    <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-khaki font-bold px-2 py-0.5 rounded border border-pmmg-khaki/30 uppercase">DECEA • Espaço Aéreo</span>
+                                    <h3 class="text-2xl font-military text-white font-bold uppercase mt-1 group-hover:text-pmmg-khaki transition-colors">SISTEMA SARPAS</h3>
+                                    <p class="text-[11px] text-gray-400">Solicitação de acesso ao espaço aéreo</p>
+                                </div>
+                                <div class="p-3 bg-[#161616] text-pmmg-khaki border border-pmmg-border rounded-lg group-hover:border-[#C5A869] transition-colors shrink-0">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
+                                        <rect x="9" y="9" width="6" height="6" rx="1"/>
+                                        <path d="M9 9 5.5 5.5"/><path d="M15 9l3.5-3.5"/><path d="M9 15l-3.5 3.5"/><path d="M15 15l3.5 3.5"/>
+                                        <circle cx="4.5" cy="4.5" r="2.5"/><circle cx="19.5" cy="4.5" r="2.5"/><circle cx="4.5" cy="19.5" r="2.5"/><circle cx="19.5" cy="19.5" r="2.5"/>
+                                    </svg>
+                                </div>
+                            </a>
                         </div>
-                        <div class="p-3 bg-pmmg-dark text-pmmg-khaki border border-pmmg-border rounded-lg group-hover:bg-pmmg-khaki group-hover:text-pmmg-black transition-colors shrink-0">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6">
-                                <rect x="9" y="9" width="6" height="6" rx="1"/>
-                                <path d="M9 9 5.5 5.5"/><path d="M15 9l3.5-3.5"/><path d="M9 15l-3.5 3.5"/><path d="M15 15l3.5 3.5"/>
-                                <circle cx="4.5" cy="4.5" r="2.5"/><circle cx="19.5" cy="4.5" r="2.5"/><circle cx="4.5" cy="19.5" r="2.5"/><circle cx="19.5" cy="19.5" r="2.5"/>
-                            </svg>
-                        </div>
-                    </a>
+                    </div>
                 </div>
+
             </div>
         </section>
 
         <!-- ================= VIEW ESTÁDIOS (MINEIRÃO, ARENA MRV E INDEPENDÊNCIA) ================= -->
         <section id="view-estadios"class="hidden space-y-5">
             
-            <!-- TELA 1 DE ESTÁDIOS: LOBBY DE ESCOLHA DO ESTÁDIO (SOME AO ENTRAR NO ESTÁDIO ESCOLHIDO) -->
-            <div id="estadios-lobby-screen"class="space-y-5 app-screen-animate">
-                <div class="flex items-center justify-between border-b border-pmmg-border pb-3">
-                    <div>
-                        <div class="flex items-center gap-2">
-                            <span class="bg-emerald-950 text-emerald-400 text-[10px] px-2.5 py-0.5 rounded font-bold uppercase border border-emerald-500/30">Grandes Eventos Esportivos</span>
-                            <h2 class="text-3xl font-military text-emerald-500 uppercase tracking-wide">Selecione o Estádio</h2>
-                        </div>
-                        <p class="text-xs text-gray-400">Toque em um dos estádios abaixo para abrir sua tela exclusiva.</p>
-                    </div>
-                    <button onclick="showView('home')"class="px-3 py-1.5 bg-pmmg-dark border border-pmmg-border rounded-lg text-xs text-pmmg-khaki hover:bg-pmmg-border flex items-center gap-1 font-bold">
-                        <i data-lucide="arrow-left"class="w-4 h-4"></i>Início
-                    </button>
-                </div>
-
-                <!-- SELETORES DOS 3 ESTÁDIOS COM CONTORNOS PERSONALIZADOS E BOTÃO BAIXAR MAPA -->
+            <!-- TELA 1 DE ESTÁDIOS: LOBBY DE ESCOLHA DO ESTÁDIO (SEM CABEÇALHO GIGANTE REPETIDO, VISUAL ESCURO E SÓBRIO) -->
+            <div id="estadios-lobby-screen" class="space-y-4 app-screen-animate">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <!-- MINEIRÃO (CONTORNO AZUL CRUZEIRO) -->
-                    <div onclick="openStadiumScreen('mineirao')"id="card-estadio-mineirao"class="bg-pmmg-card p-5 rounded-2xl border-2 border-blue-600 hover:bg-pmmg-cardHover cursor-pointer transition-all shadow-lg flex flex-col justify-between space-y-4 active:scale-[0.98]">
+                    <!-- 1. MINEIRÃO -->
+                    <div onclick="openStadiumScreen('mineirao')" id="card-estadio-mineirao" class="bg-[#161616] p-5 rounded-2xl border border-[#C5A869]/45 hover:border-[#C5A869] hover:bg-pmmg-cardHover cursor-pointer transition-all shadow-lg flex flex-col justify-between space-y-4 active:scale-[0.98]">
                         <div>
                             <div class="flex justify-between items-center">
-                                <span class="text-[10px] bg-blue-950/80 text-blue-300 font-bold px-2.5 py-0.5 rounded border border-blue-500/40 uppercase">Pampulha • 34º BPM</span>
-                                <span class="text-xs font-mono font-bold text-pmmg-khaki bg-pmmg-dark px-2 py-0.5 rounded border border-pmmg-border">REDE: 34º BPM B</span>
+                                <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-khaki font-bold px-2.5 py-0.5 rounded border border-[#C5A869]/35 uppercase">Pampulha • 34º BPM</span>
+                                <span class="text-xs font-mono font-bold text-pmmg-khaki bg-[#0D0D0D] px-2 py-0.5 rounded border border-pmmg-border">REDE: 34º BPM B</span>
                             </div>
-                            <h3 class="text-3xl font-military text-white font-bold uppercase mt-2">MINEIRÃO</h3>
-                            <p class="text-xs text-gray-300">Estádio Governador Magalhães Pinto</p>
-                            <p class="text-[11px] text-gray-400 mt-1">Acessos Mandante x Visitante, Portões A-F, Camarotes, Croqui e RPAS.</p>
+                            <h3 class="text-3xl font-military text-pmmg-khaki font-bold uppercase mt-2">MINEIRÃO</h3>
+                            <p class="text-xs text-gray-200 font-semibold">Estádio Governador Magalhães Pinto</p>
+                            <p class="text-[11px] text-gray-400 mt-1">Fluxo de Torcedores, Vias de Acesso, Divisão Mandante x Visitante, Portões A-F, Camarotes, Croqui e RPAS.</p>
                         </div>
                         <div class="pt-3 border-t border-pmmg-border flex flex-wrap items-center justify-between gap-2 text-xs">
-                            <button type="button"onclick="event.stopPropagation(); downloadStadiumMap('mineirao')"class="px-2.5 py-1.5 bg-pmmg-dark hover:bg-pmmg-border text-pmmg-gold border border-pmmg-gold/50 rounded-lg font-bold flex items-center gap-1.5 transition-colors"title="Baixar Mapa Offline do Mineirão">
-                                <i data-lucide="download"class="w-3.5 h-3.5"></i> <span>Baixar Mapa</span>
+                            <button type="button" onclick="event.stopPropagation(); downloadStadiumMap('mineirao')" class="px-2.5 py-1.5 bg-[#0D0D0D] hover:bg-pmmg-border text-pmmg-gold border border-pmmg-gold/50 rounded-lg font-bold flex items-center gap-1.5 transition-colors cursor-pointer" title="Baixar Mapa Offline do Mineirão">
+                                <i data-lucide="download" class="w-3.5 h-3.5"></i> <span>Baixar Mapa</span>
                             </button>
-                            <span class="px-2.5 py-1.5 bg-pmmg-dark text-pmmg-khaki border border-pmmg-gold/50 rounded-lg font-bold flex items-center gap-1">Entrar <i data-lucide="arrow-right"class="w-3.5 h-3.5"></i></span>
+                            <span class="px-2.5 py-1.5 bg-[#0D0D0D] text-pmmg-khaki border border-pmmg-gold/50 rounded-lg font-bold flex items-center gap-1">Abrir Estádio <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
                         </div>
                     </div>
 
-                    <!-- ARENA MRV (CONTORNO BRANCO) -->
-                    <div onclick="openStadiumScreen('arenamrv')"id="card-estadio-arenamrv"class="bg-pmmg-card p-5 rounded-2xl border-2 border-white hover:bg-pmmg-cardHover cursor-pointer transition-all shadow-lg flex flex-col justify-between space-y-4 active:scale-[0.98]">
+                    <!-- 2. ARENA MRV -->
+                    <div onclick="openStadiumScreen('arenamrv')" id="card-estadio-arenamrv" class="bg-[#161616] p-5 rounded-2xl border border-[#C5A869]/45 hover:border-[#C5A869] hover:bg-pmmg-cardHover cursor-pointer transition-all shadow-lg flex flex-col justify-between space-y-4 active:scale-[0.98]">
                         <div>
                             <div class="flex justify-between items-center">
-                                <span class="text-[10px] bg-pmmg-dark text-white font-bold px-2.5 py-0.5 rounded border border-white/40 uppercase">Califórnia • 5º BPM</span>
-                                <span class="text-xs font-mono font-bold text-pmmg-khaki bg-pmmg-dark px-2 py-0.5 rounded border border-pmmg-border">REDE: 5º BPM A</span>
+                                <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-khaki font-bold px-2.5 py-0.5 rounded border border-[#C5A869]/35 uppercase">Califórnia • 5º BPM</span>
+                                <span class="text-xs font-mono font-bold text-pmmg-khaki bg-[#0D0D0D] px-2 py-0.5 rounded border border-pmmg-border">REDE: 5º BPM A</span>
                             </div>
-                            <h3 class="text-3xl font-military text-white font-bold uppercase mt-2">ARENA MRV</h3>
-                            <p class="text-xs text-gray-300">Bairro Califórnia - Belo Horizonte/MG</p>
-                            <p class="text-[11px] text-gray-400 mt-1">3 Barreiras, Portarias A-H, Portões 1-20, Visitante (Acesso F), Croqui e RPAS.</p>
+                            <h3 class="text-3xl font-military text-pmmg-khaki font-bold uppercase mt-2">ARENA MRV</h3>
+                            <p class="text-xs text-gray-200 font-semibold">Bairro Califórnia - Belo Horizonte/MG</p>
+                            <p class="text-[11px] text-gray-400 mt-1">Fluxo de Torcedores, 3 Barreiras, Portarias A-H, Portões 1-20, Visitante (Acesso F), Croqui e RPAS.</p>
                         </div>
                         <div class="pt-3 border-t border-pmmg-border flex flex-wrap items-center justify-between gap-2 text-xs">
-                            <button type="button"onclick="event.stopPropagation(); downloadStadiumMap('arenamrv')"class="px-2.5 py-1.5 bg-pmmg-dark hover:bg-pmmg-border text-pmmg-gold border border-pmmg-gold/50 rounded-lg font-bold flex items-center gap-1.5 transition-colors"title="Baixar Mapa Offline da Arena MRV">
-                                <i data-lucide="download"class="w-3.5 h-3.5"></i> <span>Baixar Mapa</span>
+                            <button type="button" onclick="event.stopPropagation(); downloadStadiumMap('arenamrv')" class="px-2.5 py-1.5 bg-[#0D0D0D] hover:bg-pmmg-border text-pmmg-gold border border-pmmg-gold/50 rounded-lg font-bold flex items-center gap-1.5 transition-colors cursor-pointer" title="Baixar Mapa Offline da Arena MRV">
+                                <i data-lucide="download" class="w-3.5 h-3.5"></i> <span>Baixar Mapa</span>
                             </button>
-                            <span class="px-2.5 py-1.5 bg-white text-pmmg-black rounded-lg font-bold flex items-center gap-1">Entrar <i data-lucide="arrow-right"class="w-3.5 h-3.5"></i></span>
+                            <span class="px-2.5 py-1.5 bg-[#0D0D0D] text-pmmg-khaki border border-pmmg-gold/50 rounded-lg font-bold flex items-center gap-1">Abrir Estádio <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
                         </div>
                     </div>
 
-                    <!-- INDEPENDÊNCIA (CONTORNO VERDE AMÉRICA) -->
-                    <div onclick="openStadiumScreen('independencia')"id="card-estadio-independencia"class="bg-pmmg-card p-5 rounded-2xl border-2 border-emerald-500 hover:bg-pmmg-cardHover cursor-pointer transition-all shadow-lg flex flex-col justify-between space-y-4 active:scale-[0.98]">
+                    <!-- 3. INDEPENDÊNCIA -->
+                    <div onclick="openStadiumScreen('independencia')" id="card-estadio-independencia" class="bg-[#161616] p-5 rounded-2xl border border-[#C5A869]/45 hover:border-[#C5A869] hover:bg-pmmg-cardHover cursor-pointer transition-all shadow-lg flex flex-col justify-between space-y-4 active:scale-[0.98]">
                         <div>
                             <div class="flex justify-between items-center">
-                                <span class="text-[10px] bg-emerald-950 text-emerald-400 font-bold px-2.5 py-0.5 rounded border border-emerald-500/40 uppercase">Horto • 16º BPM</span>
-                                <span class="text-xs font-mono font-bold text-pmmg-khaki bg-pmmg-dark px-2 py-0.5 rounded border border-pmmg-border">REDE: 16º BPM A</span>
+                                <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-khaki font-bold px-2.5 py-0.5 rounded border border-[#C5A869]/35 uppercase">Horto • 16º BPM</span>
+                                <span class="text-xs font-mono font-bold text-pmmg-khaki bg-[#0D0D0D] px-2 py-0.5 rounded border border-pmmg-border">REDE: 16º BPM A</span>
                             </div>
-                            <h3 class="text-3xl font-military text-white font-bold uppercase mt-2">INDEPENDÊNCIA</h3>
-                            <p class="text-xs text-gray-300">Arena Independência - Bairro Horto</p>
-                            <p class="text-[11px] text-gray-400 mt-1">Rua Pitangui x Rua Ismênia Tunes, Portões 01 a 10, Croqui e RPAS.</p>
+                            <h3 class="text-3xl font-military text-pmmg-khaki font-bold uppercase mt-2">INDEPENDÊNCIA</h3>
+                            <p class="text-xs text-gray-200 font-semibold">Arena Independência - Bairro Horto</p>
+                            <p class="text-[11px] text-gray-400 mt-1">Fluxo de Torcedores, Rua Pitangui x Rua Ismênia Tunes, Portões 01 a 10, Croqui e RPAS.</p>
                         </div>
                         <div class="pt-3 border-t border-pmmg-border flex flex-wrap items-center justify-between gap-2 text-xs">
-                            <button type="button"onclick="event.stopPropagation(); downloadStadiumMap('independencia')"class="px-2.5 py-1.5 bg-pmmg-dark hover:bg-pmmg-border text-pmmg-gold border border-pmmg-gold/50 rounded-lg font-bold flex items-center gap-1.5 transition-colors"title="Baixar Mapa Offline do Independência">
-                                <i data-lucide="download"class="w-3.5 h-3.5"></i> <span>Baixar Mapa</span>
+                            <button type="button" onclick="event.stopPropagation(); downloadStadiumMap('independencia')" class="px-2.5 py-1.5 bg-[#0D0D0D] hover:bg-pmmg-border text-pmmg-gold border border-pmmg-gold/50 rounded-lg font-bold flex items-center gap-1.5 transition-colors cursor-pointer" title="Baixar Mapa Offline do Independência">
+                                <i data-lucide="download" class="w-3.5 h-3.5"></i> <span>Baixar Mapa</span>
                             </button>
-                            <span class="px-2.5 py-1.5 bg-pmmg-dark text-pmmg-khaki border border-pmmg-gold/60 rounded-lg font-bold flex items-center gap-1">Entrar <i data-lucide="arrow-right"class="w-3.5 h-3.5"></i></span>
+                            <span class="px-2.5 py-1.5 bg-[#0D0D0D] text-pmmg-khaki border border-pmmg-gold/50 rounded-lg font-bold flex items-center gap-1">Abrir Estádio <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
                         </div>
                     </div>
                 </div>
@@ -1982,9 +2005,9 @@
                 </button>
                 <div class="flex items-center gap-1.5">
                     <span class="text-[10px] text-gray-400 uppercase font-bold hidden sm:inline mr-1">Troca Rápida:</span>
-                    <button onclick="openStadiumScreen('mineirao')"id="pill-estadio-mineirao"class="px-2.5 py-1.5 rounded-lg text-xs font-bold border-2 border-blue-600 bg-blue-950/60 text-white">Mineirão</button>
-                    <button onclick="openStadiumScreen('arenamrv')"id="pill-estadio-arenamrv"class="px-2.5 py-1.5 rounded-lg text-xs font-bold border border-white/50 bg-pmmg-dark text-gray-300">Arena MRV</button>
-                    <button onclick="openStadiumScreen('independencia')"id="pill-estadio-independencia"class="px-2.5 py-1.5 rounded-lg text-xs font-bold border border-emerald-500/50 bg-pmmg-dark text-gray-300">Independência</button>
+                    <button onclick="openStadiumScreen('mineirao')" id="pill-estadio-mineirao" class="px-2.5 py-1.5 rounded-lg text-xs font-extrabold border border-pmmg-gold bg-pmmg-card text-pmmg-khaki shadow-sm">Mineirão</button>
+                    <button onclick="openStadiumScreen('arenamrv')" id="pill-estadio-arenamrv" class="px-2.5 py-1.5 rounded-lg text-xs font-medium border border-pmmg-border bg-pmmg-dark text-gray-400">Arena MRV</button>
+                    <button onclick="openStadiumScreen('independencia')" id="pill-estadio-independencia" class="px-2.5 py-1.5 rounded-lg text-xs font-medium border border-pmmg-border bg-pmmg-dark text-gray-400">Independência</button>
                 </div>
             </div>
 
@@ -2052,10 +2075,54 @@
                     </div>
                 </div>
 
-                <!-- 4 BOTÕES DE NAVEGAÇÃO DO MINEIRÃO -->
+                                <!-- CAIXA RETRÁTIL (FECHADA POR PADRÃO): FLUXO DE TORCEDORES DO MINEIRÃO -->
+                <div class="bg-[#161616] border border-[#C5A869]/50 rounded-xl overflow-hidden shadow-lg">
+                    <button type="button" onclick="toggleStadiumCollapsibleBox('fluxo-mineirao')" class="w-full p-4 flex items-center justify-between gap-3 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
+                        <div class="flex items-center gap-2.5">
+                            <div class="p-2 rounded-lg bg-[#0D0D0D] text-pmmg-khaki border border-[#C5A869]/40 shrink-0">
+                                <i data-lucide="route" class="w-5 h-5 text-pmmg-gold"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-military text-pmmg-khaki uppercase tracking-wide leading-none">Fluxo de Torcedores • Mineirão</h4>
+                                <span class="text-[11px] text-gray-400 block mt-0.5">Vias de acesso, chegada/saída, divisão de torcidas e pontos críticos</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <span id="lbl-stag-fluxo-mineirao" class="text-[11px] font-bold text-pmmg-khaki">Abrir</span>
+                            <i data-lucide="chevron-down" id="ico-stag-fluxo-mineirao" class="w-4 h-4 text-pmmg-gold transition-transform duration-200"></i>
+                        </div>
+                    </button>
+                    <div id="box-stag-fluxo-mineirao" class="hidden p-4 pt-3 border-t border-pmmg-border space-y-3 text-xs">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div class="bg-[#0D0D0D] p-3.5 rounded-xl border border-[#C5A869]/40 space-y-1.5">
+                                <strong class="text-pmmg-khaki uppercase block text-xs">1. Vias de Acesso (Chegada e Saída • Mandante)</strong>
+                                <p class="text-gray-200 leading-relaxed">• <strong>Eixo Sul (Principal):</strong> Chegada e dispersão pela <strong>Av. Presidente Carlos Luz (Catalão)</strong> e <strong>Av. Cel. Oscar Paschoal / Av. Rei Pelé</strong> -> acesso à <strong>Esplanada Sul (Portões B, C e D)</strong> e Estacionamento G1 Sul.</p>
+                                <p class="text-gray-200 leading-relaxed">• <strong>Eixo Norte / Leste:</strong> Chegada pela <strong>Av. Pres. Antônio Carlos (Estação MOVE Mineirão)</strong> e <strong>Av. Antônio Abrahão Caram</strong> -> acesso à <strong>Esplanada Norte (Portões E e F)</strong> e G1 Norte.</p>
+                            </div>
+                            <div class="bg-[#0D0D0D] p-3.5 rounded-xl border border-[#C5A869]/40 space-y-1.5">
+                                <strong class="text-pmmg-khaki uppercase block text-xs">2. Vias de Acesso & Isolamento (Torcida Visitante)</strong>
+                                <p class="text-gray-200 leading-relaxed">• <strong>Chegada e Saída Segregada:</strong> Desembarque exclusivo na <strong>Av. Chaffir Ferreira (Portão 03 do Ginásio Mineirinho)</strong>.</p>
+                                <p class="text-gray-200 leading-relaxed">• <strong>Via de Integração (Corredor de Gradis):</strong> Do Mineirinho, a torcida visitante segue por corredor isolado até o <strong>Portão Interno A (Setor Roxo Superior Visitante)</strong>, sem cruzar com a Esplanada comum.</p>
+                            </div>
+                            <div class="bg-[#0D0D0D] p-3.5 rounded-xl border border-pmmg-border space-y-1.5">
+                                <strong class="text-white uppercase block text-xs">3. Divisão de Torcidas (Jogos Comuns x Clássicos 50/50)</strong>
+                                <p class="text-gray-300 leading-relaxed">• <strong>Jogos Comuns (90/10):</strong> Mandante ocupa Esplanada Norte e Sul (Portões B, C, D, E, F e Hall VIP). Visitante restrito ao Portão A (Roxo Superior, isolado por divisórias e tela de 14m). Em Torcida Única, o Portão A também abre para o mandante.</p>
+                                <p class="text-gray-300 leading-relaxed">• <strong>Clássico 50/50:</strong> Esplanada dividida ao meio por barreiras duplas — <strong>Lado Sul</strong> (Carlos Luz / Rei Pelé -> Portões B, C e D) x <strong>Lado Norte</strong> (Abrahão Caram -> Portões A, E e F).</p>
+                            </div>
+                            <div class="bg-[#0D0D0D] p-3.5 rounded-xl border border-pmmg-border space-y-1.5">
+                                <strong class="text-white uppercase block text-xs">4. Pontos Críticos de Policiamento & Retenção</strong>
+                                <p class="text-gray-300 leading-relaxed">• <strong>Cruzamento Av. Abrahão Caram x Av. Cel. Oscar Paschoal</strong> e entorno do <strong>Mineirinho (Av. Chaffir Ferreira)</strong>;</p>
+                                <p class="text-gray-300 leading-relaxed">• <strong>Escadarias/Rampas Norte e Sul</strong> e passarela da <strong>Estação MOVE (Av. Antônio Carlos)</strong> na saída;</p>
+                                <p class="text-gray-300 leading-relaxed">• <strong>Retenção Pós-Jogo:</strong> Torcida visitante retida no Setor Roxo Superior (Portão A) até o escoamento da Esplanada.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4 BOTÕES DE NAVEGAÇÃO DO MINEIRÃO (CLIQUE PARA ABRIR / FECHAR A SEÇÃO DESEJADA) -->
                 <div class="bg-pmmg-card/90 border border-pmmg-border rounded-xl p-2 overflow-x-auto">
                     <div class="subtabs-bar flex items-center gap-2 text-xs min-w-max">
-                        <button onclick="switchMineiraoTab('externa')"id="tab-min-externa"class="nav-min-tab px-4 py-2 rounded-lg bg-pmmg-card text-pmmg-khaki border border-pmmg-gold font-extrabold flex items-center gap-1.5">
+                        <button onclick="switchMineiraoTab('externa')"id="tab-min-externa" class="nav-min-tab px-4 py-2 rounded-lg bg-pmmg-dark text-gray-400 border border-pmmg-border hover:text-gray-200 font-medium flex items-center gap-1.5">
                             <i data-lucide="compass"class="w-4 h-4 shrink-0"></i> <span>1. Área Externa & Acessos</span>
                         </button>
                         <button onclick="switchMineiraoTab('interna')"id="tab-min-interna"class="nav-min-tab px-4 py-2 rounded-lg bg-pmmg-dark text-gray-300 border border-pmmg-border hover:bg-pmmg-border font-medium flex items-center gap-1.5">
@@ -2076,7 +2143,7 @@
                 </div>
 
                 <!-- ================= ABA 1: ÁREA EXTERNA & SEPARAÇÃO DE TORCIDAS ================= -->
-                <div id="sub-min-externa"class="sub-min-content space-y-6">
+                <div id="sub-min-externa" class="sub-min-content hidden space-y-6">
                     
                     <!-- EXPLICAÇÃO DIRETA: ONDE ENTRA O MANDANTE (AZUL) X ONDE ENTRA O VISITANTE -->
                     <div class="bg-pmmg-card p-5 rounded-xl tactical-border space-y-4">
@@ -2985,10 +3052,54 @@
                     </div>
                 </div>
 
-                <!-- 4 BOTÕES DE NAVEGAÇÃO DA ARENA MRV -->
+                                <!-- CAIXA RETRÁTIL (FECHADA POR PADRÃO): FLUXO DE TORCEDORES DA ARENA MRV -->
+                <div class="bg-[#161616] border border-[#C5A869]/50 rounded-xl overflow-hidden shadow-lg">
+                    <button type="button" onclick="toggleStadiumCollapsibleBox('fluxo-arenamrv')" class="w-full p-4 flex items-center justify-between gap-3 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
+                        <div class="flex items-center gap-2.5">
+                            <div class="p-2 rounded-lg bg-[#0D0D0D] text-pmmg-khaki border border-[#C5A869]/40 shrink-0">
+                                <i data-lucide="route" class="w-5 h-5 text-pmmg-gold"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-military text-pmmg-khaki uppercase tracking-wide leading-none">Fluxo de Torcedores • Arena MRV</h4>
+                                <span class="text-[11px] text-gray-400 block mt-0.5">Vias de acesso, chegada/saída, divisão de torcidas e pontos críticos</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <span id="lbl-stag-fluxo-arenamrv" class="text-[11px] font-bold text-pmmg-khaki">Abrir</span>
+                            <i data-lucide="chevron-down" id="ico-stag-fluxo-arenamrv" class="w-4 h-4 text-pmmg-gold transition-transform duration-200"></i>
+                        </div>
+                    </button>
+                    <div id="box-stag-fluxo-arenamrv" class="hidden p-4 pt-3 border-t border-pmmg-border space-y-3 text-xs">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div class="bg-[#0D0D0D] p-3.5 rounded-xl border border-[#C5A869]/40 space-y-1.5">
+                                <strong class="text-pmmg-khaki uppercase block text-xs">1. Vias de Acesso (Chegada e Saída • Mandante)</strong>
+                                <p class="text-gray-200 leading-relaxed">• <strong>Eixo Sul (Via Expressa):</strong> Subida de pedestres pelo <strong>Elevado da Massa / Praça do Torcedor (Acessos A e B)</strong> e caminhada a partir da <strong>Estação Eldorado do Metrô (~1,5 km)</strong>.</p>
+                                <p class="text-gray-200 leading-relaxed">• <strong>Eixo Leste & Oeste:</strong> <strong>Rua Cristina Maria de Assis, 202/410</strong> (Portarias G e H / Escadaria para Esplanada) e <strong>Rua Walfrido Mendes</strong> (Acessos C, D e E).</p>
+                            </div>
+                            <div class="bg-[#0D0D0D] p-3.5 rounded-xl border border-[#C5A869]/40 space-y-1.5">
+                                <strong class="text-pmmg-khaki uppercase block text-xs">2. Vias de Acesso & Isolamento (Torcida Visitante)</strong>
+                                <p class="text-gray-200 leading-relaxed">• <strong>Rota Norte Isolada:</strong> Chegada exclusivamente pela <strong>BR-040 (via Av. Cícero Idelfonso)</strong> ou pelo <strong>Anel Rodoviário (via Rua Emerenciana Batista Camargos)</strong>.</p>
+                                <p class="text-gray-200 leading-relaxed">• <strong>Portaria Externa F:</strong> Triagem e acesso na <strong>Rua Margarida de Assis Fonseca</strong> direto para os <strong>Portões Internos 19 e 20 (Inter Norte Visitante)</strong>.</p>
+                            </div>
+                            <div class="bg-[#0D0D0D] p-3.5 rounded-xl border border-pmmg-border space-y-1.5">
+                                <strong class="text-white uppercase block text-xs">3. Divisão de Torcidas & 3 Linhas de Barreira</strong>
+                                <p class="text-gray-300 leading-relaxed">• <strong>Mandante (Portões 1 a 18):</strong> Passa por <strong>3 Linhas de Barreira</strong> (1ª Filtro de ingresso na entrada da Esplanada; 2ª Revista pessoal; 3ª Catracas torniquete com biometria facial).</p>
+                                <p class="text-gray-300 leading-relaxed">• <strong>Visitante (Portões 19 e 20):</strong> Isolado no anel superior Norte (~2.863 lugares + 695 lugares de zona de amortecimento), sem acesso à Esplanada ou Via Expressa.</p>
+                            </div>
+                            <div class="bg-[#0D0D0D] p-3.5 rounded-xl border border-pmmg-border space-y-1.5">
+                                <strong class="text-white uppercase block text-xs">4. Pontos Críticos de Policiamento & Retenção</strong>
+                                <p class="text-gray-300 leading-relaxed">• <strong>Via Expressa (Pista Reversível)</strong> e base do <strong>Elevado da Massa</strong>;</p>
+                                <p class="text-gray-300 leading-relaxed">• <strong>R. Cristina Maria de Assis x R. José Cláudio Sanches / R. João Batista Vieira</strong> (concentração e embarque pós-jogo);</p>
+                                <p class="text-gray-300 leading-relaxed">• <strong>Bolsão R. Margarida de Assis Fonseca x R. Emerenciana Camargos</strong> (escolta e retenção da torcida visitante).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4 BOTÕES DE NAVEGAÇÃO DA ARENA MRV (CLIQUE PARA ABRIR / FECHAR A SEÇÃO DESEJADA) -->
                 <div class="bg-pmmg-card/90 border border-pmmg-border rounded-xl p-2 overflow-x-auto">
                     <div class="subtabs-bar flex items-center gap-2 text-xs min-w-max">
-                        <button onclick="switchArenaMrvTab('externa')"id="tab-mrv-externa"class="nav-mrv-tab px-4 py-2 rounded-lg bg-pmmg-card text-pmmg-khaki border border-pmmg-gold font-extrabold flex items-center gap-1.5">
+                        <button onclick="switchArenaMrvTab('externa')"id="tab-mrv-externa" class="nav-mrv-tab px-4 py-2 rounded-lg bg-pmmg-dark text-gray-400 border border-pmmg-border hover:text-gray-200 font-medium flex items-center gap-1.5">
                             <i data-lucide="compass"class="w-4 h-4 shrink-0"></i> <span>1. Área Externa & Acessos</span>
                         </button>
                         <button onclick="switchArenaMrvTab('interna')"id="tab-mrv-interna"class="nav-mrv-tab px-4 py-2 rounded-lg bg-pmmg-dark text-gray-300 border border-pmmg-border hover:bg-pmmg-border font-medium flex items-center gap-1.5">
@@ -3009,7 +3120,7 @@
                 </div>
 
                 <!-- ================= ABA 1 (ARENA MRV): ÁREA EXTERNA & SEPARAÇÃO DE TORCIDAS ================= -->
-                <div id="sub-mrv-externa"class="sub-mrv-content space-y-6">
+                <div id="sub-mrv-externa" class="sub-mrv-content hidden space-y-6">
                     
                     <!-- EXPLICAÇÃO DIRETA: ONDE ENTRA O MANDANTE (BRANCO) X ONDE ENTRA O VISITANTE -->
                     <div class="bg-pmmg-card p-5 rounded-xl tactical-border space-y-4">
@@ -3621,10 +3732,53 @@
                     </div>
                 </div>
 
-                <!-- 4 BOTÕES DE NAVEGAÇÃO DO INDEPENDÊNCIA -->
+                                <!-- CAIXA RETRÁTIL (FECHADA POR PADRÃO): FLUXO DE TORCEDORES DA ARENA INDEPENDÊNCIA -->
+                <div class="bg-[#161616] border border-[#C5A869]/50 rounded-xl overflow-hidden shadow-lg">
+                    <button type="button" onclick="toggleStadiumCollapsibleBox('fluxo-independencia')" class="w-full p-4 flex items-center justify-between gap-3 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
+                        <div class="flex items-center gap-2.5">
+                            <div class="p-2 rounded-lg bg-[#0D0D0D] text-pmmg-khaki border border-[#C5A869]/40 shrink-0">
+                                <i data-lucide="route" class="w-5 h-5 text-pmmg-gold"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-military text-pmmg-khaki uppercase tracking-wide leading-none">Fluxo de Torcedores • Independência</h4>
+                                <span class="text-[11px] text-gray-400 block mt-0.5">Vias de acesso, chegada/saída, divisão de torcidas e pontos críticos</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <span id="lbl-stag-fluxo-independencia" class="text-[11px] font-bold text-pmmg-khaki">Abrir</span>
+                            <i data-lucide="chevron-down" id="ico-stag-fluxo-independencia" class="w-4 h-4 text-pmmg-gold transition-transform duration-200"></i>
+                        </div>
+                    </button>
+                    <div id="box-stag-fluxo-independencia" class="hidden p-4 pt-3 border-t border-pmmg-border space-y-3 text-xs">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div class="bg-[#0D0D0D] p-3.5 rounded-xl border border-[#C5A869]/40 space-y-1.5">
+                                <strong class="text-pmmg-khaki uppercase block text-xs">1. Vias de Acesso (Chegada e Saída • Mandante)</strong>
+                                <p class="text-gray-200 leading-relaxed">• <strong>Eixo Oeste (Principal):</strong> Chegada pelas ruas do Horto / Santa Tereza / Sagrada Família (<strong>R. Gustavo da Silveira, R. Genoveva de Souza e R. Conselheiro Rocha</strong>) rumo à <strong>Rua Pitangui, 3230 (Portões 01, 03, 04 e 07 - Bloco Pitangui)</strong>.</p>
+                                <p class="text-gray-200 leading-relaxed">• <strong>Eixo Norte:</strong> <strong>Rua de Serviço</strong> atendendo o <strong>Bloco Minas (Portões 05, 06 e 09)</strong> em jogos de maior público.</p>
+                            </div>
+                            <div class="bg-[#0D0D0D] p-3.5 rounded-xl border border-[#C5A869]/40 space-y-1.5">
+                                <strong class="text-pmmg-khaki uppercase block text-xs">2. Vias de Acesso & Isolamento (Torcida Visitante)</strong>
+                                <p class="text-gray-200 leading-relaxed">• <strong>Eixo Leste (Oposto à Pitangui):</strong> Chegada pela <strong>Av. Silviano Brandão</strong> e <strong>Av. dos Andradas / Estação Horto do Metrô</strong> subindo para a <strong>Rua Ismênia Tunes</strong>.</p>
+                                <p class="text-gray-200 leading-relaxed">• <strong>Acesso Exclusivo:</strong> Entrada pelo <strong>Portão 10 (e Portão 08) – Setor Cadeira Visitante Ismênia</strong>.</p>
+                            </div>
+                            <div class="bg-[#0D0D0D] p-3.5 rounded-xl border border-pmmg-border space-y-1.5">
+                                <strong class="text-white uppercase block text-xs">3. Divisão de Torcidas (Ruas Opostas sem Esplanada)</strong>
+                                <p class="text-gray-300 leading-relaxed">• Como os portões dão diretamente nas calçadas, a segregação ocorre por <strong>interdição e bloqueio físico das vias opostas</strong>: <strong>Rua Pitangui</strong> exclusiva para a torcida mandante e <strong>Rua Ismênia Tunes</strong> confinada por gradis e policiamento para a torcida visitante (sem venda física na bilheteria para visitantes).</p>
+                            </div>
+                            <div class="bg-[#0D0D0D] p-3.5 rounded-xl border border-pmmg-border space-y-1.5">
+                                <strong class="text-white uppercase block text-xs">4. Pontos Críticos de Policiamento & Retenção</strong>
+                                <p class="text-gray-300 leading-relaxed">• <strong>Esquinas da Rua Pitangui x Rua Gustavo da Silveira (Sul)</strong> e <strong>Rua de Serviço (Norte)</strong>;</p>
+                                <p class="text-gray-300 leading-relaxed">• <strong>Subida da Rua Ismênia Tunes x Av. Silviano Brandão</strong> (escolta e triagem visitante);</p>
+                                <p class="text-gray-300 leading-relaxed">• <strong>Estação Horto / Estação Santa Tereza do Metrô (~600m)</strong> e Portão Sul de Delegações (R. Gustavo da Silveira).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4 BOTÕES DE NAVEGAÇÃO DO INDEPENDÊNCIA (CLIQUE PARA ABRIR / FECHAR A SEÇÃO DESEJADA) -->
                 <div class="bg-pmmg-card/90 border border-pmmg-border rounded-xl p-2 overflow-x-auto">
                     <div class="subtabs-bar flex items-center gap-2 text-xs min-w-max">
-                        <button onclick="switchIndependenciaTab('externa')"id="tab-ind-externa"class="nav-ind-tab px-4 py-2 rounded-lg bg-pmmg-card text-pmmg-khaki border border-pmmg-gold font-extrabold flex items-center gap-1.5">
+                        <button onclick="switchIndependenciaTab('externa')"id="tab-ind-externa" class="nav-ind-tab px-4 py-2 rounded-lg bg-pmmg-dark text-gray-400 border border-pmmg-border hover:text-gray-200 font-medium flex items-center gap-1.5">
                             <i data-lucide="compass"class="w-4 h-4 shrink-0"></i> <span>1. Área Externa & Acessos</span>
                         </button>
                         <button onclick="switchIndependenciaTab('interna')"id="tab-ind-interna"class="nav-ind-tab px-4 py-2 rounded-lg bg-pmmg-dark text-gray-300 border border-pmmg-border hover:bg-pmmg-border font-medium flex items-center gap-1.5">
@@ -3645,7 +3799,7 @@
                 </div>
 
                 <!-- ================= ABA 1 (INDEPENDÊNCIA): ÁREA EXTERNA & SEPARAÇÃO DE TORCIDAS ================= -->
-                <div id="sub-ind-externa"class="sub-ind-content space-y-6">
+                <div id="sub-ind-externa" class="sub-ind-content hidden space-y-6">
                     
                     <!-- EXPLICAÇÃO DIRETA: ONDE ENTRA O MANDANTE (VERDE AMÉRICA) X ONDE ENTRA O VISITANTE -->
                     <div class="bg-pmmg-card p-5 rounded-xl tactical-border space-y-4">
@@ -4239,14 +4393,11 @@
 
         <!-- ================= VIEW SAÚDE / APH (POSIÇÃO CENTRAL DO MENU GLOBAL) ================= -->
         <section id="view-saude" class="hidden space-y-6">
-            <div class="flex flex-wrap items-center justify-between border-b border-pmmg-border pb-3 gap-2">
-                <h2 class="text-3xl font-military text-pmmg-khaki uppercase tracking-wide leading-none flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-pmmg-gold shrink-0"><path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6V3z"/></svg><span>APH/SAÚDE</span></h2>
-                <div class="flex items-center gap-2">
-                    <button type="button" onclick="openPrioritySosModal()" class="px-3.5 py-2 bg-pmmg-dark hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-gold/60 font-extrabold rounded-xl text-xs flex items-center gap-1.5 shadow-lg uppercase cursor-pointer">
-                        <span>MODO PRIORIDADE (SOS)</span>
-                    </button>
-                    <button onclick="showView('home')" class="text-xs text-pmmg-khaki hover:underline flex items-center gap-1 font-bold"><i data-lucide="arrow-left" class="w-4 h-4"></i>Início</button>
-                </div>
+            <div class="flex items-center justify-end">
+                <button type="button" onclick="openPrioritySosModal()" class="px-3.5 py-2 bg-pmmg-dark hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-gold/60 font-extrabold rounded-xl text-xs flex items-center gap-1.5 shadow-lg uppercase cursor-pointer">
+                    <i data-lucide="siren" class="w-4 h-4 text-pmmg-gold"></i>
+                    <span>MODO PRIORIDADE (SOS)</span>
+                </button>
             </div>
 
             <!-- 1. HOSPITAL DE REFERÊNCIA DA ÁREA / HOSPITAL MAIS PRÓXIMO (CAIXA FECHADA POR PADRÃO) -->
@@ -4857,19 +5008,10 @@
 
         <!-- ================= VIEW APOIO (SUBSTITUINDO ATALHOS, COM REDS, CÓDIGOS Q E FERRAMENTAS) ================= -->
         <section id="view-atalhos" class="hidden space-y-6">
-            <div class="flex flex-wrap items-center justify-between border-b border-pmmg-border pb-3 gap-2">
-                <div>
-                    <div class="flex items-center gap-2">
-                        <span class="bg-pmmg-khakiBadge text-pmmg-gold text-[10px] px-2.5 py-0.5 rounded font-bold uppercase border border-pmmg-gold/30">Documentação & Sistemas PMMG</span>
-                        <h2 class="text-3xl font-military text-pmmg-khaki uppercase tracking-wide">Apoio & Sistemas</h2>
-                    </div>
-                </div>
-                <div class="flex items-center gap-2">
-                    <button type="button" onclick="toggleQCodeModal()" class="px-3 py-1.5 bg-pmmg-khaki/20 hover:bg-pmmg-khaki/30 text-pmmg-khaki border border-pmmg-khaki/50 rounded-lg text-xs font-bold flex items-center gap-1.5 cursor-pointer">
-                        <i data-lucide="book-open" class="w-4 h-4"></i> <span>Códigos Q & Fonético</span>
-                    </button>
-                    <button onclick="showView('home')" class="text-xs text-pmmg-khaki hover:underline flex items-center gap-1 font-bold"><i data-lucide="arrow-left" class="w-4 h-4"></i>Início</button>
-                </div>
+            <div class="flex items-center justify-end">
+                <button type="button" onclick="toggleQCodeModal()" class="px-3 py-1.5 bg-pmmg-dark hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-gold/50 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer">
+                    <i data-lucide="book-open" class="w-4 h-4 text-pmmg-gold"></i> <span>Códigos Q & Fonético</span>
+                </button>
             </div>
 
             <!-- CAIXA RETRÁTIL "AJUSTES" (FECHADA POR PADRÃO DENTRO DA ABA APOIO) -->
@@ -5363,12 +5505,8 @@
 
         <!-- ================= VIEW 3ª REGIÃO (ESTRUTURA ESCALÁVEL PRONTA) ================= -->
         <section id="view-rpm3"class="hidden space-y-6">
-            <div class="flex items-center justify-between border-b border-pmmg-border pb-3">
-                <div>
-                    <h2 class="text-3xl font-military text-pmmg-khaki uppercase tracking-wide">3ª Região de Polícia Militar (3ª RPM)</h2>
-                    <p class="text-xs text-gray-400">Estrutura pronta e escalável para cadastramento de unidades da 3ª Região</p>
-                </div>
-                <button onclick="showView('regioes')"class="text-xs text-pmmg-khaki hover:underline flex items-center gap-1"><i data-lucide="arrow-left"class="w-4 h-4"></i>Voltar às Unidades</button>
+            <div class="flex items-center justify-between">
+                <button onclick="showView('regioes')" class="px-3 py-1.5 rounded-lg bg-pmmg-dark hover:bg-pmmg-border border border-pmmg-border text-xs text-pmmg-khaki font-bold flex items-center gap-1.5 cursor-pointer"><i data-lucide="arrow-left" class="w-4 h-4"></i>Voltar às Unidades</button>
             </div>
             <div class="bg-pmmg-card p-6 rounded-2xl tactical-border space-y-2">
                 <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-khaki font-bold px-2.5 py-0.5 rounded uppercase border border-pmmg-khaki/30">Módulo Escalável Ativo</span>
@@ -5379,12 +5517,8 @@
 
         <!-- ================= VIEW 2: LISTA DA 1ª RPM ================= -->
         <section id="view-rpm1"class="hidden space-y-6">
-            <div class="flex items-center justify-between border-b border-pmmg-border pb-3">
-                <div>
-                    <h2 class="text-3xl font-military text-pmmg-khaki uppercase tracking-wide">1ª Região de Polícia Militar (1ª RPM)</h2>
-                    <p class="text-xs text-gray-400">Batalhões da Capital - Belo Horizonte/MG</p>
-                </div>
-                <button onclick="showView('regioes')"class="text-xs text-pmmg-khaki hover:underline flex items-center gap-1"><i data-lucide="arrow-left"class="w-4 h-4"></i>Voltar às Unidades</button>
+            <div class="flex items-center justify-between">
+                <button onclick="showView('regioes')" class="px-3 py-1.5 rounded-lg bg-pmmg-dark hover:bg-pmmg-border border border-pmmg-border text-xs text-pmmg-khaki font-bold flex items-center gap-1.5 cursor-pointer"><i data-lucide="arrow-left" class="w-4 h-4"></i>Voltar às Unidades</button>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -5482,12 +5616,8 @@
 
         <!-- ================= VIEW 3: LISTA DA 2ª RPM ================= -->
         <section id="view-rpm2"class="hidden space-y-6">
-            <div class="flex items-center justify-between border-b border-pmmg-border pb-3">
-                <div>
-                    <h2 class="text-3xl font-military text-pmmg-gold uppercase tracking-wide">2ª Região de Polícia Militar (2ª RPM)</h2>
-                    <p class="text-xs text-gray-400">Contagem, Betim, Ribeirão das Neves, Ibirité, Brumadinho, Igarapé...</p>
-                </div>
-                <button onclick="showView('regioes')"class="text-xs text-pmmg-khaki hover:underline flex items-center gap-1"><i data-lucide="arrow-left"class="w-4 h-4"></i>Voltar às Unidades</button>
+            <div class="flex items-center justify-between">
+                <button onclick="showView('regioes')" class="px-3 py-1.5 rounded-lg bg-pmmg-dark hover:bg-pmmg-border border border-pmmg-border text-xs text-pmmg-khaki font-bold flex items-center gap-1.5 cursor-pointer"><i data-lucide="arrow-left" class="w-4 h-4"></i>Voltar às Unidades</button>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -5580,12 +5710,8 @@
 
         <!-- ================= VIEW 4: UNIDADES ESPECIALIZADAS ================= -->
         <section id="view-especializadas"class="hidden space-y-6">
-            <div class="flex items-center justify-between border-b border-pmmg-border pb-3">
-                <div>
-                    <h2 class="text-3xl font-military text-pmmg-khaki uppercase tracking-wide">Unidades Especializadas PMMG</h2>
-                    <p class="text-xs text-gray-400">Endereços, Telefones / SOU, Localização e Abastecimento das Unidades Especializadas</p>
-                </div>
-                <button onclick="showView('regioes')" class="text-xs text-pmmg-khaki hover:underline flex items-center gap-1"><i data-lucide="arrow-left" class="w-4 h-4"></i>Voltar às Unidades</button>
+            <div class="flex items-center justify-between">
+                <button onclick="showView('regioes')" class="px-3 py-1.5 rounded-lg bg-pmmg-dark hover:bg-pmmg-border border border-pmmg-border text-xs text-pmmg-khaki font-bold flex items-center gap-1.5 cursor-pointer"><i data-lucide="arrow-left" class="w-4 h-4"></i>Voltar às Unidades</button>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -8289,7 +8415,7 @@
             maxRainProbPct: 40
         };
 
-        let azimuteRpasAudioMuted = false;
+        let azimuteRpasAudioMuted = true;
         let azimuteRpasLastWeatherSnapshot = null;
         let azimuteRpasPeriodicIntervalId = null;
 
@@ -8321,19 +8447,39 @@
             } catch (e) {}
         }
 
+        window.toggleRpasAircraftDataBox = function(forceOpen = null) {
+            const box = document.getElementById('rpasAircraftDataExpandableBody');
+            const lbl = document.getElementById('lblRpasAircraftDataToggle');
+            const icon = document.getElementById('iconRpasAircraftDataChevron');
+            if (!box) return;
+            const willOpen = forceOpen !== null ? forceOpen : box.classList.contains('hidden');
+            if (willOpen) {
+                box.classList.remove('hidden');
+                if (lbl) lbl.textContent = 'Fechar';
+                if (icon) icon.style.transform = 'rotate(180deg)';
+            } else {
+                box.classList.add('hidden');
+                if (lbl) lbl.textContent = 'Abrir';
+                if (icon) icon.style.transform = 'rotate(0deg)';
+            }
+        };
+
         window.toggleRpasSoundAlertMute = function() {
             azimuteRpasAudioMuted = !azimuteRpasAudioMuted;
             const txt = document.getElementById('txtRpasAudioMute');
             const btn = document.getElementById('btnRpasAudioMute');
+            const icon = document.getElementById('iconRpasAudioMute');
             if (txt) txt.textContent = azimuteRpasAudioMuted ? 'Áudio Alerta: MUDO' : 'Áudio Alerta: ON';
+            if (icon) icon.setAttribute('data-lucide', azimuteRpasAudioMuted ? 'volume-x' : 'volume-2');
             if (btn) {
                 btn.className = azimuteRpasAudioMuted
-                    ? 'px-2.5 py-1.5 rounded-lg bg-pmmg-dark hover:bg-pmmg-border text-gray-400 border border-pmmg-border text-[11px] font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer'
-                    : 'px-2.5 py-1.5 rounded-lg bg-pmmg-dark hover:bg-pmmg-border text-pmmg-gold border border-pmmg-gold/40 text-[11px] font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer';
+                    ? 'px-2.5 py-1.5 rounded-lg bg-[#0D0D0D] hover:bg-pmmg-border text-gray-400 border border-pmmg-border text-[11px] font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer'
+                    : 'px-2.5 py-1.5 rounded-lg bg-[#0D0D0D] hover:bg-pmmg-border text-pmmg-gold border border-pmmg-gold/60 text-[11px] font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer';
             }
             if (!azimuteRpasAudioMuted) {
                 getAzimuteAudioContext();
             }
+            if (typeof lucide !== 'undefined') lucide.createIcons();
         };
 
         window.triggerRpasWeatherChangeAlert = function(reasonsArray, forceSound) {
@@ -8343,7 +8489,8 @@
                 listEl.innerHTML = reasonsArray.map(r => `<li>${r}</li>`).join('');
                 banner.classList.remove('hidden');
             }
-            if (forceSound || !azimuteRpasAudioMuted) {
+            // Só emite som se o usuário tiver ativado manualmente o áudio (desativado por padrão)
+            if (!azimuteRpasAudioMuted) {
                 playRpasWeatherAlertBeep();
             }
         };
@@ -11578,6 +11725,9 @@
             } else if (viewId === 'rpas') {
                 if (activeBadge) activeBadge.classList.remove('hidden');
                 if (activeName) activeName.textContent = 'Drones / RPAS';
+                if (typeof window.toggleRpasFlightParamsBox === 'function') window.toggleRpasFlightParamsBox(false);
+                if (typeof window.toggleRpasChecklistBox === 'function') window.toggleRpasChecklistBox(false);
+                if (typeof window.toggleRpasAircraftDataBox === 'function') window.toggleRpasAircraftDataBox(false);
             } else if (viewId === 'atalhos') {
                 if (activeBadge) activeBadge.classList.remove('hidden');
                 if (activeName) activeName.textContent = 'Apoio e Sistemas';
@@ -11713,6 +11863,35 @@
         };
 
         // ABRE O ESTÁDIO EM UMA NOVA TELA (COMO NOS BATALHÕES) PARA NÃO PARECER ESTÁTICO NO CELULAR
+        window.toggleStadiumCollapsibleBox = function(boxKey, forceOpen = null) {
+            const box = document.getElementById('box-stag-' + boxKey);
+            const lbl = document.getElementById('lbl-stag-' + boxKey);
+            const ico = document.getElementById('ico-stag-' + boxKey);
+            if (!box) return;
+            const willOpen = forceOpen !== null ? forceOpen : box.classList.contains('hidden');
+            if (willOpen) {
+                box.classList.remove('hidden');
+                if (lbl) lbl.textContent = 'Fechar';
+                if (ico) ico.style.transform = 'rotate(180deg)';
+            } else {
+                box.classList.add('hidden');
+                if (lbl) lbl.textContent = 'Abrir';
+                if (ico) ico.style.transform = 'rotate(0deg)';
+            }
+        };
+
+        function closeAllStadiumInternalBoxes() {
+            ['fluxo-mineirao', 'fluxo-arenamrv', 'fluxo-independencia'].forEach(k => {
+                window.toggleStadiumCollapsibleBox(k, false);
+            });
+            ['min', 'mrv', 'ind'].forEach(prefix => {
+                document.querySelectorAll(`.sub-${prefix}-content`).forEach(el => el.classList.add('hidden'));
+                document.querySelectorAll(`.nav-${prefix}-tab`).forEach(el => {
+                    el.className = `nav-${prefix}-tab px-4 py-2 rounded-lg bg-pmmg-dark text-gray-400 border border-pmmg-border hover:text-gray-200 font-medium flex items-center gap-1.5`;
+                });
+            });
+        }
+
         function openStadiumScreen(stadiumId) {
             const lobby = document.getElementById('estadios-lobby-screen');
             const topbar = document.getElementById('estadios-detail-topbar');
@@ -11723,6 +11902,9 @@
                 el.classList.add('hidden');
                 el.classList.remove('app-screen-animate');
             });
+
+            // Fecha por padrão todas as caixas internas e seções ao abrir o estádio
+            closeAllStadiumInternalBoxes();
 
             const target = document.getElementById(`estadio-content-${stadiumId}`);
             if (target) {
@@ -11763,50 +11945,62 @@
             openStadiumScreen(stadiumId);
         }
 
-        function switchMineiraoTab(tabId) {
+        function switchMineiraoTab(tabId, forceOpen = null) {
+            const target = document.getElementById(`sub-min-${tabId}`);
+            const isCurrentlyOpen = target && !target.classList.contains('hidden');
+            const shouldOpen = forceOpen !== null ? forceOpen : !isCurrentlyOpen;
+
             document.querySelectorAll('.sub-min-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.nav-min-tab').forEach(el => {
                 el.className = 'nav-min-tab px-4 py-2 rounded-lg bg-pmmg-dark text-gray-400 border border-pmmg-border hover:text-gray-200 font-medium flex items-center gap-1.5';
             });
 
-            const target = document.getElementById(`sub-min-${tabId}`);
-            if (target) target.classList.remove('hidden');
-
-            const activeBtn = document.getElementById(`tab-min-${tabId}`);
-            if (activeBtn) {
-                activeBtn.className = 'nav-min-tab px-4 py-2 rounded-lg bg-pmmg-card text-pmmg-khaki border border-pmmg-gold font-extrabold flex items-center gap-1.5';
+            if (shouldOpen && target) {
+                target.classList.remove('hidden');
+                const activeBtn = document.getElementById(`tab-min-${tabId}`);
+                if (activeBtn) {
+                    activeBtn.className = 'nav-min-tab px-4 py-2 rounded-lg bg-pmmg-card text-pmmg-khaki border border-pmmg-gold font-extrabold flex items-center gap-1.5';
+                }
             }
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
-        function switchArenaMrvTab(tabId) {
+        function switchArenaMrvTab(tabId, forceOpen = null) {
+            const target = document.getElementById(`sub-mrv-${tabId}`);
+            const isCurrentlyOpen = target && !target.classList.contains('hidden');
+            const shouldOpen = forceOpen !== null ? forceOpen : !isCurrentlyOpen;
+
             document.querySelectorAll('.sub-mrv-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.nav-mrv-tab').forEach(el => {
                 el.className = 'nav-mrv-tab px-4 py-2 rounded-lg bg-pmmg-dark text-gray-400 border border-pmmg-border hover:text-gray-200 font-medium flex items-center gap-1.5';
             });
 
-            const target = document.getElementById(`sub-mrv-${tabId}`);
-            if (target) target.classList.remove('hidden');
-
-            const activeBtn = document.getElementById(`tab-mrv-${tabId}`);
-            if (activeBtn) {
-                activeBtn.className = 'nav-mrv-tab px-4 py-2 rounded-lg bg-pmmg-card text-pmmg-khaki border border-pmmg-gold font-extrabold flex items-center gap-1.5';
+            if (shouldOpen && target) {
+                target.classList.remove('hidden');
+                const activeBtn = document.getElementById(`tab-mrv-${tabId}`);
+                if (activeBtn) {
+                    activeBtn.className = 'nav-mrv-tab px-4 py-2 rounded-lg bg-pmmg-card text-pmmg-khaki border border-pmmg-gold font-extrabold flex items-center gap-1.5';
+                }
             }
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
-        function switchIndependenciaTab(tabId) {
+        function switchIndependenciaTab(tabId, forceOpen = null) {
+            const target = document.getElementById(`sub-ind-${tabId}`);
+            const isCurrentlyOpen = target && !target.classList.contains('hidden');
+            const shouldOpen = forceOpen !== null ? forceOpen : !isCurrentlyOpen;
+
             document.querySelectorAll('.sub-ind-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.nav-ind-tab').forEach(el => {
                 el.className = 'nav-ind-tab px-4 py-2 rounded-lg bg-pmmg-dark text-gray-400 border border-pmmg-border hover:text-gray-200 font-medium flex items-center gap-1.5';
             });
 
-            const target = document.getElementById(`sub-ind-${tabId}`);
-            if (target) target.classList.remove('hidden');
-
-            const activeBtn = document.getElementById(`tab-ind-${tabId}`);
-            if (activeBtn) {
-                activeBtn.className = 'nav-ind-tab px-4 py-2 rounded-lg bg-pmmg-card text-pmmg-khaki border border-pmmg-gold font-extrabold flex items-center gap-1.5';
+            if (shouldOpen && target) {
+                target.classList.remove('hidden');
+                const activeBtn = document.getElementById(`tab-ind-${tabId}`);
+                if (activeBtn) {
+                    activeBtn.className = 'nav-ind-tab px-4 py-2 rounded-lg bg-pmmg-card text-pmmg-khaki border border-pmmg-gold font-extrabold flex items-center gap-1.5';
+                }
             }
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
