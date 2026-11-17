@@ -1856,60 +1856,18 @@
             <div id="estadios-lobby-screen" class="space-y-4 app-screen-animate">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <!-- 1. MINEIRÃO -->
-                    <div onclick="openStadiumScreen('mineirao')" id="card-estadio-mineirao" class="bg-[#161616] p-5 rounded-2xl border border-[#C5A869]/45 hover:border-[#C5A869] hover:bg-pmmg-cardHover cursor-pointer transition-all shadow-lg flex flex-col justify-between space-y-4 active:scale-[0.98]">
-                        <div>
-                            <div class="flex justify-between items-center">
-                                <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-khaki font-bold px-2.5 py-0.5 rounded border border-[#C5A869]/35 uppercase">Pampulha • 34º BPM</span>
-                                <span class="text-xs font-mono font-bold text-pmmg-khaki bg-[#0D0D0D] px-2 py-0.5 rounded border border-pmmg-border">REDE: 34º BPM B</span>
-                            </div>
-                            <h3 class="text-3xl font-military text-pmmg-khaki font-bold uppercase mt-2">MINEIRÃO</h3>
-                            <p class="text-xs text-gray-200 font-semibold">Estádio Governador Magalhães Pinto</p>
-                            <p class="text-[11px] text-gray-400 mt-1">Fluxo de Torcedores, Vias de Acesso, Divisão Mandante x Visitante, Portões A-F, Camarotes, Croqui e RPAS.</p>
-                        </div>
-                        <div class="pt-3 border-t border-pmmg-border flex flex-wrap items-center justify-between gap-2 text-xs">
-                            <button type="button" onclick="event.stopPropagation(); downloadStadiumMap('mineirao')" class="px-2.5 py-1.5 bg-[#0D0D0D] hover:bg-pmmg-border text-pmmg-gold border border-pmmg-gold/50 rounded-lg font-bold flex items-center gap-1.5 transition-colors cursor-pointer" title="Baixar Mapa Offline do Mineirão">
-                                <i data-lucide="download" class="w-3.5 h-3.5"></i> <span>Baixar Mapa</span>
-                            </button>
-                            <span class="px-2.5 py-1.5 bg-[#0D0D0D] text-pmmg-khaki border border-pmmg-gold/50 rounded-lg font-bold flex items-center gap-1">Abrir Estádio <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
-                        </div>
+                    <div onclick="openStadiumScreen('mineirao')" id="card-estadio-mineirao" class="bg-[#161616] px-5 py-6 rounded-2xl border border-[#C5A869]/45 hover:border-[#C5A869] hover:bg-pmmg-cardHover cursor-pointer transition-all shadow-lg flex items-center justify-center text-center active:scale-[0.98]">
+                        <h3 class="text-xl sm:text-2xl font-military text-pmmg-khaki font-bold uppercase tracking-wide leading-snug">Estádio Governador Magalhães Pinto (Mineirão)</h3>
                     </div>
 
                     <!-- 2. ARENA MRV -->
-                    <div onclick="openStadiumScreen('arenamrv')" id="card-estadio-arenamrv" class="bg-[#161616] p-5 rounded-2xl border border-[#C5A869]/45 hover:border-[#C5A869] hover:bg-pmmg-cardHover cursor-pointer transition-all shadow-lg flex flex-col justify-between space-y-4 active:scale-[0.98]">
-                        <div>
-                            <div class="flex justify-between items-center">
-                                <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-khaki font-bold px-2.5 py-0.5 rounded border border-[#C5A869]/35 uppercase">Califórnia • 5º BPM</span>
-                                <span class="text-xs font-mono font-bold text-pmmg-khaki bg-[#0D0D0D] px-2 py-0.5 rounded border border-pmmg-border">REDE: 5º BPM A</span>
-                            </div>
-                            <h3 class="text-3xl font-military text-pmmg-khaki font-bold uppercase mt-2">ARENA MRV</h3>
-                            <p class="text-xs text-gray-200 font-semibold">Bairro Califórnia - Belo Horizonte/MG</p>
-                            <p class="text-[11px] text-gray-400 mt-1">Fluxo de Torcedores, 3 Barreiras, Portarias A-H, Portões 1-20, Visitante (Acesso F), Croqui e RPAS.</p>
-                        </div>
-                        <div class="pt-3 border-t border-pmmg-border flex flex-wrap items-center justify-between gap-2 text-xs">
-                            <button type="button" onclick="event.stopPropagation(); downloadStadiumMap('arenamrv')" class="px-2.5 py-1.5 bg-[#0D0D0D] hover:bg-pmmg-border text-pmmg-gold border border-pmmg-gold/50 rounded-lg font-bold flex items-center gap-1.5 transition-colors cursor-pointer" title="Baixar Mapa Offline da Arena MRV">
-                                <i data-lucide="download" class="w-3.5 h-3.5"></i> <span>Baixar Mapa</span>
-                            </button>
-                            <span class="px-2.5 py-1.5 bg-[#0D0D0D] text-pmmg-khaki border border-pmmg-gold/50 rounded-lg font-bold flex items-center gap-1">Abrir Estádio <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
-                        </div>
+                    <div onclick="openStadiumScreen('arenamrv')" id="card-estadio-arenamrv" class="bg-[#161616] px-5 py-6 rounded-2xl border border-[#C5A869]/45 hover:border-[#C5A869] hover:bg-pmmg-cardHover cursor-pointer transition-all shadow-lg flex items-center justify-center text-center active:scale-[0.98]">
+                        <h3 class="text-xl sm:text-2xl font-military text-pmmg-khaki font-bold uppercase tracking-wide leading-snug">Arena MRV</h3>
                     </div>
 
                     <!-- 3. INDEPENDÊNCIA -->
-                    <div onclick="openStadiumScreen('independencia')" id="card-estadio-independencia" class="bg-[#161616] p-5 rounded-2xl border border-[#C5A869]/45 hover:border-[#C5A869] hover:bg-pmmg-cardHover cursor-pointer transition-all shadow-lg flex flex-col justify-between space-y-4 active:scale-[0.98]">
-                        <div>
-                            <div class="flex justify-between items-center">
-                                <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-khaki font-bold px-2.5 py-0.5 rounded border border-[#C5A869]/35 uppercase">Horto • 16º BPM</span>
-                                <span class="text-xs font-mono font-bold text-pmmg-khaki bg-[#0D0D0D] px-2 py-0.5 rounded border border-pmmg-border">REDE: 16º BPM A</span>
-                            </div>
-                            <h3 class="text-3xl font-military text-pmmg-khaki font-bold uppercase mt-2">INDEPENDÊNCIA</h3>
-                            <p class="text-xs text-gray-200 font-semibold">Arena Independência - Bairro Horto</p>
-                            <p class="text-[11px] text-gray-400 mt-1">Fluxo de Torcedores, Rua Pitangui x Rua Ismênia Tunes, Portões 01 a 10, Croqui e RPAS.</p>
-                        </div>
-                        <div class="pt-3 border-t border-pmmg-border flex flex-wrap items-center justify-between gap-2 text-xs">
-                            <button type="button" onclick="event.stopPropagation(); downloadStadiumMap('independencia')" class="px-2.5 py-1.5 bg-[#0D0D0D] hover:bg-pmmg-border text-pmmg-gold border border-pmmg-gold/50 rounded-lg font-bold flex items-center gap-1.5 transition-colors cursor-pointer" title="Baixar Mapa Offline do Independência">
-                                <i data-lucide="download" class="w-3.5 h-3.5"></i> <span>Baixar Mapa</span>
-                            </button>
-                            <span class="px-2.5 py-1.5 bg-[#0D0D0D] text-pmmg-khaki border border-pmmg-gold/50 rounded-lg font-bold flex items-center gap-1">Abrir Estádio <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
-                        </div>
+                    <div onclick="openStadiumScreen('independencia')" id="card-estadio-independencia" class="bg-[#161616] px-5 py-6 rounded-2xl border border-[#C5A869]/45 hover:border-[#C5A869] hover:bg-pmmg-cardHover cursor-pointer transition-all shadow-lg flex items-center justify-center text-center active:scale-[0.98]">
+                        <h3 class="text-xl sm:text-2xl font-military text-pmmg-khaki font-bold uppercase tracking-wide leading-snug">Estádio Raimundo Sampaio (Arena Independência)</h3>
                     </div>
                 </div>
             </div>
@@ -1991,45 +1949,50 @@
                     </div>
                 </div>
 
-                                <!-- CAIXA RETRÁTIL (FECHADA POR PADRÃO): FLUXO DE TORCEDORES DO MINEIRÃO -->
-                <div class="bg-[#161616] border border-[#C5A869]/50 rounded-xl overflow-hidden shadow-lg">
+                                <!-- FLUXO DE TORCEDORES COMPLETO: MINEIRÃO -->
+                <div class="bg-[#161616] border border-[#C5A869]/60 rounded-xl overflow-hidden shadow-lg">
                     <button type="button" onclick="toggleStadiumCollapsibleBox('fluxo-mineirao')" class="w-full p-4 flex items-center justify-between gap-3 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
                         <div class="flex items-center gap-2.5">
                             <div class="p-2 rounded-lg bg-[#0D0D0D] text-pmmg-khaki border border-[#C5A869]/40 shrink-0">
                                 <i data-lucide="route" class="w-5 h-5 text-pmmg-gold"></i>
                             </div>
-                            <div>
-                                <h4 class="text-xl font-military text-pmmg-khaki uppercase tracking-wide leading-none">Fluxo de Torcedores • Mineirão</h4>
-                                <span class="text-[11px] text-gray-400 block mt-0.5">Vias de acesso, chegada/saída, divisão de torcidas e pontos críticos</span>
-                            </div>
+                            <h4 class="text-xl font-military text-pmmg-khaki uppercase tracking-wide leading-none">Fluxo de Torcedores • Mineirão</h4>
                         </div>
                         <div class="flex items-center gap-2 shrink-0">
-                            <span id="lbl-stag-fluxo-mineirao" class="text-[11px] font-bold text-pmmg-khaki">Abrir</span>
-                            <i data-lucide="chevron-down" id="ico-stag-fluxo-mineirao" class="w-4 h-4 text-pmmg-gold transition-transform duration-200"></i>
+                            <span id="lbl-stag-fluxo-mineirao" class="text-[11px] font-bold text-pmmg-khaki">Fechar</span>
+                            <i data-lucide="chevron-down" id="ico-stag-fluxo-mineirao" class="w-4 h-4 text-pmmg-gold transition-transform duration-200" style="transform: rotate(180deg);"></i>
                         </div>
                     </button>
-                    <div id="box-stag-fluxo-mineirao" class="hidden p-4 pt-3 border-t border-pmmg-border space-y-3 text-xs">
+                    <div id="box-stag-fluxo-mineirao" class="p-4 pt-3 border-t border-pmmg-border space-y-3 text-xs">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <!-- 1. VIAS DE ACESSO -->
                             <div class="bg-[#0D0D0D] p-3.5 rounded-xl border border-[#C5A869]/40 space-y-1.5">
-                                <strong class="text-pmmg-khaki uppercase block text-xs">1. Vias de Acesso (Chegada e Saída • Mandante)</strong>
-                                <p class="text-gray-200 leading-relaxed">• <strong>Eixo Sul (Principal):</strong> Chegada e dispersão pela <strong>Av. Presidente Carlos Luz (Catalão)</strong> e <strong>Av. Cel. Oscar Paschoal / Av. Rei Pelé</strong> -> acesso à <strong>Esplanada Sul (Portões B, C e D)</strong> e Estacionamento G1 Sul.</p>
-                                <p class="text-gray-200 leading-relaxed">• <strong>Eixo Norte / Leste:</strong> Chegada pela <strong>Av. Pres. Antônio Carlos (Estação MOVE Mineirão)</strong> e <strong>Av. Antônio Abrahão Caram</strong> -> acesso à <strong>Esplanada Norte (Portões E e F)</strong> e G1 Norte.</p>
+                                <strong class="text-pmmg-khaki uppercase block text-xs">1. Vias de Acesso</strong>
+                                <p class="text-gray-200 leading-relaxed">• <strong>Setor Sul / Oeste:</strong> Av. Presidente Carlos Luz (Catalão), Av. Cel. Oscar Paschoal, Av. Rei Pelé e Av. das Palmeiras / Av. C (acesso à Esplanada Sul e Estacionamentos G1 Sul, G2 e G3).</p>
+                                <p class="text-gray-200 leading-relaxed">• <strong>Setor Norte / Leste:</strong> Av. Antônio Abrahão Caram e Av. Pres. Antônio Carlos / Estação MOVE Mineirão (acesso à Esplanada Norte e G1 Norte).</p>
+                                <p class="text-gray-200 leading-relaxed">• <strong>Acesso Visitante:</strong> Av. Chaffir Ferreira (Portão 03 do Ginásio Mineirinho).</p>
                             </div>
+
+                            <!-- 2. ROTAS DE CHEGADA E SAÍDA -->
                             <div class="bg-[#0D0D0D] p-3.5 rounded-xl border border-[#C5A869]/40 space-y-1.5">
-                                <strong class="text-pmmg-khaki uppercase block text-xs">2. Vias de Acesso & Isolamento (Torcida Visitante)</strong>
-                                <p class="text-gray-200 leading-relaxed">• <strong>Chegada e Saída Segregada:</strong> Desembarque exclusivo na <strong>Av. Chaffir Ferreira (Portão 03 do Ginásio Mineirinho)</strong>.</p>
-                                <p class="text-gray-200 leading-relaxed">• <strong>Via de Integração (Corredor de Gradis):</strong> Do Mineirinho, a torcida visitante segue por corredor isolado até o <strong>Portão Interno A (Setor Roxo Superior Visitante)</strong>, sem cruzar com a Esplanada comum.</p>
+                                <strong class="text-pmmg-khaki uppercase block text-xs">2. Rotas de Chegada e Saída</strong>
+                                <p class="text-gray-200 leading-relaxed">• <strong>Chegada Mandante:</strong> Fluxo de pedestres pelas rampas/escadarias da Esplanada Sul (Portões Internos <strong>B, C e D</strong>) e Esplanada Norte (Portões Internos <strong>E e F</strong>); VIP/Camarotes pelo Hall Principal (entre A e B) ou elevadores do G1.</p>
+                                <p class="text-gray-200 leading-relaxed">• <strong>Chegada e Saída Visitante:</strong> Desembarque na Av. Chaffir Ferreira (Portão 03 do Mineirinho) -> corredor isolado de gradis (Via de Integração) -> <strong>Portão Interno A</strong> (Roxo Superior). Retenção pós-jogo até dispersão da Esplanada.</p>
                             </div>
+
+                            <!-- 3. SEPARAÇÃO DE TORCIDAS (MANDANTE / VISITANTE) -->
                             <div class="bg-[#0D0D0D] p-3.5 rounded-xl border border-pmmg-border space-y-1.5">
-                                <strong class="text-white uppercase block text-xs">3. Divisão de Torcidas (Jogos Comuns x Clássicos 50/50)</strong>
-                                <p class="text-gray-300 leading-relaxed">• <strong>Jogos Comuns (90/10):</strong> Mandante ocupa Esplanada Norte e Sul (Portões B, C, D, E, F e Hall VIP). Visitante restrito ao Portão A (Roxo Superior, isolado por divisórias e tela de 14m). Em Torcida Única, o Portão A também abre para o mandante.</p>
-                                <p class="text-gray-300 leading-relaxed">• <strong>Clássico 50/50:</strong> Esplanada dividida ao meio por barreiras duplas — <strong>Lado Sul</strong> (Carlos Luz / Rei Pelé -> Portões B, C e D) x <strong>Lado Norte</strong> (Abrahão Caram -> Portões A, E e F).</p>
+                                <strong class="text-white uppercase block text-xs">3. Separação de Torcidas (Mandante / Visitante)</strong>
+                                <p class="text-gray-300 leading-relaxed">• <strong>Jogos Padrão (90/10):</strong> Torcida Mandante ocupa 100% da Esplanada aberta (Portões <strong>B, C, D, E, F</strong> e Hall VIP). Torcida Visitante confinada no <strong>Portão A (Roxo Superior Visitante)</strong> com divisórias físicas e tela de proteção de 14m.</p>
+                                <p class="text-gray-300 leading-relaxed">• <strong>Torcida Única / Clássico 50/50:</strong> Em Torcida Única, o Portão A abre para o mandante. Em Clássico 50/50, a Esplanada é dividida ao meio por barreiras duplas (Lado Sul: Carlos Luz/Rei Pelé -> Portões B, C e D x Lado Norte: Abrahão Caram -> Portões A, E e F).</p>
                             </div>
-                            <div class="bg-[#0D0D0D] p-3.5 rounded-xl border border-pmmg-border space-y-1.5">
-                                <strong class="text-white uppercase block text-xs">4. Pontos Críticos de Policiamento & Retenção</strong>
-                                <p class="text-gray-300 leading-relaxed">• <strong>Cruzamento Av. Abrahão Caram x Av. Cel. Oscar Paschoal</strong> e entorno do <strong>Mineirinho (Av. Chaffir Ferreira)</strong>;</p>
-                                <p class="text-gray-300 leading-relaxed">• <strong>Escadarias/Rampas Norte e Sul</strong> e passarela da <strong>Estação MOVE (Av. Antônio Carlos)</strong> na saída;</p>
-                                <p class="text-gray-300 leading-relaxed">• <strong>Retenção Pós-Jogo:</strong> Torcida visitante retida no Setor Roxo Superior (Portão A) até o escoamento da Esplanada.</p>
+
+                            <!-- 4. PONTOS CRÍTICOS DE ATENÇÃO -->
+                            <div class="bg-[#0D0D0D] p-3.5 rounded-xl border border-red-500/45 space-y-1.5">
+                                <strong class="text-red-400 uppercase block text-xs">4. Pontos Críticos de Atenção</strong>
+                                <p class="text-gray-300 leading-relaxed">• <strong>Cruzamento Av. Antônio Abrahão Caram x Av. Cel. Oscar Paschoal</strong> (convergência de torcidas e bloqueio viário);</p>
+                                <p class="text-gray-300 leading-relaxed">• <strong>Entorno do Ginásio Mineirinho (Av. Chaffir Ferreira)</strong> e corredor de gradis rumo ao Portão A (escolta visitante);</p>
+                                <p class="text-gray-300 leading-relaxed">• <strong>Passarela da Estação MOVE (Av. Antônio Carlos)</strong> e escadarias Sul/Norte na dispersão pós-jogo.</p>
                             </div>
                         </div>
                     </div>
@@ -2968,45 +2931,50 @@
                     </div>
                 </div>
 
-                                <!-- CAIXA RETRÁTIL (FECHADA POR PADRÃO): FLUXO DE TORCEDORES DA ARENA MRV -->
-                <div class="bg-[#161616] border border-[#C5A869]/50 rounded-xl overflow-hidden shadow-lg">
+                                <!-- FLUXO DE TORCEDORES COMPLETO: ARENA MRV -->
+                <div class="bg-[#161616] border border-[#C5A869]/60 rounded-xl overflow-hidden shadow-lg">
                     <button type="button" onclick="toggleStadiumCollapsibleBox('fluxo-arenamrv')" class="w-full p-4 flex items-center justify-between gap-3 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
                         <div class="flex items-center gap-2.5">
                             <div class="p-2 rounded-lg bg-[#0D0D0D] text-pmmg-khaki border border-[#C5A869]/40 shrink-0">
                                 <i data-lucide="route" class="w-5 h-5 text-pmmg-gold"></i>
                             </div>
-                            <div>
-                                <h4 class="text-xl font-military text-pmmg-khaki uppercase tracking-wide leading-none">Fluxo de Torcedores • Arena MRV</h4>
-                                <span class="text-[11px] text-gray-400 block mt-0.5">Vias de acesso, chegada/saída, divisão de torcidas e pontos críticos</span>
-                            </div>
+                            <h4 class="text-xl font-military text-pmmg-khaki uppercase tracking-wide leading-none">Fluxo de Torcedores • Arena MRV</h4>
                         </div>
                         <div class="flex items-center gap-2 shrink-0">
-                            <span id="lbl-stag-fluxo-arenamrv" class="text-[11px] font-bold text-pmmg-khaki">Abrir</span>
-                            <i data-lucide="chevron-down" id="ico-stag-fluxo-arenamrv" class="w-4 h-4 text-pmmg-gold transition-transform duration-200"></i>
+                            <span id="lbl-stag-fluxo-arenamrv" class="text-[11px] font-bold text-pmmg-khaki">Fechar</span>
+                            <i data-lucide="chevron-down" id="ico-stag-fluxo-arenamrv" class="w-4 h-4 text-pmmg-gold transition-transform duration-200" style="transform: rotate(180deg);"></i>
                         </div>
                     </button>
-                    <div id="box-stag-fluxo-arenamrv" class="hidden p-4 pt-3 border-t border-pmmg-border space-y-3 text-xs">
+                    <div id="box-stag-fluxo-arenamrv" class="p-4 pt-3 border-t border-pmmg-border space-y-3 text-xs">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <!-- 1. VIAS DE ACESSO -->
                             <div class="bg-[#0D0D0D] p-3.5 rounded-xl border border-[#C5A869]/40 space-y-1.5">
-                                <strong class="text-pmmg-khaki uppercase block text-xs">1. Vias de Acesso (Chegada e Saída • Mandante)</strong>
-                                <p class="text-gray-200 leading-relaxed">• <strong>Eixo Sul (Via Expressa):</strong> Subida de pedestres pelo <strong>Elevado da Massa / Praça do Torcedor (Acessos A e B)</strong> e caminhada a partir da <strong>Estação Eldorado do Metrô (~1,5 km)</strong>.</p>
+                                <strong class="text-pmmg-khaki uppercase block text-xs">1. Vias de Acesso</strong>
+                                <p class="text-gray-200 leading-relaxed">• <strong>Eixo Sul (Principal Mandante):</strong> Via Expressa (Av. Juscelino Kubitschek) e caminhada da Estação Eldorado do Metrô (~1,5 km) -> subida pelo <strong>Elevado da Massa / Praça do Torcedor (Acessos A e B)</strong>.</p>
                                 <p class="text-gray-200 leading-relaxed">• <strong>Eixo Leste & Oeste:</strong> <strong>Rua Cristina Maria de Assis, 202/410</strong> (Portarias G e H / Escadaria para Esplanada) e <strong>Rua Walfrido Mendes</strong> (Acessos C, D e E).</p>
+                                <p class="text-gray-200 leading-relaxed">• <strong>Eixo Norte (Exclusivo Visitante):</strong> <strong>Rua Margarida de Assis Fonseca (Portaria F)</strong>, acessada pela BR-040 (Av. Cícero Idelfonso) ou Anel Rodoviário (Rua Emerenciana Batista Camargos).</p>
                             </div>
+
+                            <!-- 2. ROTAS DE CHEGADA E SAÍDA -->
                             <div class="bg-[#0D0D0D] p-3.5 rounded-xl border border-[#C5A869]/40 space-y-1.5">
-                                <strong class="text-pmmg-khaki uppercase block text-xs">2. Vias de Acesso & Isolamento (Torcida Visitante)</strong>
-                                <p class="text-gray-200 leading-relaxed">• <strong>Rota Norte Isolada:</strong> Chegada exclusivamente pela <strong>BR-040 (via Av. Cícero Idelfonso)</strong> ou pelo <strong>Anel Rodoviário (via Rua Emerenciana Batista Camargos)</strong>.</p>
-                                <p class="text-gray-200 leading-relaxed">• <strong>Portaria Externa F:</strong> Triagem e acesso na <strong>Rua Margarida de Assis Fonseca</strong> direto para os <strong>Portões Internos 19 e 20 (Inter Norte Visitante)</strong>.</p>
+                                <strong class="text-pmmg-khaki uppercase block text-xs">2. Rotas de Chegada e Saída</strong>
+                                <p class="text-gray-200 leading-relaxed">• <strong>Chegada e Dispersão Mandante:</strong> Triagem em <strong>3 Linhas de Barreira</strong> (1ª Filtro de ingresso na Esplanada; 2ª Revista pessoal; 3ª Catracas torniquete com biometria facial) -> <strong>Portões Internos 1 a 18</strong>. Saída com pista reversível na Via Expressa sentido Contagem.</p>
+                                <p class="text-gray-200 leading-relaxed">• <strong>Chegada e Saída Visitante:</strong> Entrada direta pela <strong>Portaria Externa F (R. Margarida de Assis Fonseca)</strong> -> <strong>Portões Internos 19 e 20</strong>. Retenção pós-jogo no setor até liberação das vias locais Norte.</p>
                             </div>
+
+                            <!-- 3. SEPARAÇÃO DE TORCIDAS (MANDANTE / VISITANTE) -->
                             <div class="bg-[#0D0D0D] p-3.5 rounded-xl border border-pmmg-border space-y-1.5">
-                                <strong class="text-white uppercase block text-xs">3. Divisão de Torcidas & 3 Linhas de Barreira</strong>
-                                <p class="text-gray-300 leading-relaxed">• <strong>Mandante (Portões 1 a 18):</strong> Passa por <strong>3 Linhas de Barreira</strong> (1ª Filtro de ingresso na entrada da Esplanada; 2ª Revista pessoal; 3ª Catracas torniquete com biometria facial).</p>
-                                <p class="text-gray-300 leading-relaxed">• <strong>Visitante (Portões 19 e 20):</strong> Isolado no anel superior Norte (~2.863 lugares + 695 lugares de zona de amortecimento), sem acesso à Esplanada ou Via Expressa.</p>
+                                <strong class="text-white uppercase block text-xs">3. Separação de Torcidas (Mandante / Visitante)</strong>
+                                <p class="text-gray-300 leading-relaxed">• <strong>Torcida Mandante:</strong> Circula pela Esplanada aberta e acessa todos os setores Sul, Leste, Oeste e Brahma/Inter Norte (<strong>Portões 1 a 18</strong>).</p>
+                                <p class="text-gray-300 leading-relaxed">• <strong>Torcida Visitante:</strong> Totalmente segregada no anel superior Norte (<strong>Inter Norte Visitante • Portões 19 e 20</strong>, ~2.863 lugares + 695 lugares de zona de amortecimento), sem acesso à Esplanada ou Via Expressa.</p>
                             </div>
-                            <div class="bg-[#0D0D0D] p-3.5 rounded-xl border border-pmmg-border space-y-1.5">
-                                <strong class="text-white uppercase block text-xs">4. Pontos Críticos de Policiamento & Retenção</strong>
-                                <p class="text-gray-300 leading-relaxed">• <strong>Via Expressa (Pista Reversível)</strong> e base do <strong>Elevado da Massa</strong>;</p>
-                                <p class="text-gray-300 leading-relaxed">• <strong>R. Cristina Maria de Assis x R. José Cláudio Sanches / R. João Batista Vieira</strong> (concentração e embarque pós-jogo);</p>
-                                <p class="text-gray-300 leading-relaxed">• <strong>Bolsão R. Margarida de Assis Fonseca x R. Emerenciana Camargos</strong> (escolta e retenção da torcida visitante).</p>
+
+                            <!-- 4. PONTOS CRÍTICOS DE ATENÇÃO -->
+                            <div class="bg-[#0D0D0D] p-3.5 rounded-xl border border-red-500/45 space-y-1.5">
+                                <strong class="text-red-400 uppercase block text-xs">4. Pontos Críticos de Atenção</strong>
+                                <p class="text-gray-300 leading-relaxed">• <strong>Base do Elevado da Massa e Via Expressa</strong> (fluxo intenso de pedestres e operação de pista reversível);</p>
+                                <p class="text-gray-300 leading-relaxed">• <strong>Bolsão Rua Margarida de Assis Fonseca x Rua Emerenciana Batista Camargos</strong> (escolta, triagem e retenção da torcida visitante);</p>
+                                <p class="text-gray-300 leading-relaxed">• <strong>Rua Cristina Maria de Assis x Rua José Cláudio Sanches / Rua João Batista Vieira</strong> (concentração e embarque pós-jogo).</p>
                             </div>
                         </div>
                     </div>
@@ -3648,44 +3616,50 @@
                     </div>
                 </div>
 
-                                <!-- CAIXA RETRÁTIL (FECHADA POR PADRÃO): FLUXO DE TORCEDORES DA ARENA INDEPENDÊNCIA -->
-                <div class="bg-[#161616] border border-[#C5A869]/50 rounded-xl overflow-hidden shadow-lg">
+                                <!-- FLUXO DE TORCEDORES COMPLETO: INDEPENDÊNCIA -->
+                <div class="bg-[#161616] border border-[#C5A869]/60 rounded-xl overflow-hidden shadow-lg">
                     <button type="button" onclick="toggleStadiumCollapsibleBox('fluxo-independencia')" class="w-full p-4 flex items-center justify-between gap-3 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
                         <div class="flex items-center gap-2.5">
                             <div class="p-2 rounded-lg bg-[#0D0D0D] text-pmmg-khaki border border-[#C5A869]/40 shrink-0">
                                 <i data-lucide="route" class="w-5 h-5 text-pmmg-gold"></i>
                             </div>
-                            <div>
-                                <h4 class="text-xl font-military text-pmmg-khaki uppercase tracking-wide leading-none">Fluxo de Torcedores • Independência</h4>
-                                <span class="text-[11px] text-gray-400 block mt-0.5">Vias de acesso, chegada/saída, divisão de torcidas e pontos críticos</span>
-                            </div>
+                            <h4 class="text-xl font-military text-pmmg-khaki uppercase tracking-wide leading-none">Fluxo de Torcedores • Independência</h4>
                         </div>
                         <div class="flex items-center gap-2 shrink-0">
-                            <span id="lbl-stag-fluxo-independencia" class="text-[11px] font-bold text-pmmg-khaki">Abrir</span>
-                            <i data-lucide="chevron-down" id="ico-stag-fluxo-independencia" class="w-4 h-4 text-pmmg-gold transition-transform duration-200"></i>
+                            <span id="lbl-stag-fluxo-independencia" class="text-[11px] font-bold text-pmmg-khaki">Fechar</span>
+                            <i data-lucide="chevron-down" id="ico-stag-fluxo-independencia" class="w-4 h-4 text-pmmg-gold transition-transform duration-200" style="transform: rotate(180deg);"></i>
                         </div>
                     </button>
-                    <div id="box-stag-fluxo-independencia" class="hidden p-4 pt-3 border-t border-pmmg-border space-y-3 text-xs">
+                    <div id="box-stag-fluxo-independencia" class="p-4 pt-3 border-t border-pmmg-border space-y-3 text-xs">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <!-- 1. VIAS DE ACESSO -->
                             <div class="bg-[#0D0D0D] p-3.5 rounded-xl border border-[#C5A869]/40 space-y-1.5">
-                                <strong class="text-pmmg-khaki uppercase block text-xs">1. Vias de Acesso (Chegada e Saída • Mandante)</strong>
-                                <p class="text-gray-200 leading-relaxed">• <strong>Eixo Oeste (Principal):</strong> Chegada pelas ruas do Horto / Santa Tereza / Sagrada Família (<strong>R. Gustavo da Silveira, R. Genoveva de Souza e R. Conselheiro Rocha</strong>) rumo à <strong>Rua Pitangui, 3230 (Portões 01, 03, 04 e 07 - Bloco Pitangui)</strong>.</p>
-                                <p class="text-gray-200 leading-relaxed">• <strong>Eixo Norte:</strong> <strong>Rua de Serviço</strong> atendendo o <strong>Bloco Minas (Portões 05, 06 e 09)</strong> em jogos de maior público.</p>
+                                <strong class="text-pmmg-khaki uppercase block text-xs">1. Vias de Acesso</strong>
+                                <p class="text-gray-200 leading-relaxed">• <strong>Eixo Oeste (Principal Mandante):</strong> <strong>Rua Pitangui, 3230</strong>, acessada via Rua Gustavo da Silveira, Rua Genoveva de Souza e Rua Conselheiro Rocha (Horto / Sagrada Família / Santa Tereza).</p>
+                                <p class="text-gray-200 leading-relaxed">• <strong>Eixo Norte:</strong> <strong>Rua de Serviço</strong> (ligação entre Pitangui e Ismênia para acesso ao Bloco Minas).</p>
+                                <p class="text-gray-200 leading-relaxed">• <strong>Eixo Leste (Visitante):</strong> <strong>Rua Ismênia Tunes</strong>, acessada pela <strong>Av. Silviano Brandão</strong> e <strong>Av. dos Andradas / Estação Horto do Metrô (~600m)</strong>.</p>
                             </div>
+
+                            <!-- 2. ROTAS DE CHEGADA E SAÍDA -->
                             <div class="bg-[#0D0D0D] p-3.5 rounded-xl border border-[#C5A869]/40 space-y-1.5">
-                                <strong class="text-pmmg-khaki uppercase block text-xs">2. Vias de Acesso & Isolamento (Torcida Visitante)</strong>
-                                <p class="text-gray-200 leading-relaxed">• <strong>Eixo Leste (Oposto à Pitangui):</strong> Chegada pela <strong>Av. Silviano Brandão</strong> e <strong>Av. dos Andradas / Estação Horto do Metrô</strong> subindo para a <strong>Rua Ismênia Tunes</strong>.</p>
-                                <p class="text-gray-200 leading-relaxed">• <strong>Acesso Exclusivo:</strong> Entrada pelo <strong>Portão 10 (e Portão 08) – Setor Cadeira Visitante Ismênia</strong>.</p>
+                                <strong class="text-pmmg-khaki uppercase block text-xs">2. Rotas de Chegada e Saída</strong>
+                                <p class="text-gray-200 leading-relaxed">• <strong>Chegada e Saída Mandante:</strong> Entrada direta da calçada da Rua Pitangui para os <strong>Portões 01 (Camarotes), 03 (Especial Pitangui), 04 (VIP) e 07 (Superior)</strong>, além dos <strong>Portões 05, 06 e 09 (Bloco Minas)</strong> pela Rua de Serviço.</p>
+                                <p class="text-gray-200 leading-relaxed">• <strong>Chegada e Saída Visitante:</strong> Subida pela Av. Silviano Brandão -> bloqueio da Rua Ismênia Tunes -> entrada exclusiva pelo <strong>Portão 10 (e Portão 08)</strong>. Retenção pós-jogo até dispersão da Rua Pitangui e Estação Horto.</p>
                             </div>
+
+                            <!-- 3. SEPARAÇÃO DE TORCIDAS (MANDANTE / VISITANTE) -->
                             <div class="bg-[#0D0D0D] p-3.5 rounded-xl border border-pmmg-border space-y-1.5">
-                                <strong class="text-white uppercase block text-xs">3. Divisão de Torcidas (Ruas Opostas sem Esplanada)</strong>
-                                <p class="text-gray-300 leading-relaxed">• Como os portões dão diretamente nas calçadas, a segregação ocorre por <strong>interdição e bloqueio físico das vias opostas</strong>: <strong>Rua Pitangui</strong> exclusiva para a torcida mandante e <strong>Rua Ismênia Tunes</strong> confinada por gradis e policiamento para a torcida visitante (sem venda física na bilheteria para visitantes).</p>
+                                <strong class="text-white uppercase block text-xs">3. Separação de Torcidas (Mandante / Visitante)</strong>
+                                <p class="text-gray-300 leading-relaxed">• <strong>Segregação por Ruas Opostas (Sem Esplanada):</strong> Como os portões dão diretamente nas vias públicas, a divisão ocorre pela interdição física de lados opostos: <strong>Rua Pitangui</strong> exclusiva para a torcida mandante e <strong>Rua Ismênia Tunes</strong> confinada por gradis e policiamento para a torcida visitante.</p>
+                                <p class="text-gray-300 leading-relaxed">• <strong>Controle de Bilheteria:</strong> Venda de ingressos visitantes exclusivamente online (sem venda física nas bilheterias do estádio para evitar cruzamento de público).</p>
                             </div>
-                            <div class="bg-[#0D0D0D] p-3.5 rounded-xl border border-pmmg-border space-y-1.5">
-                                <strong class="text-white uppercase block text-xs">4. Pontos Críticos de Policiamento & Retenção</strong>
+
+                            <!-- 4. PONTOS CRÍTICOS DE ATENÇÃO -->
+                            <div class="bg-[#0D0D0D] p-3.5 rounded-xl border border-red-500/45 space-y-1.5">
+                                <strong class="text-red-400 uppercase block text-xs">4. Pontos Críticos de Atenção</strong>
                                 <p class="text-gray-300 leading-relaxed">• <strong>Esquinas da Rua Pitangui x Rua Gustavo da Silveira (Sul)</strong> e <strong>Rua de Serviço (Norte)</strong>;</p>
-                                <p class="text-gray-300 leading-relaxed">• <strong>Subida da Rua Ismênia Tunes x Av. Silviano Brandão</strong> (escolta e triagem visitante);</p>
-                                <p class="text-gray-300 leading-relaxed">• <strong>Estação Horto / Estação Santa Tereza do Metrô (~600m)</strong> e Portão Sul de Delegações (R. Gustavo da Silveira).</p>
+                                <p class="text-gray-300 leading-relaxed">• <strong>Subida da Rua Ismênia Tunes x Av. Silviano Brandão</strong> (triagem e escolta da torcida visitante);</p>
+                                <p class="text-gray-300 leading-relaxed">• <strong>Estação Horto / Estação Santa Tereza do Metrô</strong> e portão de chegada das delegações na Rua Gustavo da Silveira.</p>
                             </div>
                         </div>
                     </div>
@@ -12044,8 +12018,9 @@
                 el.classList.remove('app-screen-animate');
             });
 
-            // Fecha por padrão todas as caixas internas e seções ao abrir o estádio
+            // Fecha sub-abas extras e exibe imediatamente o Fluxo de Torcedores completo e organizado
             closeAllStadiumInternalBoxes();
+            window.toggleStadiumCollapsibleBox(`fluxo-${stadiumId}`, true);
 
             const target = document.getElementById(`estadio-content-${stadiumId}`);
             if (target) {
@@ -12486,7 +12461,7 @@
                     category: 'Estádios • Painel Principal',
                     badgeColor: 'bg-emerald-950 text-emerald-400 border-emerald-500/40',
                     keywords: `${st.name} ${st.extra} estadio eventos futebol portoes setores`,
-                    snippet: `Acessos Mandante x Visitante, Portões, Camarotes, Croqui do Estádio e Fluxo Aéreo / Drones.`,
+                    snippet: `Fluxo de Torcedores, Vias de Acesso, Separação de Torcidas, Portões e Croqui.`,
                     execute: () => {
                         showView('estadios');
                         openStadiumScreen(st.id);
