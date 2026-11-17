@@ -1583,6 +1583,145 @@
                 <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki">Aeronaves Remotamente Pilotadas</span>
             </div>
             <div id="rpasSubtabPainel" class="space-y-4">
+                <!-- 1. CAIXA DE SELEÇÃO DE RPA (ESCALÁVEL PARA FROTA FUTURA) -->
+                <div id="rpasFleetSelectorCard" class="bg-[#161616] border border-[#C5A869]/45 rounded-2xl p-4 sm:p-5 shadow-xl space-y-3">
+                    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border pb-2.5">
+                        <div class="flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-pmmg-gold shrink-0">
+                                <rect x="9" y="9" width="6" height="6" rx="1"/>
+                                <path d="M9 9 5.5 5.5"/><path d="M15 9l3.5-3.5"/><path d="M9 15l-3.5 3.5"/><path d="M15 15l3.5 3.5"/>
+                                <circle cx="4.5" cy="4.5" r="2.5"/><circle cx="19.5" cy="4.5" r="2.5"/><circle cx="4.5" cy="19.5" r="2.5"/><circle cx="19.5" cy="19.5" r="2.5"/>
+                            </svg>
+                            <label for="rpasFleetSelectInput" class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki">
+                                Seleção de RPA
+                            </label>
+                        </div>
+                        <span id="rpasFleetCountBadge" class="text-[10px] font-mono font-bold text-pmmg-gold bg-[#0D0D0D] px-2.5 py-0.5 rounded border border-[#C5A869]/40">
+                            1 Aeronave Cadastrada
+                        </span>
+                    </div>
+
+                    <div class="space-y-2.5">
+                        <select id="rpasFleetSelectInput" onchange="selectRpasAircraftFromFleet(this.value)" class="w-full px-3.5 py-2.5 bg-[#0D0D0D] text-white text-xs sm:text-sm font-bold rounded-xl border border-[#C5A869]/50 focus:outline-none focus:border-pmmg-gold cursor-pointer">
+                            <option value="m3e_pp373745025" selected>DJI Mavic 3 Enterprise (M3E) • Prefixo: PP-373745025</option>
+                        </select>
+
+                        <!-- Identificação da Aeronave Selecionada -->
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+                            <div class="bg-[#0D0D0D] px-3 py-2 rounded-xl border border-pmmg-border">
+                                <span class="text-[10px] uppercase font-bold text-gray-400 block">Modelo</span>
+                                <strong id="rpasSelectedModelText" class="text-white font-bold block mt-0.5 truncate">DJI Mavic 3 Enterprise (M3E)</strong>
+                            </div>
+                            <div class="bg-[#0D0D0D] px-3 py-2 rounded-xl border border-pmmg-border">
+                                <span class="text-[10px] uppercase font-bold text-gray-400 block">Número de Série</span>
+                                <strong id="rpasSelectedSerialText" class="text-pmmg-khaki font-mono font-bold block mt-0.5 truncate">1581F5FHD233T00DH581</strong>
+                            </div>
+                            <div class="bg-[#0D0D0D] px-3 py-2 rounded-xl border border-pmmg-border">
+                                <span class="text-[10px] uppercase font-bold text-gray-400 block">Prefixo</span>
+                                <strong id="rpasSelectedPrefixText" class="text-pmmg-gold font-mono font-extrabold block mt-0.5 truncate">PP-373745025</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. CAIXA "DADOS DA AERONAVE" (FECHADA POR PADRÃO, LOGO ABAIXO DA SELEÇÃO DE RPA) -->
+                <div id="rpasAircraftDataCollapsibleCard" class="bg-[#161616] border border-[#C5A869]/45 rounded-2xl overflow-hidden shadow-xl">
+                    <button type="button" onclick="toggleRpasAircraftDataBox()" id="btnToggleRpasAircraftDataBox" class="w-full p-4 sm:p-5 flex items-center justify-between gap-3 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
+                        <div class="flex items-center gap-2.5">
+                            <div class="p-2 rounded-xl bg-[#0D0D0D] text-pmmg-khaki border border-[#C5A869]/40 shrink-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-pmmg-gold">
+                                    <rect x="9" y="9" width="6" height="6" rx="1"/>
+                                    <path d="M9 9 5.5 5.5"/><path d="M15 9l3.5-3.5"/><path d="M9 15l-3.5 3.5"/><path d="M15 15l3.5 3.5"/>
+                                    <circle cx="4.5" cy="4.5" r="2.5"/><circle cx="19.5" cy="4.5" r="2.5"/><circle cx="4.5" cy="19.5" r="2.5"/><circle cx="19.5" cy="19.5" r="2.5"/>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl sm:text-2xl font-military text-white uppercase tracking-wide leading-none">
+                                Dados da Aeronave
+                            </h3>
+                        </div>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <span id="lblRpasAircraftDataToggle" class="text-[11px] font-bold text-pmmg-khaki">Abrir</span>
+                            <i data-lucide="chevron-down" id="iconRpasAircraftDataChevron" class="w-4 h-4 text-pmmg-gold transition-transform duration-200"></i>
+                        </div>
+                    </button>
+
+                    <!-- Corpo Expansível dos Dados da Aeronave (Fechado por padrão) -->
+                    <div id="rpasAircraftDataExpandableBody" class="hidden p-4 sm:p-5 pt-3 border-t border-pmmg-border space-y-4">
+                        <!-- Cabeçalho Técnico da Aeronave Selecionada -->
+                        <div class="bg-[#0D0D0D] p-4 rounded-xl border border-pmmg-border space-y-3">
+                            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border pb-2">
+                                <div>
+                                    <span id="rpasSpecBadge" class="text-[10px] font-extrabold uppercase tracking-wider text-pmmg-khaki block">Ficha Técnica • Prefixo PP-373745025</span>
+                                    <h4 id="rpasSpecTitle" class="text-lg sm:text-xl font-military text-white uppercase tracking-wide leading-none mt-0.5">DJI Mavic 3 Enterprise (M3E)</h4>
+                                </div>
+                                <span id="rpasSpecSerialBadge" class="text-[10px] font-mono text-pmmg-gold bg-[#161616] px-2.5 py-1 rounded border border-[#C5A869]/40">S/N: 1581F5FHD233T00DH581</span>
+                            </div>
+
+                            <!-- Especificações Técnicas Enriquecidas -->
+                            <div id="rpasSpecGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 text-xs">
+                                <div class="bg-[#161616] p-3 rounded-xl border border-pmmg-border space-y-0.5">
+                                    <span class="text-[10px] text-pmmg-khaki uppercase font-extrabold block">Alcance Máximo de Transmissão</span>
+                                    <strong id="rpasSpecTransmission" class="text-white font-mono text-xs sm:text-sm block">O3 Enterprise: até 15 km (FCC) / 8 km (CE)</strong>
+                                </div>
+
+                                <div class="bg-[#161616] p-3 rounded-xl border border-pmmg-border space-y-0.5">
+                                    <span class="text-[10px] text-pmmg-khaki uppercase font-extrabold block">Capacidade de Zoom</span>
+                                    <strong id="rpasSpecZoom" class="text-white font-mono text-xs sm:text-sm block">Câmera Tele: Zoom híbrido até 56x e óptico de 7x</strong>
+                                </div>
+
+                                <div class="bg-[#161616] p-3 rounded-xl border border-pmmg-border space-y-0.5">
+                                    <span class="text-[10px] text-pmmg-khaki uppercase font-extrabold block">Resistência Máxima ao Vento</span>
+                                    <strong id="rpasSpecWind" class="text-white font-mono text-xs sm:text-sm block">12 m/s (~43 km/h)</strong>
+                                </div>
+
+                                <div class="bg-[#161616] p-3 rounded-xl border border-red-500/40 space-y-0.5">
+                                    <span class="text-[10px] text-red-400 uppercase font-extrabold block">Resistência à Chuva / Índice IP</span>
+                                    <strong id="rpasSpecRain" class="text-gray-100 text-xs sm:text-sm block">Sem proteção IP contra chuva — não operar sob precipitação</strong>
+                                </div>
+
+                                <div class="bg-[#161616] p-3 rounded-xl border border-pmmg-border space-y-0.5">
+                                    <span class="text-[10px] text-pmmg-khaki uppercase font-extrabold block">Autonomia Máxima de Voo</span>
+                                    <strong id="rpasSpecAutonomy" class="text-white font-mono text-xs sm:text-sm block">Até 45 min (em condições ideais)</strong>
+                                </div>
+
+                                <div class="bg-[#161616] p-3 rounded-xl border border-[#C5A869]/40 flex items-center justify-between gap-2">
+                                    <div class="min-w-0">
+                                        <span class="text-[10px] text-pmmg-gold uppercase font-extrabold block">Documentação Oficial</span>
+                                        <span class="text-[11px] text-gray-300 truncate block">PDF PT-BR (M3E)</span>
+                                    </div>
+                                    <a id="rpasSpecManualBtn" href="https://dl.djicdn.com/downloads/DJI_Mavic_3_Enterprise/20250916/DJI_Mavic_3_Enterprise_Series_User_Manual_PT.pdf" target="_blank" rel="noopener noreferrer" class="px-3 py-2 bg-[#0D0D0D] hover:bg-pmmg-cardHover text-pmmg-gold border border-[#C5A869] rounded-lg text-[11px] font-extrabold uppercase tracking-wide flex items-center gap-1.5 shrink-0 transition-all">
+                                        <i data-lucide="file-down" class="w-4 h-4"></i>
+                                        <span>Baixar / Abrir Manual da Aeronave</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Atalhos Complementares: Materiais EAD e Sistema SARPAS -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <a href="https://ead.policiamilitar.mg.gov.br/course/view.php?id=115" target="_blank" rel="noopener noreferrer" class="bg-[#0D0D0D] p-3.5 rounded-xl border border-[#C5A869]/40 hover:border-[#C5A869] flex items-center justify-between group transition-all">
+                                <div>
+                                    <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-gold font-bold px-2 py-0.5 rounded border border-pmmg-gold/40 uppercase">EAD PMMG</span>
+                                    <h4 class="text-xl font-military text-white font-bold uppercase mt-1 group-hover:text-pmmg-gold transition-colors">MATERIAIS PARA PILOTOS</h4>
+                                </div>
+                                <div class="p-2.5 bg-[#161616] text-pmmg-gold border border-pmmg-border rounded-lg group-hover:border-[#C5A869] transition-colors shrink-0">
+                                    <i data-lucide="folder-lock" class="w-5 h-5"></i>
+                                </div>
+                            </a>
+
+                            <a href="https://sarpas.decea.mil.br/login?expired=true" target="_blank" rel="noopener noreferrer" class="bg-[#0D0D0D] p-3.5 rounded-xl border border-[#C5A869]/40 hover:border-[#C5A869] flex items-center justify-between group transition-all">
+                                <div>
+                                    <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-khaki font-bold px-2 py-0.5 rounded border border-pmmg-khaki/30 uppercase">DECEA</span>
+                                    <h4 class="text-xl font-military text-white font-bold uppercase mt-1 group-hover:text-pmmg-khaki transition-colors">SISTEMA SARPAS</h4>
+                                </div>
+                                <div class="p-2.5 bg-[#161616] text-pmmg-khaki border border-pmmg-border rounded-lg group-hover:border-[#C5A869] transition-colors shrink-0">
+                                    <i data-lucide="plane" class="w-5 h-5"></i>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
                 
                 <!-- 1. PARÂMETROS DE VOO & CONDIÇÕES METEOROLÓGICAS (CAIXA FECHADA POR PADRÃO, VISUAL ESCURO E LIMPO) -->
                 <div id="rpasFlightAssessmentContainer" class="bg-[#161616] border border-[#C5A869]/45 rounded-2xl overflow-hidden shadow-xl">
@@ -1816,106 +1955,6 @@
                                     <span class="text-[11px] text-gray-400 block leading-relaxed">Área de pouso e decolagem livre de fios, cabos, árvores e obstáculos próximos.</span>
                                 </div>
                             </label>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 3. DADOS DA AERONAVE DA UNIDADE, MANUAIS & SARPAS (CAIXA FECHADA POR PADRÃO, VISUAL ESCURO E LIMPO) -->
-                <div id="rpasAircraftDataCollapsibleCard" class="bg-[#161616] border border-[#C5A869]/45 rounded-2xl overflow-hidden shadow-xl">
-                    <button type="button" onclick="toggleRpasAircraftDataBox()" id="btnToggleRpasAircraftDataBox" class="w-full p-4 sm:p-5 flex items-center justify-between gap-3 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
-                        <div class="flex items-center gap-2.5">
-                            <div class="p-2 rounded-xl bg-[#0D0D0D] text-pmmg-khaki border border-[#C5A869]/40 shrink-0">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-pmmg-gold">
-                                    <rect x="9" y="9" width="6" height="6" rx="1"/>
-                                    <path d="M9 9 5.5 5.5"/><path d="M15 9l3.5-3.5"/><path d="M9 15l-3.5 3.5"/><path d="M15 15l3.5 3.5"/>
-                                    <circle cx="4.5" cy="4.5" r="2.5"/><circle cx="19.5" cy="4.5" r="2.5"/><circle cx="4.5" cy="19.5" r="2.5"/><circle cx="19.5" cy="19.5" r="2.5"/>
-                                </svg>
-                            </div>
-                            <div class="flex items-center gap-2.5 flex-wrap">
-                                <h3 class="text-xl sm:text-2xl font-military text-white uppercase tracking-wide leading-none">
-                                    Dados da Aeronave da Unidade, Manuais & SARPAS
-                                </h3>
-                                <span class="px-2 py-0.5 rounded bg-[#0D0D0D] text-[10px] font-mono font-bold text-pmmg-khaki border border-[#C5A869]/40">DJI Mavic 3 Enterprise</span>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-2 shrink-0">
-                            <span id="lblRpasAircraftDataToggle" class="text-[11px] font-bold text-pmmg-khaki">Abrir</span>
-                            <i data-lucide="chevron-down" id="iconRpasAircraftDataChevron" class="w-4 h-4 text-pmmg-gold transition-transform duration-200"></i>
-                        </div>
-                    </button>
-
-                    <!-- Corpo Expansível dos Dados da Aeronave, Manuais e SARPAS (Oculto por padrão) -->
-                    <div id="rpasAircraftDataExpandableBody" class="hidden p-4 sm:p-5 pt-3 border-t border-pmmg-border space-y-4">
-                        <!-- Especificações Técnicas Fixas da Aeronave da Unidade -->
-                        <div class="bg-[#0D0D0D] p-4 rounded-xl border border-pmmg-border space-y-3">
-                            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border pb-2">
-                                <div>
-                                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-pmmg-khaki block">Ficha Técnica • Aeronave Padrão da Unidade</span>
-                                    <h4 class="text-lg font-military text-white uppercase tracking-wide leading-none mt-0.5">DJI Mavic 3 Enterprise Series (M3E / M3T)</h4>
-                                </div>
-                                <span class="text-[10px] font-mono text-pmmg-gold bg-[#161616] px-2.5 py-1 rounded border border-[#C5A869]/40">Classe 3 • ANAC / DECEA</span>
-                            </div>
-                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs">
-                                <div class="bg-[#161616] p-2.5 rounded-lg border border-pmmg-border">
-                                    <span class="text-[10px] text-gray-400 uppercase font-bold block">Resistência Vento</span>
-                                    <strong class="text-white font-mono">12 m/s (43,2 km/h)</strong>
-                                </div>
-                                <div class="bg-[#161616] p-2.5 rounded-lg border border-pmmg-border">
-                                    <span class="text-[10px] text-gray-400 uppercase font-bold block">Temp. de Trabalho</span>
-                                    <strong class="text-white font-mono">-10°C a 40°C</strong>
-                                </div>
-                                <div class="bg-[#161616] p-2.5 rounded-lg border border-pmmg-border">
-                                    <span class="text-[10px] text-gray-400 uppercase font-bold block">Autonomia Máx.</span>
-                                    <strong class="text-white font-mono">~45 min (sem vento)</strong>
-                                </div>
-                                <div class="bg-[#161616] p-2.5 rounded-lg border border-pmmg-border">
-                                    <span class="text-[10px] text-gray-400 uppercase font-bold block">Peso de Decolagem</span>
-                                    <strong class="text-white font-mono">915 g / 920 g (M3T)</strong>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 3 Cartões de Acesso Rápido: Manual PDF, Materiais EAD e Sistema SARPAS -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                            <!-- MANUAL DJI MAVIC 3 ENTERPRISE SERIES -->
-                            <a href="https://dl.djicdn.com/downloads/DJI_Mavic_3_Enterprise/20250916/DJI_Mavic_3_Enterprise_Series_User_Manual_PT.pdf" target="_blank" class="bg-[#0D0D0D] p-4 rounded-xl border border-[#C5A869]/40 hover:border-[#C5A869] flex items-center justify-between group transition-all">
-                                <div>
-                                    <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-khaki font-bold px-2 py-0.5 rounded border border-pmmg-khaki/30 uppercase">Manual da Aeronave</span>
-                                    <h3 class="text-2xl font-military text-white font-bold uppercase mt-1 group-hover:text-pmmg-khaki transition-colors">DJI MAVIC 3 ENTERPRISE</h3>
-                                    <p class="text-[11px] text-gray-400">Manual Oficial da Série M3E / M3T (PDF PT-BR)</p>
-                                </div>
-                                <div class="p-3 bg-[#161616] text-pmmg-khaki border border-pmmg-border rounded-lg group-hover:border-[#C5A869] transition-colors shrink-0">
-                                    <i data-lucide="file-down" class="w-5 h-5"></i>
-                                </div>
-                            </a>
-
-                            <!-- MATERIAIS PARA PILOTOS (ACESSO RESTRITO A PILOTOS / CADASTRADOS NO EAD) -->
-                            <a href="https://ead.policiamilitar.mg.gov.br/course/view.php?id=115" target="_blank" class="bg-[#0D0D0D] p-4 rounded-xl border border-[#C5A869]/40 hover:border-[#C5A869] flex items-center justify-between group transition-all">
-                                <div>
-                                    <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-gold font-bold px-2 py-0.5 rounded border border-pmmg-gold/40 uppercase">EAD PMMG • Acesso Restrito</span>
-                                    <h3 class="text-2xl font-military text-white font-bold uppercase mt-1 group-hover:text-pmmg-gold transition-colors">MATERIAIS PARA PILOTOS</h3>
-                                    <p class="text-[11px] text-gray-400">Exclusivo para pilotos e militares cadastrados</p>
-                                </div>
-                                <div class="p-3 bg-[#161616] text-pmmg-gold border border-pmmg-border rounded-lg group-hover:border-[#C5A869] transition-colors shrink-0">
-                                    <i data-lucide="folder-lock" class="w-5 h-5"></i>
-                                </div>
-                            </a>
-
-                            <!-- ATALHO DIRETO SARPAS NA ABA RPAS -->
-                            <a href="https://sarpas.decea.mil.br/login?expired=true" target="_blank" class="bg-[#0D0D0D] p-4 rounded-xl border border-[#C5A869]/40 hover:border-[#C5A869] flex items-center justify-between group transition-all">
-                                <div>
-                                    <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-khaki font-bold px-2 py-0.5 rounded border border-pmmg-khaki/30 uppercase">DECEA • Espaço Aéreo</span>
-                                    <h3 class="text-2xl font-military text-white font-bold uppercase mt-1 group-hover:text-pmmg-khaki transition-colors">SISTEMA SARPAS</h3>
-                                    <p class="text-[11px] text-gray-400">Solicitação de acesso ao espaço aéreo</p>
-                                </div>
-                                <div class="p-3 bg-[#161616] text-pmmg-khaki border border-pmmg-border rounded-lg group-hover:border-[#C5A869] transition-colors shrink-0">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
-                                        <rect x="9" y="9" width="6" height="6" rx="1"/>
-                                        <path d="M9 9 5.5 5.5"/><path d="M15 9l3.5-3.5"/><path d="M9 15l-3.5 3.5"/><path d="M15 15l3.5 3.5"/>
-                                        <circle cx="4.5" cy="4.5" r="2.5"/><circle cx="19.5" cy="4.5" r="2.5"/><circle cx="4.5" cy="19.5" r="2.5"/><circle cx="19.5" cy="19.5" r="2.5"/>
-                                    </svg>
-                                </div>
-                            </a>
                         </div>
                     </div>
                 </div>
@@ -8627,6 +8666,57 @@
             } catch (e) {}
         }
 
+        const AZIMUTE_RPAS_FLEET_CATALOG = [
+            {
+                id: 'm3e_pp373745025',
+                modelo: 'DJI Mavic 3 Enterprise (M3E)',
+                numeroSerie: '1581F5FHD233T00DH581',
+                prefixo: 'PP-373745025',
+                alcanceTransmissao: 'O3 Enterprise: até 15 km (FCC) / 8 km (CE)',
+                capacidadeZoom: 'Câmera Tele: Zoom híbrido até 56x e óptico de 7x',
+                resistenciaVento: '12 m/s (~43 km/h)',
+                resistenciaChuva: 'Sem proteção IP contra chuva — não operar sob precipitação',
+                autonomiaMaxima: 'Até 45 min (em condições ideais)',
+                manualUrl: 'https://dl.djicdn.com/downloads/DJI_Mavic_3_Enterprise/20250916/DJI_Mavic_3_Enterprise_Series_User_Manual_PT.pdf'
+            }
+        ];
+
+        window.renderRpasFleetSelector = function() {
+            const sel = document.getElementById('rpasFleetSelectInput');
+            const countBadge = document.getElementById('rpasFleetCountBadge');
+            if (!sel) return;
+            const currentVal = sel.value || AZIMUTE_RPAS_FLEET_CATALOG[0].id;
+            sel.innerHTML = AZIMUTE_RPAS_FLEET_CATALOG.map(rpa =>
+                `<option value="${rpa.id}">${rpa.modelo} • Prefixo: ${rpa.prefixo}</option>`
+            ).join('');
+            sel.value = AZIMUTE_RPAS_FLEET_CATALOG.some(r => r.id === currentVal) ? currentVal : AZIMUTE_RPAS_FLEET_CATALOG[0].id;
+            if (countBadge) {
+                countBadge.textContent = AZIMUTE_RPAS_FLEET_CATALOG.length === 1
+                    ? '1 Aeronave Cadastrada'
+                    : `${AZIMUTE_RPAS_FLEET_CATALOG.length} Aeronaves Cadastradas`;
+            }
+            window.selectRpasAircraftFromFleet(sel.value);
+        };
+
+        window.selectRpasAircraftFromFleet = function(rpaId) {
+            const rpa = AZIMUTE_RPAS_FLEET_CATALOG.find(item => item.id === rpaId) || AZIMUTE_RPAS_FLEET_CATALOG[0];
+            if (!rpa) return;
+            const setTxt = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+            setTxt('rpasSelectedModelText', rpa.modelo);
+            setTxt('rpasSelectedSerialText', rpa.numeroSerie);
+            setTxt('rpasSelectedPrefixText', rpa.prefixo);
+            setTxt('rpasSpecBadge', `Ficha Técnica • Prefixo ${rpa.prefixo}`);
+            setTxt('rpasSpecTitle', rpa.modelo);
+            setTxt('rpasSpecSerialBadge', `S/N: ${rpa.numeroSerie}`);
+            setTxt('rpasSpecTransmission', rpa.alcanceTransmissao);
+            setTxt('rpasSpecZoom', rpa.capacidadeZoom);
+            setTxt('rpasSpecWind', rpa.resistenciaVento);
+            setTxt('rpasSpecRain', rpa.resistenciaChuva);
+            setTxt('rpasSpecAutonomy', rpa.autonomiaMaxima);
+            const manualBtn = document.getElementById('rpasSpecManualBtn');
+            if (manualBtn && rpa.manualUrl) manualBtn.href = rpa.manualUrl;
+        };
+
         window.toggleRpasAircraftDataBox = function(forceOpen = null) {
             const box = document.getElementById('rpasAircraftDataExpandableBody');
             const lbl = document.getElementById('lblRpasAircraftDataToggle');
@@ -12077,6 +12167,7 @@
                 if (typeof window.toggleSaudeAssistantIaBox === 'function') window.toggleSaudeAssistantIaBox(false);
                 if (typeof window.toggleSaudeHospitalNetworkListBox === 'function') window.toggleSaudeHospitalNetworkListBox(false);
             } else if (viewId === 'rpas') {
+                if (typeof window.renderRpasFleetSelector === 'function') window.renderRpasFleetSelector();
                 if (typeof window.toggleRpasFlightParamsBox === 'function') window.toggleRpasFlightParamsBox(false);
                 if (typeof window.toggleRpasChecklistBox === 'function') window.toggleRpasChecklistBox(false);
                 if (typeof window.toggleRpasAircraftDataBox === 'function') window.toggleRpasAircraftDataBox(false);
