@@ -1583,25 +1583,41 @@
                 <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki">Aeronaves Remotamente Pilotadas</span>
             </div>
             <div id="rpasSubtabPainel" class="space-y-4">
-                <!-- 1. CAIXA DE SELEÇÃO DE RPA (ESCALÁVEL PARA FROTA FUTURA) -->
-                <div id="rpasFleetSelectorCard" class="bg-[#161616] border border-[#C5A869]/45 rounded-2xl p-4 sm:p-5 shadow-xl space-y-3">
-                    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border pb-2.5">
-                        <div class="flex items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-pmmg-gold shrink-0">
-                                <rect x="9" y="9" width="6" height="6" rx="1"/>
-                                <path d="M9 9 5.5 5.5"/><path d="M15 9l3.5-3.5"/><path d="M9 15l-3.5 3.5"/><path d="M15 15l3.5 3.5"/>
-                                <circle cx="4.5" cy="4.5" r="2.5"/><circle cx="19.5" cy="4.5" r="2.5"/><circle cx="4.5" cy="19.5" r="2.5"/><circle cx="19.5" cy="19.5" r="2.5"/>
-                            </svg>
-                            <label for="rpasFleetSelectInput" class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki">
-                                Seleção de RPA
-                            </label>
+                <!-- 1º CAIXA DE SELEÇÃO DE RPA (FECHADA POR PADRÃO) -->
+                <div id="rpasFleetSelectorCard" class="bg-[#161616] border border-[#C5A869]/45 rounded-2xl overflow-hidden shadow-xl">
+                    <button type="button" onclick="toggleRpasFleetSelectorBox()" id="btnToggleRpasFleetSelectorBox" class="w-full p-4 sm:p-5 flex items-center justify-between gap-3 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
+                        <div class="flex items-center gap-2.5">
+                            <div class="p-2 rounded-xl bg-[#0D0D0D] text-pmmg-khaki border border-[#C5A869]/40 shrink-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-pmmg-gold">
+                                    <rect x="9" y="9" width="6" height="6" rx="1"/>
+                                    <path d="M9 9 5.5 5.5"/><path d="M15 9l3.5-3.5"/><path d="M9 15l-3.5 3.5"/><path d="M15 15l3.5 3.5"/>
+                                    <circle cx="4.5" cy="4.5" r="2.5"/><circle cx="19.5" cy="4.5" r="2.5"/><circle cx="4.5" cy="19.5" r="2.5"/><circle cx="19.5" cy="19.5" r="2.5"/>
+                                </svg>
+                            </div>
+                            <div class="flex items-center gap-2.5 flex-wrap">
+                                <h3 class="text-xl sm:text-2xl font-military text-white uppercase tracking-wide leading-none">
+                                    Seleção de RPA
+                                </h3>
+                                <span id="rpasFleetHeaderBadge" class="px-2 py-0.5 rounded bg-[#0D0D0D] text-[10px] font-mono font-bold text-pmmg-gold border border-[#C5A869]/40">PP-373745025</span>
+                            </div>
                         </div>
-                        <span id="rpasFleetCountBadge" class="text-[10px] font-mono font-bold text-pmmg-gold bg-[#0D0D0D] px-2.5 py-0.5 rounded border border-[#C5A869]/40">
-                            1 Aeronave Cadastrada
-                        </span>
-                    </div>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <span id="lblRpasFleetSelectorToggle" class="text-[11px] font-bold text-pmmg-khaki">Abrir</span>
+                            <i data-lucide="chevron-down" id="iconRpasFleetSelectorChevron" class="w-4 h-4 text-pmmg-gold transition-transform duration-200"></i>
+                        </div>
+                    </button>
 
-                    <div class="space-y-2.5">
+                    <!-- Corpo Expansível da Seleção de RPA (Fechado por padrão) -->
+                    <div id="rpasFleetSelectorExpandableBody" class="hidden p-4 sm:p-5 pt-3 border-t border-pmmg-border space-y-3">
+                        <div class="flex items-center justify-between">
+                            <label for="rpasFleetSelectInput" class="text-[11px] font-extrabold uppercase tracking-wider text-pmmg-khaki">
+                                Aeronave da Frota
+                            </label>
+                            <span id="rpasFleetCountBadge" class="text-[10px] font-mono font-bold text-pmmg-gold bg-[#0D0D0D] px-2.5 py-0.5 rounded border border-[#C5A869]/40">
+                                1 Aeronave Cadastrada
+                            </span>
+                        </div>
+
                         <select id="rpasFleetSelectInput" onchange="selectRpasAircraftFromFleet(this.value)" class="w-full px-3.5 py-2.5 bg-[#0D0D0D] text-white text-xs sm:text-sm font-bold rounded-xl border border-[#C5A869]/50 focus:outline-none focus:border-pmmg-gold cursor-pointer">
                             <option value="m3e_pp373745025" selected>DJI Mavic 3 Enterprise (M3E) • Prefixo: PP-373745025</option>
                         </select>
@@ -1624,16 +1640,12 @@
                     </div>
                 </div>
 
-                <!-- 2. CAIXA "DADOS DA AERONAVE" (FECHADA POR PADRÃO, LOGO ABAIXO DA SELEÇÃO DE RPA) -->
+                <!-- 2º DADOS DA AERONAVE (FECHADA POR PADRÃO) -->
                 <div id="rpasAircraftDataCollapsibleCard" class="bg-[#161616] border border-[#C5A869]/45 rounded-2xl overflow-hidden shadow-xl">
                     <button type="button" onclick="toggleRpasAircraftDataBox()" id="btnToggleRpasAircraftDataBox" class="w-full p-4 sm:p-5 flex items-center justify-between gap-3 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
                         <div class="flex items-center gap-2.5">
                             <div class="p-2 rounded-xl bg-[#0D0D0D] text-pmmg-khaki border border-[#C5A869]/40 shrink-0">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-pmmg-gold">
-                                    <rect x="9" y="9" width="6" height="6" rx="1"/>
-                                    <path d="M9 9 5.5 5.5"/><path d="M15 9l3.5-3.5"/><path d="M9 15l-3.5 3.5"/><path d="M15 15l3.5 3.5"/>
-                                    <circle cx="4.5" cy="4.5" r="2.5"/><circle cx="19.5" cy="4.5" r="2.5"/><circle cx="4.5" cy="19.5" r="2.5"/><circle cx="19.5" cy="19.5" r="2.5"/>
-                                </svg>
+                                <i data-lucide="cpu" class="w-5 h-5 text-pmmg-gold"></i>
                             </div>
                             <h3 class="text-xl sm:text-2xl font-military text-white uppercase tracking-wide leading-none">
                                 Dados da Aeronave
@@ -1647,7 +1659,6 @@
 
                     <!-- Corpo Expansível dos Dados da Aeronave (Fechado por padrão) -->
                     <div id="rpasAircraftDataExpandableBody" class="hidden p-4 sm:p-5 pt-3 border-t border-pmmg-border space-y-4">
-                        <!-- Cabeçalho Técnico da Aeronave Selecionada -->
                         <div class="bg-[#0D0D0D] p-4 rounded-xl border border-pmmg-border space-y-3">
                             <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border pb-2">
                                 <div>
@@ -1657,7 +1668,6 @@
                                 <span id="rpasSpecSerialBadge" class="text-[10px] font-mono text-pmmg-gold bg-[#161616] px-2.5 py-1 rounded border border-[#C5A869]/40">S/N: 1581F5FHD233T00DH581</span>
                             </div>
 
-                            <!-- Especificações Técnicas Enriquecidas -->
                             <div id="rpasSpecGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 text-xs">
                                 <div class="bg-[#161616] p-3 rounded-xl border border-pmmg-border space-y-0.5">
                                     <span class="text-[10px] text-pmmg-khaki uppercase font-extrabold block">Alcance Máximo de Transmissão</span>
@@ -1696,34 +1706,10 @@
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Atalhos Complementares: Materiais EAD e Sistema SARPAS -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <a href="https://ead.policiamilitar.mg.gov.br/course/view.php?id=115" target="_blank" rel="noopener noreferrer" class="bg-[#0D0D0D] p-3.5 rounded-xl border border-[#C5A869]/40 hover:border-[#C5A869] flex items-center justify-between group transition-all">
-                                <div>
-                                    <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-gold font-bold px-2 py-0.5 rounded border border-pmmg-gold/40 uppercase">EAD PMMG</span>
-                                    <h4 class="text-xl font-military text-white font-bold uppercase mt-1 group-hover:text-pmmg-gold transition-colors">MATERIAIS PARA PILOTOS</h4>
-                                </div>
-                                <div class="p-2.5 bg-[#161616] text-pmmg-gold border border-pmmg-border rounded-lg group-hover:border-[#C5A869] transition-colors shrink-0">
-                                    <i data-lucide="folder-lock" class="w-5 h-5"></i>
-                                </div>
-                            </a>
-
-                            <a href="https://sarpas.decea.mil.br/login?expired=true" target="_blank" rel="noopener noreferrer" class="bg-[#0D0D0D] p-3.5 rounded-xl border border-[#C5A869]/40 hover:border-[#C5A869] flex items-center justify-between group transition-all">
-                                <div>
-                                    <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-khaki font-bold px-2 py-0.5 rounded border border-pmmg-khaki/30 uppercase">DECEA</span>
-                                    <h4 class="text-xl font-military text-white font-bold uppercase mt-1 group-hover:text-pmmg-khaki transition-colors">SISTEMA SARPAS</h4>
-                                </div>
-                                <div class="p-2.5 bg-[#161616] text-pmmg-khaki border border-pmmg-border rounded-lg group-hover:border-[#C5A869] transition-colors shrink-0">
-                                    <i data-lucide="plane" class="w-5 h-5"></i>
-                                </div>
-                            </a>
-                        </div>
                     </div>
                 </div>
 
-                
-                <!-- 1. PARÂMETROS DE VOO & CONDIÇÕES METEOROLÓGICAS (CAIXA FECHADA POR PADRÃO, VISUAL ESCURO E LIMPO) -->
+                <!-- 3º PARÂMETROS DE VOO (FECHADA POR PADRÃO, CRUZANDO MODELO SELECIONADO + MANUAIS + CLIMA GPS) -->
                 <div id="rpasFlightAssessmentContainer" class="bg-[#161616] border border-[#C5A869]/45 rounded-2xl overflow-hidden shadow-xl">
                     <button type="button" onclick="toggleRpasFlightParamsBox()" id="btnToggleRpasFlightParamsBox" class="w-full p-4 sm:p-5 flex items-center justify-between gap-3 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
                         <div class="flex items-center gap-2.5">
@@ -1734,7 +1720,7 @@
                                 <h3 class="text-xl sm:text-2xl font-military text-white uppercase tracking-wide leading-none">
                                     Parâmetros de Voo
                                 </h3>
-                                <span class="px-2 py-0.5 rounded bg-[#0D0D0D] text-[10px] font-mono font-bold text-pmmg-khaki border border-[#C5A869]/40">GPS x Clima Local</span>
+                                <span id="rpasFlightHeaderModelBadge" class="px-2 py-0.5 rounded bg-[#0D0D0D] text-[10px] font-mono font-bold text-pmmg-khaki border border-[#C5A869]/40">M3E • GPS x Clima</span>
                             </div>
                         </div>
                         <div class="flex items-center gap-2 shrink-0">
@@ -1743,8 +1729,7 @@
                         </div>
                     </button>
 
-                    <!-- Corpo Expansível dos Parâmetros de Voo (Oculto por padrão) -->
-                    <div id="rpasFlightParamsExpandableBody" class="hidden p-4 sm:p-5 pt-3 border-t border-pmmg-border space-y-4">
+<div id="rpasFlightParamsExpandableBody" class="hidden p-4 sm:p-5 pt-3 border-t border-pmmg-border space-y-4">
                         <!-- Barra de Controles Internos: Atualizar Telemetria + Áudio Desativado por Padrão + Recomendação Discreta em Texto -->
                         <div class="flex flex-wrap items-center justify-between gap-3 border-b border-pmmg-border pb-3">
                             <div class="space-y-0.5">
@@ -1859,7 +1844,7 @@
                     </div>
                 </div>
 
-                <!-- 2. CHECKLIST PRÉ-VOO (CAIXA FECHADA POR PADRÃO, COM BOTÃO SALVAR E LIMPAR) -->
+                <!-- 4º CHECKLIST PRÉ-VOO (FECHADA POR PADRÃO, COM BOTÕES SALVAR E LIMPAR) -->
                 <div id="rpasSubtabChecklist" class="bg-[#161616] border border-[#C5A869]/45 rounded-2xl overflow-hidden shadow-xl">
                     <button type="button" onclick="toggleRpasChecklistBox()" id="btnToggleRpasChecklistBox" class="w-full p-4 sm:p-5 flex items-center justify-between gap-3 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
                         <div class="flex items-center gap-2.5">
@@ -1879,8 +1864,7 @@
                         </div>
                     </button>
 
-                    <!-- Corpo Expansível do Checklist Pré-Voo (Oculto por padrão) -->
-                    <div id="rpasChecklistExpandableBody" class="hidden p-4 sm:p-5 pt-3 border-t border-pmmg-border space-y-4">
+<div id="rpasChecklistExpandableBody" class="hidden p-4 sm:p-5 pt-3 border-t border-pmmg-border space-y-4">
                         <div class="flex flex-wrap items-center justify-between gap-2">
                             <span id="rpasChecklistCountText" class="text-xs font-bold text-gray-200 uppercase tracking-wider">Progresso: 0 de 6 itens marcados</span>
                             <div class="flex items-center gap-2">
@@ -1955,6 +1939,49 @@
                                     <span class="text-[11px] text-gray-400 block leading-relaxed">Área de pouso e decolagem livre de fios, cabos, árvores e obstáculos próximos.</span>
                                 </div>
                             </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5º MATERIAIS PARA PILOTOS (CARD PRÓPRIO NO MENU DRONES, FECHADA POR PADRÃO, COM ATALHO PARA O SARPAS) -->
+                <div id="rpasPilotMaterialsCard" class="bg-[#161616] border border-[#C5A869]/45 rounded-2xl overflow-hidden shadow-xl">
+                    <button type="button" onclick="toggleRpasPilotMaterialsBox()" id="btnToggleRpasPilotMaterialsBox" class="w-full p-4 sm:p-5 flex items-center justify-between gap-3 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
+                        <div class="flex items-center gap-2.5">
+                            <div class="p-2 rounded-xl bg-[#0D0D0D] text-pmmg-khaki border border-[#C5A869]/40 shrink-0">
+                                <i data-lucide="folder-lock" class="w-5 h-5 text-pmmg-gold"></i>
+                            </div>
+                            <h3 class="text-xl sm:text-2xl font-military text-white uppercase tracking-wide leading-none">
+                                Materiais para Pilotos
+                            </h3>
+                        </div>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <span id="lblRpasPilotMaterialsToggle" class="text-[11px] font-bold text-pmmg-khaki">Abrir</span>
+                            <i data-lucide="chevron-down" id="iconRpasPilotMaterialsChevron" class="w-4 h-4 text-pmmg-gold transition-transform duration-200"></i>
+                        </div>
+                    </button>
+
+                    <!-- Corpo Expansível de Materiais para Pilotos & SARPAS (Fechado por padrão) -->
+                    <div id="rpasPilotMaterialsExpandableBody" class="hidden p-4 sm:p-5 pt-3 border-t border-pmmg-border">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <a href="https://ead.policiamilitar.mg.gov.br/course/view.php?id=115" target="_blank" rel="noopener noreferrer" class="bg-[#0D0D0D] p-4 rounded-xl border border-[#C5A869]/40 hover:border-[#C5A869] flex items-center justify-between group transition-all">
+                                <div>
+                                    <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-gold font-bold px-2 py-0.5 rounded border border-pmmg-gold/40 uppercase">EAD PMMG</span>
+                                    <h4 class="text-xl font-military text-white font-bold uppercase mt-1 group-hover:text-pmmg-gold transition-colors">MATERIAIS PARA PILOTOS</h4>
+                                </div>
+                                <div class="p-2.5 bg-[#161616] text-pmmg-gold border border-pmmg-border rounded-lg group-hover:border-[#C5A869] transition-colors shrink-0">
+                                    <i data-lucide="folder-lock" class="w-5 h-5"></i>
+                                </div>
+                            </a>
+
+                            <a href="https://sarpas.decea.mil.br/login?expired=true" target="_blank" rel="noopener noreferrer" class="bg-[#0D0D0D] p-4 rounded-xl border border-[#C5A869]/40 hover:border-[#C5A869] flex items-center justify-between group transition-all">
+                                <div>
+                                    <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-khaki font-bold px-2 py-0.5 rounded border border-pmmg-khaki/30 uppercase">DECEA</span>
+                                    <h4 class="text-xl font-military text-white font-bold uppercase mt-1 group-hover:text-pmmg-khaki transition-colors">SISTEMA SARPAS</h4>
+                                </div>
+                                <div class="p-2.5 bg-[#161616] text-pmmg-khaki border border-pmmg-border rounded-lg group-hover:border-[#C5A869] transition-colors shrink-0">
+                                    <i data-lucide="plane" class="w-5 h-5"></i>
+                                </div>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -8670,6 +8697,7 @@
             {
                 id: 'm3e_pp373745025',
                 modelo: 'DJI Mavic 3 Enterprise (M3E)',
+                sigla: 'M3E',
                 numeroSerie: '1581F5FHD233T00DH581',
                 prefixo: 'PP-373745025',
                 alcanceTransmissao: 'O3 Enterprise: até 15 km (FCC) / 8 km (CE)',
@@ -8677,9 +8705,56 @@
                 resistenciaVento: '12 m/s (~43 km/h)',
                 resistenciaChuva: 'Sem proteção IP contra chuva — não operar sob precipitação',
                 autonomiaMaxima: 'Até 45 min (em condições ideais)',
-                manualUrl: 'https://dl.djicdn.com/downloads/DJI_Mavic_3_Enterprise/20250916/DJI_Mavic_3_Enterprise_Series_User_Manual_PT.pdf'
+                manualUrl: 'https://dl.djicdn.com/downloads/DJI_Mavic_3_Enterprise/20250916/DJI_Mavic_3_Enterprise_Series_User_Manual_PT.pdf',
+                limits: {
+                    maxWindKmh: 43,
+                    minTempC: -10,
+                    maxTempC: 40,
+                    maxRainMm: 0,
+                    maxRainProbPct: 40
+                }
             }
         ];
+
+        window.getSelectedRpasAircraft = function() {
+            const sel = document.getElementById('rpasFleetSelectInput');
+            const selectedId = sel ? sel.value : AZIMUTE_RPAS_FLEET_CATALOG[0].id;
+            return AZIMUTE_RPAS_FLEET_CATALOG.find(item => item.id === selectedId) || AZIMUTE_RPAS_FLEET_CATALOG[0];
+        };
+
+        window.toggleRpasFleetSelectorBox = function(forceOpen = null) {
+            const box = document.getElementById('rpasFleetSelectorExpandableBody');
+            const lbl = document.getElementById('lblRpasFleetSelectorToggle');
+            const icon = document.getElementById('iconRpasFleetSelectorChevron');
+            if (!box) return;
+            const willOpen = forceOpen !== null ? forceOpen : box.classList.contains('hidden');
+            if (willOpen) {
+                box.classList.remove('hidden');
+                if (lbl) lbl.textContent = 'Fechar';
+                if (icon) icon.style.transform = 'rotate(180deg)';
+            } else {
+                box.classList.add('hidden');
+                if (lbl) lbl.textContent = 'Abrir';
+                if (icon) icon.style.transform = 'rotate(0deg)';
+            }
+        };
+
+        window.toggleRpasPilotMaterialsBox = function(forceOpen = null) {
+            const box = document.getElementById('rpasPilotMaterialsExpandableBody');
+            const lbl = document.getElementById('lblRpasPilotMaterialsToggle');
+            const icon = document.getElementById('iconRpasPilotMaterialsChevron');
+            if (!box) return;
+            const willOpen = forceOpen !== null ? forceOpen : box.classList.contains('hidden');
+            if (willOpen) {
+                box.classList.remove('hidden');
+                if (lbl) lbl.textContent = 'Fechar';
+                if (icon) icon.style.transform = 'rotate(180deg)';
+            } else {
+                box.classList.add('hidden');
+                if (lbl) lbl.textContent = 'Abrir';
+                if (icon) icon.style.transform = 'rotate(0deg)';
+            }
+        };
 
         window.renderRpasFleetSelector = function() {
             const sel = document.getElementById('rpasFleetSelectInput');
@@ -8702,6 +8777,8 @@
             const rpa = AZIMUTE_RPAS_FLEET_CATALOG.find(item => item.id === rpaId) || AZIMUTE_RPAS_FLEET_CATALOG[0];
             if (!rpa) return;
             const setTxt = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+            setTxt('rpasFleetHeaderBadge', rpa.prefixo);
+            setTxt('rpasFlightHeaderModelBadge', `${rpa.sigla || 'M3E'} • GPS x Clima`);
             setTxt('rpasSelectedModelText', rpa.modelo);
             setTxt('rpasSelectedSerialText', rpa.numeroSerie);
             setTxt('rpasSelectedPrefixText', rpa.prefixo);
@@ -8715,6 +8792,9 @@
             setTxt('rpasSpecAutonomy', rpa.autonomiaMaxima);
             const manualBtn = document.getElementById('rpasSpecManualBtn');
             if (manualBtn && rpa.manualUrl) manualBtn.href = rpa.manualUrl;
+            if (azimuteRpasLastWeatherSnapshot && azimuteRpasLastWeatherSnapshot.hasValidWeather) {
+                renderRpasEvaluationResult(azimuteRpasLastWeatherSnapshot, false);
+            }
         };
 
         window.toggleRpasAircraftDataBox = function(forceOpen = null) {
@@ -8771,7 +8851,122 @@
         };
 
         function getRpasConfiguredLimits() {
-            return AZIMUTE_FIXED_RPAS_LIMITS;
+            const rpa = typeof window.getSelectedRpasAircraft === 'function' ? window.getSelectedRpasAircraft() : null;
+            return (rpa && rpa.limits) ? rpa.limits : AZIMUTE_FIXED_RPAS_LIMITS;
+        }
+
+        // Verifica proximidade de aeródromos, CTRs, helipontos hospitalares e corredores aéreos via GPS ou local em foco
+        function evaluateRpasAirspaceCautionZones(lat, lon) {
+            const cautionAlerts = [];
+            const activeUnitText = (document.getElementById('activeUnitName')?.textContent || '').toLowerCase();
+            const qthText = (document.getElementById('statusBarQth')?.textContent || '').toLowerCase();
+            const hudAreaText = (document.getElementById('hudUnitArea')?.textContent || '').toLowerCase();
+            const combinedContext = `${activeUnitText} ${qthText} ${hudAreaText}`;
+
+            // Pontos de referência de tráfego aéreo intenso / aeródromos / helipontos na RMBH
+            const airspaceZones = [
+                {
+                    id: 'sbbh_pampulha',
+                    nome: 'Aeroporto da Pampulha (SBBH) / Região do Mineirão & Lagoa',
+                    lat: -19.8519,
+                    lon: -43.9506,
+                    raioKm: 5.5,
+                    keywords: ['pampulha', 'mineirão', 'mineirao', 'são josé', 'sao jose', 'aeroporto', '34º bpm', '34 bpm', 'carlos luz', 'abrahao caram', 'abrahão caram'],
+                    aviso: 'Área sob influência direta da CTR Pampulha (SBBH) e entorno do Mineirão: fluxo intenso de aeronaves comerciais, executivas e helicópteros (Pégaso PMMG / Arcanjo). Autorização prévia obrigatória no SARPAS (DECEA) e coordenação permanente com o tráfego aéreo tripulado.'
+                },
+                {
+                    id: 'sbcf_confins',
+                    nome: 'Aeroporto Internacional de Confins (SBCF)',
+                    lat: -19.6244,
+                    lon: -43.9719,
+                    raioKm: 9.0,
+                    keywords: ['confins', 'aeroporto internacional', 'tancredo neves', 'lagoa santa'],
+                    aviso: 'Proximidade da zona de aproximação e decolagem do Aeroporto Internacional de Confins (SBCF): espaço aéreo controlado com tráfego pesado de aeronaves. Autorização SARPAS (DECEA) indispensável.'
+                },
+                {
+                    id: 'sbpr_carlos_prates',
+                    nome: 'Aeródromo Carlos Prates / Eixo Noroeste BH',
+                    lat: -19.9089,
+                    lon: -43.9892,
+                    raioKm: 3.0,
+                    keywords: ['carlos prates', 'padre eustáquio', 'padre eustaquio', 'caiçara', 'caicara'],
+                    aviso: 'Corredor de aeronaves leves e helicópteros na região Noroeste de Belo Horizonte. Verifique restrições de altitude e protocolo SARPAS.'
+                },
+                {
+                    id: 'heliponto_joao_xxiii',
+                    nome: 'Heliponto Hospital João XXIII / Área Hospitalar (Santa Efigênia)',
+                    lat: -19.9242,
+                    lon: -43.9317,
+                    raioKm: 2.5,
+                    keywords: ['joão xxiii', 'joao xxiii', 'santa efigênia', 'santa efigenia', 'área hospitalar', 'area hospitalar', 'alfredo balena', 'hpm', 'contorno'],
+                    aviso: 'Proximidade imediata do Heliponto do Hospital João XXIII e Área Hospitalar: rota frequente de pouso e decolagem de helicópteros aeromédicos e policiais (Arcanjo / Pégaso). Autorização SARPAS obrigatória e atenção redobrada.'
+                },
+                {
+                    id: 'heliponto_risoleta',
+                    nome: 'Heliponto Hospital Risoleta Tolentino Neves (Venda Nova)',
+                    lat: -19.8195,
+                    lon: -43.9535,
+                    raioKm: 2.0,
+                    keywords: ['risoleta', 'vila clóris', 'vila cloris', 'venda nova', '49º bpm'],
+                    aviso: 'Proximidade do Heliponto do Hospital Risoleta Neves: rota de aproximação de aeronaves de resgate aeromédico. Mantenha autorização SARPAS e escuta/observação visual.'
+                },
+                {
+                    id: 'heliponto_hmc_contagem',
+                    nome: 'Heliponto Hospital Municipal de Contagem (HMC)',
+                    lat: -19.9322,
+                    lon: -44.0758,
+                    raioKm: 2.0,
+                    keywords: ['hospital municipal de contagem', 'hmc', 'chácaras cotia', 'chacaras cotia'],
+                    aviso: 'Proximidade do Heliponto do Hospital Municipal de Contagem (HMC): atenção ao fluxo de helicópteros de resgate e segurança pública. Verifique SARPAS.'
+                },
+                {
+                    id: 'corredor_arena_mrv',
+                    nome: 'Entorno Arena MRV / Corredor Via Expressa & Anel Rodoviário',
+                    lat: -19.9301,
+                    lon: -44.0156,
+                    raioKm: 1.8,
+                    keywords: ['arena mrv', 'cristina maria de assis', 'califórnia', 'california'],
+                    aviso: 'Corredor aéreo de acompanhamento policial sobre a Via Expressa / Anel Rodoviário e entorno da Arena MRV. Solicite autorização SARPAS (DECEA).'
+                },
+                {
+                    id: 'corredor_independencia',
+                    nome: 'Entorno Arena Independência / Corredor Leste (Av. dos Andradas)',
+                    lat: -19.9083,
+                    lon: -43.9178,
+                    raioKm: 1.8,
+                    keywords: ['independência', 'independencia', 'pitangui', 'horto', 'ismênia', 'ismenia'],
+                    aviso: 'Corredor aéreo do vale da Av. dos Andradas rumo à Área Hospitalar e malha urbana adensada do Horto. Requer autorização SARPAS (DECEA).'
+                }
+            ];
+
+            const calcKm = typeof haversineKm === 'function' ? haversineKm : function(lat1, lon1, lat2, lon2) {
+                const R = 6371;
+                const dLat = (lat2 - lat1) * Math.PI / 180;
+                const dLon = (lon2 - lon1) * Math.PI / 180;
+                const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+                return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+            };
+
+            airspaceZones.forEach(zone => {
+                let matchedByGps = false;
+                let distKm = null;
+                if (typeof lat === 'number' && typeof lon === 'number' && !isNaN(lat) && !isNaN(lon)) {
+                    distKm = calcKm(lat, lon, zone.lat, zone.lon);
+                    if (distKm <= zone.raioKm) {
+                        matchedByGps = true;
+                    }
+                }
+                const matchedByContext = zone.keywords.some(kw => combinedContext.includes(kw));
+
+                if (matchedByGps || matchedByContext) {
+                    const distTag = matchedByGps && distKm !== null ? ` (~${distKm.toFixed(1)} km da posição GPS)` : ' (área selecionada)';
+                    cautionAlerts.push(`<strong>${zone.nome}${distTag}:</strong> ${zone.aviso}`);
+                }
+            });
+
+            return cautionAlerts;
         }
 
         // Renderiza o painel nos 3 estados obrigatórios:
@@ -8922,20 +9117,25 @@
                 if (cardRain) cardRain.className = 'bg-pmmg-dark p-3 rounded-xl border border-emerald-500/40 space-y-1';
             }
 
-            // Renderiza Estado Final (VERDE vs VERMELHO)
+            // Verifica áreas de atenção de tráfego aéreo / aeródromos / helipontos via GPS ou local selecionado
+            const airspaceCautionReasons = evaluateRpasAirspaceCautionZones(snapshot.lat, snapshot.lon);
+            const selectedRpa = typeof window.getSelectedRpasAircraft === 'function' ? window.getSelectedRpasAircraft() : null;
+            const rpaLabel = selectedRpa ? `${selectedRpa.modelo} (${selectedRpa.prefixo})` : 'DJI Mavic 3 Enterprise (M3E)';
+
+            // Renderiza Estado Final (VERMELHO: VOO NÃO RECOMENDADO | ÂMBAR/DOURADO: VOE COM CUIDADO | VERDE: VOO RECOMENDADO)
             const box = document.getElementById('rpasEvaluationStateBox');
             const iconBadge = document.getElementById('rpasEvalIconBadge');
             const titleEl = document.getElementById('rpasEvalStateTitle');
             const reasonsBox = document.getElementById('rpasEvalReasonsContainer');
 
-            if (exceededReasons.length >0) {
-                // ESTADO VERMELHO: "VOO NÃO RECOMENDADO (LIMITE EXCEDIDO)" + motivo técnico
+            if (exceededReasons.length > 0) {
+                // ESTADO VERMELHO: "VOO NÃO RECOMENDADO (LIMITE EXCEDIDO)"
                 if (box) {
                     box.className = 'bg-red-950/35 border-2 border-red-500 border-l-8 border-l-red-500 rounded-2xl p-4 sm:p-5 space-y-3 transition-all shadow-[0_0_25px_rgba(220,38,38,0.25)]';
                 }
                 if (iconBadge) {
                     iconBadge.className = 'p-2.5 rounded-xl bg-red-600 text-white border border-red-400 shadow';
-                    iconBadge.innerHTML = '<i data-lucide="OctagonAlert"class="w-6 h-6"></i>';
+                    iconBadge.innerHTML = '<i data-lucide="octagon-alert" class="w-6 h-6"></i>';
                 }
                 if (titleEl) {
                     titleEl.textContent = 'VOO NÃO RECOMENDADO (LIMITE EXCEDIDO)';
@@ -8943,29 +9143,55 @@
                 }
                 if (reasonsBox) {
                     reasonsBox.innerHTML = `
-                        <div class="text-red-300 font-extrabold uppercase text-[11px] mb-1">Motivo(s) Técnico(s) de Restrição de Voo:</div>
+                        <div class="text-red-300 font-extrabold uppercase text-[11px] mb-1">Aeronave: ${rpaLabel} • Motivo(s) Técnico(s) de Restrição:</div>
                         <ul class="list-disc pl-5 space-y-1 text-xs text-gray-100">
                             ${exceededReasons.map(r => `<li>${r}</li>`).join('')}
                         </ul>
                     `;
                 }
+            } else if (airspaceCautionReasons.length > 0) {
+                // ESTADO INTERMEDIÁRIO ÂMBAR / DOURADO: "VOE COM CUIDADO"
+                if (box) {
+                    box.className = 'bg-amber-950/35 border-2 border-amber-400 border-l-8 border-l-[#C5A869] rounded-2xl p-4 sm:p-5 space-y-3 transition-all shadow-[0_0_25px_rgba(245,158,11,0.25)]';
+                }
+                if (iconBadge) {
+                    iconBadge.className = 'p-2.5 rounded-xl bg-amber-500 text-pmmg-black border border-[#C5A869] shadow';
+                    iconBadge.innerHTML = '<i data-lucide="alert-triangle" class="w-6 h-6"></i>';
+                }
+                if (titleEl) {
+                    titleEl.textContent = 'VOE COM CUIDADO';
+                    titleEl.className = 'text-xl sm:text-2xl font-military uppercase tracking-wider text-amber-300 leading-none mt-0.5';
+                }
+                if (reasonsBox) {
+                    reasonsBox.innerHTML = `
+                        <div class="text-amber-300 font-extrabold uppercase text-[11px] mb-1">
+                            Aeronave: ${rpaLabel} • Clima Favorável, mas Área de Atenção de Tráfego Aéreo / Heliponto Detectada:
+                        </div>
+                        <ul class="list-disc pl-5 space-y-1 text-xs text-gray-100 mb-2">
+                            ${airspaceCautionReasons.map(r => `<li>${r}</li>`).join('')}
+                        </ul>
+                        <p class="text-[11px] text-pmmg-khaki font-semibold">
+                            Meteorologia local dentro dos limites (Vento: ${snapshot.windKmh} km/h, Rajadas: ${snapshot.gustsKmh} km/h, Temp: ${snapshot.tempC}°C, Chuva: ${snapshot.precipMm} mm). Exige autorização SARPAS (DECEA) ativa e vigilância constante de aeronaves tripuladas.
+                        </p>
+                    `;
+                }
             } else {
-                // ESTADO VERDE: "CONDIÇÕES TÉCNICAS DENTRO DOS LIMITES"
+                // ESTADO VERDE: "VOO RECOMENDADO"
                 if (box) {
                     box.className = 'bg-emerald-950/30 border-2 border-emerald-500/80 border-l-8 border-l-emerald-400 rounded-2xl p-4 sm:p-5 space-y-3 transition-all shadow-[0_0_20px_rgba(16,185,129,0.18)]';
                 }
                 if (iconBadge) {
                     iconBadge.className = 'p-2.5 rounded-xl bg-emerald-600 text-pmmg-black border border-emerald-300 shadow';
-                    iconBadge.innerHTML = '<i data-lucide="check-circle-2"class="w-6 h-6"></i>';
+                    iconBadge.innerHTML = '<i data-lucide="check-circle-2" class="w-6 h-6"></i>';
                 }
                 if (titleEl) {
-                    titleEl.textContent = 'CONDIÇÕES TÉCNICAS DENTRO DOS LIMITES';
+                    titleEl.textContent = 'VOO RECOMENDADO';
                     titleEl.className = 'text-xl sm:text-2xl font-military uppercase tracking-wider text-emerald-400 leading-none mt-0.5';
                 }
                 if (reasonsBox) {
                     reasonsBox.innerHTML = `
                         <p class="text-emerald-300 font-bold text-xs">
-                             Todos os parâmetros meteorológicos locais na coordenada GPS atual (Vento: ${snapshot.windKmh} km/h, Rajadas: ${snapshot.gustsKmh} km/h, Temp: ${snapshot.tempC}°C, Chuva: ${snapshot.precipMm} mm / ${snapshot.rainProbPct}%) estão dentro dos limites técnicos configurados para a aeronave. Mantenha verificação visual constante e protocolo SARPAS.
+                            Aeronave: ${rpaLabel} • Todos os parâmetros meteorológicos locais na coordenada GPS atual (Vento: ${snapshot.windKmh} km/h, Rajadas: ${snapshot.gustsKmh} km/h, Temp: ${snapshot.tempC}°C, Chuva: ${snapshot.precipMm} mm / ${snapshot.rainProbPct}%) estão dentro dos limites técnicos e fora de zonas críticas de aeródromo/heliponto. Mantenha verificação visual constante e protocolo SARPAS.
                         </p>
                     `;
                 }
@@ -12168,9 +12394,11 @@
                 if (typeof window.toggleSaudeHospitalNetworkListBox === 'function') window.toggleSaudeHospitalNetworkListBox(false);
             } else if (viewId === 'rpas') {
                 if (typeof window.renderRpasFleetSelector === 'function') window.renderRpasFleetSelector();
+                if (typeof window.toggleRpasFleetSelectorBox === 'function') window.toggleRpasFleetSelectorBox(false);
+                if (typeof window.toggleRpasAircraftDataBox === 'function') window.toggleRpasAircraftDataBox(false);
                 if (typeof window.toggleRpasFlightParamsBox === 'function') window.toggleRpasFlightParamsBox(false);
                 if (typeof window.toggleRpasChecklistBox === 'function') window.toggleRpasChecklistBox(false);
-                if (typeof window.toggleRpasAircraftDataBox === 'function') window.toggleRpasAircraftDataBox(false);
+                if (typeof window.toggleRpasPilotMaterialsBox === 'function') window.toggleRpasPilotMaterialsBox(false);
             }
 
             const target = document.getElementById(`view-${viewId}`);
