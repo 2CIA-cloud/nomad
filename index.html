@@ -1606,6 +1606,30 @@
                         </div>
                         <div id="customSupportSavedManagerList" class="space-y-1.5 max-h-40 overflow-y-auto"></div>
                     </div>
+
+                    <!-- c) RASTREAMENTO CONTÍNUO POR GPS (COMÉRCIO / SERVIÇO EM TEMPO REAL) -->
+                    <div id="rastreamentoToolsSection" class="space-y-2 pt-2.5 border-t border-[#C5A869]/40">
+                        <div class="flex items-center justify-between gap-2">
+                            <span class="text-[10px] font-extrabold uppercase tracking-wider text-pmmg-gold flex items-center gap-1.5">
+                                <i data-lucide="locate-fixed" class="w-3.5 h-3.5 text-pmmg-gold"></i>
+                                <span>RASTREAMENTO (Busca Contínua por GPS)</span>
+                            </span>
+                            <span id="rastreamentoActiveCountBadge" class="text-[10px] font-mono text-pmmg-khaki bg-[#161616] px-2 py-0.5 rounded border border-[#C5A869]/40">
+                                0 ativos
+                            </span>
+                        </div>
+                        <p class="text-[11px] text-gray-400">
+                            Cadastre categorias de comércio ou serviço (ex: Farmácia, Borracharia, Chaveiro, Padaria, Supermercado) para localizar automaticamente o mais próximo conforme o deslocamento.
+                        </p>
+                        <div class="flex items-center gap-2">
+                            <input type="text" id="inputRastreamentoCategoria" onkeydown="if(event.key==='Enter'){event.preventDefault();addRastreamentoCategory();}" placeholder="Ex: Farmácia, Borracharia, Chaveiro, Padaria..." class="flex-1 min-w-0 px-2.5 py-2 bg-[#161616] text-xs text-white placeholder-gray-500 rounded-lg border border-[#C5A869]/50 focus:outline-none focus:border-pmmg-gold">
+                            <button type="button" id="btnSaveRastreamentoCategoria" onclick="addRastreamentoCategory()" class="px-3.5 py-2 bg-[#161616] hover:bg-pmmg-cardHover text-pmmg-khaki border border-[#C5A869] font-extrabold rounded-lg text-[11px] uppercase flex items-center justify-center gap-1 cursor-pointer transition-all shrink-0">
+                                <i data-lucide="plus" class="w-3.5 h-3.5 text-pmmg-gold"></i>
+                                <span>Salvar</span>
+                            </button>
+                        </div>
+                        <div id="rastreamentoCategoriesManagerList" class="space-y-1.5 max-h-44 overflow-y-auto"></div>
+                    </div>
                 </div>
 
                 <div id="homeNearestSupportCardsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -1656,6 +1680,9 @@
 
                     <!-- d) Container dinâmico para Pontos Salvos pelo Militar -->
                     <div id="homeSupportCustomPlacesContainer" class="contents"></div>
+
+                    <!-- e) Container dinâmico para RASTREAMENTO Contínuo por GPS -->
+                    <div id="homeSupportRastreamentoContainer" class="contents"></div>
                 </div>
 
                 <!-- Elementos de compatibilidade ocultos para preservar 100% das referências de script existentes -->
@@ -9726,6 +9753,9 @@
             if (willOpen) {
                 applyNearestSupportPrefsToDom();
                 renderCustomSupportSavedManagerList();
+                if (typeof renderRastreamentoCategoriesManagerList === 'function') {
+                    renderRastreamentoCategoriesManagerList();
+                }
             }
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
@@ -9934,9 +9964,441 @@
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
+
+        // ================= FUNÇÃO "RASTREAMENTO" CONTÍNUO POR GPS (OVERPASS API / OSM) =================
+        const AZIMUTE_RASTREAMENTO_STORAGE_KEY = 'azimute_gps_rastreamento_categories_v1';
+        const AZIMUTE_RASTREAMENTO_CACHE_KEY = 'azimute_gps_rastreamento_cache_v1';
+
+        let azimuteRastreamentoLastFetchLat = null;
+        let azimuteRastreamentoLastFetchLon = null;
+        let azimuteRastreamentoLastFetchTs = 0;
+        let azimuteRastreamentoLastSignature = '';
+        let azimuteRastreamentoInFlight = false;
+        let azimuteRastreamentoResultsMap = {};
+
+        try {
+            const cachedRas = localStorage.getItem(AZIMUTE_RASTREAMENTO_CACHE_KEY);
+            if (cachedRas) {
+                const parsedCache = JSON.parse(cachedRas);
+                if (parsedCache && typeof parsedCache === 'object') {
+                    azimuteRastreamentoResultsMap = parsedCache;
+                }
+            }
+        } catch (e) {}
+
+        function getRastreamentoCategories() {
+            try {
+                const raw = localStorage.getItem(AZIMUTE_RASTREAMENTO_STORAGE_KEY);
+                const list = raw ? JSON.parse(raw) : [];
+                if (!Array.isArray(list)) return [];
+                return list.map(item => ({
+                    id: String(item.id || ('ras_' + Math.random().toString(36).slice(2, 9))),
+                    term: String(item.term || '').trim(),
+                    enabled: item.enabled !== false
+                })).filter(item => item.term.length > 0);
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function setRastreamentoCategories(list) {
+            try {
+                localStorage.setItem(AZIMUTE_RASTREAMENTO_STORAGE_KEY, JSON.stringify(list));
+            } catch (e) {}
+        }
+
+        function addRastreamentoCategory() {
+            const inputEl = document.getElementById('inputRastreamentoCategoria');
+            const term = (inputEl ? inputEl.value : '').trim();
+            if (!term) {
+                if (typeof showToast === 'function') showToast('Digite uma categoria de comércio ou serviço.');
+                return;
+            }
+            const list = getRastreamentoCategories();
+            const exists = list.some(x => x.term.toLowerCase() === term.toLowerCase());
+            if (exists) {
+                list.forEach(x => {
+                    if (x.term.toLowerCase() === term.toLowerCase()) x.enabled = true;
+                });
+            } else {
+                list.push({
+                    id: 'ras_' + Date.now(),
+                    term: term,
+                    enabled: true
+                });
+            }
+            setRastreamentoCategories(list);
+            if (inputEl) inputEl.value = '';
+            renderRastreamentoCategoriesManagerList();
+
+            const coords = getCurrentRastreamentoCoords();
+            renderHomeSupportRastreamentoCards(coords.lat, coords.lon);
+            if (coords.lat !== null && coords.lon !== null) {
+                updateAzimuteGpsRastreamento(coords.lat, coords.lon, true);
+            }
+            if (typeof showToast === 'function') showToast('Rastreamento ativado: "' + term + '"');
+        }
+
+        function toggleRastreamentoCategoryEnabled(id) {
+            const list = getRastreamentoCategories();
+            const target = list.find(x => x.id === id);
+            if (!target) return;
+            target.enabled = !target.enabled;
+            setRastreamentoCategories(list);
+            renderRastreamentoCategoriesManagerList();
+
+            const coords = getCurrentRastreamentoCoords();
+            renderHomeSupportRastreamentoCards(coords.lat, coords.lon);
+            if (target.enabled && coords.lat !== null && coords.lon !== null) {
+                updateAzimuteGpsRastreamento(coords.lat, coords.lon, true);
+            }
+        }
+
+        function removeRastreamentoCategory(id) {
+            const list = getRastreamentoCategories();
+            const target = list.find(x => x.id === id);
+            const updated = list.filter(x => x.id !== id);
+            setRastreamentoCategories(updated);
+            if (target) {
+                delete azimuteRastreamentoResultsMap[target.term.toLowerCase()];
+                try {
+                    localStorage.setItem(AZIMUTE_RASTREAMENTO_CACHE_KEY, JSON.stringify(azimuteRastreamentoResultsMap));
+                } catch (e) {}
+            }
+            renderRastreamentoCategoriesManagerList();
+            const coords = getCurrentRastreamentoCoords();
+            renderHomeSupportRastreamentoCards(coords.lat, coords.lon);
+            if (typeof showToast === 'function') showToast('Categoria removida do rastreamento.');
+        }
+
+        function getCurrentRastreamentoCoords() {
+            let lat = typeof azimuteLastGeoLat === 'number' && !isNaN(azimuteLastGeoLat) ? azimuteLastGeoLat : null;
+            let lon = typeof azimuteLastGeoLon === 'number' && !isNaN(azimuteLastGeoLon) ? azimuteLastGeoLon : null;
+            if (lat === null || lon === null) {
+                try {
+                    const cLat = parseFloat(localStorage.getItem('azimute_last_lat'));
+                    const cLon = parseFloat(localStorage.getItem('azimute_last_lon'));
+                    if (!isNaN(cLat) && !isNaN(cLon)) {
+                        lat = cLat;
+                        lon = cLon;
+                    }
+                } catch (e) {}
+            }
+            return { lat, lon };
+        }
+
+        function renderRastreamentoCategoriesManagerList() {
+            const listEl = document.getElementById('rastreamentoCategoriesManagerList');
+            const badgeEl = document.getElementById('rastreamentoActiveCountBadge');
+            const list = getRastreamentoCategories();
+            const activeCount = list.filter(x => x.enabled).length;
+
+            if (badgeEl) {
+                badgeEl.textContent = activeCount + (activeCount === 1 ? ' ativo' : ' ativos');
+            }
+            if (!listEl) return;
+
+            if (!list.length) {
+                listEl.innerHTML = '<p class="text-[11px] text-gray-500 italic">Nenhuma categoria cadastrada no rastreamento.</p>';
+                return;
+            }
+
+            listEl.innerHTML = list.map(item => `
+                <div class="bg-[#161616] px-2.5 py-2 rounded-lg border ${item.enabled ? 'border-[#C5A869]/60' : 'border-pmmg-border opacity-70'} flex items-center justify-between gap-2 text-xs min-w-0">
+                    <label class="flex items-center gap-2 cursor-pointer select-none min-w-0 flex-1">
+                        <input type="checkbox" ${item.enabled ? 'checked' : ''} onchange="toggleRastreamentoCategoryEnabled('${item.id}')" class="w-3.5 h-3.5 accent-[#C5A869] cursor-pointer shrink-0">
+                        <span class="font-bold ${item.enabled ? 'text-white' : 'text-gray-400'} truncate">${escapeHtmlSafe(item.term)}</span>
+                    </label>
+                    <button type="button" onclick="removeRastreamentoCategory('${item.id}')" class="p-1.5 rounded bg-[#0D0D0D] hover:bg-red-950 text-gray-400 hover:text-red-400 border border-pmmg-border transition-colors cursor-pointer shrink-0" title="Excluir categoria">
+                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                    </button>
+                </div>
+            `).join('');
+
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        function buildOverpassTagClausesForTerm(rawTerm, radiusMeters, lat, lon) {
+            const norm = rawTerm.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').trim();
+            const around = `(around:${radiusMeters},${lat},${lon})`;
+            const tagPairs = [];
+
+            if (/farmac|drogari|remedio|medicament/.test(norm)) {
+                tagPairs.push(['amenity', 'pharmacy'], ['shop', 'chemist']);
+            } else if (/borrach|pneu/.test(norm)) {
+                tagPairs.push(['shop', 'tyres'], ['craft', 'tyre_repair'], ['shop', 'car_repair']);
+            } else if (/chaveir|chave/.test(norm)) {
+                tagPairs.push(['craft', 'locksmith'], ['shop', 'locksmith']);
+            } else if (/padari|panific|pao/.test(norm)) {
+                tagPairs.push(['shop', 'bakery']);
+            } else if (/supermercad|mercad|hipermercad|merceari/.test(norm)) {
+                tagPairs.push(['shop', 'supermarket'], ['shop', 'convenience'], ['shop', 'grocery']);
+            } else if (/oficin|mecanic|auto eletric|auto pecas|autopecas/.test(norm)) {
+                tagPairs.push(['shop', 'car_repair'], ['shop', 'car_parts'], ['craft', 'car_repair']);
+            } else if (/posto|combustiv|gasolin|etanol|diesel/.test(norm)) {
+                tagPairs.push(['amenity', 'fuel']);
+            } else if (/banco|caixa|agencia|loteric/.test(norm)) {
+                tagPairs.push(['amenity', 'bank'], ['amenity', 'atm'], ['shop', 'lottery']);
+            } else if (/hospital|upa|pronto socorro|clinica|medico|saude/.test(norm)) {
+                tagPairs.push(['amenity', 'hospital'], ['amenity', 'clinic'], ['healthcare', 'hospital']);
+            } else if (/dentist|odonto/.test(norm)) {
+                tagPairs.push(['amenity', 'dentist']);
+            } else if (/restaurant|almoco|jantar|comida/.test(norm)) {
+                tagPairs.push(['amenity', 'restaurant']);
+            } else if (/lanchonet|lanche|hamburg|pizz|fast food/.test(norm)) {
+                tagPairs.push(['amenity', 'fast_food'], ['amenity', 'cafe']);
+            } else if (/cafe|cafeteri/.test(norm)) {
+                tagPairs.push(['amenity', 'cafe']);
+            } else if (/hotel|pousad|hospedag/.test(norm)) {
+                tagPairs.push(['tourism', 'hotel'], ['tourism', 'motel'], ['tourism', 'guest_house']);
+            } else if (/pet|veterinar|racao/.test(norm)) {
+                tagPairs.push(['shop', 'pet'], ['amenity', 'veterinary']);
+            } else if (/ferrag|construc|material|eletric|hidraulic/.test(norm)) {
+                tagPairs.push(['shop', 'hardware'], ['shop', 'doityourself']);
+            } else if (/lavajato|lava jato|lava rapido|lavagem/.test(norm)) {
+                tagPairs.push(['amenity', 'car_wash']);
+            } else if (/estacionament|garagem/.test(norm)) {
+                tagPairs.push(['amenity', 'parking']);
+            } else if (/papelari|livrari|copia|xerox/.test(norm)) {
+                tagPairs.push(['shop', 'stationery'], ['shop', 'books'], ['shop', 'copyshop']);
+            } else if (/acoug|carne/.test(norm)) {
+                tagPairs.push(['shop', 'butcher']);
+            } else if (/hortifrut|sacolao|verdura|fruta/.test(norm)) {
+                tagPairs.push(['shop', 'greengrocer']);
+            } else if (/otic|oculos/.test(norm)) {
+                tagPairs.push(['shop', 'optician']);
+            } else if (/barbear|cabeleireir|salao/.test(norm)) {
+                tagPairs.push(['shop', 'hairdresser']);
+            } else if (/polici|delegaci|batalhao|cia pm/.test(norm)) {
+                tagPairs.push(['amenity', 'police']);
+            } else if (/bombeir/.test(norm)) {
+                tagPairs.push(['amenity', 'fire_station']);
+            }
+
+            const safeRegex = rawTerm.replace(/[\^$.*+?()[\]{}|]/g, '\$&');
+            const clauses = [];
+            tagPairs.forEach(([k, v]) => {
+                clauses.push(`nwr["${k}"="${v}"]${around};`);
+            });
+            clauses.push(`nwr["name"~"${safeRegex}",i]${around};`);
+            return clauses.join('');
+        }
+
+        function formatOverpassElementAddress(tags) {
+            if (!tags) return 'Proximidades da posição GPS';
+            const street = tags['addr:street'] || tags['addr:place'] || '';
+            const num = tags['addr:housenumber'] || '';
+            const suburb = tags['addr:suburb'] || tags['addr:neighbourhood'] || tags['addr:district'] || '';
+            const city = tags['addr:city'] || '';
+            const parts = [];
+            if (street) parts.push(num ? `${street}, ${num}` : street);
+            if (suburb) parts.push(suburb);
+            if (city && !suburb) parts.push(city);
+            return parts.length ? parts.join(' - ') : 'Localizado via GPS / OpenStreetMap';
+        }
+
+        function formatRastreamentoDistanceLabel(distKm) {
+            if (typeof distKm !== 'number' || isNaN(distKm)) return '--';
+            if (distKm < 1.0) {
+                const meters = Math.max(10, Math.round(distKm * 1000));
+                return `${meters} m`;
+            }
+            return `${distKm.toFixed(1).replace('.', ',')} km`;
+        }
+
+        async function queryOverpassSingleCategory(term, lat, lon, radiusMeters) {
+            const bodyClauses = buildOverpassTagClausesForTerm(term, radiusMeters, lat, lon);
+            const ql = `[out:json][timeout:12];(${bodyClauses});out center 25;`;
+            const endpoints = [
+                'https://overpass-api.de/api/interpreter',
+                'https://overpass.kumi.systems/api/interpreter'
+            ];
+
+            for (let i = 0; i < endpoints.length; i++) {
+                try {
+                    const controller = new AbortController();
+                    const timer = setTimeout(() => controller.abort(), 11000);
+                    const res = await fetch(endpoints[i], {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+                        body: 'data=' + encodeURIComponent(ql),
+                        signal: controller.signal
+                    });
+                    clearTimeout(timer);
+                    if (!res.ok) continue;
+                    const data = await res.json();
+                    const elements = Array.isArray(data && data.elements) ? data.elements : [];
+                    if (!elements.length) return null;
+
+                    let best = null;
+                    let bestDist = Infinity;
+
+                    elements.forEach(el => {
+                        const elLat = typeof el.lat === 'number' ? el.lat : (el.center && typeof el.center.lat === 'number' ? el.center.lat : null);
+                        const elLon = typeof el.lon === 'number' ? el.lon : (el.center && typeof el.center.lon === 'number' ? el.center.lon : null);
+                        if (elLat === null || elLon === null) return;
+                        const d = typeof azimuteCalcDistKm === 'function' ? azimuteCalcDistKm(lat, lon, elLat, elLon) : 0;
+                        const tags = el.tags || {};
+                        const hasName = Boolean(tags.name || tags.brand);
+                        const scoreDist = hasName ? d : d + 0.15;
+                        if (scoreDist < bestDist) {
+                            bestDist = scoreDist;
+                            best = {
+                                name: tags.name || tags.brand || (term + ' (OSM)'),
+                                address: formatOverpassElementAddress(tags),
+                                lat: elLat,
+                                lon: elLon,
+                                distKm: d,
+                                updatedAt: Date.now()
+                            };
+                        }
+                    });
+                    return best;
+                } catch (e) {}
+            }
+            return null;
+        }
+
+        async function updateAzimuteGpsRastreamento(lat, lon, forceImmediate = false) {
+            if (typeof lat !== 'number' || typeof lon !== 'number' || isNaN(lat) || isNaN(lon)) return;
+
+            const activeCategories = getRastreamentoCategories().filter(x => x.enabled);
+            renderHomeSupportRastreamentoCards(lat, lon);
+
+            if (!activeCategories.length) return;
+            if (navigator.onLine === false) return;
+
+            const signature = activeCategories.map(x => x.term.toLowerCase()).sort().join('|');
+            const now = Date.now();
+            let movedKm = Infinity;
+            if (azimuteRastreamentoLastFetchLat !== null && azimuteRastreamentoLastFetchLon !== null && typeof azimuteCalcDistKm === 'function') {
+                movedKm = azimuteCalcDistKm(azimuteRastreamentoLastFetchLat, azimuteRastreamentoLastFetchLon, lat, lon);
+            }
+
+            const needsFetch = forceImmediate
+                || signature !== azimuteRastreamentoLastSignature
+                || movedKm >= 0.12
+                || (now - azimuteRastreamentoLastFetchTs) >= 25000;
+
+            if (!needsFetch || azimuteRastreamentoInFlight) return;
+
+            azimuteRastreamentoInFlight = true;
+            azimuteRastreamentoLastFetchLat = lat;
+            azimuteRastreamentoLastFetchLon = lon;
+            azimuteRastreamentoLastFetchTs = now;
+            azimuteRastreamentoLastSignature = signature;
+
+            try {
+                await Promise.all(activeCategories.map(async (cat) => {
+                    const key = cat.term.toLowerCase();
+                    let found = await queryOverpassSingleCategory(cat.term, lat, lon, 3500);
+                    if (!found) {
+                        found = await queryOverpassSingleCategory(cat.term, lat, lon, 9000);
+                    }
+                    if (found) {
+                        azimuteRastreamentoResultsMap[key] = found;
+                    } else if (!azimuteRastreamentoResultsMap[key]) {
+                        azimuteRastreamentoResultsMap[key] = {
+                            notFound: true,
+                            updatedAt: Date.now()
+                        };
+                    }
+                }));
+
+                try {
+                    localStorage.setItem(AZIMUTE_RASTREAMENTO_CACHE_KEY, JSON.stringify(azimuteRastreamentoResultsMap));
+                } catch (e) {}
+            } finally {
+                azimuteRastreamentoInFlight = false;
+                const latest = getCurrentRastreamentoCoords();
+                renderHomeSupportRastreamentoCards(latest.lat !== null ? latest.lat : lat, latest.lon !== null ? latest.lon : lon);
+            }
+        }
+
+        function renderHomeSupportRastreamentoCards(refLat, refLon) {
+            const container = document.getElementById('homeSupportRastreamentoContainer');
+            if (!container) return;
+
+            const activeCategories = getRastreamentoCategories().filter(x => x.enabled);
+            if (!activeCategories.length) {
+                container.innerHTML = '';
+                return;
+            }
+
+            container.innerHTML = activeCategories.map(cat => {
+                const key = cat.term.toLowerCase();
+                const hit = azimuteRastreamentoResultsMap[key];
+
+                if (!hit) {
+                    return `
+                        <div class="bg-[#161616] p-2.5 rounded-xl border border-[#C5A869]/60 flex items-center justify-between gap-2 min-w-0 overflow-hidden">
+                            <div class="min-w-0 flex-1">
+                                <div class="flex items-center gap-1.5 flex-wrap">
+                                    <span class="text-[10px] font-extrabold uppercase text-pmmg-gold truncate">Rastreamento • ${escapeHtmlSafe(cat.term)}</span>
+                                    <span class="text-[10px] font-mono font-bold bg-[#0D0D0D] text-pmmg-khaki px-1.5 py-0.5 rounded border border-[#C5A869]/40 shrink-0">Buscando...</span>
+                                </div>
+                                <strong class="text-xs font-bold text-gray-200 block truncate mt-0.5">Localizando estabelecimento próximo via GPS...</strong>
+                                <span class="text-[10px] text-gray-400 block truncate">OpenStreetMap / Overpass API</span>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                if (hit.notFound) {
+                    const fallbackMapsUrl = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(cat.term + ' perto de mim');
+                    return `
+                        <div class="bg-[#161616] p-2.5 rounded-xl border border-[#C5A869]/60 flex items-center justify-between gap-2 min-w-0 overflow-hidden">
+                            <div class="min-w-0 flex-1">
+                                <div class="flex items-center gap-1.5 flex-wrap">
+                                    <span class="text-[10px] font-extrabold uppercase text-pmmg-gold truncate">Rastreamento • ${escapeHtmlSafe(cat.term)}</span>
+                                    <span class="text-[10px] font-mono font-bold bg-[#0D0D0D] text-gray-400 px-1.5 py-0.5 rounded border border-pmmg-border shrink-0">Raio 9 km</span>
+                                </div>
+                                <strong class="text-xs font-bold text-white block truncate mt-0.5">Nenhum registro no raio imediato</strong>
+                                <span class="text-[10px] text-gray-400 block truncate">Abrir busca direta no mapa</span>
+                            </div>
+                            <a href="${fallbackMapsUrl}" target="_blank" rel="noopener noreferrer" class="px-2.5 py-2 bg-[#0D0D0D] hover:bg-pmmg-border text-pmmg-khaki border border-[#C5A869] font-extrabold rounded-lg text-[11px] flex items-center gap-1 shrink-0 transition-all active:scale-95" title="Buscar ${escapeHtmlSafe(cat.term)} no Maps">
+                                <i data-lucide="navigation" class="w-3.5 h-3.5 text-pmmg-gold"></i> <span>ROTA</span>
+                            </a>
+                        </div>
+                    `;
+                }
+
+                let liveDistKm = hit.distKm;
+                if (typeof refLat === 'number' && typeof refLon === 'number' && !isNaN(refLat) && !isNaN(refLon) && typeof azimuteCalcDistKm === 'function') {
+                    liveDistKm = azimuteCalcDistKm(refLat, refLon, hit.lat, hit.lon);
+                }
+                const distText = formatRastreamentoDistanceLabel(liveDistKm);
+                const routeHref = `https://www.google.com/maps/dir/?api=1&destination=${hit.lat},${hit.lon}&travelmode=driving`;
+
+                return `
+                    <div class="bg-[#161616] p-2.5 rounded-xl border border-[#C5A869]/70 flex items-center justify-between gap-2 min-w-0 overflow-hidden">
+                        <div class="min-w-0 flex-1">
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                <span class="text-[10px] font-extrabold uppercase text-pmmg-gold truncate">Rastreamento • ${escapeHtmlSafe(cat.term)}</span>
+                                <span class="text-[10px] font-mono font-extrabold bg-[#0D0D0D] text-pmmg-khaki px-1.5 py-0.5 rounded border border-[#C5A869]/50 shrink-0">${distText}</span>
+                            </div>
+                            <strong class="text-xs sm:text-sm font-extrabold text-white block truncate mt-0.5">${escapeHtmlSafe(hit.name)}</strong>
+                            <span class="text-[10px] text-gray-400 block truncate">${escapeHtmlSafe(hit.address)}</span>
+                        </div>
+                        <a href="${routeHref}" target="_blank" rel="noopener noreferrer" class="px-2.5 py-2 bg-[#0D0D0D] hover:bg-pmmg-border text-pmmg-khaki border border-[#C5A869] font-extrabold rounded-lg text-[11px] flex items-center gap-1 shrink-0 transition-all active:scale-95" title="Traçar rota para ${escapeHtmlSafe(hit.name)}">
+                            <i data-lucide="navigation" class="w-3.5 h-3.5 text-pmmg-gold"></i> <span>ROTA</span>
+                        </a>
+                    </div>
+                `;
+            }).join('');
+
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             applyNearestSupportPrefsToDom();
             renderHomeNearestSupportCustomPlaces(azimuteLastGeoLat, azimuteLastGeoLon);
+            renderRastreamentoCategoriesManagerList();
+            const initCoords = getCurrentRastreamentoCoords();
+            renderHomeSupportRastreamentoCards(initCoords.lat, initCoords.lon);
+            if (initCoords.lat !== null && initCoords.lon !== null) {
+                updateAzimuteGpsRastreamento(initCoords.lat, initCoords.lon, true);
+            }
         });
 
         // ================= DOIS METRÔNOMOS DE RCP LUMINOSOS E SONOROS (WEB AUDIO API 100% OFFLINE) =================
@@ -10551,6 +11013,11 @@
             // Atualiza Pontos Personalizados Salvos pelo Militar com distância GPS em tempo real
             if (typeof renderHomeNearestSupportCustomPlaces === 'function') {
                 renderHomeNearestSupportCustomPlaces(lat, lon);
+            }
+
+            // Atualiza RASTREAMENTO contínuo de comércios/serviços conforme deslocamento do GPS
+            if (typeof updateAzimuteGpsRastreamento === 'function') {
+                updateAzimuteGpsRastreamento(lat, lon, false);
             }
 
             // Atualiza Card de Destaque Máximo "Unidades Próximas" no Modo GRID
