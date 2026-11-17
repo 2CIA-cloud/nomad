@@ -1932,19 +1932,19 @@
             <!-- TELA 1 DE ESTÁDIOS: LOBBY DE ESCOLHA DO ESTÁDIO (SEM CABEÇALHO GIGANTE REPETIDO, VISUAL ESCURO E SÓBRIO) -->
             <div id="estadios-lobby-screen" class="space-y-4 app-screen-animate">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <!-- 1. MINEIRÃO -->
-                    <div onclick="openStadiumScreen('mineirao')" id="card-estadio-mineirao" class="bg-[#161616] px-5 py-6 rounded-2xl border border-[#C5A869]/45 hover:border-[#C5A869] hover:bg-pmmg-cardHover cursor-pointer transition-all shadow-lg flex items-center justify-center text-center active:scale-[0.98]">
-                        <h3 class="text-xl sm:text-2xl font-military text-pmmg-khaki font-bold uppercase tracking-wide leading-snug">Estádio Governador Magalhães Pinto (Mineirão)</h3>
+                    <!-- 1. MINEIRÃO (CONTORNO AZUL) -->
+                    <div onclick="openStadiumScreen('mineirao')" id="card-estadio-mineirao" class="bg-[#161616] px-5 py-6 rounded-2xl border-2 border-blue-600 hover:border-blue-400 hover:bg-pmmg-cardHover cursor-pointer transition-all shadow-lg flex items-center justify-center text-center active:scale-[0.98]">
+                        <h3 class="text-2xl sm:text-3xl font-military text-white font-bold uppercase tracking-wide leading-snug">Mineirão</h3>
                     </div>
 
-                    <!-- 2. ARENA MRV -->
-                    <div onclick="openStadiumScreen('arenamrv')" id="card-estadio-arenamrv" class="bg-[#161616] px-5 py-6 rounded-2xl border border-[#C5A869]/45 hover:border-[#C5A869] hover:bg-pmmg-cardHover cursor-pointer transition-all shadow-lg flex items-center justify-center text-center active:scale-[0.98]">
-                        <h3 class="text-xl sm:text-2xl font-military text-pmmg-khaki font-bold uppercase tracking-wide leading-snug">Arena MRV</h3>
+                    <!-- 2. ARENA MRV (CONTORNO BRANCO) -->
+                    <div onclick="openStadiumScreen('arenamrv')" id="card-estadio-arenamrv" class="bg-[#161616] px-5 py-6 rounded-2xl border-2 border-white hover:border-gray-200 hover:bg-pmmg-cardHover cursor-pointer transition-all shadow-lg flex items-center justify-center text-center active:scale-[0.98]">
+                        <h3 class="text-2xl sm:text-3xl font-military text-white font-bold uppercase tracking-wide leading-snug">Arena MRV</h3>
                     </div>
 
-                    <!-- 3. INDEPENDÊNCIA -->
-                    <div onclick="openStadiumScreen('independencia')" id="card-estadio-independencia" class="bg-[#161616] px-5 py-6 rounded-2xl border border-[#C5A869]/45 hover:border-[#C5A869] hover:bg-pmmg-cardHover cursor-pointer transition-all shadow-lg flex items-center justify-center text-center active:scale-[0.98]">
-                        <h3 class="text-xl sm:text-2xl font-military text-pmmg-khaki font-bold uppercase tracking-wide leading-snug">Estádio Raimundo Sampaio (Arena Independência)</h3>
+                    <!-- 3. ARENA INDEPENDÊNCIA (CONTORNO VERDE) -->
+                    <div onclick="openStadiumScreen('independencia')" id="card-estadio-independencia" class="bg-[#161616] px-5 py-6 rounded-2xl border-2 border-emerald-500 hover:border-emerald-400 hover:bg-pmmg-cardHover cursor-pointer transition-all shadow-lg flex items-center justify-center text-center active:scale-[0.98]">
+                        <h3 class="text-2xl sm:text-3xl font-military text-emerald-400 font-bold uppercase tracking-wide leading-snug">Arena Independência</h3>
                     </div>
                 </div>
             </div>
@@ -2036,11 +2036,11 @@
                             <h4 class="text-xl font-military text-pmmg-khaki uppercase tracking-wide leading-none">Fluxo de Torcedores • Mineirão</h4>
                         </div>
                         <div class="flex items-center gap-2 shrink-0">
-                            <span id="lbl-stag-fluxo-mineirao" class="text-[11px] font-bold text-pmmg-khaki">Fechar</span>
-                            <i data-lucide="chevron-down" id="ico-stag-fluxo-mineirao" class="w-4 h-4 text-pmmg-gold transition-transform duration-200" style="transform: rotate(180deg);"></i>
+                            <span id="lbl-stag-fluxo-mineirao" class="text-[11px] font-bold text-pmmg-khaki">Abrir</span>
+                            <i data-lucide="chevron-down" id="ico-stag-fluxo-mineirao" class="w-4 h-4 text-pmmg-gold transition-transform duration-200" style="transform: rotate(0deg);"></i>
                         </div>
                     </button>
-                    <div id="box-stag-fluxo-mineirao" class="p-4 pt-3 border-t border-pmmg-border space-y-3 text-xs">
+                    <div id="box-stag-fluxo-mineirao" class="hidden p-4 pt-3 border-t border-pmmg-border space-y-3 text-xs">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                             <!-- 1. VIAS DE ACESSO -->
                             <div class="bg-[#0D0D0D] p-3.5 rounded-xl border border-[#C5A869]/40 space-y-1.5">
@@ -3018,11 +3018,11 @@
                             <h4 class="text-xl font-military text-pmmg-khaki uppercase tracking-wide leading-none">Fluxo de Torcedores • Arena MRV</h4>
                         </div>
                         <div class="flex items-center gap-2 shrink-0">
-                            <span id="lbl-stag-fluxo-arenamrv" class="text-[11px] font-bold text-pmmg-khaki">Fechar</span>
-                            <i data-lucide="chevron-down" id="ico-stag-fluxo-arenamrv" class="w-4 h-4 text-pmmg-gold transition-transform duration-200" style="transform: rotate(180deg);"></i>
+                            <span id="lbl-stag-fluxo-arenamrv" class="text-[11px] font-bold text-pmmg-khaki">Abrir</span>
+                            <i data-lucide="chevron-down" id="ico-stag-fluxo-arenamrv" class="w-4 h-4 text-pmmg-gold transition-transform duration-200" style="transform: rotate(0deg);"></i>
                         </div>
                     </button>
-                    <div id="box-stag-fluxo-arenamrv" class="p-4 pt-3 border-t border-pmmg-border space-y-3 text-xs">
+                    <div id="box-stag-fluxo-arenamrv" class="hidden p-4 pt-3 border-t border-pmmg-border space-y-3 text-xs">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                             <!-- 1. VIAS DE ACESSO -->
                             <div class="bg-[#0D0D0D] p-3.5 rounded-xl border border-[#C5A869]/40 space-y-1.5">
@@ -3703,11 +3703,11 @@
                             <h4 class="text-xl font-military text-pmmg-khaki uppercase tracking-wide leading-none">Fluxo de Torcedores • Independência</h4>
                         </div>
                         <div class="flex items-center gap-2 shrink-0">
-                            <span id="lbl-stag-fluxo-independencia" class="text-[11px] font-bold text-pmmg-khaki">Fechar</span>
-                            <i data-lucide="chevron-down" id="ico-stag-fluxo-independencia" class="w-4 h-4 text-pmmg-gold transition-transform duration-200" style="transform: rotate(180deg);"></i>
+                            <span id="lbl-stag-fluxo-independencia" class="text-[11px] font-bold text-pmmg-khaki">Abrir</span>
+                            <i data-lucide="chevron-down" id="ico-stag-fluxo-independencia" class="w-4 h-4 text-pmmg-gold transition-transform duration-200" style="transform: rotate(0deg);"></i>
                         </div>
                     </button>
-                    <div id="box-stag-fluxo-independencia" class="p-4 pt-3 border-t border-pmmg-border space-y-3 text-xs">
+                    <div id="box-stag-fluxo-independencia" class="hidden p-4 pt-3 border-t border-pmmg-border space-y-3 text-xs">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                             <!-- 1. VIAS DE ACESSO -->
                             <div class="bg-[#0D0D0D] p-3.5 rounded-xl border border-[#C5A869]/40 space-y-1.5">
@@ -12368,9 +12368,8 @@
                 el.classList.remove('app-screen-animate');
             });
 
-            // Fecha sub-abas extras e exibe imediatamente o Fluxo de Torcedores completo e organizado
+            // Mantém o card Fluxo de Torcedores e todas as sub-abas fechados por padrão ao abrir o estádio
             closeAllStadiumInternalBoxes();
-            window.toggleStadiumCollapsibleBox(`fluxo-${stadiumId}`, true);
 
             const target = document.getElementById(`estadio-content-${stadiumId}`);
             if (target) {
