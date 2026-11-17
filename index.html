@@ -787,7 +787,7 @@
                         Av. João César de Oliveira, 5400
                     </h2>
                     <p id="gridCenterSuburb" class="text-xs sm:text-sm text-gray-200 font-semibold">
-                        Beatriz • Contagem/MG • CEP: 32040-000
+                        Beatriz • Contagem/MG
                     </p>
                 </div>
 
@@ -933,407 +933,162 @@
         </div>
 
         <!-- ================= VIEW EXCLUSIVA: GEOLOCALIZAÇÃO ================= -->
-        <section id="view-gps"class="hidden relative overflow-hidden rounded-2xl space-y-5 p-1">
-            <!-- CONTORNO DO MAPA DE MINAS GERAIS AO FUNDO (EXCLUSIVO DA ABA GEOLOCALIZAÇÃO EM LINHAS QUASE TRANSLÚCIDAS) -->
-            <div class="pointer-events-none select-none absolute inset-0 flex items-center justify-center z-0 overflow-hidden"aria-hidden="true">
-                <svg viewBox="0 0 800 650"class="w-full max-w-4xl h-auto opacity-[0.13]">
-                    <!-- Contorno Geográfico de Minas Gerais em linhas quase translúcidas -->
+        <section id="view-gps" class="hidden relative overflow-hidden rounded-2xl space-y-4 p-1">
+            <!-- CONTORNO DO MAPA DE MINAS GERAIS AO FUNDO -->
+            <div class="pointer-events-none select-none absolute inset-0 flex items-center justify-center z-0 overflow-hidden" aria-hidden="true">
+                <svg viewBox="0 0 800 650" class="w-full max-w-4xl h-auto opacity-[0.13]">
                     <path d="M 380 45 L 445 38 L 510 55 L 555 48 L 620 82 L 695 110 L 735 162 L 718 225 L 742 280 L 710 345 L 685 415 L 650 468 L 592 515 L 535 552 L 472 588 L 415 605 L 362 572 L 325 530 L 285 495 L 252 442 L 210 425 L 155 438 L 95 422 L 42 395 L 35 355 L 88 325 L 145 318 L 195 332 L 235 292 L 222 230 L 245 168 L 285 122 L 330 78 Z"
-                          fill="none"stroke="#C2B280"stroke-width="2.5"stroke-linejoin="round"stroke-linecap="round" />
-                    <!-- Linhas internas sutis de referência topográfica / mesorregiões de MG -->
+                          fill="none" stroke="#C2B280" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" />
                     <path d="M 235 292 L 455 315 L 710 345 M 380 45 L 455 315 L 472 588 M 285 122 L 592 515 M 620 82 L 325 530"
-                          fill="none"stroke="#C2B280"stroke-width="1"stroke-dasharray="6,8" />
-                    <!-- Marcação sutil de referência central (RMBH) -->
-                    <circle cx="455"cy="365"r="28"fill="none"stroke="#D4AF37"stroke-width="1.2"stroke-dasharray="4,4" />
-                    <circle cx="455"cy="365"r="4"fill="#D4AF37" />
+                          fill="none" stroke="#C2B280" stroke-width="1" stroke-dasharray="6,8" />
+                    <circle cx="455" cy="365" r="28" fill="none" stroke="#D4AF37" stroke-width="1.2" stroke-dasharray="4,4" />
+                    <circle cx="455" cy="365" r="4" fill="#D4AF37" />
                 </svg>
             </div>
 
-
-
-            <div id="azimuteLiveGpsHud"class="relative z-10 w-full space-y-5">
-                <!-- BLOCO COMPACTO "REDE DE RÁDIO"MOVIDO PARA O TOPO DA ABA (SEM FREQUÊNCIAS FICTÍCIAS) -->
+            <div id="azimuteLiveGpsHud" class="relative z-10 w-full space-y-3.5">
+                <!-- BLOCO COMPACTO DE REDE DE RÁDIO -->
                 <div class="bg-pmmg-card/95 backdrop-blur-sm p-3.5 rounded-xl border border-pmmg-khaki/50 border-l-4 border-l-pmmg-gold shadow-lg flex flex-wrap items-center justify-between gap-3">
                     <div class="flex items-center gap-2.5">
                         <div class="p-2 rounded-lg bg-pmmg-dark text-pmmg-gold border border-pmmg-border">
-                            <i data-lucide="radio"class="w-4 h-4"></i>
+                            <i data-lucide="radio" class="w-4 h-4"></i>
                         </div>
                         <div>
                             <span class="text-[10px] uppercase font-bold text-pmmg-gold block leading-none">Rede de Rádio</span>
-                            <strong id="hudRadioChannel"class="text-sm sm:text-base text-white font-mono block mt-1">REDE: 2ª RPM / 18º BPM A</strong>
+                            <strong id="hudRadioChannel" class="text-sm sm:text-base text-white font-mono block mt-1">REDE: 2ª RPM / 18º BPM A</strong>
                         </div>
                     </div>
                     <div class="text-left sm:text-right">
-                        <span class="text-[10px] uppercase font-bold text-pmmg-khaki block leading-none">Unidade / Área Territorial</span>
-                        <span id="hudUnitArea"class="text-xs sm:text-sm text-gray-200 font-bold block mt-1">18º BPM • Contagem</span>
+                        <span class="text-[10px] uppercase font-bold text-pmmg-khaki block leading-none">Unidade / Área</span>
+                        <span id="hudUnitArea" class="text-xs sm:text-sm text-gray-200 font-bold block mt-1">18º BPM • Contagem</span>
                     </div>
                 </div>
 
-                <div class="bg-pmmg-card/90 backdrop-blur-sm border-2 border-pmmg-khaki/60 rounded-2xl p-4 sm:p-5 shadow-2xl space-y-4">
-                    <!-- Linha 1: Indicador claro de Status (GPS Online / GPS Offline) + Precisão + Altitude + Timestamp do Cache -->
-                    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border pb-3">
+                <!-- CARD PRINCIPAL: LOCALIZAÇÃO (TÍTULO "Localização" + "Cia / Batalhão" NO CANTO DIREITO DO CABEÇALHO) -->
+                <div class="bg-pmmg-card/90 backdrop-blur-sm border-2 border-pmmg-khaki/60 rounded-2xl p-4 sm:p-5 shadow-2xl space-y-3.5">
+                    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border pb-2.5">
                         <div class="flex items-center gap-2 flex-wrap">
-                            <span id="hudGpsBadge"class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-extrabold uppercase bg-emerald-950 text-emerald-400 border border-emerald-500/50">
-                                <span id="hudGpsDot"class="w-2.5 h-2.5 rounded-full bg-emerald-400 inline-block shadow-[0_0_8px_#34d399]"></span>
-                                <span id="hudGpsStatusText">GPS Online (Contínuo)</span>
+                            <span id="hudGpsBadge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-extrabold uppercase bg-emerald-950 text-emerald-400 border border-emerald-500/50">
+                                <span id="hudGpsDot" class="w-2.5 h-2.5 rounded-full bg-emerald-400 inline-block shadow-[0_0_8px_#34d399]"></span>
+                                <span id="hudGpsStatusText">GPS Online</span>
                             </span>
-                            <span id="hudGpsAccuracy"class="text-xs font-mono bg-pmmg-dark px-2.5 py-1 rounded-lg border border-pmmg-border text-pmmg-khaki">Precisão: Sincronizando...</span>
-                            <span id="hudAltitudeQuickBadge"class="text-xs font-mono bg-pmmg-dark px-2.5 py-1 rounded-lg border border-pmmg-border text-pmmg-gold">Altitude: -- m</span>
+                            <span id="hudGpsAccuracy" class="text-xs font-mono bg-pmmg-dark px-2.5 py-1 rounded-lg border border-pmmg-border text-pmmg-khaki">Precisão: ±--m</span>
+                            <span id="hudAltitudeQuickBadge" class="text-xs font-mono bg-pmmg-dark px-2.5 py-1 rounded-lg border border-pmmg-border text-pmmg-gold">Altitude: -- m</span>
                         </div>
-                        <div class="text-[11px] font-mono text-gray-400"id="hudLastSavedTimestamp">
-                            Último registro: --
-                        </div>
+                        <div class="text-[11px] font-mono text-gray-400" id="hudLastSavedTimestamp">--</div>
                     </div>
 
-                    <!-- Caixa Principal: QTH (Com Esquina/Cruzamento ou Número Aproximado) + Botões Copiar QTH e LOCALIZAÇÃO EXATA -->
                     <div class="bg-pmmg-black/90 border border-pmmg-khaki/40 border-l-4 border-l-pmmg-khaki rounded-xl p-4 space-y-3">
-                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
-                            <div class="space-y-1">
-                                <span class="text-[10px] font-bold uppercase tracking-wider text-pmmg-khaki block">Logradouro / Cruzamento (QTH)</span>
-                                <h3 id="hudCurrentStreet"class="text-xl sm:text-2xl font-extrabold text-white leading-tight">Obtendo endereço automático via satélite...</h3>
-                                <p id="hudCurrentSuburb"class="text-xs sm:text-sm text-gray-300">Bairro • Município • CEP</p>
-                            </div>
+                        <div class="flex items-center justify-between gap-2 border-b border-pmmg-border/60 pb-2">
+                            <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki">Localização</span>
+                            <span id="hudLocationCiaBpmBadge" class="text-[11px] font-mono font-extrabold text-pmmg-gold bg-pmmg-dark px-2.5 py-1 rounded-lg border border-pmmg-gold/40">133ª Cia / 18º BPM</span>
                         </div>
 
-                        <!-- Ações Rápidas do QTH: Apenas Copiar QTH e LOCALIZAÇÃO EXATA (Clima mantido exclusivamente no card Clima Local) -->
+                        <div class="space-y-1">
+                            <h3 id="hudCurrentStreet" class="text-xl sm:text-2xl font-extrabold text-white leading-tight">Sincronizando via satélite...</h3>
+                            <p id="hudCurrentSuburb" class="text-xs sm:text-sm text-gray-300">Bairro • Município</p>
+                        </div>
+
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2 border-t border-pmmg-border/60">
                             <button type="button" onclick="copyCurrentQth()" class="py-2.5 px-3 bg-pmmg-dark hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-gold/60 font-extrabold rounded-xl text-xs flex items-center justify-center gap-1.5 shadow transition-all cursor-pointer">
                                 <i data-lucide="copy" class="w-4 h-4"></i> <span>Copiar QTH</span>
                             </button>
-                            <a id="btnOpenCurrentInMaps" href="https://www.google.com/maps/search/?api=1&query=-19.9162,-44.0809" target="_blank" class="py-2.5 px-3 bg-pmmg-dark hover:bg-pmmg-border text-pmmg-gold border border-pmmg-gold/60 font-extrabold rounded-xl text-xs flex items-center justify-center gap-1.5 shadow transition-all uppercase tracking-wide" title="Abre o Google Maps na coordenada exata do GPS para visualizar o número do imóvel na via">
-                                <i data-lucide="map-pin" class="w-4 h-4 text-pmmg-black"></i> <span>LOCALIZAÇÃO EXATA</span>
+                            <a id="btnOpenCurrentInMaps" href="https://www.google.com/maps/search/?api=1&query=-19.9162,-44.0809" target="_blank" class="py-2.5 px-3 bg-pmmg-dark hover:bg-pmmg-border text-pmmg-gold border border-pmmg-gold/60 font-extrabold rounded-xl text-xs flex items-center justify-center gap-1.5 shadow transition-all uppercase tracking-wide">
+                                <i data-lucide="map-pin" class="w-4 h-4"></i> <span>LOCALIZAÇÃO EXATA</span>
                             </a>
                         </div>
                     </div>
-
-                    <!-- GRADE DUPLA LADO A LADO: CARD "CLIMA LOCAL" + CARD "CONECTIVIDADE" -->
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-3.5 items-stretch">
-                        <!-- CARD COMPACTO "CLIMA LOCAL"NA TELA PRINCIPAL DA ABA GEOLOCALIZAÇÃO (TEMPERATURA ATUAL, CONDIÇÃO E VENTO) -->
-                        <div id="localWeatherSummaryCard"onclick="toggleGeoWeatherDetails()"class="bg-pmmg-dark hover:bg-pmmg-cardHover border border-sky-500/50 border-l-4 border-l-sky-400 rounded-xl p-3.5 cursor-pointer transition-all shadow-md group flex flex-col justify-between">
-                            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border/70 pb-2 mb-2.5">
-                                <div class="flex items-center gap-2">
-                                    <div class="p-1.5 rounded-lg bg-sky-950 text-sky-400 border border-sky-500/40">
-                                        <i data-lucide="cloud-sun"class="w-4 h-4"></i>
-                                    </div>
-                                    <div>
-                                        <span class="text-[10px] font-extrabold uppercase tracking-wider text-sky-400 block leading-none">CLIMA LOCAL</span>
-                                        <span class="text-[10px] text-gray-400">Monitoramento meteorológico atual</span>
-                                    </div>
-                                </div>
-                                <button type="button"onclick="event.stopPropagation(); toggleGeoWeatherDetails();"class="px-2.5 py-1 rounded-lg bg-sky-950/90 group-hover:bg-sky-500 text-sky-300 group-hover:text-pmmg-black border border-sky-500/50 text-[11px] font-extrabold flex items-center gap-1 transition-all">
-                                    <span>Ver Previsão / Detalhes</span>
-                                    <i data-lucide="chevron-right"class="w-3.5 h-3.5"></i>
-                                </button>
-                            </div>
-
-                            <div class="grid grid-cols-3 gap-2.5 text-xs">
-                                <div class="bg-pmmg-card/90 p-2.5 rounded-lg border border-pmmg-border">
-                                    <span class="text-[10px] text-gray-400 uppercase font-bold block">Temp. Atual</span>
-                                    <strong id="localClimateTemp"class="text-sm sm:text-base font-mono text-white font-extrabold block mt-0.5">-- °C</strong>
-                                </div>
-                                <div class="bg-pmmg-card/90 p-2.5 rounded-lg border border-pmmg-border">
-                                    <span class="text-[10px] text-gray-400 uppercase font-bold block">Condição</span>
-                                    <strong id="localClimateCond"class="text-xs sm:text-sm text-sky-300 font-bold block mt-0.5 truncate">--</strong>
-                                </div>
-                                <div class="bg-pmmg-card/90 p-2.5 rounded-lg border border-pmmg-border">
-                                    <span class="text-[10px] text-gray-400 uppercase font-bold block">Vento</span>
-                                    <strong id="localClimateWind"class="text-sm sm:text-base font-mono text-white font-extrabold block mt-0.5">-- km/h</strong>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- CARD RESUMIDO "CONECTIVIDADE" AO LADO DO CARD DE CLIMA (MEDIÇÃO AUTOMÁTICA + BOTÃO DIRETO "NOVO TESTE") -->
-                        <div id="localConnectivitySummaryCard" onclick="openGeoConnectivitySubpage()" class="bg-pmmg-dark hover:bg-pmmg-cardHover border border-pmmg-khaki/50 border-l-4 border-l-pmmg-khaki rounded-xl p-3.5 cursor-pointer transition-all shadow-md group flex flex-col justify-between">
-                            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border/70 pb-2 mb-2.5">
-                                <div class="flex items-center gap-2">
-                                    <div id="connSummaryIconBox" class="p-1.5 rounded-lg bg-pmmg-card text-pmmg-khaki border border-pmmg-khaki/40 transition-colors">
-                                        <i data-lucide="wifi" class="w-4 h-4"></i>
-                                    </div>
-                                    <div>
-                                        <div class="flex items-center gap-1.5">
-                                            <span class="text-[10px] font-extrabold uppercase tracking-wider text-pmmg-khaki block leading-none">CONECTIVIDADE</span>
-                                            <span id="connSummaryStateBadge" class="px-2 py-0.5 rounded text-[9px] font-mono font-extrabold uppercase bg-pmmg-khakiBadge text-pmmg-khaki border border-pmmg-khaki/50 transition-all">
-                                                MEDINDO...
-                                            </span>
-                                        </div>
-                                        <span class="text-[10px] text-gray-400 block mt-0.5">Aferição automática de velocidade e latência</span>
-                                    </div>
-                                </div>
-                                <div class="flex items-center gap-1.5">
-                                    <button type="button" id="btnSummaryRunConnTest" onclick="event.stopPropagation(); runRealConnectivityDiagnostic();" class="px-2.5 py-1 rounded-lg bg-pmmg-dark hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-gold/60 font-extrabold text-[11px] flex items-center gap-1 shadow transition-all active:scale-95 cursor-pointer" title="Executar novo teste de conectividade agora">
-                                        <i data-lucide="refresh-cw" id="iconSummaryConnTest" class="w-3 h-3"></i>
-                                        <span id="txtSummaryConnTest">Novo Teste</span>
-                                    </button>
-                                    <button type="button" onclick="event.stopPropagation(); openGeoConnectivitySubpage();" class="px-2.5 py-1 rounded-lg bg-pmmg-card hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-khaki/50 text-[11px] font-extrabold flex items-center gap-1 transition-all cursor-pointer">
-                                        <span>Ver Diagnóstico →</span>
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div class="grid grid-cols-3 gap-2.5 text-xs">
-                                <div class="bg-pmmg-card/90 p-2.5 rounded-lg border border-pmmg-border">
-                                    <span class="text-[10px] text-gray-400 uppercase font-bold block">Qualidade</span>
-                                    <strong id="connSummaryStatusText" class="text-xs sm:text-sm font-mono text-pmmg-khaki font-extrabold block mt-0.5 truncate">MEDINDO...</strong>
-                                </div>
-                                <div class="bg-pmmg-card/90 p-2.5 rounded-lg border border-pmmg-border">
-                                    <span class="text-[10px] text-gray-400 uppercase font-bold block">Down / Ping</span>
-                                    <strong id="connSummaryDownPing" class="text-xs sm:text-sm font-mono text-white font-extrabold block mt-0.5 truncate">Calculando...</strong>
-                                </div>
-                                <div class="bg-pmmg-card/90 p-2.5 rounded-lg border border-pmmg-border">
-                                    <span class="text-[10px] text-gray-400 uppercase font-bold block">Tecnologia</span>
-                                    <strong id="connSummaryTech" class="text-xs sm:text-sm font-mono text-pmmg-gold font-extrabold block mt-0.5 truncate">Detectando...</strong>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- SUBPÁGINA / MODAL "DIAGNÓSTICO DE CONECTIVIDADE" (MEDIÇÃO REAL VIA REQUISIÇÃO) -->
-                    <div id="geoConnectivitySubpage"class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-start sm:items-center justify-center p-2.5 sm:p-5 overflow-y-auto"onclick="if(event.target === this) closeGeoConnectivitySubpage()">
-                        <div class="bg-pmmg-dark border-2 border-pmmg-khaki/70 rounded-2xl max-w-3xl w-full p-4 sm:p-6 space-y-5 shadow-2xl my-auto app-screen-animate max-h-[92vh] overflow-y-auto">
-                            <!-- Cabeçalho da Subpágina de Diagnóstico -->
-                            <div class="flex items-center justify-between border-b border-pmmg-border pb-3 gap-2 sticky top-0 bg-pmmg-dark/95 backdrop-blur z-10 pt-1">
-                                <div class="flex items-center gap-2.5">
-                                    <div class="p-2 rounded-xl bg-pmmg-card text-pmmg-khaki border border-pmmg-khaki/40">
-                                        <i data-lucide="activity"class="w-5 h-5"></i>
-                                    </div>
-                                    <div>
-                                        <span class="text-[10px] font-bold uppercase tracking-wider text-pmmg-khaki block leading-none">Telemetria de Rede & Internet • Medição Real</span>
-                                        <h4 class="text-xl sm:text-2xl font-military text-white uppercase tracking-wider leading-none mt-0.5">DIAGNÓSTICO DE CONECTIVIDADE</h4>
-                                    </div>
-                                </div>
-                                <button type="button"onclick="closeGeoConnectivitySubpage()"class="px-3 py-1.5 rounded-xl bg-pmmg-card hover:bg-pmmg-border text-gray-200 hover:text-white border border-pmmg-border text-xs font-extrabold flex items-center gap-1 shrink-0">
-                                    <span>Fechar </span>
-                                </button>
-                            </div>
-
-                            <!-- Barra de Estado Visual (BOA / MODERADA / RUIM / SEM MEDIÇÃO) + Horário do Último Teste + Botão "Executar novo teste" -->
-                            <div class="bg-pmmg-card p-4 rounded-xl border border-pmmg-border flex flex-col sm:flex-row sm:items-center justify-between gap-3.5">
-                                <div class="space-y-1">
-                                    <div class="flex items-center gap-2 flex-wrap">
-                                        <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400">Classificação Atual:</span>
-                                        <span id="connModalStateBadge"class="px-2.5 py-0.5 rounded text-xs font-mono font-extrabold uppercase bg-gray-800 text-gray-300 border border-gray-500/60">
-                                            SEM MEDIÇÃO
-                                        </span>
-                                    </div>
-                                    <p id="connDiagLastTime"class="text-xs font-mono text-gray-400">
-                                        Horário do último teste: Sem medição realizada
-                                    </p>
-                                </div>
-
-                                <button type="button"id="btnRunConnectivityTest"onclick="runRealConnectivityDiagnostic()"class="px-4 py-2.5 bg-pmmg-dark hover:bg-pmmg-border active:scale-95 text-pmmg-khaki border border-pmmg-gold/60 font-extrabold rounded-xl text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg transition-all shrink-0 uppercase tracking-wider cursor-pointer">
-                                    <i data-lucide="refresh-cw"id="iconRunConnTest"class="w-4 h-4"></i>
-                                    <span id="txtRunConnTest">Executar novo teste</span>
-                                </button>
-                            </div>
-
-                            <!-- Barra de Progresso / Feedback durante a Medição Real -->
-                            <div id="connTestProgressBox"class="hidden bg-pmmg-black/90 p-3 rounded-xl border border-pmmg-khaki/40 space-y-2">
-                                <div class="flex items-center justify-between text-xs">
-                                    <span id="connTestStepText"class="text-pmmg-khaki font-bold font-mono">Iniciando sondagem de pacotes e latência...</span>
-                                    <span id="connTestPercentText"class="text-white font-mono font-bold">0%</span>
-                                </div>
-                                <div class="w-full h-2 bg-pmmg-card rounded-full overflow-hidden">
-                                    <div id="connTestProgressBar"class="h-full bg-pmmg-khaki transition-all duration-200"style="width: 0%"></div>
-                                </div>
-                            </div>
-
-                            <!-- Grade de Métricas do Diagnóstico: Download, Upload estimado, Ping, Jitter, Perda de Pacotes, Tecnologia -->
-                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
-                                <!-- 1. Download (Mbps) -->
-                                <div class="bg-pmmg-card p-3.5 rounded-xl border border-pmmg-border space-y-1">
-                                    <span class="text-[10px] text-gray-400 uppercase font-bold block">⬇ Download (Mbps)</span>
-                                    <strong id="connDiagDownload"class="text-lg sm:text-xl font-mono text-white font-extrabold block">-- Mbps</strong>
-                                    <span class="text-[10px] text-gray-500 block">Taxa de transferência recebida</span>
-                                </div>
-
-                                <!-- 2. Upload estimado (Mbps) -->
-                                <div class="bg-pmmg-card p-3.5 rounded-xl border border-pmmg-border space-y-1">
-                                    <span class="text-[10px] text-gray-400 uppercase font-bold block">⬆ Upload estimado (Mbps)</span>
-                                    <strong id="connDiagUpload"class="text-lg sm:text-xl font-mono text-pmmg-khaki font-extrabold block">-- Mbps</strong>
-                                    <span class="text-[10px] text-gray-500 block">Capacidade estimada de envio</span>
-                                </div>
-
-                                <!-- 3. Ping (ms) -->
-                                <div class="bg-pmmg-card p-3.5 rounded-xl border border-pmmg-border space-y-1">
-                                    <span class="text-[10px] text-gray-400 uppercase font-bold block">Ping (ms)</span>
-                                    <strong id="connDiagPing"class="text-lg sm:text-xl font-mono text-emerald-400 font-extrabold block">-- ms</strong>
-                                    <span class="text-[10px] text-gray-500 block">Latência média de resposta</span>
-                                </div>
-
-                                <!-- 4. Jitter (ms) -->
-                                <div class="bg-pmmg-card p-3.5 rounded-xl border border-pmmg-border space-y-1">
-                                    <span class="text-[10px] text-gray-400 uppercase font-bold block">〰 Jitter (ms)</span>
-                                    <strong id="connDiagJitter"class="text-lg sm:text-xl font-mono text-sky-400 font-extrabold block">-- ms</strong>
-                                    <span class="text-[10px] text-gray-500 block">Variação de estabilidade do Ping</span>
-                                </div>
-
-                                <!-- 5. Perda de Pacotes (%) -->
-                                <div class="bg-pmmg-card p-3.5 rounded-xl border border-pmmg-border space-y-1">
-                                    <span class="text-[10px] text-gray-400 uppercase font-bold block">Perda de Pacotes (%)</span>
-                                    <strong id="connDiagPacketLoss"class="text-lg sm:text-xl font-mono text-amber-400 font-extrabold block">-- %</strong>
-                                    <span class="text-[10px] text-gray-500 block">Falhas nas requisições de teste</span>
-                                </div>
-
-                                <!-- 6. Tecnologia (4G/5G/Wi-Fi) -->
-                                <div class="bg-pmmg-card p-3.5 rounded-xl border border-pmmg-border space-y-1">
-                                    <span class="text-[10px] text-gray-400 uppercase font-bold block">Tecnologia (4G/5G/Wi-Fi)</span>
-                                    <strong id="connDiagTech"class="text-base sm:text-lg font-mono text-pmmg-gold font-extrabold block truncate">--</strong>
-                                    <span id="connDiagTechSub"class="text-[10px] text-gray-500 block truncate">Interface de rede detectada</span>
-                                </div>
-                            </div>
-
-                            <!-- Legenda dos 4 Estados Visuais -->
-                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-pmmg-border text-[10px]">
-                                <div class="bg-emerald-950/40 p-2 rounded-lg border border-emerald-500/40 text-emerald-300">
-                                    <strong class="block uppercase">VERDE: BOA</strong>
-                                    <span>Down ≥ 5 Mbps • Ping ≤ 120ms</span>
-                                </div>
-                                <div class="bg-amber-950/40 p-2 rounded-lg border border-amber-500/40 text-amber-300">
-                                    <strong class="block uppercase">AMARELO: MODERADA</strong>
-                                    <span>Down ≥ 1 Mbps • Ping ≤ 300ms</span>
-                                </div>
-                                <div class="bg-red-950/40 p-2 rounded-lg border border-red-500/40 text-red-300">
-                                    <strong class="block uppercase">VERMELHO: RUIM</strong>
-                                    <span>Down &lt; 1 Mbps, Perda ou Offline</span>
-                                </div>
-                                <div class="bg-gray-800/60 p-2 rounded-lg border border-gray-500/40 text-gray-300">
-                                    <strong class="block uppercase">CINZA: SEM MEDIÇÃO</strong>
-                                    <span>Padrão antes de realizar teste</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- SUBPÁGINA / MODAL LIMPA DE APROFUNDAMENTO CLIMÁTICO E PREVISÃO DO TEMPO FUTURA (OPEN-METEO) -->
-                    <div id="geoDetailsCard"class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-start sm:items-center justify-center p-2.5 sm:p-5 overflow-y-auto"onclick="if(event.target === this) closeGeoWeatherSubpage()">
-                        <div class="bg-pmmg-dark border-2 border-sky-500/70 rounded-2xl max-w-4xl w-full p-4 sm:p-6 space-y-5 shadow-2xl my-auto app-screen-animate max-h-[92vh] overflow-y-auto">
-                            <!-- Cabeçalho da Subpágina / Modal -->
-                            <div class="flex items-center justify-between border-b border-pmmg-border pb-3 gap-2 sticky top-0 bg-pmmg-dark/95 backdrop-blur z-10 pt-1">
-                                <div class="flex items-center gap-2.5">
-                                    <div class="p-2 rounded-xl bg-sky-950 text-sky-400 border border-sky-500/40">
-                                        <i data-lucide="cloud-sun-rain"class="w-5 h-5"></i>
-                                    </div>
-                                    <div>
-                                        <span class="text-[10px] font-bold uppercase tracking-wider text-sky-400 block leading-none">Subpágina Meteorológica & Geodésica • Open-Meteo</span>
-                                        <h4 class="text-xl sm:text-2xl font-military text-white uppercase tracking-wider leading-none mt-0.5">Clima Local, Telemetria Atual & Previsão Futura</h4>
-                                    </div>
-                                </div>
-                                <button type="button"onclick="closeGeoWeatherSubpage()"class="px-3 py-1.5 rounded-xl bg-pmmg-card hover:bg-pmmg-border text-gray-200 hover:text-white border border-pmmg-border text-xs font-extrabold flex items-center gap-1 shrink-0">
-                                    <span>Fechar </span>
-                                </button>
-                            </div>
-
-                            <!-- 1. Coordenadas Geográficas Exatas + Botão Copiar Lat/Long -->
-                            <div class="bg-pmmg-card p-3.5 rounded-xl border border-pmmg-khaki/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                                <div>
-                                    <span class="text-[10px] font-bold uppercase text-pmmg-khaki block">Coordenadas Geográficas Exatas (Latitude / Longitude)</span>
-                                    <strong id="detailExactCoords"class="text-base sm:text-lg font-mono text-white block mt-0.5">-19.916200, -44.080900</strong>
-                                </div>
-                                <button type="button"onclick="copyExactCoordinates()"class="px-3.5 py-2 bg-pmmg-dark hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-gold/60 font-extrabold rounded-lg text-xs flex items-center gap-1.5 shrink-0 self-start sm:self-center shadow">
-                                    <i data-lucide="copy"class="w-3.5 h-3.5"></i> <span>Copiar Lat/Long</span>
-                                </button>
-                            </div>
-
-                            <!-- 2. Todos os Dados Atuais em Tempo Real (Altitude, Umidade, Vento, Rajadas, Chance de Chuva, Temperatura, Condição) -->
-                            <div class="space-y-2">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-[11px] font-extrabold uppercase tracking-wider text-pmmg-khaki flex items-center gap-1.5">
-                                        <i data-lucide="thermometer"class="w-3.5 h-3.5 text-sky-400"></i>Condições Atuais em Tempo Real
-                                    </span>
-                                    <span id="detWeatherUpdatedAt"class="text-[10px] font-mono text-gray-400">Sincronizado via Open-Meteo</span>
-                                </div>
-                                <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2.5 text-xs">
-                                    <div class="bg-pmmg-card p-3 rounded-xl border border-pmmg-border">
-                                        <span class="text-[10px] text-gray-400 uppercase font-bold block">Temperatura</span>
-                                        <strong id="detTemp"class="text-sm sm:text-base font-mono text-white block mt-1">-- °C</strong>
-                                    </div>
-                                    <div class="bg-pmmg-card p-3 rounded-xl border border-pmmg-border">
-                                        <span class="text-[10px] text-gray-400 uppercase font-bold block">Condição</span>
-                                        <strong id="detCondition"class="text-xs sm:text-sm text-sky-300 block mt-1">--</strong>
-                                    </div>
-                                    <div class="bg-pmmg-card p-3 rounded-xl border border-pmmg-border">
-                                        <span class="text-[10px] text-gray-400 uppercase font-bold block">Altitude</span>
-                                        <strong id="detAltitude"class="text-sm sm:text-base font-mono text-pmmg-gold block mt-1">-- m</strong>
-                                    </div>
-                                    <div class="bg-pmmg-card p-3 rounded-xl border border-pmmg-border">
-                                        <span class="text-[10px] text-gray-400 uppercase font-bold block">Umidade</span>
-                                        <strong id="detHumidity"class="text-sm sm:text-base font-mono text-emerald-400 block mt-1">-- %</strong>
-                                    </div>
-                                    <div class="bg-pmmg-card p-3 rounded-xl border border-pmmg-border">
-                                        <span class="text-[10px] text-gray-400 uppercase font-bold block">Vento</span>
-                                        <strong id="detWind"class="text-sm sm:text-base font-mono text-white block mt-1">-- km/h</strong>
-                                    </div>
-                                    <div class="bg-pmmg-card p-3 rounded-xl border border-pmmg-border">
-                                        <span class="text-[10px] text-gray-400 uppercase font-bold block">Rajadas</span>
-                                        <strong id="detWindGusts"class="text-sm sm:text-base font-mono text-orange-400 block mt-1">-- km/h</strong>
-                                    </div>
-                                    <div class="bg-pmmg-card p-3 rounded-xl border border-pmmg-border col-span-2 sm:col-span-1">
-                                        <span class="text-[10px] text-gray-400 uppercase font-bold block">Chance Chuva</span>
-                                        <strong id="detRainProb"class="text-sm sm:text-base font-mono text-amber-400 block mt-1">-- %</strong>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- 3. Previsão do Tempo Futura: Próximas Horas -->
-                            <div class="space-y-2 pt-1 border-t border-pmmg-border">
-                                <span class="text-[11px] font-extrabold uppercase tracking-wider text-sky-400 flex items-center gap-1.5">
-                                    <i data-lucide="clock"class="w-3.5 h-3.5 text-sky-400"></i>Previsão para as Próximas Horas (Evolução Horária)
-                                </span>
-                                <div id="geoHourlyForecastGrid"class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2 text-xs">
-                                    <div class="col-span-full bg-pmmg-card p-3 rounded-xl border border-pmmg-border text-gray-400 text-center">
-                                        Carregando previsão horária...
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- 4. Previsão do Tempo Futura: Próximos Dias -->
-                            <div class="space-y-2 pt-1 border-t border-pmmg-border">
-                                <span class="text-[11px] font-extrabold uppercase tracking-wider text-pmmg-gold flex items-center gap-1.5">
-                                    <i data-lucide="calendar"class="w-3.5 h-3.5 text-pmmg-gold"></i>Previsão para os Próximos Dias
-                                </span>
-                                <div id="geoDailyForecastGrid"class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 text-xs">
-                                    <div class="col-span-full bg-pmmg-card p-3 rounded-xl border border-pmmg-border text-gray-400 text-center">
-                                        Carregando previsão dos próximos dias...
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
 
-                <!-- HOSPITAL MAIS PRÓXIMO (CAIXA FECHADA POR PADRÃO, ABRE SOMENTE SE O USUÁRIO CLICAR) -->
-                <div id="azimuteGpsClosestHospitalCard" class="bg-pmmg-card/90 backdrop-blur-sm border border-red-500/40 rounded-2xl overflow-hidden shadow-2xl">
-                    <button type="button" onclick="toggleGpsClosestHospitalBox()" id="btnToggleGpsClosestHospitalBox" class="w-full p-4 sm:p-5 flex items-center justify-between gap-3 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
+                <!-- 1. CAIXA "CLIMA LOCAL" (FECHADA POR PADRÃO, COM CONDIÇÃO E TEMPERATURA ABAIXO À DIREITA, SEM RÓTULOS EXTRAS) -->
+                <div id="localWeatherSummaryCard" class="bg-pmmg-card/90 backdrop-blur-sm border border-sky-500/45 rounded-2xl overflow-hidden shadow-xl transition-all">
+                    <button type="button" onclick="toggleGeoWeatherBox()" id="btnToggleGeoWeatherBox" class="w-full p-4 sm:p-5 flex items-center justify-between gap-3 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
                         <div class="flex items-center gap-2.5">
-                            <div class="p-2 rounded-lg bg-red-950/80 border border-red-500/50 text-red-400 shrink-0">
-                                <i data-lucide="hospital" class="w-5 h-5"></i>
+                            <div class="p-2 rounded-lg bg-sky-950 text-sky-400 border border-sky-500/40 shrink-0">
+                                <i data-lucide="cloud-sun" class="w-5 h-5"></i>
                             </div>
-                            <h3 class="text-xl font-military text-white uppercase tracking-wide leading-none">Hospital Mais Próximo</h3>
+                            <h3 class="text-xl font-military text-white uppercase tracking-wide leading-none">CLIMA LOCAL</h3>
                         </div>
-                        <div class="flex items-center gap-2 shrink-0">
-                            <span id="lblGpsClosestHospitalToggle" class="text-[11px] font-bold text-pmmg-khaki">Abrir</span>
-                            <i data-lucide="chevron-down" id="iconGpsClosestHospitalChevron" class="w-4 h-4 text-pmmg-gold transition-transform duration-200"></i>
+                        <div class="flex items-center gap-3 shrink-0">
+                            <div class="text-right leading-tight">
+                                <span id="localClimateHeaderCond" class="text-xs font-extrabold text-sky-300 block leading-tight">--</span>
+                                <span id="localClimateHeaderTemp" class="text-xs font-mono font-extrabold text-white block leading-tight mt-0.5">-- °C</span>
+                            </div>
+                            <i data-lucide="chevron-down" id="iconGeoWeatherChevron" class="w-4 h-4 text-pmmg-gold transition-transform duration-200"></i>
                         </div>
                     </button>
 
-                    <div id="gpsClosestHospitalExpandableBody" class="hidden p-4 sm:p-5 pt-3 border-t border-pmmg-border">
-                        <div class="bg-pmmg-dark p-3.5 rounded-xl border border-pmmg-border border-l-4 border-l-red-500 flex items-center justify-between gap-2">
-                            <div>
-                                <span class="text-[10px] uppercase font-bold text-red-400 block">Socorro / Hospital Mais Próximo</span>
-                                <strong id="hudClosestHospital" class="text-sm sm:text-base text-white block mt-0.5">Calculando unidade...</strong>
-                                <span id="hudClosestHospitalDist" class="text-[11px] text-gray-300 font-medium block">Distância e tempo estimado via satélite</span>
+                    <div id="localWeatherExpandableBody" class="hidden p-4 sm:p-5 pt-3 border-t border-pmmg-border space-y-3">
+                        <div class="grid grid-cols-3 gap-2.5 text-xs">
+                            <div class="bg-pmmg-dark p-2.5 rounded-lg border border-pmmg-border">
+                                <span class="text-[10px] text-gray-400 uppercase font-bold block">Temperatura</span>
+                                <strong id="localClimateTemp" class="text-sm sm:text-base font-mono text-white font-extrabold block mt-0.5">-- °C</strong>
                             </div>
-                            <a id="hudBtnHospRouteMini" href="#" target="_blank" class="hidden px-3 py-2 bg-red-950/80 hover:bg-red-800 text-red-200 border border-red-500/50 rounded-lg text-xs font-bold shrink-0">
-                                Rota
-                            </a>
+                            <div class="bg-pmmg-dark p-2.5 rounded-lg border border-pmmg-border">
+                                <span class="text-[10px] text-gray-400 uppercase font-bold block">Condição</span>
+                                <strong id="localClimateCond" class="text-xs sm:text-sm text-sky-300 font-bold block mt-0.5 truncate">--</strong>
+                            </div>
+                            <div class="bg-pmmg-dark p-2.5 rounded-lg border border-pmmg-border">
+                                <span class="text-[10px] text-gray-400 uppercase font-bold block">Vento</span>
+                                <strong id="localClimateWind" class="text-sm sm:text-base font-mono text-white font-extrabold block mt-0.5">-- km/h</strong>
+                            </div>
+                        </div>
+                        <div class="flex justify-end">
+                            <button type="button" onclick="openGeoWeatherSubpage()" class="px-3 py-1.5 rounded-lg bg-sky-950/90 hover:bg-sky-800 text-sky-300 border border-sky-500/50 text-xs font-extrabold flex items-center gap-1.5 transition-all cursor-pointer">
+                                <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
+                                <span>Previsão Horária e 7 Dias</span>
+                            </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- BÚSSOLA DIGITAL (CAIXA FECHADA POR PADRÃO, SIMPLIFICADA) -->
-                <div id="azimuteDigitalCompassCard" class="bg-pmmg-card/90 backdrop-blur-sm border border-pmmg-khaki/50 rounded-2xl overflow-hidden shadow-2xl">
-                    <!-- Cabeçalho Clicável (Fechado por padrão, apenas título "BÚSSOLA DIGITAL", sem subtítulos) -->
+                <!-- 2. CAIXA "CONECTIVIDADE" (FECHADA POR PADRÃO, MANTENDO O RESUMO DIRETO DO STATUS NO CABEÇALHO) -->
+                <div id="localConnectivitySummaryCard" class="bg-pmmg-card/90 backdrop-blur-sm border border-pmmg-khaki/45 rounded-2xl overflow-hidden shadow-xl transition-all">
+                    <button type="button" onclick="toggleGeoConnectivityBox()" id="btnToggleGeoConnectivityBox" class="w-full p-4 sm:p-5 flex items-center justify-between gap-3 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
+                        <div class="flex items-center gap-2.5">
+                            <div id="connSummaryIconBox" class="p-2 rounded-lg bg-pmmg-dark text-pmmg-khaki border border-pmmg-khaki/40 transition-colors shrink-0">
+                                <i data-lucide="wifi" class="w-5 h-5"></i>
+                            </div>
+                            <h3 class="text-xl font-military text-white uppercase tracking-wide leading-none">CONECTIVIDADE</h3>
+                        </div>
+                        <div class="flex items-center gap-2.5 shrink-0">
+                            <span id="connSummaryStateBadge" class="px-2.5 py-1 rounded-lg text-xs font-mono font-extrabold uppercase bg-pmmg-khakiBadge text-pmmg-khaki border border-pmmg-khaki/50 transition-all">
+                                Medindo...
+                            </span>
+                            <i data-lucide="chevron-down" id="iconGeoConnectivityChevron" class="w-4 h-4 text-pmmg-gold transition-transform duration-200"></i>
+                        </div>
+                    </button>
+
+                    <div id="localConnectivityExpandableBody" class="hidden p-4 sm:p-5 pt-3 border-t border-pmmg-border space-y-3">
+                        <div class="grid grid-cols-3 gap-2.5 text-xs">
+                            <div class="bg-pmmg-dark p-2.5 rounded-lg border border-pmmg-border">
+                                <span class="text-[10px] text-gray-400 uppercase font-bold block">Status</span>
+                                <strong id="connSummaryStatusText" class="text-xs sm:text-sm font-mono text-pmmg-khaki font-extrabold block mt-0.5 truncate">Medindo...</strong>
+                            </div>
+                            <div class="bg-pmmg-dark p-2.5 rounded-lg border border-pmmg-border">
+                                <span class="text-[10px] text-gray-400 uppercase font-bold block">Down / Ping</span>
+                                <strong id="connSummaryDownPing" class="text-xs sm:text-sm font-mono text-white font-extrabold block mt-0.5 truncate">--</strong>
+                            </div>
+                            <div class="bg-pmmg-dark p-2.5 rounded-lg border border-pmmg-border">
+                                <span class="text-[10px] text-gray-400 uppercase font-bold block">Tecnologia</span>
+                                <strong id="connSummaryTech" class="text-xs sm:text-sm font-mono text-pmmg-gold font-extrabold block mt-0.5 truncate">--</strong>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-end gap-2">
+                            <button type="button" id="btnSummaryRunConnTest" onclick="runRealConnectivityDiagnostic()" class="px-3 py-1.5 rounded-lg bg-pmmg-dark hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-gold/60 font-extrabold text-xs flex items-center gap-1.5 shadow transition-all active:scale-95 cursor-pointer">
+                                <i data-lucide="refresh-cw" id="iconSummaryConnTest" class="w-3.5 h-3.5"></i>
+                                <span id="txtSummaryConnTest">Novo Teste</span>
+                            </button>
+                            <button type="button" onclick="openGeoConnectivitySubpage()" class="px-3 py-1.5 rounded-lg bg-pmmg-dark hover:bg-pmmg-border text-gray-200 border border-pmmg-border text-xs font-extrabold flex items-center gap-1 transition-all cursor-pointer">
+                                <span>Diagnóstico</span>
+                                <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. CAIXA "BÚSSOLA DIGITAL" (FECHADA POR PADRÃO, SEM FRASES DESCRITIVAS) -->
+                <div id="azimuteDigitalCompassCard" class="bg-pmmg-card/90 backdrop-blur-sm border border-pmmg-khaki/50 rounded-2xl overflow-hidden shadow-xl">
                     <button type="button" onclick="toggleDigitalCompassBox()" id="btnToggleDigitalCompassBox" class="w-full p-4 sm:p-5 flex items-center justify-between gap-3 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
                         <div class="flex items-center gap-2.5">
                             <div class="p-2 rounded-lg bg-pmmg-khaki/15 border border-pmmg-khaki/50 text-pmmg-khaki shrink-0">
@@ -1342,16 +1097,15 @@
                             <h3 class="text-xl font-military text-white uppercase tracking-wide leading-none">BÚSSOLA DIGITAL</h3>
                         </div>
                         <div class="flex items-center gap-2 shrink-0">
-                            <span id="lblDigitalCompassToggle" class="text-[11px] font-bold text-pmmg-khaki">Abrir</span>
+                            <span id="lblDigitalCompassToggle" class="text-[11px] font-mono font-bold text-pmmg-khaki">--°</span>
                             <i data-lucide="chevron-down" id="iconDigitalCompassChevron" class="w-4 h-4 text-pmmg-gold transition-transform duration-200"></i>
                         </div>
                     </button>
 
-                    <!-- Conteúdo Interno da Bússola (Oculto por padrão até o usuário clicar para expandir) -->
                     <div id="digitalCompassExpandableBody" class="hidden p-4 sm:p-5 pt-3 border-t border-pmmg-border space-y-4">
                         <div class="flex flex-wrap items-center justify-between gap-2">
                             <span id="compassAxisCompBadge" class="text-[10px] font-mono bg-pmmg-dark text-gray-300 px-2.5 py-1 rounded-lg border border-pmmg-border">
-                                Eixo: Vertical Padrão
+                                Eixo: Vertical
                             </span>
                             <button type="button" id="btnRequestCompassSensor" onclick="requestAzimuteCompassPermission()" class="px-3.5 py-1.5 bg-pmmg-dark hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-gold/60 font-extrabold rounded-lg text-xs flex items-center gap-1.5 shadow transition-all active:scale-95 cursor-pointer">
                                 <i data-lucide="compass" class="w-3.5 h-3.5"></i>
@@ -1360,52 +1114,37 @@
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
-                            <!-- Rosa dos Ventos Vetorial em Português com botão translúcido "(i)" no canto -->
                             <div class="flex flex-col items-center justify-center bg-pmmg-black/80 rounded-2xl p-4 border border-pmmg-border relative">
-                                <!-- Pequeno botão translúcido "(i)" no canto da bússola -->
-                                <button type="button" onclick="showCompassHorizontalInfoTip(event)" id="btnCompassInfoIcon" class="absolute top-2.5 right-2.5 w-6 h-6 rounded-full bg-white/10 hover:bg-pmmg-khaki/25 text-pmmg-khaki/80 hover:text-pmmg-gold border border-pmmg-khaki/30 text-[11px] font-mono font-bold flex items-center justify-center backdrop-blur-sm transition-all cursor-pointer z-20" title="Instrução de uso na horizontal">
+                                <button type="button" onclick="showCompassHorizontalInfoTip(event)" id="btnCompassInfoIcon" class="absolute top-2.5 right-2.5 w-6 h-6 rounded-full bg-white/10 hover:bg-pmmg-khaki/25 text-pmmg-khaki/80 hover:text-pmmg-gold border border-pmmg-khaki/30 text-[11px] font-mono font-bold flex items-center justify-center backdrop-blur-sm transition-all cursor-pointer z-20" title="Orientação horizontal">
                                     (i)
                                 </button>
 
-                                <!-- Aviso temporário de 5 segundos ao clicar em (i) -->
                                 <div id="compassHorizontalInfoToast" class="hidden absolute top-10 right-2.5 left-2.5 z-30 bg-pmmg-dark/95 backdrop-blur-md border border-pmmg-gold/70 text-pmmg-khakiLight text-[11px] font-semibold px-3 py-2 rounded-xl shadow-2xl text-center">
-                                    Posição horizontal: mantenha a câmera frontal virada para o lado esquerdo
+                                    Posição horizontal: câmera frontal para o lado esquerdo
                                 </div>
 
-                                <!-- Indicador fixo de linha de fé (topo) -->
                                 <div class="w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-t-[12px] border-t-pmmg-gold mb-1 drop-shadow"></div>
 
                                 <div class="relative w-48 h-48 sm:w-52 sm:h-52 flex items-center justify-center">
                                     <svg id="compassDialSvg" viewBox="0 0 220 220" class="w-full h-full transition-transform duration-150 ease-out select-none">
-                                        <!-- Anel Externo Graduado -->
                                         <circle cx="110" cy="110" r="102" fill="#141413" stroke="#C2B280" stroke-width="2.5" />
                                         <circle cx="110" cy="110" r="88" fill="none" stroke="#3d3a33" stroke-width="1.2" stroke-dasharray="3,5" />
-
-                                        <!-- Marcações de Graus Principais -->
                                         <line x1="110" y1="8" x2="110" y2="20" stroke="#ef4444" stroke-width="3" />
                                         <line x1="212" y1="110" x2="200" y2="110" stroke="#C2B280" stroke-width="2.5" />
                                         <line x1="110" y1="212" x2="110" y2="200" stroke="#C2B280" stroke-width="2.5" />
                                         <line x1="8" y1="110" x2="20" y2="110" stroke="#C2B280" stroke-width="2.5" />
-
-                                        <!-- Marcações Colaterais (45°, 135°, 225°, 315°) -->
                                         <line x1="182" y1="38" x2="174" y2="46" stroke="#D4AF37" stroke-width="2" />
                                         <line x1="182" y1="182" x2="174" y2="174" stroke="#D4AF37" stroke-width="2" />
                                         <line x1="38" y1="182" x2="46" y2="174" stroke="#D4AF37" stroke-width="2" />
                                         <line x1="38" y1="38" x2="46" y2="46" stroke="#D4AF37" stroke-width="2" />
-
-                                        <!-- Pontos Cardeais (N, L, S, O) -->
                                         <text x="110" y="38" fill="#ef4444" font-size="18" font-weight="900" text-anchor="middle" font-family="Inter, sans-serif">N</text>
                                         <text x="188" y="116" fill="#C2B280" font-size="16" font-weight="800" text-anchor="middle" font-family="Inter, sans-serif">L</text>
                                         <text x="110" y="196" fill="#C2B280" font-size="16" font-weight="800" text-anchor="middle" font-family="Inter, sans-serif">S</text>
                                         <text x="32" y="116" fill="#C2B280" font-size="16" font-weight="800" text-anchor="middle" font-family="Inter, sans-serif">O</text>
-
-                                        <!-- Pontos Colaterais (NE, SE, SO, NO) -->
                                         <text x="163" y="62" fill="#D4AF37" font-size="11" font-weight="800" text-anchor="middle" font-family="Inter, sans-serif">NE</text>
                                         <text x="163" y="166" fill="#D4AF37" font-size="11" font-weight="800" text-anchor="middle" font-family="Inter, sans-serif">SE</text>
                                         <text x="57" y="166" fill="#D4AF37" font-size="11" font-weight="800" text-anchor="middle" font-family="Inter, sans-serif">SO</text>
                                         <text x="57" y="62" fill="#D4AF37" font-size="11" font-weight="800" text-anchor="middle" font-family="Inter, sans-serif">NO</text>
-
-                                        <!-- Agulha Central -->
                                         <polygon points="110,46 118,110 102,110" fill="#ef4444" />
                                         <polygon points="110,174 118,110 102,110" fill="#6b7280" />
                                         <circle cx="110" cy="110" r="7" fill="#D4AF37" stroke="#0F0F0F" stroke-width="2" />
@@ -1413,7 +1152,6 @@
                                 </div>
                             </div>
 
-                            <!-- Leitura Digital do Azimute (Sem o texto que lista os pontos cardeais por extenso) -->
                             <div class="bg-pmmg-dark p-4 rounded-2xl border border-pmmg-border flex flex-col justify-between space-y-3 h-full">
                                 <div class="space-y-1">
                                     <div class="flex items-center justify-between">
@@ -1423,11 +1161,10 @@
                                         </span>
                                     </div>
 
-                                    <!-- Exibição Principal: Grau + Cardeal ou SENSOR INDISPONÍVEL -->
                                     <div id="compassReadoutContainer" class="py-3 text-center bg-pmmg-black/90 rounded-xl border border-pmmg-border my-2">
-                                        <div id="compassUnavailableAlert" class="px-2 py-2 space-y-1">
+                                        <div id="compassUnavailableAlert" class="px-2 py-2">
                                             <span class="text-base sm:text-lg font-extrabold text-red-400 uppercase tracking-wider block">SENSOR INDISPONÍVEL</span>
-                                            <span id="compassUnavailableSubtext" class="text-[11px] text-gray-400 block">Aguardando leitura real do magnetômetro ou toque em "Ativar".</span>
+                                            <span id="compassUnavailableSubtext" class="hidden"></span>
                                         </div>
 
                                         <div id="compassActiveReadout" class="hidden space-y-0.5">
@@ -1444,14 +1181,14 @@
                     </div>
                 </div>
 
-                <!-- 4. GUIA DE MAPAS OFFLINE (CAIXA FECHADA POR PADRÃO, ABRE APENAS AO CLICAR) -->
+                <!-- 4. CAIXA "MAPAS OFFLINE" (FECHADA POR PADRÃO, SEM FRASES DESCRITIVAS) -->
                 <div class="bg-pmmg-card/90 backdrop-blur-sm border border-pmmg-khaki/40 rounded-2xl overflow-hidden shadow-xl">
                     <button type="button" onclick="toggleOfflineMapsGuideBox()" id="btnToggleOfflineMapsBox" class="w-full p-4 sm:p-5 flex items-center justify-between gap-3 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
                         <div class="flex items-center gap-2.5">
                             <div class="p-2 rounded-lg bg-pmmg-khaki/15 border border-pmmg-khaki/40 text-pmmg-khaki shrink-0">
                                 <i data-lucide="map" class="w-5 h-5"></i>
                             </div>
-                            <h3 class="text-xl font-military text-white uppercase tracking-wide leading-none">Como Baixar Mapas Offline no Google Maps</h3>
+                            <h3 class="text-xl font-military text-white uppercase tracking-wide leading-none">MAPAS OFFLINE</h3>
                         </div>
                         <div class="flex items-center gap-2 shrink-0">
                             <span id="lblOfflineMapsToggle" class="text-[11px] font-bold text-pmmg-khaki">Abrir</span>
@@ -1459,34 +1196,193 @@
                         </div>
                     </button>
 
-                    <div id="offlineMapsGuideContent" class="hidden p-4 sm:p-5 pt-0 border-t border-pmmg-border space-y-3">
-                        <div class="flex items-center justify-between gap-2 pt-3">
-                            <p class="text-xs text-gray-300">Garanta a navegação por ruas e becos mesmo em zonas de sombra de rádio ou sem internet móvel seguindo estes 4 passos rápidos no seu celular:</p>
+                    <div id="offlineMapsGuideContent" class="hidden p-4 sm:p-5 pt-3 border-t border-pmmg-border space-y-3">
+                        <div class="flex justify-end">
                             <a href="https://www.google.com/maps" target="_blank" class="px-3 py-1.5 bg-pmmg-dark hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-border rounded-lg text-xs font-bold flex items-center gap-1 shrink-0">
-                                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>Abrir Maps
+                                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>Abrir Google Maps
                             </a>
                         </div>
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
                             <div class="bg-pmmg-dark p-3 rounded-xl border border-pmmg-border space-y-1">
                                 <span class="text-pmmg-khaki font-extrabold uppercase block">1º Passo • Perfil</span>
-                                <p class="text-gray-300">Abra o aplicativo do <strong>Google Maps</strong> no celular e toque na sua <strong>foto de perfil</strong> (no canto superior direito da tela).</p>
+                                <p class="text-gray-300">Toque na foto de perfil no canto superior direito do Google Maps.</p>
                             </div>
                             <div class="bg-pmmg-dark p-3 rounded-xl border border-pmmg-border space-y-1">
                                 <span class="text-pmmg-khaki font-extrabold uppercase block">2º Passo • Menu Offline</span>
-                                <p class="text-gray-300">No menu que abrir, toque na opção <strong>"Mapas off-line"</strong>.</p>
+                                <p class="text-gray-300">Selecione a opção <strong>"Mapas off-line"</strong>.</p>
                             </div>
                             <div class="bg-pmmg-dark p-3 rounded-xl border border-pmmg-border space-y-1">
-                                <span class="text-pmmg-khaki font-extrabold uppercase block">3º Passo • Selecionar Área</span>
-                                <p class="text-gray-300">Toque em <strong>"Selecionar seu próprio mapa"</strong> e ajuste o retângulo azul cobrindo <strong>Belo Horizonte, Contagem, Betim e RMBH</strong>.</p>
+                                <span class="text-pmmg-khaki font-extrabold uppercase block">3º Passo • Área</span>
+                                <p class="text-gray-300">Toque em <strong>"Selecionar seu próprio mapa"</strong> e enquadre a RMBH.</p>
                             </div>
                             <div class="bg-pmmg-dark p-3 rounded-xl border border-pmmg-border space-y-1">
                                 <span class="text-pmmg-khaki font-extrabold uppercase block">4º Passo • Download</span>
-                                <p class="text-gray-300">Toque em <strong>"Fazer o download"</strong>. Pronto! O GPS continuará traçando rotas e mostrando nomes de ruas mesmo em Modo Avião.</p>
+                                <p class="text-gray-300">Toque em <strong>"Fazer o download"</strong>.</p>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- Elementos ocultos de compatibilidade -->
+                <div class="hidden">
+                    <div id="azimuteGpsClosestHospitalCard">
+                        <span id="lblGpsClosestHospitalToggle"></span>
+                        <i id="iconGpsClosestHospitalChevron"></i>
+                        <div id="gpsClosestHospitalExpandableBody">
+                            <strong id="hudClosestHospital"></strong>
+                            <span id="hudClosestHospitalDist"></span>
+                            <a id="hudBtnHospRouteMini" href="#"></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MODAL DE DIAGNÓSTICO DE CONECTIVIDADE -->
+                <div id="geoConnectivitySubpage" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-start sm:items-center justify-center p-2.5 sm:p-5 overflow-y-auto" onclick="if(event.target === this) closeGeoConnectivitySubpage()">
+                    <div class="bg-pmmg-dark border-2 border-pmmg-khaki/70 rounded-2xl max-w-3xl w-full p-4 sm:p-6 space-y-5 shadow-2xl my-auto app-screen-animate max-h-[92vh] overflow-y-auto">
+                        <div class="flex items-center justify-between border-b border-pmmg-border pb-3 gap-2 sticky top-0 bg-pmmg-dark/95 backdrop-blur z-10 pt-1">
+                            <div class="flex items-center gap-2.5">
+                                <div class="p-2 rounded-xl bg-pmmg-card text-pmmg-khaki border border-pmmg-khaki/40">
+                                    <i data-lucide="activity" class="w-5 h-5"></i>
+                                </div>
+                                <h4 class="text-xl sm:text-2xl font-military text-white uppercase tracking-wider leading-none">DIAGNÓSTICO DE CONECTIVIDADE</h4>
+                            </div>
+                            <button type="button" onclick="closeGeoConnectivitySubpage()" class="px-3 py-1.5 rounded-xl bg-pmmg-card hover:bg-pmmg-border text-gray-200 hover:text-white border border-pmmg-border text-xs font-extrabold flex items-center gap-1 shrink-0">
+                                <span>Fechar</span>
+                            </button>
+                        </div>
+
+                        <div class="bg-pmmg-card p-4 rounded-xl border border-pmmg-border flex flex-col sm:flex-row sm:items-center justify-between gap-3.5">
+                            <div class="space-y-1">
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400">Status:</span>
+                                    <span id="connModalStateBadge" class="px-2.5 py-0.5 rounded text-xs font-mono font-extrabold uppercase bg-gray-800 text-gray-300 border border-gray-500/60">
+                                        SEM MEDIÇÃO
+                                    </span>
+                                </div>
+                                <p id="connDiagLastTime" class="text-xs font-mono text-gray-400">Último teste: --</p>
+                            </div>
+
+                            <button type="button" id="btnRunConnectivityTest" onclick="runRealConnectivityDiagnostic()" class="px-4 py-2.5 bg-pmmg-dark hover:bg-pmmg-border active:scale-95 text-pmmg-khaki border border-pmmg-gold/60 font-extrabold rounded-xl text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg transition-all shrink-0 uppercase tracking-wider cursor-pointer">
+                                <i data-lucide="refresh-cw" id="iconRunConnTest" class="w-4 h-4"></i>
+                                <span id="txtRunConnTest">Executar novo teste</span>
+                            </button>
+                        </div>
+
+                        <div id="connTestProgressBox" class="hidden bg-pmmg-black/90 p-3 rounded-xl border border-pmmg-khaki/40 space-y-2">
+                            <div class="flex items-center justify-between text-xs">
+                                <span id="connTestStepText" class="text-pmmg-khaki font-bold font-mono">Medindo...</span>
+                                <span id="connTestPercentText" class="text-white font-mono font-bold">0%</span>
+                            </div>
+                            <div class="w-full h-2 bg-pmmg-card rounded-full overflow-hidden">
+                                <div id="connTestProgressBar" class="h-full bg-pmmg-khaki transition-all duration-200" style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
+                            <div class="bg-pmmg-card p-3.5 rounded-xl border border-pmmg-border space-y-1">
+                                <span class="text-[10px] text-gray-400 uppercase font-bold block">Download</span>
+                                <strong id="connDiagDownload" class="text-lg sm:text-xl font-mono text-white font-extrabold block">-- Mbps</strong>
+                            </div>
+                            <div class="bg-pmmg-card p-3.5 rounded-xl border border-pmmg-border space-y-1">
+                                <span class="text-[10px] text-gray-400 uppercase font-bold block">Upload Estimado</span>
+                                <strong id="connDiagUpload" class="text-lg sm:text-xl font-mono text-pmmg-khaki font-extrabold block">-- Mbps</strong>
+                            </div>
+                            <div class="bg-pmmg-card p-3.5 rounded-xl border border-pmmg-border space-y-1">
+                                <span class="text-[10px] text-gray-400 uppercase font-bold block">Ping</span>
+                                <strong id="connDiagPing" class="text-lg sm:text-xl font-mono text-emerald-400 font-extrabold block">-- ms</strong>
+                            </div>
+                            <div class="bg-pmmg-card p-3.5 rounded-xl border border-pmmg-border space-y-1">
+                                <span class="text-[10px] text-gray-400 uppercase font-bold block">Jitter</span>
+                                <strong id="connDiagJitter" class="text-lg sm:text-xl font-mono text-sky-400 font-extrabold block">-- ms</strong>
+                            </div>
+                            <div class="bg-pmmg-card p-3.5 rounded-xl border border-pmmg-border space-y-1">
+                                <span class="text-[10px] text-gray-400 uppercase font-bold block">Perda de Pacotes</span>
+                                <strong id="connDiagPacketLoss" class="text-lg sm:text-xl font-mono text-amber-400 font-extrabold block">-- %</strong>
+                            </div>
+                            <div class="bg-pmmg-card p-3.5 rounded-xl border border-pmmg-border space-y-1">
+                                <span class="text-[10px] text-gray-400 uppercase font-bold block">Tecnologia</span>
+                                <strong id="connDiagTech" class="text-base sm:text-lg font-mono text-pmmg-gold font-extrabold block truncate">--</strong>
+                                <span id="connDiagTechSub" class="hidden"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MODAL DE PREVISÃO DO TEMPO (CLIMA LOCAL) -->
+                <div id="geoDetailsCard" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-start sm:items-center justify-center p-2.5 sm:p-5 overflow-y-auto" onclick="if(event.target === this) closeGeoWeatherSubpage()">
+                    <div class="bg-pmmg-dark border-2 border-sky-500/70 rounded-2xl max-w-4xl w-full p-4 sm:p-6 space-y-5 shadow-2xl my-auto app-screen-animate max-h-[92vh] overflow-y-auto">
+                        <div class="flex items-center justify-between border-b border-pmmg-border pb-3 gap-2 sticky top-0 bg-pmmg-dark/95 backdrop-blur z-10 pt-1">
+                            <div class="flex items-center gap-2.5">
+                                <div class="p-2 rounded-xl bg-sky-950 text-sky-400 border border-sky-500/40">
+                                    <i data-lucide="cloud-sun-rain" class="w-5 h-5"></i>
+                                </div>
+                                <h4 class="text-xl sm:text-2xl font-military text-white uppercase tracking-wider leading-none">CLIMA LOCAL & PREVISÃO</h4>
+                            </div>
+                            <button type="button" onclick="closeGeoWeatherSubpage()" class="px-3 py-1.5 rounded-xl bg-pmmg-card hover:bg-pmmg-border text-gray-200 hover:text-white border border-pmmg-border text-xs font-extrabold flex items-center gap-1 shrink-0">
+                                <span>Fechar</span>
+                            </button>
+                        </div>
+
+                        <div class="bg-pmmg-card p-3.5 rounded-xl border border-pmmg-khaki/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div>
+                                <span class="text-[10px] font-bold uppercase text-pmmg-khaki block">Coordenadas (Latitude / Longitude)</span>
+                                <strong id="detailExactCoords" class="text-base sm:text-lg font-mono text-white block mt-0.5">-19.916200, -44.080900</strong>
+                            </div>
+                            <button type="button" onclick="copyExactCoordinates()" class="px-3.5 py-2 bg-pmmg-dark hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-gold/60 font-extrabold rounded-lg text-xs flex items-center gap-1.5 shrink-0 self-start sm:self-center shadow">
+                                <i data-lucide="copy" class="w-3.5 h-3.5"></i> <span>Copiar Lat/Long</span>
+                            </button>
+                        </div>
+
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[11px] font-extrabold uppercase tracking-wider text-pmmg-khaki">Condições Atuais</span>
+                                <span id="detWeatherUpdatedAt" class="text-[10px] font-mono text-gray-400">--</span>
+                            </div>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2.5 text-xs">
+                                <div class="bg-pmmg-card p-3 rounded-xl border border-pmmg-border">
+                                    <span class="text-[10px] text-gray-400 uppercase font-bold block">Temperatura</span>
+                                    <strong id="detTemp" class="text-sm sm:text-base font-mono text-white block mt-1">-- °C</strong>
+                                </div>
+                                <div class="bg-pmmg-card p-3 rounded-xl border border-pmmg-border">
+                                    <span class="text-[10px] text-gray-400 uppercase font-bold block">Condição</span>
+                                    <strong id="detCondition" class="text-xs sm:text-sm text-sky-300 block mt-1">--</strong>
+                                </div>
+                                <div class="bg-pmmg-card p-3 rounded-xl border border-pmmg-border">
+                                    <span class="text-[10px] text-gray-400 uppercase font-bold block">Altitude</span>
+                                    <strong id="detAltitude" class="text-sm sm:text-base font-mono text-pmmg-gold block mt-1">-- m</strong>
+                                </div>
+                                <div class="bg-pmmg-card p-3 rounded-xl border border-pmmg-border">
+                                    <span class="text-[10px] text-gray-400 uppercase font-bold block">Umidade</span>
+                                    <strong id="detHumidity" class="text-sm sm:text-base font-mono text-emerald-400 block mt-1">-- %</strong>
+                                </div>
+                                <div class="bg-pmmg-card p-3 rounded-xl border border-pmmg-border">
+                                    <span class="text-[10px] text-gray-400 uppercase font-bold block">Vento</span>
+                                    <strong id="detWind" class="text-sm sm:text-base font-mono text-white block mt-1">-- km/h</strong>
+                                </div>
+                                <div class="bg-pmmg-card p-3 rounded-xl border border-pmmg-border">
+                                    <span class="text-[10px] text-gray-400 uppercase font-bold block">Rajadas</span>
+                                    <strong id="detWindGusts" class="text-sm sm:text-base font-mono text-orange-400 block mt-1">-- km/h</strong>
+                                </div>
+                                <div class="bg-pmmg-card p-3 rounded-xl border border-pmmg-border col-span-2 sm:col-span-1">
+                                    <span class="text-[10px] text-gray-400 uppercase font-bold block">Chance Chuva</span>
+                                    <strong id="detRainProb" class="text-sm sm:text-base font-mono text-amber-400 block mt-1">-- %</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2 pt-1 border-t border-pmmg-border">
+                            <span class="text-[11px] font-extrabold uppercase tracking-wider text-sky-400 block">Próximas Horas</span>
+                            <div id="geoHourlyForecastGrid" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2 text-xs"></div>
+                        </div>
+
+                        <div class="space-y-2 pt-1 border-t border-pmmg-border">
+                            <span class="text-[11px] font-extrabold uppercase tracking-wider text-pmmg-gold block">Próximos Dias</span>
+                            <div id="geoDailyForecastGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 text-xs"></div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </section>
 
@@ -7940,8 +7836,11 @@
                     const coordsEl = document.getElementById('detailExactCoords');
                     const mapsBtn = document.getElementById('btnOpenCurrentInMaps');
 
+                    const cleanCachedSuburb = (saved.cepVerified === true)
+                        ? (saved.suburb || '')
+                        : String(saved.suburb || '').replace(/\s*•\s*CEP:.*$/i, '');
                     if (stEl) stEl.textContent = saved.street;
-                    if (subEl) subEl.textContent = saved.suburb || '';
+                    if (subEl) subEl.textContent = cleanCachedSuburb;
                     const hQth = document.getElementById('homeQuickQth');
                     const hSub = document.getElementById('homeQuickSuburb');
                     const sbQth = document.getElementById('statusBarQth');
@@ -9353,8 +9252,13 @@
             });
             const rChanEl = document.getElementById('hudRadioChannel');
             const rAreaEl = document.getElementById('hudUnitArea');
+            const rCiaBpmBadge = document.getElementById('hudLocationCiaBpmBadge');
             if (rChanEl) rChanEl.textContent = closestArea.rede;
             if (rAreaEl) rAreaEl.textContent = closestArea.unidade;
+            if (rCiaBpmBadge && typeof formatCiaBatalhaoHeaderLabel === 'function') {
+                const subCurr = document.getElementById('hudCurrentSuburb') ? document.getElementById('hudCurrentSuburb').textContent : '';
+                rCiaBpmBadge.textContent = formatCiaBatalhaoHeaderLabel(closestArea, subCurr, azimuteLastStreet);
+            }
 
             // Atualiza também os 2 Quadros de Resumo no Topo da Tela Inicial
             const homeRadio = document.getElementById('homeQuickRadio');
@@ -9579,14 +9483,15 @@
 
                 if (navigator.onLine !== false) {
                     try {
-                        const res = await fetch('https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=' + lat + '&lon=' + lon + '&zoom=18&addressdetails=1&accept-language=pt-BR');
+                        const res = await fetch('https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=' + lat + '&lon=' + lon + '&zoom=18&addressdetails=1&extratags=1&accept-language=pt-BR');
                         const data = await res.json();
                         if (data && data.address) {
                             const road = data.address.road || data.address.pedestrian || data.address.footway || data.address.path || data.name || 'Via / Logradouro local';
                             const houseNum = data.address.house_number ? ', nº aprox. ' + data.address.house_number : '';
                             const suburb = data.address.suburb || data.address.neighbourhood || data.address.quarter || data.address.city_district || '';
                             const city = data.address.city || data.address.town || data.address.municipality || 'RMBH';
-                            const postcode = data.address.postcode ? ' • CEP: ' + data.address.postcode : '';
+                            const stateCode = data.address['ISO3166-2-lvl4'] ? data.address['ISO3166-2-lvl4'].split('-').pop() : 'MG';
+                            const postcode = await resolveExactStreetCep(road, suburb, city, stateCode, data);
 
                             // Verifica se há esquina / cruzamento próximo (raio de ~35m via Overpass OSM)
                             let cornerRoad = null;
@@ -9636,9 +9541,15 @@
                             document.getElementById('sosBigStreet').textContent = azimuteLastStreet;
                             document.getElementById('sosBigSuburb').textContent = subText;
 
+                            const rCiaBpmBadge = document.getElementById('hudLocationCiaBpmBadge');
+                            if (rCiaBpmBadge && typeof formatCiaBatalhaoHeaderLabel === 'function') {
+                                rCiaBpmBadge.textContent = formatCiaBatalhaoHeaderLabel(azimuteCurrentClosestArea, subText, azimuteLastStreet);
+                            }
+
                             saveLastValidQthToCache({
                                 street: azimuteLastStreet,
                                 suburb: subText,
+                                cepVerified: Boolean(postcode),
                                 lat: lat,
                                 lon: lon,
                                 acc: acc,
@@ -9743,13 +9654,18 @@
                         if (detCond) detCond.textContent = cStr;
                         if (detUpd) detUpd.textContent = 'Atualizado às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 
-                        // Atualiza o Card Compacto "CLIMA LOCAL"na tela principal da aba Geolocalização
+                        // Atualiza o Cabeçalho Inteligente e o Corpo de "CLIMA LOCAL" na aba Geolocalização
                         const lcTemp = document.getElementById('localClimateTemp');
                         const lcCond = document.getElementById('localClimateCond');
                         const lcWind = document.getElementById('localClimateWind');
+                        const lcHdrCond = document.getElementById('localClimateHeaderCond');
+                        const lcHdrTemp = document.getElementById('localClimateHeaderTemp');
+                        const cleanCondStr = cStr.trim();
                         if (lcTemp) lcTemp.textContent = tStr;
-                        if (lcCond) lcCond.textContent = cStr;
+                        if (lcCond) lcCond.textContent = cleanCondStr;
                         if (lcWind) lcWind.textContent = wStr;
+                        if (lcHdrCond) lcHdrCond.textContent = cleanCondStr;
+                        if (lcHdrTemp) lcHdrTemp.textContent = tStr;
 
                         // Atualiza também o Modal de Clima do Modo GRID
                         const gmTemp = document.getElementById('gridModalTemp');
@@ -9860,14 +9776,187 @@
             } catch (e) {}
         }
 
-        function toggleGeoWeatherDetails() {
+        function formatCiaBatalhaoHeaderLabel(closestArea, suburbStr = '', streetStr = '') {
+            if (typeof AZIMUTE_DB !== 'undefined' && AZIMUTE_DB) {
+                const normSub = (suburbStr || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                const allUnits = [...(AZIMUTE_DB.rpm1 || []), ...(AZIMUTE_DB.rpm2 || [])];
+                for (const u of allUnits) {
+                    for (const c of (u.companhias || [])) {
+                        const matchBairro = (c.bairros || []).some(b => {
+                            const nb = b.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                            return nb && normSub.includes(nb);
+                        });
+                        if (matchBairro) {
+                            const ciaShort = c.nome.replace(/\s*PM$/i, '').replace(/ESPECIAL/i, 'Esp.');
+                            return `${ciaShort} / ${u.nome}`;
+                        }
+                    }
+                }
+            }
+            const rawUnit = (closestArea && closestArea.unidade) ? closestArea.unidade : '18º BPM • 133ª Cia';
+            const bpmMatch = rawUnit.match(/(\d+º\s*BPM|BPTran)/i);
+            const ciaMatch = rawUnit.match(/(\d+ª\s*Cia(?:\s*Esp\.?|\s*PM\s*Ind)?)/i);
+            if (ciaMatch && bpmMatch) return `${ciaMatch[1]} / ${bpmMatch[1]}`;
+            if (bpmMatch) return bpmMatch[1];
+            return rawUnit;
+        }
+
+        async function resolveExactStreetCep(roadName, suburbName, cityName, stateCode, nominatimData) {
+            if (!roadName || roadName === 'Via / Logradouro local') return '';
+            const norm = s => (s || '').toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
+            const stripStreetPrefix = s => (s || '').replace(/^(Rua|Avenida|Av\.?|Praça|Pç\.?|Alameda|Travessa|Tv\.?|Rodovia|Rod\.?|Beco|Viela|Largo|Estrada|Est\.?|Via)\s+/i, '').trim();
+            const expandPtAbbr = s => (s || '')
+                .replace(/\bDr\.?\b/gi, 'Doutor')
+                .replace(/\bDra\.?\b/gi, 'Doutora')
+                .replace(/\bProf\.?\b/gi, 'Professor')
+                .replace(/\bProfa\.?\b/gi, 'Professora')
+                .replace(/\bPres\.?\b/gi, 'Presidente')
+                .replace(/\bCel\.?\b/gi, 'Coronel')
+                .replace(/\bGen\.?\b/gi, 'General')
+                .replace(/\bMal\.?\b/gi, 'Marechal')
+                .replace(/\bSgt\.?\b/gi, 'Sargento')
+                .replace(/\bTen\.?\b/gi, 'Tenente')
+                .replace(/\bCap\.?\b/gi, 'Capitao')
+                .replace(/\bMaj\.?\b/gi, 'Major')
+                .replace(/\bDep\.?\b/gi, 'Deputado')
+                .replace(/\bGov\.?\b/gi, 'Governador')
+                .replace(/\bPref\.?\b/gi, 'Prefeito')
+                .replace(/\bSta\.?\b/gi, 'Santa')
+                .replace(/\bSto\.?\b/gi, 'Santo')
+                .replace(/\bN\.?\s*Sra\.?\b/gi, 'Nossa Senhora')
+                .trim();
+
+            const isValidSpecificCep = cepStr => {
+                const digits = (cepStr || '').replace(/\D/g, '');
+                return digits.length === 8 && !digits.endsWith('000');
+            };
+            const formatCep = cepStr => {
+                const d = (cepStr || '').replace(/\D/g, '');
+                return d.length === 8 ? `${d.slice(0, 5)}-${d.slice(5)}` : '';
+            };
+
+            const uf = (stateCode || 'MG').trim().toUpperCase();
+            const cleanCity = (cityName || '').trim();
+            const coreRoadRaw = stripStreetPrefix(roadName);
+            const expandedRoad = expandPtAbbr(coreRoadRaw);
+
+            // Não inventa CEP: exige retorno exato daquela via na base oficial ViaCEP (ou tag explícita da própria via no OSM)
+            if (cleanCity && expandedRoad.length >= 3 && navigator.onLine !== false) {
+                const queryCandidates = [expandedRoad];
+                if (coreRoadRaw !== expandedRoad && coreRoadRaw.length >= 3) {
+                    queryCandidates.push(coreRoadRaw);
+                }
+                const words = expandedRoad.split(/\s+/).filter(w => w.length >= 3);
+                if (words.length >= 3) {
+                    queryCandidates.push(words.slice(-2).join(' '));
+                }
+
+                const normFullTarget = norm(expandPtAbbr(roadName));
+                const normCoreTarget = norm(expandedRoad);
+                const normSuburb = norm(suburbName);
+
+                for (const qStreet of queryCandidates) {
+                    try {
+                        const vcCtrl = new AbortController();
+                        const vcTimer = setTimeout(() => vcCtrl.abort(), 3500);
+                        const vcUrl = `https://viacep.com.br/ws/${encodeURIComponent(uf)}/${encodeURIComponent(cleanCity)}/${encodeURIComponent(qStreet)}/json/`;
+                        const vcRes = await fetch(vcUrl, { signal: vcCtrl.signal });
+                        clearTimeout(vcTimer);
+
+                        if (vcRes.ok) {
+                            const list = await vcRes.json();
+                            if (Array.isArray(list) && list.length > 0) {
+                                const streetMatches = list.filter(item => {
+                                    if (!item || !isValidSpecificCep(item.cep)) return false;
+                                    const itemFull = norm(expandPtAbbr(item.logradouro));
+                                    const itemCore = norm(stripStreetPrefix(expandPtAbbr(item.logradouro)));
+                                    return (itemFull && itemFull === normFullTarget) || (itemCore && itemCore === normCoreTarget);
+                                });
+
+                                if (streetMatches.length > 0) {
+                                    const uniqueAll = [...new Set(streetMatches.map(m => formatCep(m.cep)))];
+                                    if (uniqueAll.length === 1) {
+                                        return ' • CEP: ' + uniqueAll[0];
+                                    }
+
+                                    if (normSuburb) {
+                                        const suburbMatches = streetMatches.filter(m => {
+                                            const nb = norm(m.bairro);
+                                            return nb && (nb === normSuburb || nb.includes(normSuburb) || normSuburb.includes(nb));
+                                        });
+                                        const uniqueSub = [...new Set(suburbMatches.map(m => formatCep(m.cep)))];
+                                        if (uniqueSub.length === 1) {
+                                            return ' • CEP: ' + uniqueSub[0];
+                                        }
+                                        const nomCep = nominatimData?.address?.postcode ? formatCep(nominatimData.address.postcode) : '';
+                                        if (nomCep && uniqueSub.includes(nomCep)) {
+                                            return ' • CEP: ' + nomCep;
+                                        }
+                                    }
+
+                                    const nomCepGlobal = nominatimData?.address?.postcode ? formatCep(nominatimData.address.postcode) : '';
+                                    if (nomCepGlobal && uniqueAll.includes(nomCepGlobal)) {
+                                        return ' • CEP: ' + nomCepGlobal;
+                                    }
+                                    // Via possui múltiplos CEPs por faixa de numeração sem identificação exata do trecho -> oculta CEP
+                                    return '';
+                                }
+                            }
+                        }
+                    } catch (eVc) {}
+                }
+            }
+
+            // Fallback estrito offline: aceita apenas se a própria way da rua no OSM tiver tag postal_code / addr:postcode específica
+            const extraCep = nominatimData?.extratags?.['addr:postcode'] || nominatimData?.extratags?.['postal_code'];
+            if (nominatimData?.osm_type === 'way' && isValidSpecificCep(extraCep)) {
+                return ' • CEP: ' + formatCep(extraCep);
+            }
+
+            // Sem retorno exato confirmado para aquela rua: oculta o CEP
+            return '';
+        }
+
+        window.toggleGeoWeatherBox = function(forceOpen = null) {
+            const box = document.getElementById('localWeatherExpandableBody');
+            const icon = document.getElementById('iconGeoWeatherChevron');
+            if (!box) return;
+            const shouldOpen = forceOpen !== null ? forceOpen : box.classList.contains('hidden');
+            if (shouldOpen) {
+                box.classList.remove('hidden');
+                if (icon) icon.style.transform = 'rotate(180deg)';
+                fetchRealtimeWeatherDetails(azimuteLastGeoLat, azimuteLastGeoLon);
+            } else {
+                box.classList.add('hidden');
+                if (icon) icon.style.transform = 'rotate(0deg)';
+            }
+        };
+
+        window.openGeoWeatherSubpage = function() {
             const card = document.getElementById('geoDetailsCard');
-            if (!card) return;
-            card.classList.toggle('hidden');
-            if (!card.classList.contains('hidden')) {
+            if (card) {
+                card.classList.remove('hidden');
                 fetchRealtimeWeatherDetails(azimuteLastGeoLat, azimuteLastGeoLon);
                 if (typeof lucide !== 'undefined') lucide.createIcons();
             }
+        };
+
+        window.toggleGeoConnectivityBox = function(forceOpen = null) {
+            const box = document.getElementById('localConnectivityExpandableBody');
+            const icon = document.getElementById('iconGeoConnectivityChevron');
+            if (!box) return;
+            const shouldOpen = forceOpen !== null ? forceOpen : box.classList.contains('hidden');
+            if (shouldOpen) {
+                box.classList.remove('hidden');
+                if (icon) icon.style.transform = 'rotate(180deg)';
+            } else {
+                box.classList.add('hidden');
+                if (icon) icon.style.transform = 'rotate(0deg)';
+            }
+        };
+
+        function toggleGeoWeatherDetails() {
+            window.toggleGeoWeatherBox();
         }
 
         window.closeGeoWeatherSubpage = function() {
@@ -9916,7 +10005,7 @@
             };
         }
 
-        // Aplica um dos 4 estados visuais obrigatórios: 'unmeasured' (CINZA), 'good' (VERDE), 'moderate' (AMARELO), 'bad' (VERMELHO)
+        // Aplica um dos 4 estados visuais mantendo o resumo direto no cabeçalho da caixa fechada
         function applyConnectivityVisualState(stateKey) {
             const summaryCard = document.getElementById('localConnectivitySummaryCard');
             const summaryIcon = document.getElementById('connSummaryIconBox');
@@ -9925,44 +10014,44 @@
             const modalBadge = document.getElementById('connModalStateBadge');
 
             if (stateKey === 'good') {
-                if (summaryCard) summaryCard.className = 'bg-pmmg-dark hover:bg-pmmg-cardHover border border-emerald-500/60 border-l-4 border-l-emerald-400 rounded-xl p-3.5 cursor-pointer transition-all shadow-md group flex flex-col justify-between';
-                if (summaryIcon) summaryIcon.className = 'p-1.5 rounded-lg bg-emerald-950 text-emerald-400 border border-emerald-500/50 transition-colors';
+                if (summaryCard) summaryCard.className = 'bg-pmmg-card/90 backdrop-blur-sm border border-emerald-500/55 rounded-2xl overflow-hidden shadow-xl transition-all';
+                if (summaryIcon) summaryIcon.className = 'p-2 rounded-lg bg-emerald-950 text-emerald-400 border border-emerald-500/50 transition-colors shrink-0';
                 if (summaryBadge) {
-                    summaryBadge.textContent = 'BOA';
-                    summaryBadge.className = 'px-2 py-0.5 rounded text-[9px] font-mono font-extrabold uppercase bg-emerald-950 text-emerald-400 border border-emerald-500/60 transition-all';
+                    summaryBadge.textContent = 'Bom';
+                    summaryBadge.className = 'px-2.5 py-1 rounded-lg text-xs font-mono font-extrabold bg-emerald-950 text-emerald-400 border border-emerald-500/60 transition-all';
                 }
                 if (summaryStatusTxt) {
-                    summaryStatusTxt.textContent = 'BOA';
+                    summaryStatusTxt.textContent = 'Bom';
                     summaryStatusTxt.className = 'text-xs sm:text-sm font-mono text-emerald-400 font-extrabold block mt-0.5 truncate';
                 }
                 if (modalBadge) {
-                    modalBadge.textContent = 'BOA';
+                    modalBadge.textContent = 'BOM';
                     modalBadge.className = 'px-2.5 py-0.5 rounded text-xs font-mono font-extrabold uppercase bg-emerald-950 text-emerald-400 border border-emerald-500/60';
                 }
             } else if (stateKey === 'moderate') {
-                if (summaryCard) summaryCard.className = 'bg-pmmg-dark hover:bg-pmmg-cardHover border border-amber-500/60 border-l-4 border-l-amber-400 rounded-xl p-3.5 cursor-pointer transition-all shadow-md group flex flex-col justify-between';
-                if (summaryIcon) summaryIcon.className = 'p-1.5 rounded-lg bg-amber-950 text-amber-300 border border-amber-500/50 transition-colors';
+                if (summaryCard) summaryCard.className = 'bg-pmmg-card/90 backdrop-blur-sm border border-amber-500/55 rounded-2xl overflow-hidden shadow-xl transition-all';
+                if (summaryIcon) summaryIcon.className = 'p-2 rounded-lg bg-amber-950 text-amber-300 border border-amber-500/50 transition-colors shrink-0';
                 if (summaryBadge) {
-                    summaryBadge.textContent = 'MODERADA';
-                    summaryBadge.className = 'px-2 py-0.5 rounded text-[9px] font-mono font-extrabold uppercase bg-amber-950 text-amber-300 border border-amber-500/60 transition-all';
+                    summaryBadge.textContent = 'Moderado';
+                    summaryBadge.className = 'px-2.5 py-1 rounded-lg text-xs font-mono font-extrabold bg-amber-950 text-amber-300 border border-amber-500/60 transition-all';
                 }
                 if (summaryStatusTxt) {
-                    summaryStatusTxt.textContent = 'MODERADA';
+                    summaryStatusTxt.textContent = 'Moderado';
                     summaryStatusTxt.className = 'text-xs sm:text-sm font-mono text-amber-300 font-extrabold block mt-0.5 truncate';
                 }
                 if (modalBadge) {
-                    modalBadge.textContent = 'MODERADA';
+                    modalBadge.textContent = 'MODERADO';
                     modalBadge.className = 'px-2.5 py-0.5 rounded text-xs font-mono font-extrabold uppercase bg-amber-950 text-amber-300 border border-amber-500/60';
                 }
             } else if (stateKey === 'bad') {
-                if (summaryCard) summaryCard.className = 'bg-pmmg-dark hover:bg-pmmg-cardHover border border-red-500/60 border-l-4 border-l-red-500 rounded-xl p-3.5 cursor-pointer transition-all shadow-md group flex flex-col justify-between';
-                if (summaryIcon) summaryIcon.className = 'p-1.5 rounded-lg bg-red-950 text-red-400 border border-red-500/50 transition-colors';
+                if (summaryCard) summaryCard.className = 'bg-pmmg-card/90 backdrop-blur-sm border border-red-500/55 rounded-2xl overflow-hidden shadow-xl transition-all';
+                if (summaryIcon) summaryIcon.className = 'p-2 rounded-lg bg-red-950 text-red-400 border border-red-500/50 transition-colors shrink-0';
                 if (summaryBadge) {
-                    summaryBadge.textContent = 'RUIM';
-                    summaryBadge.className = 'px-2 py-0.5 rounded text-[9px] font-mono font-extrabold uppercase bg-red-950 text-red-400 border border-red-500/60 transition-all';
+                    summaryBadge.textContent = 'Ruim';
+                    summaryBadge.className = 'px-2.5 py-1 rounded-lg text-xs font-mono font-extrabold bg-red-950 text-red-400 border border-red-500/60 transition-all';
                 }
                 if (summaryStatusTxt) {
-                    summaryStatusTxt.textContent = 'RUIM';
+                    summaryStatusTxt.textContent = 'Ruim';
                     summaryStatusTxt.className = 'text-xs sm:text-sm font-mono text-red-400 font-extrabold block mt-0.5 truncate';
                 }
                 if (modalBadge) {
@@ -9970,15 +10059,14 @@
                     modalBadge.className = 'px-2.5 py-0.5 rounded text-xs font-mono font-extrabold uppercase bg-red-950 text-red-400 border border-red-500/60';
                 }
             } else {
-                // CINZA: SEM MEDIÇÃO (padrão antes de realizar teste, sem inventar nota)
-                if (summaryCard) summaryCard.className = 'bg-pmmg-dark hover:bg-pmmg-cardHover border border-gray-500/50 border-l-4 border-l-gray-400 rounded-xl p-3.5 cursor-pointer transition-all shadow-md group flex flex-col justify-between';
-                if (summaryIcon) summaryIcon.className = 'p-1.5 rounded-lg bg-gray-800 text-gray-300 border border-gray-500/40 transition-colors';
+                if (summaryCard) summaryCard.className = 'bg-pmmg-card/90 backdrop-blur-sm border border-gray-500/50 rounded-2xl overflow-hidden shadow-xl transition-all';
+                if (summaryIcon) summaryIcon.className = 'p-2 rounded-lg bg-gray-800 text-gray-300 border border-gray-500/40 transition-colors shrink-0';
                 if (summaryBadge) {
-                    summaryBadge.textContent = 'SEM MEDIÇÃO';
-                    summaryBadge.className = 'px-2 py-0.5 rounded text-[9px] font-mono font-extrabold uppercase bg-gray-800 text-gray-300 border border-gray-500/50 transition-all';
+                    summaryBadge.textContent = 'Sem medição';
+                    summaryBadge.className = 'px-2.5 py-1 rounded-lg text-xs font-mono font-extrabold bg-gray-800 text-gray-300 border border-gray-500/50 transition-all';
                 }
                 if (summaryStatusTxt) {
-                    summaryStatusTxt.textContent = 'SEM MEDIÇÃO';
+                    summaryStatusTxt.textContent = 'Sem medição';
                     summaryStatusTxt.className = 'text-xs sm:text-sm font-mono text-gray-300 font-extrabold block mt-0.5 truncate';
                 }
                 if (modalBadge) {
@@ -10447,6 +10535,8 @@
             if (activeBox) activeBox.classList.remove('hidden');
             if (degEl) degEl.textContent = roundedDeg + '°';
             if (cardEl) cardEl.textContent = cardinalPt;
+            const compHdrLbl = document.getElementById('lblDigitalCompassToggle');
+            if (compHdrLbl) compHdrLbl.textContent = roundedDeg + '° ' + cardinalPt;
             if (fullEl) fullEl.textContent = 'Direção: ' + cardinalFull;
             if (dialSvg) dialSvg.style.transform = 'rotate(' + (-normDeg).toFixed(1) + 'deg)';
         }
@@ -11552,7 +11642,9 @@
             if (gpsHud) {
                 if (viewId === 'gps') {
                     gpsHud.classList.remove('hidden');
-                    // Mantém "Hospital Mais Próximo", "Bússola Digital" e "Como Baixar Mapas Offline" fechados por padrão ao abrir a aba
+                    // Mantém TODAS as caixas de Geolocalização fechadas por padrão ao abrir a aba
+                    if (typeof window.toggleGeoWeatherBox === 'function') window.toggleGeoWeatherBox(false);
+                    if (typeof window.toggleGeoConnectivityBox === 'function') window.toggleGeoConnectivityBox(false);
                     if (typeof window.toggleGpsClosestHospitalBox === 'function') window.toggleGpsClosestHospitalBox(false);
                     if (typeof window.toggleDigitalCompassBox === 'function') window.toggleDigitalCompassBox(false);
                     if (typeof window.toggleOfflineMapsGuideBox === 'function') window.toggleOfflineMapsGuideBox(false);
