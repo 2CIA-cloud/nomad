@@ -379,6 +379,23 @@
             color: #E5E7EB !important;
             opacity: 1 !important;
         }
+
+        /* BLINDAGEM GLOBAL CONTRA ESTOURO DE TEXTO NAS CAIXAS (APP, GRID E PC) */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+        body, main, section, div, article, aside, header, nav,
+        h1, h2, h3, h4, h5, h6, p, span, strong, b, em, small, label, li, a, button, td, th,
+        .bg-pmmg-card, .bg-pmmg-dark, .bg-pmmg-black, [class*="bg-[#161616]"], [class*="bg-[#0D0D0D]"],
+        [class*="rounded-xl"], [class*="rounded-2xl"], [class*="rounded-lg"] {
+            word-wrap: break-word !important;
+            overflow-wrap: anywhere !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+        }
+        button, a, span, strong, p, h1, h2, h3, h4, h5, h6, label {
+            min-width: 0;
+        }
     </style>
 </head>
 <body class="bg-pmmg-black text-gray-200 font-sans min-h-screen pb-16 antialiased selection:bg-pmmg-khaki selection:text-pmmg-black mode-app">
@@ -750,9 +767,9 @@
             </div>
 
             <!-- 3. APH/SAÚDE -->
-            <button type="button" onclick="showView('saude')" id="pcsb-btn-saude" class="pc-sb-item w-full px-3 py-2.5 rounded-xl bg-pmmg-dark hover:bg-pmmg-card text-gray-400 border border-pmmg-border font-bold flex items-center gap-3 transition-all" title="APH/SAÚDE">
+            <button type="button" onclick="showView('saude')" id="pcsb-btn-saude" class="pc-sb-item w-full px-3 py-2.5 rounded-xl bg-pmmg-dark hover:bg-pmmg-card text-gray-400 border border-pmmg-border font-bold flex items-center gap-3 transition-all" title="APH">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 shrink-0"><path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6V3z"/></svg>
-                <span class="pc-sb-label truncate">APH/SAÚDE</span>
+                <span class="pc-sb-label truncate">APH</span>
             </button>
 
             <!-- 4. Drones / RPAS -->
@@ -766,9 +783,9 @@
             </button>
 
             <!-- 5. Recursos -->
-            <button type="button" onclick="showView('atalhos')" id="pcsb-btn-atalhos" class="pc-sb-item w-full px-3 py-2.5 rounded-xl bg-pmmg-dark hover:bg-pmmg-card text-gray-400 border border-pmmg-border font-bold flex items-center gap-3 transition-all" title="Recursos">
+            <button type="button" onclick="showView('atalhos')" id="pcsb-btn-atalhos" class="pc-sb-item w-full px-3 py-2.5 rounded-xl bg-pmmg-dark hover:bg-pmmg-card text-gray-400 border border-pmmg-border font-bold flex items-center gap-3 transition-all" title="Funções">
                 <i data-lucide="folder" class="w-4 h-4 shrink-0"></i>
-                <span class="pc-sb-label truncate">Recursos</span>
+                <span class="pc-sb-label truncate">Funções</span>
             </button>
 
             <!-- 6. Geolocalização -->
@@ -784,9 +801,9 @@
             </button>
 
             <!-- 8. Configurações -->
-            <button type="button" onclick="showView('configuracoes')" id="pcsb-btn-configuracoes" class="pc-sb-item w-full px-3 py-2.5 rounded-xl bg-pmmg-dark hover:bg-pmmg-card text-gray-400 border border-pmmg-border font-bold flex items-center gap-3 transition-all" title="Configurações">
+            <button type="button" onclick="showView('configuracoes')" id="pcsb-btn-configuracoes" class="pc-sb-item w-full px-3 py-2.5 rounded-xl bg-pmmg-dark hover:bg-pmmg-card text-gray-400 border border-pmmg-border font-bold flex items-center gap-3 transition-all" title="Ajustes">
                 <i data-lucide="settings" class="w-4 h-4 shrink-0"></i>
-                <span class="pc-sb-label truncate">Configurações</span>
+                <span class="pc-sb-label truncate">Ajustes</span>
             </button>
         </div>
 
@@ -1510,7 +1527,7 @@
                     <!-- 4º APH/SAÚDE -->
                     <button type="button" onclick="showView('saude')" class="aspect-square sm:aspect-auto sm:py-3.5 bg-pmmg-dark hover:bg-pmmg-card border border-pmmg-gold/40 hover:border-pmmg-gold rounded-xl flex flex-col items-center justify-center p-2 text-center transition-all active:scale-95 cursor-pointer group shadow">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 sm:w-6 sm:h-6 text-pmmg-gold mb-1.5 group-hover:scale-105 transition-transform"><path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6V3z"/></svg>
-                        <span class="text-[9.5px] sm:text-xs font-bold text-gray-200 group-hover:text-pmmg-khaki leading-tight truncate w-full">APH/SAÚDE</span>
+                        <span class="text-[9.5px] sm:text-xs font-bold text-gray-200 group-hover:text-pmmg-khaki leading-tight truncate w-full">APH</span>
                     </button>
 
                     <!-- 5º Drones -->
@@ -1583,7 +1600,7 @@
                 <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki">Aeronaves Remotamente Pilotadas</span>
             </div>
             <div id="rpasSubtabPainel" class="space-y-4">
-                <!-- 1º CAIXA DE SELEÇÃO DE RPA (FECHADA POR PADRÃO) -->
+                <!-- 1º CAIXA DE SELEÇÃO DE RPA (COM ABA EXPANSÍVEL "ESPECIFICAÇÕES" INTEGRADA) -->
                 <div id="rpasFleetSelectorCard" class="bg-[#161616] border border-[#C5A869]/45 rounded-2xl overflow-hidden shadow-xl">
                     <button type="button" onclick="toggleRpasFleetSelectorBox()" id="btnToggleRpasFleetSelectorBox" class="w-full p-4 sm:p-5 flex items-center justify-between gap-3 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
                         <div class="flex items-center gap-2.5">
@@ -1609,7 +1626,7 @@
 
                     <!-- Corpo Expansível da Seleção de RPA (Fechado por padrão) -->
                     <div id="rpasFleetSelectorExpandableBody" class="hidden p-4 sm:p-5 pt-3 border-t border-pmmg-border space-y-3">
-                        <div class="flex items-center justify-between">
+                        <div class="flex items-center justify-between gap-2">
                             <label for="rpasFleetSelectInput" class="text-[11px] font-extrabold uppercase tracking-wider text-pmmg-khaki">
                                 Aeronave da Frota
                             </label>
@@ -1626,83 +1643,76 @@
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
                             <div class="bg-[#0D0D0D] px-3 py-2 rounded-xl border border-pmmg-border">
                                 <span class="text-[10px] uppercase font-bold text-gray-400 block">Modelo</span>
-                                <strong id="rpasSelectedModelText" class="text-white font-bold block mt-0.5 truncate">DJI Mavic 3 Enterprise (M3E)</strong>
+                                <strong id="rpasSelectedModelText" class="text-white font-bold block mt-0.5">DJI Mavic 3 Enterprise (M3E)</strong>
                             </div>
                             <div class="bg-[#0D0D0D] px-3 py-2 rounded-xl border border-pmmg-border">
                                 <span class="text-[10px] uppercase font-bold text-gray-400 block">Número de Série</span>
-                                <strong id="rpasSelectedSerialText" class="text-pmmg-khaki font-mono font-bold block mt-0.5 truncate">1581F5FHD233T00DH581</strong>
+                                <strong id="rpasSelectedSerialText" class="text-pmmg-khaki font-mono font-bold block mt-0.5">1581F5FHD233T00DH581</strong>
                             </div>
                             <div class="bg-[#0D0D0D] px-3 py-2 rounded-xl border border-pmmg-border">
                                 <span class="text-[10px] uppercase font-bold text-gray-400 block">Prefixo</span>
-                                <strong id="rpasSelectedPrefixText" class="text-pmmg-gold font-mono font-extrabold block mt-0.5 truncate">PP-373745025</strong>
+                                <strong id="rpasSelectedPrefixText" class="text-pmmg-gold font-mono font-extrabold block mt-0.5">PP-373745025</strong>
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                <!-- 2º DADOS DA AERONAVE (FECHADA POR PADRÃO) -->
-                <div id="rpasAircraftDataCollapsibleCard" class="bg-[#161616] border border-[#C5A869]/45 rounded-2xl overflow-hidden shadow-xl">
-                    <button type="button" onclick="toggleRpasAircraftDataBox()" id="btnToggleRpasAircraftDataBox" class="w-full p-4 sm:p-5 flex items-center justify-between gap-3 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
-                        <div class="flex items-center gap-2.5">
-                            <div class="p-2 rounded-xl bg-[#0D0D0D] text-pmmg-khaki border border-[#C5A869]/40 shrink-0">
-                                <i data-lucide="cpu" class="w-5 h-5 text-pmmg-gold"></i>
-                            </div>
-                            <h3 class="text-xl sm:text-2xl font-military text-white uppercase tracking-wide leading-none">
-                                Dados da Aeronave
-                            </h3>
-                        </div>
-                        <div class="flex items-center gap-2 shrink-0">
-                            <span id="lblRpasAircraftDataToggle" class="text-[11px] font-bold text-pmmg-khaki">Abrir</span>
-                            <i data-lucide="chevron-down" id="iconRpasAircraftDataChevron" class="w-4 h-4 text-pmmg-gold transition-transform duration-200"></i>
-                        </div>
-                    </button>
+                        <!-- ABA INTERNA EXPANSÍVEL "ESPECIFICAÇÕES" (ESTILO DETALHES / SAIBA MAIS DENTRO DA SELEÇÃO DE RPA) -->
+                        <div class="pt-1">
+                            <button type="button" onclick="toggleRpasSpecsDetailsSubtab()" id="btnToggleRpasSpecsDetails" class="w-full px-3.5 py-2.5 rounded-xl bg-[#0D0D0D] hover:bg-pmmg-cardHover border border-[#C5A869]/45 flex items-center justify-between gap-2 text-left transition-all cursor-pointer">
+                                <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki flex items-center gap-2">
+                                    <i data-lucide="info" class="w-4 h-4 text-pmmg-gold shrink-0"></i>
+                                    <span>Especificações • Detalhes da Aeronave</span>
+                                </span>
+                                <span class="flex items-center gap-1.5 text-[11px] font-bold text-pmmg-gold shrink-0">
+                                    <span id="lblRpasSpecsDetailsToggle">Saiba mais</span>
+                                    <i data-lucide="chevron-down" id="iconRpasSpecsDetailsChevron" class="w-4 h-4 text-pmmg-gold transition-transform duration-200"></i>
+                                </span>
+                            </button>
 
-                    <!-- Corpo Expansível dos Dados da Aeronave (Fechado por padrão) -->
-                    <div id="rpasAircraftDataExpandableBody" class="hidden p-4 sm:p-5 pt-3 border-t border-pmmg-border space-y-4">
-                        <div class="bg-[#0D0D0D] p-4 rounded-xl border border-pmmg-border space-y-3">
-                            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border pb-2">
-                                <div>
-                                    <span id="rpasSpecBadge" class="text-[10px] font-extrabold uppercase tracking-wider text-pmmg-khaki block">Ficha Técnica • Prefixo PP-373745025</span>
-                                    <h4 id="rpasSpecTitle" class="text-lg sm:text-xl font-military text-white uppercase tracking-wide leading-none mt-0.5">DJI Mavic 3 Enterprise (M3E)</h4>
-                                </div>
-                                <span id="rpasSpecSerialBadge" class="text-[10px] font-mono text-pmmg-gold bg-[#161616] px-2.5 py-1 rounded border border-[#C5A869]/40">S/N: 1581F5FHD233T00DH581</span>
-                            </div>
-
-                            <div id="rpasSpecGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 text-xs">
-                                <div class="bg-[#161616] p-3 rounded-xl border border-pmmg-border space-y-0.5">
-                                    <span class="text-[10px] text-pmmg-khaki uppercase font-extrabold block">Alcance Máximo de Transmissão</span>
-                                    <strong id="rpasSpecTransmission" class="text-white font-mono text-xs sm:text-sm block">O3 Enterprise: até 15 km (FCC) / 8 km (CE)</strong>
-                                </div>
-
-                                <div class="bg-[#161616] p-3 rounded-xl border border-pmmg-border space-y-0.5">
-                                    <span class="text-[10px] text-pmmg-khaki uppercase font-extrabold block">Capacidade de Zoom</span>
-                                    <strong id="rpasSpecZoom" class="text-white font-mono text-xs sm:text-sm block">Câmera Tele: Zoom híbrido até 56x e óptico de 7x</strong>
-                                </div>
-
-                                <div class="bg-[#161616] p-3 rounded-xl border border-pmmg-border space-y-0.5">
-                                    <span class="text-[10px] text-pmmg-khaki uppercase font-extrabold block">Resistência Máxima ao Vento</span>
-                                    <strong id="rpasSpecWind" class="text-white font-mono text-xs sm:text-sm block">12 m/s (~43 km/h)</strong>
-                                </div>
-
-                                <div class="bg-[#161616] p-3 rounded-xl border border-red-500/40 space-y-0.5">
-                                    <span class="text-[10px] text-red-400 uppercase font-extrabold block">Resistência à Chuva / Índice IP</span>
-                                    <strong id="rpasSpecRain" class="text-gray-100 text-xs sm:text-sm block">Sem proteção IP contra chuva — não operar sob precipitação</strong>
-                                </div>
-
-                                <div class="bg-[#161616] p-3 rounded-xl border border-pmmg-border space-y-0.5">
-                                    <span class="text-[10px] text-pmmg-khaki uppercase font-extrabold block">Autonomia Máxima de Voo</span>
-                                    <strong id="rpasSpecAutonomy" class="text-white font-mono text-xs sm:text-sm block">Até 45 min (em condições ideais)</strong>
-                                </div>
-
-                                <div class="bg-[#161616] p-3 rounded-xl border border-[#C5A869]/40 flex items-center justify-between gap-2">
-                                    <div class="min-w-0">
-                                        <span class="text-[10px] text-pmmg-gold uppercase font-extrabold block">Documentação Oficial</span>
-                                        <span class="text-[11px] text-gray-300 truncate block">PDF PT-BR (M3E)</span>
+                            <div id="rpasSpecsDetailsBody" class="hidden mt-2.5 bg-[#0D0D0D] p-4 rounded-xl border border-pmmg-border space-y-3">
+                                <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border pb-2">
+                                    <div>
+                                        <span id="rpasSpecBadge" class="text-[10px] font-extrabold uppercase tracking-wider text-pmmg-khaki block">Ficha Técnica • Prefixo PP-373745025</span>
+                                        <h4 id="rpasSpecTitle" class="text-lg sm:text-xl font-military text-white uppercase tracking-wide leading-none mt-0.5">DJI Mavic 3 Enterprise (M3E)</h4>
                                     </div>
-                                    <a id="rpasSpecManualBtn" href="https://dl.djicdn.com/downloads/DJI_Mavic_3_Enterprise/20250916/DJI_Mavic_3_Enterprise_Series_User_Manual_PT.pdf" target="_blank" rel="noopener noreferrer" class="px-3 py-2 bg-[#0D0D0D] hover:bg-pmmg-cardHover text-pmmg-gold border border-[#C5A869] rounded-lg text-[11px] font-extrabold uppercase tracking-wide flex items-center gap-1.5 shrink-0 transition-all">
-                                        <i data-lucide="file-down" class="w-4 h-4"></i>
-                                        <span>Baixar / Abrir Manual da Aeronave</span>
-                                    </a>
+                                    <span id="rpasSpecSerialBadge" class="text-[10px] font-mono text-pmmg-gold bg-[#161616] px-2.5 py-1 rounded border border-[#C5A869]/40">S/N: 1581F5FHD233T00DH581</span>
+                                </div>
+
+                                <div id="rpasSpecGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 text-xs">
+                                    <div class="bg-[#161616] p-3 rounded-xl border border-pmmg-border space-y-0.5">
+                                        <span class="text-[10px] text-pmmg-khaki uppercase font-extrabold block">Alcance Máximo de Transmissão</span>
+                                        <strong id="rpasSpecTransmission" class="text-white font-mono text-xs sm:text-sm block">O3 Enterprise: até 15 km (FCC) / 8 km (CE)</strong>
+                                    </div>
+
+                                    <div class="bg-[#161616] p-3 rounded-xl border border-pmmg-border space-y-0.5">
+                                        <span class="text-[10px] text-pmmg-khaki uppercase font-extrabold block">Capacidade de Zoom</span>
+                                        <strong id="rpasSpecZoom" class="text-white font-mono text-xs sm:text-sm block">Câmera Tele: Zoom híbrido até 56x e óptico de 7x</strong>
+                                    </div>
+
+                                    <div class="bg-[#161616] p-3 rounded-xl border border-pmmg-border space-y-0.5">
+                                        <span class="text-[10px] text-pmmg-khaki uppercase font-extrabold block">Resistência Máxima ao Vento</span>
+                                        <strong id="rpasSpecWind" class="text-white font-mono text-xs sm:text-sm block">12 m/s (~43 km/h)</strong>
+                                    </div>
+
+                                    <div class="bg-[#161616] p-3 rounded-xl border border-red-500/40 space-y-0.5">
+                                        <span class="text-[10px] text-red-400 uppercase font-extrabold block">Resistência à Chuva / Índice IP</span>
+                                        <strong id="rpasSpecRain" class="text-gray-100 text-xs sm:text-sm block">Sem proteção IP contra chuva — não operar sob precipitação</strong>
+                                    </div>
+
+                                    <div class="bg-[#161616] p-3 rounded-xl border border-pmmg-border space-y-0.5">
+                                        <span class="text-[10px] text-pmmg-khaki uppercase font-extrabold block">Autonomia Máxima de Voo</span>
+                                        <strong id="rpasSpecAutonomy" class="text-white font-mono text-xs sm:text-sm block">Até 45 min (em condições ideais)</strong>
+                                    </div>
+
+                                    <div class="bg-[#161616] p-3 sm:p-3.5 rounded-xl border border-[#C5A869]/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 col-span-1 sm:col-span-2 lg:col-span-3">
+                                        <div class="min-w-0 flex-1">
+                                            <span class="text-[10px] text-pmmg-gold uppercase font-extrabold block">Documentação Oficial</span>
+                                            <span class="text-[11px] text-gray-300 block truncate mt-0.5">PDF PT-BR (M3E) • Manual de Operação</span>
+                                        </div>
+                                        <a id="rpasSpecManualBtn" href="https://dl.djicdn.com/downloads/DJI_Mavic_3_Enterprise/20250916/DJI_Mavic_3_Enterprise_Series_User_Manual_PT.pdf" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2.5 bg-[#0D0D0D] hover:bg-pmmg-cardHover text-pmmg-gold border border-[#C5A869] rounded-xl text-xs font-extrabold uppercase tracking-wide flex items-center gap-2 shrink-0 transition-all shadow-md">
+                                            <i data-lucide="file-down" class="w-4 h-4 text-pmmg-gold shrink-0"></i>
+                                            <span>Abrir Manual (PDF)</span>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -5083,7 +5093,7 @@
         <section id="view-atalhos" class="hidden space-y-4">
             <!-- TÍTULO ÚNICO NO TOPO PADRONIZADO COM OS DEMAIS MENUS -->
             <div class="px-1 pt-0.5 flex items-center justify-between">
-                <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki">Recursos</span>
+                <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki">Funções</span>
             </div>
 
             <!-- GAVETA 1 — "ABORDAGEM E MONITORAMENTO" (FECHADA POR PADRÃO) -->
@@ -5393,13 +5403,10 @@
             <div class="space-y-2">
                 <div class="flex items-center justify-between">
                     <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki">Unidades PMMG</span>
-                    <button type="button" onclick="toggleUnitsSearchBox('unidadesSearchBoxWrapper', 'unidadesSearchInput')" class="w-8 h-8 rounded-lg bg-pmmg-dark hover:bg-pmmg-card text-pmmg-khaki border border-pmmg-border hover:border-pmmg-gold/60 flex items-center justify-center shadow transition-all cursor-pointer" title="Pesquisar endereço, bairro ou informação">
-                        <i data-lucide="search" class="w-4 h-4 text-pmmg-gold"></i>
-                    </button>
-                </div>
+                    </div>
 
                 <!-- Campo de Pesquisa Expansível (nos mesmos moldes da busca da Tela Início) -->
-                <div id="unidadesSearchBoxWrapper" class="hidden relative">
+                <div id="unidadesSearchBoxWrapper" class="relative">
                     <i data-lucide="search" class="absolute left-3 top-2.5 w-3.5 h-3.5 text-pmmg-khaki pointer-events-none"></i>
                     <input
                         type="text"
@@ -5489,11 +5496,8 @@
             <div class="space-y-2">
                 <div class="flex items-center justify-between gap-2">
                     <button onclick="showView('regioes')" class="px-3 py-1.5 rounded-lg bg-pmmg-dark hover:bg-pmmg-border border border-pmmg-border text-xs text-pmmg-khaki font-bold flex items-center gap-1.5 cursor-pointer"><i data-lucide="arrow-left" class="w-4 h-4"></i>Voltar às Unidades</button>
-                    <button type="button" onclick="toggleUnitsSearchBox('rpm3SearchBoxWrapper', 'rpm3SearchInput')" class="w-8 h-8 rounded-lg bg-pmmg-dark hover:bg-pmmg-card text-pmmg-khaki border border-pmmg-border hover:border-pmmg-gold/60 flex items-center justify-center shadow transition-all cursor-pointer" title="Pesquisar endereço, bairro ou informação">
-                        <i data-lucide="search" class="w-4 h-4 text-pmmg-gold"></i>
-                    </button>
-                </div>
-                <div id="rpm3SearchBoxWrapper" class="hidden relative">
+                    </div>
+                <div id="rpm3SearchBoxWrapper" class="relative">
                     <i data-lucide="search" class="absolute left-3 top-2.5 w-3.5 h-3.5 text-pmmg-khaki pointer-events-none"></i>
                     <input type="text" id="rpm3SearchInput" autocomplete="off" placeholder="Buscar rua, bairro, cia, batalhão, telefone..." class="w-full pl-8 pr-7 py-2 bg-[#161616] text-xs text-white placeholder-gray-200 opacity-100 rounded-xl border border-pmmg-khaki/60 focus:outline-none focus:border-pmmg-gold transition-all" oninput="syncUnitsSearchWithGlobal(this.value, 'rpm3SearchDropdown')" onfocus="syncUnitsSearchWithGlobal(this.value, 'rpm3SearchDropdown')">
                     <button type="button" onclick="clearUnitsLocalSearch('rpm3SearchInput', 'rpm3SearchDropdown')" class="absolute right-2.5 top-2 text-gray-400 hover:text-pmmg-khaki p-0.5"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
@@ -5512,11 +5516,8 @@
             <div class="space-y-2">
                 <div class="flex items-center justify-between gap-2">
                     <button onclick="showView('regioes')" class="px-3 py-1.5 rounded-lg bg-pmmg-dark hover:bg-pmmg-border border border-pmmg-border text-xs text-pmmg-khaki font-bold flex items-center gap-1.5 cursor-pointer"><i data-lucide="arrow-left" class="w-4 h-4"></i>Voltar às Unidades</button>
-                    <button type="button" onclick="toggleUnitsSearchBox('rpm1SearchBoxWrapper', 'rpm1SearchInput')" class="w-8 h-8 rounded-lg bg-pmmg-dark hover:bg-pmmg-card text-pmmg-khaki border border-pmmg-border hover:border-pmmg-gold/60 flex items-center justify-center shadow transition-all cursor-pointer" title="Pesquisar endereço, bairro ou informação">
-                        <i data-lucide="search" class="w-4 h-4 text-pmmg-gold"></i>
-                    </button>
-                </div>
-                <div id="rpm1SearchBoxWrapper" class="hidden relative">
+                    </div>
+                <div id="rpm1SearchBoxWrapper" class="relative">
                     <i data-lucide="search" class="absolute left-3 top-2.5 w-3.5 h-3.5 text-pmmg-khaki pointer-events-none"></i>
                     <input type="text" id="rpm1SearchInput" autocomplete="off" placeholder="Buscar rua, bairro, cia, batalhão, telefone..." class="w-full pl-8 pr-7 py-2 bg-[#161616] text-xs text-white placeholder-gray-200 opacity-100 rounded-xl border border-pmmg-khaki/60 focus:outline-none focus:border-pmmg-gold transition-all" oninput="syncUnitsSearchWithGlobal(this.value, 'rpm1SearchDropdown')" onfocus="syncUnitsSearchWithGlobal(this.value, 'rpm1SearchDropdown')">
                     <button type="button" onclick="clearUnitsLocalSearch('rpm1SearchInput', 'rpm1SearchDropdown')" class="absolute right-2.5 top-2 text-gray-400 hover:text-pmmg-khaki p-0.5"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
@@ -5622,11 +5623,8 @@
             <div class="space-y-2">
                 <div class="flex items-center justify-between gap-2">
                     <button onclick="showView('regioes')" class="px-3 py-1.5 rounded-lg bg-pmmg-dark hover:bg-pmmg-border border border-pmmg-border text-xs text-pmmg-khaki font-bold flex items-center gap-1.5 cursor-pointer"><i data-lucide="arrow-left" class="w-4 h-4"></i>Voltar às Unidades</button>
-                    <button type="button" onclick="toggleUnitsSearchBox('rpm2SearchBoxWrapper', 'rpm2SearchInput')" class="w-8 h-8 rounded-lg bg-pmmg-dark hover:bg-pmmg-card text-pmmg-khaki border border-pmmg-border hover:border-pmmg-gold/60 flex items-center justify-center shadow transition-all cursor-pointer" title="Pesquisar endereço, bairro ou informação">
-                        <i data-lucide="search" class="w-4 h-4 text-pmmg-gold"></i>
-                    </button>
-                </div>
-                <div id="rpm2SearchBoxWrapper" class="hidden relative">
+                    </div>
+                <div id="rpm2SearchBoxWrapper" class="relative">
                     <i data-lucide="search" class="absolute left-3 top-2.5 w-3.5 h-3.5 text-pmmg-khaki pointer-events-none"></i>
                     <input type="text" id="rpm2SearchInput" autocomplete="off" placeholder="Buscar rua, bairro, cia, batalhão, telefone..." class="w-full pl-8 pr-7 py-2 bg-[#161616] text-xs text-white placeholder-gray-200 opacity-100 rounded-xl border border-pmmg-khaki/60 focus:outline-none focus:border-pmmg-gold transition-all" oninput="syncUnitsSearchWithGlobal(this.value, 'rpm2SearchDropdown')" onfocus="syncUnitsSearchWithGlobal(this.value, 'rpm2SearchDropdown')">
                     <button type="button" onclick="clearUnitsLocalSearch('rpm2SearchInput', 'rpm2SearchDropdown')" class="absolute right-2.5 top-2 text-gray-400 hover:text-pmmg-khaki p-0.5"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
@@ -5727,11 +5725,8 @@
             <div class="space-y-2">
                 <div class="flex items-center justify-between gap-2">
                     <button onclick="showView('regioes')" class="px-3 py-1.5 rounded-lg bg-pmmg-dark hover:bg-pmmg-border border border-pmmg-border text-xs text-pmmg-khaki font-bold flex items-center gap-1.5 cursor-pointer"><i data-lucide="arrow-left" class="w-4 h-4"></i>Voltar às Unidades</button>
-                    <button type="button" onclick="toggleUnitsSearchBox('espSearchBoxWrapper', 'espSearchInput')" class="w-8 h-8 rounded-lg bg-pmmg-dark hover:bg-pmmg-card text-pmmg-khaki border border-pmmg-border hover:border-pmmg-gold/60 flex items-center justify-center shadow transition-all cursor-pointer" title="Pesquisar endereço, bairro ou informação">
-                        <i data-lucide="search" class="w-4 h-4 text-pmmg-gold"></i>
-                    </button>
-                </div>
-                <div id="espSearchBoxWrapper" class="hidden relative">
+                    </div>
+                <div id="espSearchBoxWrapper" class="relative">
                     <i data-lucide="search" class="absolute left-3 top-2.5 w-3.5 h-3.5 text-pmmg-khaki pointer-events-none"></i>
                     <input type="text" id="espSearchInput" autocomplete="off" placeholder="Buscar rua, bairro, cia, batalhão, telefone..." class="w-full pl-8 pr-7 py-2 bg-[#161616] text-xs text-white placeholder-gray-200 opacity-100 rounded-xl border border-pmmg-khaki/60 focus:outline-none focus:border-pmmg-gold transition-all" oninput="syncUnitsSearchWithGlobal(this.value, 'espSearchDropdown')" onfocus="syncUnitsSearchWithGlobal(this.value, 'espSearchDropdown')">
                     <button type="button" onclick="clearUnitsLocalSearch('espSearchInput', 'espSearchDropdown')" class="absolute right-2.5 top-2 text-gray-400 hover:text-pmmg-khaki p-0.5"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
@@ -5971,9 +5966,6 @@
                         <p id="skeletonSubtitle" class="text-xs text-gray-400 mt-1">Região • Endereço Sede</p>
                     </div>
                     <div class="flex items-center gap-2">
-                        <button type="button" onclick="toggleUnitsSearchBox('skeletonSearchBoxWrapper', 'skeletonSearchInput')" class="w-8 h-8 rounded-lg bg-pmmg-dark hover:bg-pmmg-card text-pmmg-khaki border border-pmmg-border hover:border-pmmg-gold/60 flex items-center justify-center shadow transition-all cursor-pointer" title="Pesquisar endereço, bairro ou informação">
-                            <i data-lucide="search" class="w-4 h-4 text-pmmg-gold"></i>
-                        </button>
                         <a id="skeletonMapsBtn" href="#" target="_blank" class="px-3 py-1.5 bg-pmmg-dark text-pmmg-khaki border border-pmmg-border rounded-lg text-xs font-bold hover:bg-pmmg-border flex items-center gap-1">
                             <i data-lucide="map-pin" class="w-3.5 h-3.5"></i>Mapa Sede
                         </a>
@@ -5984,7 +5976,7 @@
                 </div>
 
                 <!-- Campo de Pesquisa Expansível ao clicar na Lupa dentro da Unidade/Cia -->
-                <div id="skeletonSearchBoxWrapper" class="hidden relative pt-1">
+                <div id="skeletonSearchBoxWrapper" class="relative pt-1">
                     <i data-lucide="search" class="absolute left-3 top-3.5 w-3.5 h-3.5 text-pmmg-khaki pointer-events-none"></i>
                     <input type="text" id="skeletonSearchInput" autocomplete="off" placeholder="Buscar rua, bairro, cia, batalhão, telefone..." class="w-full pl-8 pr-7 py-2 bg-[#161616] text-xs text-white placeholder-gray-200 opacity-100 rounded-xl border border-pmmg-khaki/60 focus:outline-none focus:border-pmmg-gold transition-all" oninput="syncUnitsSearchWithGlobal(this.value, 'skeletonSearchDropdown')" onfocus="syncUnitsSearchWithGlobal(this.value, 'skeletonSearchDropdown')">
                     <button type="button" onclick="clearUnitsLocalSearch('skeletonSearchInput', 'skeletonSearchDropdown')" class="absolute right-2.5 top-3 text-gray-400 hover:text-pmmg-khaki p-0.5"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
@@ -6037,9 +6029,6 @@
                         </p>
                     </div>
                     <div class="flex items-center gap-2 self-start md:self-auto">
-                        <button type="button" onclick="toggleUnitsSearchBox('internal18SearchBoxWrapper', 'internalSearch18')" class="w-8 h-8 rounded-lg bg-pmmg-dark hover:bg-pmmg-card text-pmmg-khaki border border-pmmg-border hover:border-pmmg-gold/60 flex items-center justify-center shadow transition-all cursor-pointer" title="Pesquisar endereço, bairro ou informação">
-                            <i data-lucide="search" class="w-4 h-4 text-pmmg-gold"></i>
-                        </button>
                         <button onclick="showView('rpm2')" class="px-3 py-1.5 rounded-lg bg-pmmg-dark hover:bg-pmmg-border border border-pmmg-border text-xs text-pmmg-khaki font-bold flex items-center gap-1 cursor-pointer">
                             <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>Voltar à 2ª RPM
                         </button>
@@ -6047,7 +6036,7 @@
                 </div>
 
                 <!-- CAMPO DE PESQUISA INTERNA DO 18º BPM E CIAS (OCULTO POR PADRÃO ATÉ CLICAR NO ÍCONE DA LUPA) -->
-                <div id="internal18SearchBoxWrapper" class="hidden relative pt-1">
+                <div id="internal18SearchBoxWrapper" class="relative pt-1">
                     <div class="bg-pmmg-card/90 p-2.5 rounded-xl border border-pmmg-khaki/50 flex flex-col sm:flex-row items-center justify-between gap-2">
                         <div class="relative flex-1 w-full">
                             <i data-lucide="search" class="absolute left-3 top-2.5 w-3.5 h-3.5 text-pmmg-khaki"></i>
@@ -6145,7 +6134,6 @@
                                 <p class="text-xs font-semibold text-gray-300 mt-0.5">Região da Ressaca & ZQC Padre Feijó</p>
                             </div>
                             <div class="flex gap-1">
-                                <button type="button" onclick="toggleUnitsSearchBox('internal18SearchBoxWrapper', 'internalSearch18')" class="p-2 bg-pmmg-dark text-pmmg-gold border border-pmmg-border hover:border-pmmg-gold/60 rounded-lg cursor-pointer" title="Pesquisar endereço, bairro ou informação"><i data-lucide="search" class="w-3.5 h-3.5"></i></button>
                                 <a href="tel:03133576111" class="p-2 bg-pmmg-dark text-pmmg-khaki border border-pmmg-gold/50 rounded-lg hover:bg-pmmg-border" title="Ligar 131ª Cia"><i data-lucide="phone" class="w-3.5 h-3.5"></i></a>
                                 <button onclick="copyToClipboard('(31) 3357-6111')" class="p-2 bg-pmmg-dark text-gray-300 border border-pmmg-border rounded-lg hover:bg-pmmg-border" title="Copiar Telefone"><i data-lucide="copy" class="w-3.5 h-3.5"></i></button>
                                 <a href="https://maps.app.goo.gl/PjWM9fCvchnGEabs9" target="_blank" class="p-2 bg-pmmg-dark text-pmmg-khaki border border-pmmg-border rounded-lg hover:bg-pmmg-border" title="Abrir Mapa"><i data-lucide="map-pin" class="w-3.5 h-3.5"></i></a>
@@ -6230,7 +6218,6 @@
                                 <p class="text-xs font-semibold text-gray-300 mt-0.5">Sede & Região Central</p>
                             </div>
                             <div class="flex gap-1">
-                                <button type="button" onclick="toggleUnitsSearchBox('internal18SearchBoxWrapper', 'internalSearch18')" class="p-2 bg-pmmg-dark text-pmmg-gold border border-pmmg-border hover:border-pmmg-gold/60 rounded-lg cursor-pointer" title="Pesquisar endereço, bairro ou informação"><i data-lucide="search" class="w-3.5 h-3.5"></i></button>
                                 <a href="tel:03121916110" class="p-2 bg-pmmg-dark text-pmmg-khaki border border-pmmg-gold/50 rounded-lg hover:bg-pmmg-border" title="Ligar 133ª Cia"><i data-lucide="phone" class="w-3.5 h-3.5"></i></a>
                                 <button onclick="copyToClipboard('(31) 2191-6110')" class="p-2 bg-pmmg-dark text-gray-300 border border-pmmg-border rounded-lg hover:bg-pmmg-border" title="Copiar Telefone"><i data-lucide="copy" class="w-3.5 h-3.5"></i></button>
                                 <a href="https://maps.app.goo.gl/FbyCRKWhg4BrkaiTA" target="_blank" class="p-2 bg-pmmg-dark text-pmmg-khaki border border-pmmg-border rounded-lg hover:bg-pmmg-border" title="Abrir Mapa"><i data-lucide="map-pin" class="w-3.5 h-3.5"></i></a>
@@ -6308,7 +6295,6 @@
                                 <p class="text-xs font-semibold text-gray-300 mt-0.5">Petrolândia & Entorno</p>
                             </div>
                             <div class="flex gap-1">
-                                <button type="button" onclick="toggleUnitsSearchBox('internal18SearchBoxWrapper', 'internalSearch18')" class="p-2 bg-pmmg-dark text-pmmg-gold border border-pmmg-border hover:border-pmmg-gold/60 rounded-lg cursor-pointer" title="Pesquisar endereço, bairro ou informação"><i data-lucide="search" class="w-3.5 h-3.5"></i></button>
                                 <a href="tel:03121916110" class="p-2 bg-pmmg-dark text-pmmg-khaki border border-pmmg-gold/50 rounded-lg hover:bg-pmmg-border" title="Ligar 283ª Cia"><i data-lucide="phone" class="w-3.5 h-3.5"></i></a>
                                 <button onclick="copyToClipboard('(31) 2191-6110')" class="p-2 bg-pmmg-dark text-gray-300 border border-pmmg-border rounded-lg hover:bg-pmmg-border" title="Copiar Telefone"><i data-lucide="copy" class="w-3.5 h-3.5"></i></button>
                                 <a href="https://maps.app.goo.gl/FbyCRKWhg4BrkaiTA" target="_blank" class="p-2 bg-pmmg-dark text-pmmg-khaki border border-pmmg-border rounded-lg hover:bg-pmmg-border" title="Abrir Mapa"><i data-lucide="map-pin" class="w-3.5 h-3.5"></i></a>
@@ -6375,7 +6361,6 @@
                                 <p class="text-xs font-semibold text-gray-300 mt-0.5">Nova Contagem • 26ª AISP</p>
                             </div>
                             <div class="flex gap-1">
-                                <button type="button" onclick="toggleUnitsSearchBox('internal18SearchBoxWrapper', 'internalSearch18')" class="p-2 bg-pmmg-dark text-pmmg-gold border border-pmmg-border hover:border-pmmg-gold/60 rounded-lg cursor-pointer" title="Pesquisar endereço, bairro ou informação"><i data-lucide="search" class="w-3.5 h-3.5"></i></button>
                                 <a href="tel:03139115260" class="p-2 bg-pmmg-dark text-pmmg-khaki border border-pmmg-gold/50 rounded-lg hover:bg-pmmg-border" title="Ligar AISP"><i data-lucide="phone" class="w-3.5 h-3.5"></i></a>
                                 <button onclick="copyToClipboard('(31) 3911-5260')" class="p-2 bg-pmmg-dark text-gray-300 border border-pmmg-border rounded-lg hover:bg-pmmg-border" title="Copiar Telefone"><i data-lucide="copy" class="w-3.5 h-3.5"></i></button>
                                 <a href="https://www.google.com/maps/search/?api=1&query=Rua+Maria+José+Chiodi+960+Nova+Contagem+Contagem+MG" target="_blank" class="p-2 bg-pmmg-dark text-pmmg-khaki border border-pmmg-border rounded-lg hover:bg-pmmg-border" title="Google Maps 38ª Cia"><i data-lucide="map-pin" class="w-3.5 h-3.5"></i></a>
@@ -6439,7 +6424,6 @@
                                 <p class="text-xs font-semibold text-gray-300 mt-0.5">Kennedy • Nacional • Ceasa</p>
                             </div>
                             <div class="flex gap-1">
-                                <button type="button" onclick="toggleUnitsSearchBox('internal18SearchBoxWrapper', 'internalSearch18')" class="p-2 bg-pmmg-dark text-pmmg-gold border border-pmmg-border hover:border-pmmg-gold/60 rounded-lg cursor-pointer" title="Pesquisar endereço, bairro ou informação"><i data-lucide="search" class="w-3.5 h-3.5"></i></button>
                                 <a href="tel:03133038120" class="p-2 bg-pmmg-dark text-pmmg-khaki border border-pmmg-gold/50 rounded-lg hover:bg-pmmg-border" title="Ligar 39ª Cia"><i data-lucide="phone" class="w-3.5 h-3.5"></i></a>
                                 <button onclick="copyToClipboard('(31) 3303-8120')" class="p-2 bg-pmmg-dark text-gray-300 border border-pmmg-border rounded-lg hover:bg-pmmg-border" title="Copiar Telefone"><i data-lucide="copy" class="w-3.5 h-3.5"></i></button>
                                 <a href="https://maps.app.goo.gl/zvCCLBJwewazQw3j6" target="_blank" class="p-2 bg-pmmg-dark text-pmmg-khaki border border-pmmg-border rounded-lg hover:bg-pmmg-border" title="Abrir Mapa"><i data-lucide="map-pin" class="w-3.5 h-3.5"></i></a>
@@ -7688,7 +7672,7 @@
         <!-- ================= VIEW EXCLUSIVA: CONFIGURAÇÕES ================= -->
         <section id="view-configuracoes" class="hidden space-y-4">
             <div class="px-1 pt-0.5 flex items-center justify-between">
-                <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki">Configurações</span>
+                <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki">Ajustes</span>
             </div>
 
             <div id="configuracoesMainContainer" class="bg-[#161616] border border-[#C5A869]/45 rounded-2xl p-4 sm:p-5 shadow-xl space-y-5">
@@ -7908,7 +7892,7 @@
             <!-- 4. APH/SAÚDE (Cruz Médica clássica fina e simétrica, seguindo o mesmo padrão de cor dos demais botões) -->
             <button type="button" onclick="showView('saude')" id="bnav-saude" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-lg transition-all cursor-pointer">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mb-0.5"><path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6V3z"/></svg>
-                <span class="truncate">APH/SAÚDE</span>
+                <span class="truncate">APH</span>
             </button>
             <!-- 5. Estádios (Invertido com Saúde / APH) -->
             <button type="button" onclick="showView('estadios')" id="bnav-estadios" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-lg transition-all cursor-pointer">
@@ -7916,17 +7900,17 @@
                 <span class="truncate">Estádios</span>
             </button>
             <!-- 6. Recursos -->
-            <button type="button" onclick="showView('atalhos')" id="bnav-atalhos" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-lg transition-all cursor-pointer" title="Recursos">
+            <button type="button" onclick="showView('atalhos')" id="bnav-atalhos" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-lg transition-all cursor-pointer" title="Funções">
                 <i data-lucide="folder" class="w-4 h-4 mb-0.5"></i>
-                <span class="truncate">Recursos</span>
+                <span class="truncate">Funções</span>
             </button>
             <!-- 7. Configurações (ÚLTIMO BOTÃO À DIREITA DO RODAPÉ) -->
-            <button type="button" onclick="showView('configuracoes')" id="bnav-configuracoes" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-lg transition-all cursor-pointer" title="Configurações">
+            <button type="button" onclick="showView('configuracoes')" id="bnav-configuracoes" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-lg transition-all cursor-pointer" title="Ajustes">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mb-0.5 shrink-0">
                     <circle cx="12" cy="12" r="3"/>
                     <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
                 </svg>
-                <span class="truncate">Configurações</span>
+                <span class="truncate">Ajustes</span>
             </button>
         </div>
     </nav>
@@ -8878,6 +8862,23 @@
             }).join('');
         };
 
+        window.toggleRpasSpecsDetailsSubtab = function(forceOpen = null) {
+            const box = document.getElementById('rpasSpecsDetailsBody');
+            const lbl = document.getElementById('lblRpasSpecsDetailsToggle');
+            const icon = document.getElementById('iconRpasSpecsDetailsChevron');
+            if (!box) return;
+            const willOpen = forceOpen !== null ? forceOpen : box.classList.contains('hidden');
+            if (willOpen) {
+                box.classList.remove('hidden');
+                if (lbl) lbl.textContent = 'Ocultar';
+                if (icon) icon.style.transform = 'rotate(180deg)';
+            } else {
+                box.classList.add('hidden');
+                if (lbl) lbl.textContent = 'Saiba mais';
+                if (icon) icon.style.transform = 'rotate(0deg)';
+            }
+        };
+
         window.toggleRpasFleetSelectorBox = function(forceOpen = null) {
             const box = document.getElementById('rpasFleetSelectorExpandableBody');
             const lbl = document.getElementById('lblRpasFleetSelectorToggle');
@@ -9400,7 +9401,8 @@
             }
 
             try {
-                const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat.toFixed(6)}&longitude=${lon.toFixed(6)}&models=best_match&current=temperature_2m,precipitation,rain,showers,weather_code,wind_speed_10m,wind_gusts_10m,visibility&hourly=precipitation_probability,precipitation,wind_speed_10m,wind_speed_80m,wind_gusts_10m,visibility&forecast_days=1&wind_speed_unit=kmh&timezone=America%2FSao_Paulo&_cb=${Date.now()}`;
+                // Consulta Open-Meteo focada exclusivamente no objeto current (tempo real no minuto atual)
+                const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat.toFixed(6)}&longitude=${lon.toFixed(6)}&models=best_match&current=temperature_2m,precipitation,rain,showers,weather_code,wind_speed_10m,wind_gusts_10m,visibility&wind_speed_unit=kmh&timezone=America%2FSao_Paulo&_cb=${Date.now()}`;
                 const res = await fetch(url, { cache: 'no-store' });
                 if (!res.ok) throw new Error('Falha HTTP Open-Meteo');
                 const data = await res.json();
@@ -9410,25 +9412,18 @@
                 }
 
                 const cur = data.current;
-                const currentHour = new Date().getHours();
-                let maxRainProb = 0;
-                let wind80mKmh = null;
                 let visibilityMeters = typeof cur.visibility === 'number' ? cur.visibility : null;
-
-                if (data.hourly) {
-                    if (Array.isArray(data.hourly.precipitation_probability)) {
-                        const sliceProbs = data.hourly.precipitation_probability.slice(currentHour, currentHour + 3);
-                        maxRainProb = sliceProbs.length ? Math.max(...sliceProbs) : (data.hourly.precipitation_probability[0] || 0);
-                    }
-                    if (Array.isArray(data.hourly.wind_speed_80m) && data.hourly.wind_speed_80m[currentHour] !== undefined) {
-                        wind80mKmh = Number(data.hourly.wind_speed_80m[currentHour]);
-                    }
-                    if (visibilityMeters === null && Array.isArray(data.hourly.visibility) && data.hourly.visibility[currentHour] !== undefined) {
-                        visibilityMeters = Number(data.hourly.visibility[currentHour]);
-                    }
-                }
-
                 const visibilityKm = visibilityMeters !== null && !isNaN(visibilityMeters) ? Number((visibilityMeters / 1000).toFixed(1)) : null;
+
+                // Verificação estrita baseada EXCLUSIVAMENTE no clima atual (tempo real)
+                const precipCurrent = Number(cur.precipitation || 0);
+                const rainCurrent = Number(cur.rain || 0);
+                const showersCurrent = Number(cur.showers || 0);
+                const wCode = Number(cur.weather_code || 0);
+                
+                // WMO weather codes que indicam chuva/tempestade ativa AGORA (ex: 51-67, 80-82, 95-99)
+                const isRainingNow = (precipCurrent > 0) || (rainCurrent > 0) || (showersCurrent > 0) || (wCode >= 51 && wCode <= 67) || (wCode >= 80 && wCode <= 82) || (wCode >= 95);
+                const currentRainProbApprox = isRainingNow ? 100 : 0;
 
                 const newSnapshot = {
                     hasValidGps: true,
@@ -9439,13 +9434,13 @@
                     elevation: typeof data.elevation === 'number' ? data.elevation : null,
                     tempC: Number(cur.temperature_2m),
                     windKmh: Number(cur.wind_speed_10m),
-                    wind80mKmh: wind80mKmh !== null && !isNaN(wind80mKmh) ? Number(wind80mKmh.toFixed(1)) : null,
+                    wind80mKmh: null,
                     gustsKmh: Number(cur.wind_gusts_10m !== undefined ? cur.wind_gusts_10m : cur.wind_speed_10m),
-                    precipMm: Number(cur.precipitation || 0),
-                    rainProbPct: Number(maxRainProb || 0),
+                    precipMm: precipCurrent,
+                    rainProbPct: currentRainProbApprox,
                     visibilityKm,
-                    weatherCode: Number(cur.weather_code || 0),
-                    conditionText: typeof decodeWmoWeather === 'function' ? decodeWmoWeather(cur.weather_code) : 'Monitorado',
+                    weatherCode: wCode,
+                    conditionText: typeof decodeWmoWeather === 'function' ? decodeWmoWeather(wCode) : 'Monitorado',
                     timeStr: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
                 };
 
@@ -9464,15 +9459,13 @@
                     }
                 }
 
-                const peakWind = Math.max(newSnapshot.windKmh, newSnapshot.gustsKmh, newSnapshot.wind80mKmh || 0);
+                const peakWind = Math.max(newSnapshot.windKmh, newSnapshot.gustsKmh, 0);
                 if (peakWind > limits.maxWindKmh) {
                     alertReasons.push(`Vento/Rajada atual (${peakWind} km/h) acima do limite técnico da aeronave (${limits.maxWindKmh} km/h).`);
                 }
-                if (newSnapshot.precipMm > limits.maxRainMm || (limits.maxRainMm === 0 && newSnapshot.weatherCode >= 51)) {
-                    alertReasons.push(`Chuva/Precipitação detectada (${newSnapshot.precipMm} mm • ${newSnapshot.conditionText}) acima do limite configurado (${limits.maxRainMm} mm).`);
-                }
-                if (newSnapshot.rainProbPct > limits.maxRainProbPct) {
-                    alertReasons.push(`Probabilidade de chuva (${newSnapshot.rainProbPct}%) acima do limite máximo configurado (${limits.maxRainProbPct}%).`);
+                // Validação de chuva estritamente no momento atual (ignorando previsões noturnas ou futuras)
+                if (newSnapshot.precipMm > 0 || (newSnapshot.weatherCode >= 51 && newSnapshot.weatherCode <= 67) || (newSnapshot.weatherCode >= 80 && newSnapshot.weatherCode <= 82) || (newSnapshot.weatherCode >= 95)) {
+                    alertReasons.push(`Chuva/Precipitação ativa detectada no momento atual (${newSnapshot.precipMm} mm • ${newSnapshot.conditionText}). Voo não recomendado com precipitação ativa.`);
                 }
 
                 azimuteRpasLastWeatherSnapshot = newSnapshot;
@@ -11533,10 +11526,10 @@
             { id: 'home', label: 'Início', icon: 'home', defaultEnabled: true, locked: false },
             { id: 'regioes', label: 'Unidades', icon: 'shield', defaultEnabled: true, locked: false },
             { id: 'gps', label: 'Geolocalização', icon: 'locate-fixed', defaultEnabled: true, locked: false },
-            { id: 'saude', label: 'APH/SAÚDE', icon: 'cross', defaultEnabled: true, locked: false },
+            { id: 'saude', label: 'APH', icon: 'cross', defaultEnabled: true, locked: false },
             { id: 'estadios', label: 'Estádios', icon: 'trophy', defaultEnabled: true, locked: false },
-            { id: 'atalhos', label: 'Recursos', icon: 'folder', defaultEnabled: true, locked: true },
-            { id: 'configuracoes', label: 'Configurações', icon: 'settings', defaultEnabled: true, locked: true }
+            { id: 'atalhos', label: 'Funções', icon: 'folder', defaultEnabled: true, locked: true },
+            { id: 'configuracoes', label: 'Ajustes', icon: 'settings', defaultEnabled: true, locked: true }
         ];
 
         function getDefaultFooterButtonsConfig() {
@@ -12189,7 +12182,7 @@
             },
             {
                 id: 'aph',
-                label: 'APH/SAÚDE',
+                label: 'APH',
                 defaultEnabled: true,
                 type: 'action',
                 onClick: "showView('saude')",
@@ -12586,6 +12579,7 @@
             } else if (viewId === 'rpas') {
                 if (typeof window.renderRpasFleetSelector === 'function') window.renderRpasFleetSelector();
                 if (typeof window.toggleRpasFleetSelectorBox === 'function') window.toggleRpasFleetSelectorBox(false);
+                if (typeof window.toggleRpasSpecsDetailsSubtab === 'function') window.toggleRpasSpecsDetailsSubtab(false);
                 if (typeof window.toggleRpasAircraftDataBox === 'function') window.toggleRpasAircraftDataBox(false);
                 if (typeof window.toggleRpasFlightParamsBox === 'function') window.toggleRpasFlightParamsBox(false);
                 if (typeof window.toggleRpasChecklistBox === 'function') window.toggleRpasChecklistBox(false);
@@ -12651,7 +12645,7 @@
                 }
             } else if (viewId === 'saude') {
                 if (activeBadge) activeBadge.classList.remove('hidden');
-                if (activeName) activeName.textContent = 'APH/SAÚDE';
+                if (activeName) activeName.textContent = 'APH';
             } else if (viewId === 'gps') {
                 if (activeBadge) activeBadge.classList.remove('hidden');
                 if (activeName) activeName.textContent = 'Geolocalização';
@@ -12667,7 +12661,7 @@
                 if (typeof window.toggleRpasAircraftDataBox === 'function') window.toggleRpasAircraftDataBox(false);
             } else if (viewId === 'atalhos') {
                 if (activeBadge) activeBadge.classList.remove('hidden');
-                if (activeName) activeName.textContent = 'Recursos';
+                if (activeName) activeName.textContent = 'Funções';
                 if (typeof window.toggleApoioCategoryBox === 'function') {
                     window.toggleApoioCategoryBox('abordagem', false);
                     window.toggleApoioCategoryBox('registro', false);
@@ -12682,7 +12676,7 @@
                 }
             } else if (viewId === 'configuracoes') {
                 if (activeBadge) activeBadge.classList.remove('hidden');
-                if (activeName) activeName.textContent = 'Configurações';
+                if (activeName) activeName.textContent = 'Ajustes';
                 if (typeof window.syncAjustesInputsFromStorage === 'function') {
                     window.syncAjustesInputsFromStorage();
                 }
@@ -14115,7 +14109,6 @@
                             <div class="flex justify-between items-center border-b border-pmmg-border pb-2">
                                 <h4 class="text-lg sm:text-xl font-military text-pmmg-khaki uppercase">${c.nome} • ${c.setor || ''}</h4>
                                 <div class="flex items-center gap-1.5">
-                                    <button type="button" onclick="toggleUnitsSearchBox('skeletonSearchBoxWrapper', 'skeletonSearchInput')" class="p-1.5 bg-pmmg-dark text-pmmg-gold border border-pmmg-border rounded-lg cursor-pointer" title="Pesquisar"><i data-lucide="search" class="w-3.5 h-3.5"></i></button>
                                     <span class="text-xs font-mono font-bold text-white">${c.telefone || ''}</span>
                                 </div>
                             </div>
