@@ -765,10 +765,10 @@
                 <span class="pc-sb-label truncate">Drones</span>
             </button>
 
-            <!-- 5. Apoio -->
-            <button type="button" onclick="showView('atalhos')" id="pcsb-btn-atalhos" class="pc-sb-item w-full px-3 py-2.5 rounded-xl bg-pmmg-dark hover:bg-pmmg-card text-gray-400 border border-pmmg-border font-bold flex items-center gap-3 transition-all" title="Apoio & Sistemas">
+            <!-- 5. Recursos -->
+            <button type="button" onclick="showView('atalhos')" id="pcsb-btn-atalhos" class="pc-sb-item w-full px-3 py-2.5 rounded-xl bg-pmmg-dark hover:bg-pmmg-card text-gray-400 border border-pmmg-border font-bold flex items-center gap-3 transition-all" title="Recursos">
                 <i data-lucide="folder" class="w-4 h-4 shrink-0"></i>
-                <span class="pc-sb-label truncate">Apoio</span>
+                <span class="pc-sb-label truncate">Recursos</span>
             </button>
 
             <!-- 6. Geolocalização -->
@@ -4987,183 +4987,119 @@
         <!-- ================= VIEW APOIO (SUBSTITUINDO ATALHOS, COM REDS, CÓDIGOS Q E FERRAMENTAS) ================= -->
                 <!-- ================= VIEW APOIO (CONSULTAS E RECURSOS) ================= -->
         <section id="view-atalhos" class="hidden space-y-4">
-            <!-- TÍTULO ÚNICO EM LINHA DIRETA PADRONIZADO COM OS DEMAIS MENUS -->
+            <!-- TÍTULO ÚNICO NO TOPO PADRONIZADO COM OS DEMAIS MENUS -->
             <div class="px-1 pt-0.5 flex items-center justify-between">
                 <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki">Recursos</span>
             </div>
 
-            <!-- CATEGORIA 1: SISTEMAS DE CONSULTA (FECHADA POR PADRÃO) -->
-            <div id="apoioCatSistemasCard" class="bg-[#161616] border border-[#C5A869]/45 rounded-2xl overflow-hidden shadow-xl">
-                <button type="button" onclick="toggleApoioCategoryBox('sistemas')" id="btnToggleApoioCat-sistemas" class="w-full p-4 sm:p-5 flex items-center justify-between gap-3 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
+            <!-- GAVETA 1 — "ABORDAGEM E MONITORAMENTO" (FECHADA POR PADRÃO) -->
+            <div id="apoioCatAbordagemCard" class="bg-[#161616] border border-[#C5A869]/45 rounded-2xl overflow-hidden shadow-xl">
+                <button type="button" onclick="toggleApoioCategoryBox('abordagem')" id="btnToggleApoioCat-abordagem" class="w-full p-4 sm:p-5 flex items-center justify-between gap-3 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
                     <div class="flex items-center gap-2.5">
                         <div class="p-2 rounded-xl bg-[#0D0D0D] text-pmmg-khaki border border-[#C5A869]/40 shrink-0">
-                            <i data-lucide="search" class="w-5 h-5 text-pmmg-gold"></i>
+                            <i data-lucide="radar" class="w-5 h-5 text-pmmg-gold"></i>
                         </div>
-                        <h3 class="text-xl sm:text-2xl font-military text-white uppercase tracking-wide leading-none">Sistemas de Consulta</h3>
+                        <h3 class="text-xl sm:text-2xl font-military text-white uppercase tracking-wide leading-none">Abordagem e Monitoramento</h3>
                     </div>
                     <div class="flex items-center gap-2 shrink-0">
-                        <span id="lblApoioCat-sistemas" class="text-[11px] font-bold text-pmmg-khaki">Abrir</span>
-                        <i data-lucide="chevron-down" id="icoApoioCat-sistemas" class="w-4 h-4 text-pmmg-gold transition-transform duration-200"></i>
+                        <span id="lblApoioCat-abordagem" class="text-[11px] font-bold text-pmmg-khaki">Abrir</span>
+                        <i data-lucide="chevron-down" id="icoApoioCat-abordagem" class="w-4 h-4 text-pmmg-gold transition-transform duration-200"></i>
                     </div>
                 </button>
 
-                <div id="boxApoioCat-sistemas" class="hidden p-4 sm:p-5 pt-3 border-t border-pmmg-border space-y-4">
-                    <!-- PRINCIPAIS SISTEMAS DE CONSULTA (REDS, BNMP, CONSULTAR IMEI, EMENTÁRIO) -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                        <!-- 1. REDS -->
-                        <a href="https://api-sso.sids.mg.gov.br/authenticationendpoint/login.do?client_id=kT8uHiArnyXY4UrLHxYwEcaJsIUa&commonAuthCallerPath=%2Foauth2%2Fauthorize&forceAuth=false&passiveAuth=false&redirect_uri=https%3A%2F%2Fweb.sids.mg.gov.br%2Freds%2Findex.do&response_type=code&scope=openid&tenantDomain=carbon.super&sessionDataKey=0d7a6245-ae7c-4816-a15e-68d8167dfe8d&relyingParty=kT8uHiArnyXY4UrLHxYwEcaJsIUa&type=oidc&sp=REDS&isSaaSApp=false&authenticators=BasicAuthenticator%3ALOCAL" target="_blank" rel="noopener noreferrer" class="bg-[#0D0D0D] p-4 rounded-xl border border-[#C5A869]/40 hover:border-[#C5A869] flex items-center justify-between group transition-all">
-                            <div>
-                                <span class="text-[10px] bg-red-950 text-red-400 font-bold px-2 py-0.5 rounded border border-red-500/30 uppercase">SIDS / MG</span>
-                                <h3 class="text-2xl font-military text-white font-bold uppercase mt-1 group-hover:text-pmmg-gold transition-colors">REDS</h3>
-                                <p class="text-[11px] text-gray-400">Boletim de Ocorrência</p>
-                            </div>
-                            <div class="p-2.5 bg-[#161616] text-pmmg-gold border border-pmmg-border rounded-lg group-hover:border-[#C5A869] transition-colors shrink-0">
-                                <i data-lucide="file-text" class="w-5 h-5"></i>
-                            </div>
-                        </a>
-
-                        <!-- 2. BNMP -->
+                <div id="boxApoioCat-abordagem" class="hidden p-4 sm:p-5 pt-3 border-t border-pmmg-border">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <!-- 1. BNMP -->
                         <a href="https://portalbnmp.cnj.jus.br/#/captcha/%2Fpesquisa-peca" target="_blank" rel="noopener noreferrer" class="bg-[#0D0D0D] p-4 rounded-xl border border-[#C5A869]/40 hover:border-[#C5A869] flex items-center justify-between group transition-all">
-                            <div>
-                                <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-gold font-bold px-2 py-0.5 rounded border border-pmmg-gold/30 uppercase">CNJ</span>
-                                <h3 class="text-2xl font-military text-white font-bold uppercase mt-1 group-hover:text-pmmg-gold transition-colors">BNMP</h3>
-                                <p class="text-[11px] text-gray-400">Mandados de Prisão</p>
-                            </div>
+                            <span class="text-xl sm:text-2xl font-military text-white font-bold uppercase group-hover:text-pmmg-gold transition-colors">BNMP</span>
                             <div class="p-2.5 bg-[#161616] text-pmmg-gold border border-pmmg-border rounded-lg group-hover:border-[#C5A869] transition-colors shrink-0">
                                 <i data-lucide="scale" class="w-5 h-5"></i>
                             </div>
                         </a>
 
-                        <!-- 3. CONSULTAR IMEI -->
+                        <!-- 2. CONSULTAR IMEI -->
                         <a href="https://www.consultaaparelhoimpedido.com.br/public-web/home?cid=174624" target="_blank" rel="noopener noreferrer" class="bg-[#0D0D0D] p-4 rounded-xl border border-[#C5A869]/40 hover:border-[#C5A869] flex items-center justify-between group transition-all">
-                            <div>
-                                <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-khaki font-bold px-2 py-0.5 rounded border border-pmmg-khaki/30 uppercase">Anatel • (*#06#)</span>
-                                <h3 class="text-2xl font-military text-white font-bold uppercase mt-1 group-hover:text-pmmg-khaki transition-colors">CONSULTAR IMEI</h3>
-                                <p class="text-[11px] text-gray-400">Aparelhos impedidos</p>
-                            </div>
+                            <span class="text-xl sm:text-2xl font-military text-white font-bold uppercase group-hover:text-pmmg-khaki transition-colors">CONSULTAR IMEI</span>
                             <div class="p-2.5 bg-[#161616] text-pmmg-khaki border border-pmmg-border rounded-lg group-hover:border-[#C5A869] transition-colors shrink-0">
                                 <i data-lucide="smartphone" class="w-5 h-5"></i>
                             </div>
                         </a>
 
-                        <!-- 4. EMENTÁRIO -->
-                        <a href="https://ementario.policiamilitar.mg.gov.br/principal" target="_blank" rel="noopener noreferrer" class="bg-[#0D0D0D] p-4 rounded-xl border border-[#C5A869]/40 hover:border-[#C5A869] flex items-center justify-between group transition-all">
-                            <div>
-                                <span class="text-[10px] bg-emerald-950 text-emerald-400 font-bold px-2 py-0.5 rounded border border-emerald-500/30 uppercase">Jurídico / PMMG</span>
-                                <h3 class="text-2xl font-military text-white font-bold uppercase mt-1 group-hover:text-emerald-400 transition-colors">EMENTÁRIO</h3>
-                                <p class="text-[11px] text-gray-400">Consulta de Ementário PMMG</p>
+                        <!-- 3. HÉLIOS -->
+                        <a href="https://helios.policiamilitar.mg.gov.br/#/principal" target="_blank" rel="noopener noreferrer" class="bg-[#0D0D0D] p-4 rounded-xl border border-[#C5A869]/40 hover:border-[#C5A869] flex items-center justify-between group transition-all">
+                            <span class="text-xl sm:text-2xl font-military text-white font-bold uppercase group-hover:text-sky-400 transition-colors">HÉLIOS</span>
+                            <div class="p-2.5 bg-[#161616] text-sky-400 border border-pmmg-border rounded-lg group-hover:border-[#C5A869] transition-colors shrink-0">
+                                <i data-lucide="eye" class="w-5 h-5"></i>
                             </div>
-                            <div class="p-2.5 bg-[#161616] text-emerald-400 border border-emerald-500/40 rounded-lg group-hover:border-[#C5A869] transition-colors shrink-0">
-                                <i data-lucide="book-open" class="w-5 h-5"></i>
-                            </div>
-                        </a>
-                    </div>
-
-                    <!-- DEMAIS SISTEMAS E FERRAMENTAS CORPORATIVAS -->
-                    <div class="pt-3 border-t border-pmmg-border/70 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                        <!-- ASSISTENTE REDS -->
-                        <a href="https://chatgpt.com/g/g-68a72c60b49081918fe5a2dbb207baae-policial-assistente-reds-pmmg" target="_blank" rel="noopener noreferrer" class="bg-[#0D0D0D] p-3.5 rounded-xl border border-pmmg-border hover:border-[#C5A869] flex items-center justify-between group transition-all">
-                            <div>
-                                <span class="text-[9.5px] bg-emerald-950 text-emerald-400 font-bold px-2 py-0.5 rounded border border-emerald-500/40 uppercase">Redação Oficial</span>
-                                <h3 class="text-xl font-military text-emerald-400 font-bold uppercase mt-1 group-hover:text-white transition-colors">ASSISTENTE REDS</h3>
-                                <p class="text-[11px] text-gray-400">Auxílio no histórico de BO/REDS</p>
-                            </div>
-                            <i data-lucide="pen-tool" class="w-4 h-4 text-emerald-400 shrink-0"></i>
-                        </a>
-
-                        <!-- SIGOP -->
-                        <a href="https://intranet.policiamilitar.mg.gov.br/lite/daop/web/" target="_blank" rel="noopener noreferrer" class="bg-[#0D0D0D] p-3.5 rounded-xl border border-pmmg-border hover:border-[#C5A869] flex items-center justify-between group transition-all">
-                            <div>
-                                <span class="text-[9.5px] bg-pmmg-khakiBadge text-pmmg-gold font-bold px-2 py-0.5 rounded border border-pmmg-gold/30 uppercase">DAOP / PMMG</span>
-                                <h3 class="text-xl font-military text-white font-bold uppercase mt-1 group-hover:text-pmmg-gold transition-colors">SIGOP</h3>
-                                <p class="text-[11px] text-gray-400">Sistema de Gestão da PMMG</p>
-                            </div>
-                            <i data-lucide="activity" class="w-4 h-4 text-pmmg-gold shrink-0"></i>
-                        </a>
-
-                        <!-- INTRANET -->
-                        <a href="https://intranet.policiamilitar.mg.gov.br/autenticacaosso/login.jsf" target="_blank" rel="noopener noreferrer" class="bg-[#0D0D0D] p-3.5 rounded-xl border border-pmmg-border hover:border-[#C5A869] flex items-center justify-between group transition-all">
-                            <div>
-                                <span class="text-[9.5px] bg-pmmg-khakiBadge text-pmmg-khaki font-bold px-2 py-0.5 rounded border border-pmmg-khaki/30 uppercase">PMMG</span>
-                                <h3 class="text-xl font-military text-white font-bold uppercase mt-1 group-hover:text-pmmg-khaki transition-colors">INTRANET</h3>
-                                <p class="text-[11px] text-gray-400">Portal Corporativo</p>
-                            </div>
-                            <i data-lucide="shield" class="w-4 h-4 text-pmmg-khaki shrink-0"></i>
-                        </a>
-
-                        <!-- HÉLIOS -->
-                        <a href="https://helios.policiamilitar.mg.gov.br/#/principal" target="_blank" rel="noopener noreferrer" class="bg-[#0D0D0D] p-3.5 rounded-xl border border-pmmg-border hover:border-[#C5A869] flex items-center justify-between group transition-all">
-                            <div>
-                                <span class="text-[9.5px] bg-sky-950 text-sky-400 font-bold px-2 py-0.5 rounded border border-sky-500/30 uppercase">PMMG</span>
-                                <h3 class="text-xl font-military text-white font-bold uppercase mt-1 group-hover:text-sky-400 transition-colors">HÉLIOS</h3>
-                                <p class="text-[11px] text-gray-400">Sistema Hélios PMMG</p>
-                            </div>
-                            <i data-lucide="eye" class="w-4 h-4 text-sky-400 shrink-0"></i>
-                        </a>
-
-                        <!-- STELECOM -->
-                        <a href="https://intranet.policiamilitar.mg.gov.br/telefonia/paginas/pesquisaTelefones/pesquisaTelefones.jsf" target="_blank" rel="noopener noreferrer" class="bg-[#0D0D0D] p-3.5 rounded-xl border border-pmmg-border hover:border-[#C5A869] flex items-center justify-between group transition-all">
-                            <div>
-                                <span class="text-[9.5px] bg-pmmg-khakiBadge text-pmmg-khaki font-bold px-2 py-0.5 rounded border border-pmmg-khaki/30 uppercase">Telecom</span>
-                                <h3 class="text-xl font-military text-white font-bold uppercase mt-1 group-hover:text-pmmg-khaki transition-colors">STELECOM</h3>
-                                <p class="text-[11px] text-gray-400">Gestão de Telecomunicações</p>
-                            </div>
-                            <i data-lucide="phone-call" class="w-4 h-4 text-pmmg-khaki shrink-0"></i>
-                        </a>
-
-                        <!-- DIAO -->
-                        <a href="https://diao.sids.mg.gov.br/" target="_blank" rel="noopener noreferrer" class="bg-[#0D0D0D] p-3.5 rounded-xl border border-pmmg-border hover:border-[#C5A869] flex items-center justify-between group transition-all">
-                            <div>
-                                <span class="text-[9.5px] bg-indigo-950 text-indigo-400 font-bold px-2 py-0.5 rounded border border-indigo-500/30 uppercase">SIDS / MG</span>
-                                <h3 class="text-xl font-military text-white font-bold uppercase mt-1 group-hover:text-indigo-400 transition-colors">DIAO</h3>
-                                <p class="text-[11px] text-gray-400">Diretriz Integrada de Ações</p>
-                            </div>
-                            <i data-lucide="shield-check" class="w-4 h-4 text-indigo-400 shrink-0"></i>
-                        </a>
-
-                        <!-- SARPAS -->
-                        <a href="https://sarpas.decea.mil.br/login?expired=true" target="_blank" rel="noopener noreferrer" class="bg-[#0D0D0D] p-3.5 rounded-xl border border-pmmg-border hover:border-[#C5A869] flex items-center justify-between group transition-all">
-                            <div>
-                                <span class="text-[9.5px] bg-sky-950 text-sky-400 font-bold px-2 py-0.5 rounded border border-sky-500/40 uppercase">DECEA • RPAS</span>
-                                <h3 class="text-xl font-military text-sky-400 font-bold uppercase mt-1 group-hover:text-white transition-colors">SARPAS</h3>
-                                <p class="text-[11px] text-gray-400">Acesso ao Espaço Aéreo</p>
-                            </div>
-                            <i data-lucide="plane" class="w-4 h-4 text-sky-400 shrink-0"></i>
                         </a>
                     </div>
                 </div>
             </div>
 
-            <!-- CATEGORIA 2: REFERÊNCIA DE RÁDIO (FECHADA POR PADRÃO) -->
-            <div id="apoioCatRadioCard" class="bg-[#161616] border border-[#C5A869]/45 rounded-2xl overflow-hidden shadow-xl">
-                <button type="button" onclick="toggleApoioCategoryBox('radio')" id="btnToggleApoioCat-radio" class="w-full p-4 sm:p-5 flex items-center justify-between gap-3 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
+            <!-- GAVETA 2 — "REGISTRO E CLASSIFICAÇÃO" (FECHADA POR PADRÃO) -->
+            <div id="apoioCatRegistroCard" class="bg-[#161616] border border-[#C5A869]/45 rounded-2xl overflow-hidden shadow-xl">
+                <button type="button" onclick="toggleApoioCategoryBox('registro')" id="btnToggleApoioCat-registro" class="w-full p-4 sm:p-5 flex items-center justify-between gap-3 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
                     <div class="flex items-center gap-2.5">
                         <div class="p-2 rounded-xl bg-[#0D0D0D] text-pmmg-khaki border border-[#C5A869]/40 shrink-0">
-                            <i data-lucide="radio" class="w-5 h-5 text-pmmg-gold"></i>
+                            <i data-lucide="file-text" class="w-5 h-5 text-pmmg-gold"></i>
                         </div>
-                        <h3 class="text-xl sm:text-2xl font-military text-white uppercase tracking-wide leading-none">Referência de Rádio</h3>
+                        <h3 class="text-xl sm:text-2xl font-military text-white uppercase tracking-wide leading-none">Registro e Classificação</h3>
                     </div>
                     <div class="flex items-center gap-2 shrink-0">
-                        <span id="lblApoioCat-radio" class="text-[11px] font-bold text-pmmg-khaki">Abrir</span>
-                        <i data-lucide="chevron-down" id="icoApoioCat-radio" class="w-4 h-4 text-pmmg-gold transition-transform duration-200"></i>
+                        <span id="lblApoioCat-registro" class="text-[11px] font-bold text-pmmg-khaki">Abrir</span>
+                        <i data-lucide="chevron-down" id="icoApoioCat-registro" class="w-4 h-4 text-pmmg-gold transition-transform duration-200"></i>
                     </div>
                 </button>
 
-                <div id="boxApoioCat-radio" class="hidden p-4 sm:p-5 pt-3 border-t border-pmmg-border space-y-3">
-                    <!-- CAIXA INTERNA FECHADA POR PADRÃO: ALFABETO FONÉTICO INTERNACIONAL (OTAN) E CÓDIGO Q -->
-                    <div class="bg-[#0D0D0D] border border-[#C5A869]/40 rounded-xl overflow-hidden">
-                        <button type="button" onclick="toggleApoioQcodeInnerBox()" id="btnToggleApoioQcodeInner" class="w-full p-3.5 sm:p-4 flex items-center justify-between gap-3 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
-                            <div class="flex items-center gap-2.5">
-                                <i data-lucide="book-open" class="w-4 h-4 text-pmmg-gold shrink-0"></i>
-                                <span class="text-sm sm:text-base font-bold text-pmmg-khaki">Alfabeto Fonético Internacional (OTAN) e Código Q</span>
+                <div id="boxApoioCat-registro" class="hidden p-4 sm:p-5 pt-3 border-t border-pmmg-border space-y-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                        <!-- 1. REDS -->
+                        <a href="https://api-sso.sids.mg.gov.br/authenticationendpoint/login.do?client_id=kT8uHiArnyXY4UrLHxYwEcaJsIUa&commonAuthCallerPath=%2Foauth2%2Fauthorize&forceAuth=false&passiveAuth=false&redirect_uri=https%3A%2F%2Fweb.sids.mg.gov.br%2Freds%2Findex.do&response_type=code&scope=openid&tenantDomain=carbon.super&sessionDataKey=0d7a6245-ae7c-4816-a15e-68d8167dfe8d&relyingParty=kT8uHiArnyXY4UrLHxYwEcaJsIUa&type=oidc&sp=REDS&isSaaSApp=false&authenticators=BasicAuthenticator%3ALOCAL" target="_blank" rel="noopener noreferrer" class="bg-[#0D0D0D] p-4 rounded-xl border border-[#C5A869]/40 hover:border-[#C5A869] flex items-center justify-between group transition-all">
+                            <span class="text-xl sm:text-2xl font-military text-white font-bold uppercase group-hover:text-pmmg-gold transition-colors">REDS</span>
+                            <div class="p-2.5 bg-[#161616] text-pmmg-gold border border-pmmg-border rounded-lg group-hover:border-[#C5A869] transition-colors shrink-0">
+                                <i data-lucide="file-text" class="w-5 h-5"></i>
                             </div>
+                        </a>
+
+                        <!-- 2. ASSISTENTE REDS -->
+                        <a href="https://chatgpt.com/g/g-68a72c60b49081918fe5a2dbb207baae-policial-assistente-reds-pmmg" target="_blank" rel="noopener noreferrer" class="bg-[#0D0D0D] p-4 rounded-xl border border-[#C5A869]/40 hover:border-[#C5A869] flex items-center justify-between group transition-all">
+                            <span class="text-xl sm:text-2xl font-military text-emerald-400 font-bold uppercase group-hover:text-white transition-colors">ASSISTENTE REDS</span>
+                            <div class="p-2.5 bg-[#161616] text-emerald-400 border border-pmmg-border rounded-lg group-hover:border-[#C5A869] transition-colors shrink-0">
+                                <i data-lucide="pen-tool" class="w-5 h-5"></i>
+                            </div>
+                        </a>
+
+                        <!-- 3. DIAO -->
+                        <a href="https://diao.sids.mg.gov.br/" target="_blank" rel="noopener noreferrer" class="bg-[#0D0D0D] p-4 rounded-xl border border-[#C5A869]/40 hover:border-[#C5A869] flex items-center justify-between group transition-all">
+                            <span class="text-xl sm:text-2xl font-military text-white font-bold uppercase group-hover:text-indigo-400 transition-colors">DIAO</span>
+                            <div class="p-2.5 bg-[#161616] text-indigo-400 border border-pmmg-border rounded-lg group-hover:border-[#C5A869] transition-colors shrink-0">
+                                <i data-lucide="shield-check" class="w-5 h-5"></i>
+                            </div>
+                        </a>
+
+                        <!-- 4. CÓDIGO Q (INCLUINDO ALFABETO FONÉTICO INTERNACIONAL OTAN NA MESMA GAVETA DA DIAO) -->
+                        <button type="button" onclick="toggleApoioQcodeInnerBox()" id="btnToggleApoioQcodeInner" class="bg-[#0D0D0D] p-4 rounded-xl border border-[#C5A869]/40 hover:border-[#C5A869] flex items-center justify-between group transition-all text-left cursor-pointer">
+                            <span class="text-xl sm:text-2xl font-military text-pmmg-khaki font-bold uppercase group-hover:text-white transition-colors">CÓDIGO Q</span>
                             <div class="flex items-center gap-2 shrink-0">
-                                <span id="lblApoioQcodeInner" class="text-[11px] font-bold text-pmmg-khaki">Abrir</span>
-                                <i data-lucide="chevron-down" id="icoApoioQcodeInner" class="w-4 h-4 text-pmmg-gold transition-transform duration-200"></i>
+                                <span id="lblApoioQcodeInner" class="text-[10px] font-bold text-pmmg-khaki uppercase">Abrir</span>
+                                <div class="p-2 bg-[#161616] text-pmmg-gold border border-pmmg-border rounded-lg group-hover:border-[#C5A869] transition-colors">
+                                    <i data-lucide="chevron-down" id="icoApoioQcodeInner" class="w-4 h-4 transition-transform duration-200"></i>
+                                </div>
                             </div>
                         </button>
 
-                        <div id="boxApoioQcodeInner" class="hidden p-4 pt-3 border-t border-pmmg-border space-y-5 text-xs">
+                        <!-- 5. EMENTÁRIO -->
+                        <a href="https://ementario.policiamilitar.mg.gov.br/principal" target="_blank" rel="noopener noreferrer" class="bg-[#0D0D0D] p-4 rounded-xl border border-[#C5A869]/40 hover:border-[#C5A869] flex items-center justify-between group transition-all">
+                            <span class="text-xl sm:text-2xl font-military text-white font-bold uppercase group-hover:text-emerald-400 transition-colors">EMENTÁRIO</span>
+                            <div class="p-2.5 bg-[#161616] text-emerald-400 border border-pmmg-border rounded-lg group-hover:border-[#C5A869] transition-colors shrink-0">
+                                <i data-lucide="book-open" class="w-5 h-5"></i>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- PAINEL EXPANSÍVEL DO CÓDIGO Q E ALFABETO FONÉTICO INTERNACIONAL (OTAN) -->
+                    <div id="boxApoioQcodeInner" class="hidden bg-[#0D0D0D] p-4 pt-3 rounded-xl border border-[#C5A869]/40 space-y-5 text-xs">
+
                             <!-- 1. ALFABETO FONÉTICO INTERNACIONAL (OTAN) -->
                             <div>
                                 <h4 class="font-bold text-pmmg-khaki border-b border-pmmg-border pb-1.5 mb-2.5 uppercase">Alfabeto Fonético Internacional (OTAN)</h4>
@@ -5218,19 +5154,62 @@
                                     <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">TKS:</strong> Obrigado / Ciente</div>
                                 </div>
                             </div>
-                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- CATEGORIA 3: ASSISTENTE DE VIATURAS (NOTEBOOKLM) (FECHADA POR PADRÃO) -->
+            <!-- GAVETA 3 — "GESTÃO E CATÁLOGOS" (FECHADA POR PADRÃO) -->
+            <div id="apoioCatGestaoCard" class="bg-[#161616] border border-[#C5A869]/45 rounded-2xl overflow-hidden shadow-xl">
+                <button type="button" onclick="toggleApoioCategoryBox('gestao')" id="btnToggleApoioCat-gestao" class="w-full p-4 sm:p-5 flex items-center justify-between gap-3 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
+                    <div class="flex items-center gap-2.5">
+                        <div class="p-2 rounded-xl bg-[#0D0D0D] text-pmmg-khaki border border-[#C5A869]/40 shrink-0">
+                            <i data-lucide="folder-kanban" class="w-5 h-5 text-pmmg-gold"></i>
+                        </div>
+                        <h3 class="text-xl sm:text-2xl font-military text-white uppercase tracking-wide leading-none">Gestão e Catálogos</h3>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <span id="lblApoioCat-gestao" class="text-[11px] font-bold text-pmmg-khaki">Abrir</span>
+                        <i data-lucide="chevron-down" id="icoApoioCat-gestao" class="w-4 h-4 text-pmmg-gold transition-transform duration-200"></i>
+                    </div>
+                </button>
+
+                <div id="boxApoioCat-gestao" class="hidden p-4 sm:p-5 pt-3 border-t border-pmmg-border">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <!-- 1. SIGOP -->
+                        <a href="https://intranet.policiamilitar.mg.gov.br/lite/daop/web/" target="_blank" rel="noopener noreferrer" class="bg-[#0D0D0D] p-4 rounded-xl border border-[#C5A869]/40 hover:border-[#C5A869] flex items-center justify-between group transition-all">
+                            <span class="text-xl sm:text-2xl font-military text-white font-bold uppercase group-hover:text-pmmg-gold transition-colors">SIGOP</span>
+                            <div class="p-2.5 bg-[#161616] text-pmmg-gold border border-pmmg-border rounded-lg group-hover:border-[#C5A869] transition-colors shrink-0">
+                                <i data-lucide="activity" class="w-5 h-5"></i>
+                            </div>
+                        </a>
+
+                        <!-- 2. STELECOM -->
+                        <a href="https://intranet.policiamilitar.mg.gov.br/telefonia/paginas/pesquisaTelefones/pesquisaTelefones.jsf" target="_blank" rel="noopener noreferrer" class="bg-[#0D0D0D] p-4 rounded-xl border border-[#C5A869]/40 hover:border-[#C5A869] flex items-center justify-between group transition-all">
+                            <span class="text-xl sm:text-2xl font-military text-white font-bold uppercase group-hover:text-pmmg-khaki transition-colors">STELECOM</span>
+                            <div class="p-2.5 bg-[#161616] text-pmmg-khaki border border-pmmg-border rounded-lg group-hover:border-[#C5A869] transition-colors shrink-0">
+                                <i data-lucide="phone-call" class="w-5 h-5"></i>
+                            </div>
+                        </a>
+
+                        <!-- 3. INTRANET -->
+                        <a href="https://intranet.policiamilitar.mg.gov.br/autenticacaosso/login.jsf" target="_blank" rel="noopener noreferrer" class="bg-[#0D0D0D] p-4 rounded-xl border border-[#C5A869]/40 hover:border-[#C5A869] flex items-center justify-between group transition-all">
+                            <span class="text-xl sm:text-2xl font-military text-white font-bold uppercase group-hover:text-pmmg-khaki transition-colors">INTRANET</span>
+                            <div class="p-2.5 bg-[#161616] text-pmmg-khaki border border-pmmg-border rounded-lg group-hover:border-[#C5A869] transition-colors shrink-0">
+                                <i data-lucide="shield" class="w-5 h-5"></i>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GAVETA 4 — "VIATURAS" (FECHADA POR PADRÃO) -->
             <div id="apoioCatViaturasCard" class="bg-[#161616] border border-[#C5A869]/45 rounded-2xl overflow-hidden shadow-xl">
                 <button type="button" onclick="toggleApoioCategoryBox('viaturas')" id="btnToggleApoioCat-viaturas" class="w-full p-4 sm:p-5 flex items-center justify-between gap-3 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
                     <div class="flex items-center gap-2.5">
                         <div class="p-2 rounded-xl bg-[#0D0D0D] text-pmmg-khaki border border-[#C5A869]/40 shrink-0">
                             <i data-lucide="wrench" class="w-5 h-5 text-pmmg-gold"></i>
                         </div>
-                        <h3 class="text-xl sm:text-2xl font-military text-white uppercase tracking-wide leading-none">Assistente de Viaturas (NotebookLM)</h3>
+                        <h3 class="text-xl sm:text-2xl font-military text-white uppercase tracking-wide leading-none">Viaturas</h3>
                     </div>
                     <div class="flex items-center gap-2 shrink-0">
                         <span id="lblApoioCat-viaturas" class="text-[11px] font-bold text-pmmg-khaki">Abrir</span>
@@ -5238,12 +5217,13 @@
                     </div>
                 </button>
 
-                <div id="boxApoioCat-viaturas" class="hidden p-4 sm:p-5 pt-3 border-t border-pmmg-border space-y-3">
+                <div id="boxApoioCat-viaturas" class="hidden p-4 sm:p-5 pt-3 border-t border-pmmg-border">
                     <div class="bg-[#0D0D0D] border border-[#C5A869]/40 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                        <div class="space-y-1">
-                            <span class="text-[10px] font-extrabold uppercase tracking-wider text-pmmg-gold block">Frota PMMG • NotebookLM</span>
-                            <strong class="text-sm sm:text-base text-white block">Assistente de Manutenção de Viaturas</strong>
-                            <p class="text-xs text-gray-300">Envie áudio, texto ou foto em caso de pane ou dúvida técnica na viatura para orientação baseada nos manuais de manutenção.</p>
+                        <div class="flex items-center gap-2.5">
+                            <div class="p-2.5 rounded-xl bg-pmmg-khakiBadge text-pmmg-gold border border-pmmg-gold/50 shrink-0">
+                                <i data-lucide="bot" class="w-5 h-5"></i>
+                            </div>
+                            <strong class="text-lg sm:text-xl font-military text-white uppercase tracking-wide">Assistente de Viaturas (NotebookLM)</strong>
                         </div>
                         <button type="button" onclick="openViaturasManutencaoSubpage()" class="px-4 py-2.5 bg-[#161616] hover:bg-pmmg-cardHover text-pmmg-gold border border-[#C5A869] font-extrabold rounded-xl text-xs uppercase tracking-wider flex items-center justify-center gap-2 shrink-0 cursor-pointer transition-all">
                             <i data-lucide="external-link" class="w-4 h-4"></i>
@@ -5310,6 +5290,7 @@
                     </div>
                 </div>
             </div>
+
         </section>
 
         <!-- ================= VIEW REGIÕES (AGRUPADOR ESCALÁVEL: 1ª REGIÃO, 2ª REGIÃO, 3ª REGIÃO...) ================= -->
@@ -7822,10 +7803,10 @@
                 <i data-lucide="trophy" class="w-4 h-4 mb-0.5"></i>
                 <span class="truncate">Estádios</span>
             </button>
-            <!-- 6. Apoio / Recursos -->
-            <button type="button" onclick="showView('atalhos')" id="bnav-atalhos" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-lg transition-all cursor-pointer">
+            <!-- 6. Recursos -->
+            <button type="button" onclick="showView('atalhos')" id="bnav-atalhos" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-lg transition-all cursor-pointer" title="Recursos">
                 <i data-lucide="folder" class="w-4 h-4 mb-0.5"></i>
-                <span class="truncate">Apoio</span>
+                <span class="truncate">Recursos</span>
             </button>
             <!-- 7. Configurações (ÚLTIMO BOTÃO À DIREITA DO RODAPÉ) -->
             <button type="button" onclick="showView('configuracoes')" id="bnav-configuracoes" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-lg transition-all cursor-pointer" title="Configurações">
@@ -11049,7 +11030,7 @@
         };
 
         // ALTERNADOR DOS 3 MODOS DE VISUALIZAÇÃO E PERSONALIZAÇÃO TOTAL (LOCALSTORAGE)
-        const AZIMUTE_UI_SETTINGS_STORAGE_KEY = 'azimute_ui_settings_v2';
+        const AZIMUTE_UI_SETTINGS_STORAGE_KEY = 'azimute_ui_settings_v3';
 
         const AZIMUTE_FOOTER_NAV_CATALOG = [
             { id: 'home', label: 'Início', icon: 'home', defaultEnabled: true, locked: false },
@@ -11057,7 +11038,7 @@
             { id: 'gps', label: 'Geolocalização', icon: 'locate-fixed', defaultEnabled: true, locked: false },
             { id: 'saude', label: 'APH/SAÚDE', icon: 'cross', defaultEnabled: true, locked: false },
             { id: 'estadios', label: 'Estádios', icon: 'trophy', defaultEnabled: true, locked: false },
-            { id: 'atalhos', label: 'Apoio', icon: 'folder', defaultEnabled: true, locked: true },
+            { id: 'atalhos', label: 'Recursos', icon: 'folder', defaultEnabled: true, locked: true },
             { id: 'configuracoes', label: 'Configurações', icon: 'settings', defaultEnabled: true, locked: true }
         ];
 
@@ -12178,8 +12159,9 @@
                 if (activeBadge) activeBadge.classList.remove('hidden');
                 if (activeName) activeName.textContent = 'Recursos';
                 if (typeof window.toggleApoioCategoryBox === 'function') {
-                    window.toggleApoioCategoryBox('sistemas', false);
-                    window.toggleApoioCategoryBox('radio', false);
+                    window.toggleApoioCategoryBox('abordagem', false);
+                    window.toggleApoioCategoryBox('registro', false);
+                    window.toggleApoioCategoryBox('gestao', false);
                     window.toggleApoioCategoryBox('viaturas', false);
                 }
                 if (typeof window.toggleApoioQcodeInnerBox === 'function') {
