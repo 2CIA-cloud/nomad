@@ -321,6 +321,64 @@
         body.is-fullscreen #fullscreenDateTimeBadge {
             display: inline-flex !important;
         }
+
+        /* ALTO CONTRASTE OPACO (#FFFFFF SOBRE #161616) NA PESQUISA DE UNIDADES, BATALHÕES E CIAS */
+        #unidadesSearchInput,
+        #rpm1SearchInput,
+        #rpm2SearchInput,
+        #rpm3SearchInput,
+        #espSearchInput,
+        #skeletonSearchInput,
+        #internalSearch18 {
+            background-color: #161616 !important;
+            color: #FFFFFF !important;
+            -webkit-text-fill-color: #FFFFFF !important;
+            opacity: 1 !important;
+            caret-color: #C5A869 !important;
+        }
+        #unidadesSearchInput::placeholder,
+        #rpm1SearchInput::placeholder,
+        #rpm2SearchInput::placeholder,
+        #rpm3SearchInput::placeholder,
+        #espSearchInput::placeholder,
+        #skeletonSearchInput::placeholder,
+        #internalSearch18::placeholder {
+            color: #E5E7EB !important;
+            -webkit-text-fill-color: #E5E7EB !important;
+            opacity: 1 !important;
+        }
+        #unidadesSearchResultsDropdown,
+        #rpm1SearchDropdown,
+        #rpm2SearchDropdown,
+        #rpm3SearchDropdown,
+        #espSearchDropdown,
+        #skeletonSearchDropdown,
+        #internal18GlobalDropdown {
+            background-color: #161616 !important;
+            color: #FFFFFF !important;
+            opacity: 1 !important;
+            backdrop-filter: none !important;
+        }
+        #unidadesSearchResultsDropdown h4,
+        #rpm1SearchDropdown h4,
+        #rpm2SearchDropdown h4,
+        #rpm3SearchDropdown h4,
+        #espSearchDropdown h4,
+        #skeletonSearchDropdown h4,
+        #internal18GlobalDropdown h4 {
+            color: #FFFFFF !important;
+            opacity: 1 !important;
+        }
+        #unidadesSearchResultsDropdown p,
+        #rpm1SearchDropdown p,
+        #rpm2SearchDropdown p,
+        #rpm3SearchDropdown p,
+        #espSearchDropdown p,
+        #skeletonSearchDropdown p,
+        #internal18GlobalDropdown p {
+            color: #E5E7EB !important;
+            opacity: 1 !important;
+        }
     </style>
 </head>
 <body class="bg-pmmg-black text-gray-200 font-sans min-h-screen pb-16 antialiased selection:bg-pmmg-khaki selection:text-pmmg-black mode-app">
@@ -438,7 +496,6 @@
                     modal.classList.add('hidden');
                     modal.style.setProperty('display', 'none', 'important');
                 }
-                if (typeof requestAzimuteFullscreenSilent === 'function') requestAzimuteFullscreenSilent();
                 if (typeof showToast === 'function') showToast('Acesso liberado! Bem-vindo ao AZIMUTE.');
             } else {
                 if (errDiv) {
@@ -934,6 +991,9 @@
 
         <!-- ================= VIEW EXCLUSIVA: GEOLOCALIZAÇÃO ================= -->
         <section id="view-gps" class="hidden relative overflow-hidden rounded-2xl space-y-4 p-1">
+            <div class="relative z-10 flex items-center justify-between px-1">
+                <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki">Geolocalização</span>
+            </div>
             <!-- CONTORNO DO MAPA DE MINAS GERAIS AO FUNDO -->
             <div class="pointer-events-none select-none absolute inset-0 flex items-center justify-center z-0 overflow-hidden" aria-hidden="true">
                 <svg viewBox="0 0 800 650" class="w-full max-w-4xl h-auto opacity-[0.13]">
@@ -1509,7 +1569,7 @@
         <!-- ================= VIEW AERONAVES REMOTAMENTE PILOTADAS (RPAS) ================= -->
         <section id="view-rpas" class="hidden space-y-4">
             <div class="px-1 pt-0.5 flex items-center justify-between">
-                <h2 class="text-xl sm:text-3xl font-military text-pmmg-khaki uppercase tracking-wide leading-none whitespace-nowrap">Aeronaves Remotamente Pilotadas</h2>
+                <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki">Aeronaves Remotamente Pilotadas</span>
             </div>
             <div id="rpasSubtabPainel" class="space-y-4">
                 
@@ -1853,7 +1913,10 @@
         </section>
 
         <!-- ================= VIEW ESTÁDIOS (MINEIRÃO, ARENA MRV E INDEPENDÊNCIA) ================= -->
-        <section id="view-estadios"class="hidden space-y-5">
+        <section id="view-estadios" class="hidden space-y-5">
+            <div class="flex items-center justify-between px-1">
+                <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki">Estádios</span>
+            </div>
             
             <!-- TELA 1 DE ESTÁDIOS: LOBBY DE ESCOLHA DO ESTÁDIO (SEM CABEÇALHO GIGANTE REPETIDO, VISUAL ESCURO E SÓBRIO) -->
             <div id="estadios-lobby-screen" class="space-y-4 app-screen-animate">
@@ -4286,7 +4349,8 @@
 
         <!-- ================= VIEW SAÚDE / APH (POSIÇÃO CENTRAL DO MENU GLOBAL) ================= -->
         <section id="view-saude" class="hidden space-y-6">
-            <div class="flex items-center justify-end">
+            <div class="flex items-center justify-between gap-2 px-1">
+                <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki">APH / Saúde</span>
                 <button type="button" onclick="openPrioritySosModal()" id="btnModoPrioridadeSaude" class="px-4 py-2 bg-[#161616] hover:bg-pmmg-cardHover active:scale-95 text-white border-2 border-red-500 font-extrabold rounded-xl text-xs flex items-center gap-2 shadow-lg uppercase tracking-wider transition-all cursor-pointer">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 text-red-500 shrink-0">
                         <path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6V3z"/>
@@ -4914,7 +4978,7 @@
         <section id="view-atalhos" class="hidden space-y-4">
             <!-- TÍTULO ÚNICO EM LINHA DIRETA PADRONIZADO COM OS DEMAIS MENUS -->
             <div class="px-1 pt-0.5 flex items-center justify-between">
-                <h2 class="text-xl sm:text-3xl font-military text-pmmg-khaki uppercase tracking-wide leading-none whitespace-nowrap">Sistemas e Consultas</h2>
+                <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki">Recursos</span>
             </div>
 
             <!-- CATEGORIA 1: SISTEMAS DE CONSULTA (FECHADA POR PADRÃO) -->
@@ -5185,7 +5249,7 @@
                         <div class="p-2 rounded-xl bg-[#0D0D0D] text-pmmg-khaki border border-[#C5A869]/40 shrink-0">
                             <i data-lucide="sliders-horizontal" class="w-5 h-5 text-pmmg-gold"></i>
                         </div>
-                        <h3 class="text-xl sm:text-2xl font-military text-white uppercase tracking-wide leading-none">Ajustes</h3>
+                        <h3 class="text-xl sm:text-2xl font-military text-white uppercase tracking-wide leading-none">Configurações</h3>
                     </div>
                     <div class="flex items-center gap-2 shrink-0">
                         <span id="lblApoioAjustesToggle" class="text-[11px] font-bold text-pmmg-khaki">Abrir</span>
@@ -5446,14 +5510,14 @@
                         id="unidadesSearchInput"
                         autocomplete="off"
                         placeholder="Buscar rua, bairro, cia, batalhão, telefone..."
-                        class="w-full pl-8 pr-7 py-2 bg-pmmg-black/90 text-xs text-gray-100 placeholder-gray-400 rounded-xl border border-pmmg-khaki/60 focus:outline-none focus:border-pmmg-gold transition-all"
+                        class="w-full pl-8 pr-7 py-2 bg-[#161616] text-xs text-white placeholder-gray-200 opacity-100 rounded-xl border border-pmmg-khaki/60 focus:outline-none focus:border-pmmg-gold transition-all"
                         oninput="syncUnitsSearchWithGlobal(this.value, 'unidadesSearchResultsDropdown')"
                         onfocus="syncUnitsSearchWithGlobal(this.value, 'unidadesSearchResultsDropdown')"
                     >
                     <button type="button" onclick="clearUnitsLocalSearch('unidadesSearchInput', 'unidadesSearchResultsDropdown')" class="absolute right-2.5 top-2 text-gray-400 hover:text-pmmg-khaki p-0.5" title="Limpar">
                         <i data-lucide="x" class="w-3.5 h-3.5"></i>
                     </button>
-                    <div id="unidadesSearchResultsDropdown" class="hidden mt-1.5 bg-pmmg-dark/98 backdrop-blur-md border border-pmmg-khaki/70 rounded-xl shadow-2xl max-h-[65vh] overflow-y-auto divide-y divide-pmmg-border z-50"></div>
+                    <div id="unidadesSearchResultsDropdown" class="hidden mt-1.5 bg-[#161616] text-white border border-pmmg-khaki/70 rounded-xl shadow-2xl max-h-[65vh] overflow-y-auto divide-y divide-pmmg-border z-50"></div>
                 </div>
             </div>
 
@@ -5535,9 +5599,9 @@
                 </div>
                 <div id="rpm3SearchBoxWrapper" class="hidden relative">
                     <i data-lucide="search" class="absolute left-3 top-2.5 w-3.5 h-3.5 text-pmmg-khaki pointer-events-none"></i>
-                    <input type="text" id="rpm3SearchInput" autocomplete="off" placeholder="Buscar rua, bairro, cia, batalhão, telefone..." class="w-full pl-8 pr-7 py-2 bg-pmmg-black/90 text-xs text-gray-100 placeholder-gray-400 rounded-xl border border-pmmg-khaki/60 focus:outline-none focus:border-pmmg-gold transition-all" oninput="syncUnitsSearchWithGlobal(this.value, 'rpm3SearchDropdown')" onfocus="syncUnitsSearchWithGlobal(this.value, 'rpm3SearchDropdown')">
+                    <input type="text" id="rpm3SearchInput" autocomplete="off" placeholder="Buscar rua, bairro, cia, batalhão, telefone..." class="w-full pl-8 pr-7 py-2 bg-[#161616] text-xs text-white placeholder-gray-200 opacity-100 rounded-xl border border-pmmg-khaki/60 focus:outline-none focus:border-pmmg-gold transition-all" oninput="syncUnitsSearchWithGlobal(this.value, 'rpm3SearchDropdown')" onfocus="syncUnitsSearchWithGlobal(this.value, 'rpm3SearchDropdown')">
                     <button type="button" onclick="clearUnitsLocalSearch('rpm3SearchInput', 'rpm3SearchDropdown')" class="absolute right-2.5 top-2 text-gray-400 hover:text-pmmg-khaki p-0.5"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
-                    <div id="rpm3SearchDropdown" class="hidden mt-1.5 bg-pmmg-dark/98 backdrop-blur-md border border-pmmg-khaki/70 rounded-xl shadow-2xl max-h-[65vh] overflow-y-auto divide-y divide-pmmg-border z-50"></div>
+                    <div id="rpm3SearchDropdown" class="hidden mt-1.5 bg-[#161616] text-white border border-pmmg-khaki/70 rounded-xl shadow-2xl max-h-[65vh] overflow-y-auto divide-y divide-pmmg-border z-50"></div>
                 </div>
             </div>
             <div class="bg-pmmg-card p-6 rounded-2xl tactical-border space-y-2">
@@ -5558,9 +5622,9 @@
                 </div>
                 <div id="rpm1SearchBoxWrapper" class="hidden relative">
                     <i data-lucide="search" class="absolute left-3 top-2.5 w-3.5 h-3.5 text-pmmg-khaki pointer-events-none"></i>
-                    <input type="text" id="rpm1SearchInput" autocomplete="off" placeholder="Buscar rua, bairro, cia, batalhão, telefone..." class="w-full pl-8 pr-7 py-2 bg-pmmg-black/90 text-xs text-gray-100 placeholder-gray-400 rounded-xl border border-pmmg-khaki/60 focus:outline-none focus:border-pmmg-gold transition-all" oninput="syncUnitsSearchWithGlobal(this.value, 'rpm1SearchDropdown')" onfocus="syncUnitsSearchWithGlobal(this.value, 'rpm1SearchDropdown')">
+                    <input type="text" id="rpm1SearchInput" autocomplete="off" placeholder="Buscar rua, bairro, cia, batalhão, telefone..." class="w-full pl-8 pr-7 py-2 bg-[#161616] text-xs text-white placeholder-gray-200 opacity-100 rounded-xl border border-pmmg-khaki/60 focus:outline-none focus:border-pmmg-gold transition-all" oninput="syncUnitsSearchWithGlobal(this.value, 'rpm1SearchDropdown')" onfocus="syncUnitsSearchWithGlobal(this.value, 'rpm1SearchDropdown')">
                     <button type="button" onclick="clearUnitsLocalSearch('rpm1SearchInput', 'rpm1SearchDropdown')" class="absolute right-2.5 top-2 text-gray-400 hover:text-pmmg-khaki p-0.5"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
-                    <div id="rpm1SearchDropdown" class="hidden mt-1.5 bg-pmmg-dark/98 backdrop-blur-md border border-pmmg-khaki/70 rounded-xl shadow-2xl max-h-[65vh] overflow-y-auto divide-y divide-pmmg-border z-50"></div>
+                    <div id="rpm1SearchDropdown" class="hidden mt-1.5 bg-[#161616] text-white border border-pmmg-khaki/70 rounded-xl shadow-2xl max-h-[65vh] overflow-y-auto divide-y divide-pmmg-border z-50"></div>
                 </div>
             </div>
 
@@ -5668,9 +5732,9 @@
                 </div>
                 <div id="rpm2SearchBoxWrapper" class="hidden relative">
                     <i data-lucide="search" class="absolute left-3 top-2.5 w-3.5 h-3.5 text-pmmg-khaki pointer-events-none"></i>
-                    <input type="text" id="rpm2SearchInput" autocomplete="off" placeholder="Buscar rua, bairro, cia, batalhão, telefone..." class="w-full pl-8 pr-7 py-2 bg-pmmg-black/90 text-xs text-gray-100 placeholder-gray-400 rounded-xl border border-pmmg-khaki/60 focus:outline-none focus:border-pmmg-gold transition-all" oninput="syncUnitsSearchWithGlobal(this.value, 'rpm2SearchDropdown')" onfocus="syncUnitsSearchWithGlobal(this.value, 'rpm2SearchDropdown')">
+                    <input type="text" id="rpm2SearchInput" autocomplete="off" placeholder="Buscar rua, bairro, cia, batalhão, telefone..." class="w-full pl-8 pr-7 py-2 bg-[#161616] text-xs text-white placeholder-gray-200 opacity-100 rounded-xl border border-pmmg-khaki/60 focus:outline-none focus:border-pmmg-gold transition-all" oninput="syncUnitsSearchWithGlobal(this.value, 'rpm2SearchDropdown')" onfocus="syncUnitsSearchWithGlobal(this.value, 'rpm2SearchDropdown')">
                     <button type="button" onclick="clearUnitsLocalSearch('rpm2SearchInput', 'rpm2SearchDropdown')" class="absolute right-2.5 top-2 text-gray-400 hover:text-pmmg-khaki p-0.5"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
-                    <div id="rpm2SearchDropdown" class="hidden mt-1.5 bg-pmmg-dark/98 backdrop-blur-md border border-pmmg-khaki/70 rounded-xl shadow-2xl max-h-[65vh] overflow-y-auto divide-y divide-pmmg-border z-50"></div>
+                    <div id="rpm2SearchDropdown" class="hidden mt-1.5 bg-[#161616] text-white border border-pmmg-khaki/70 rounded-xl shadow-2xl max-h-[65vh] overflow-y-auto divide-y divide-pmmg-border z-50"></div>
                 </div>
             </div>
 
@@ -5773,9 +5837,9 @@
                 </div>
                 <div id="espSearchBoxWrapper" class="hidden relative">
                     <i data-lucide="search" class="absolute left-3 top-2.5 w-3.5 h-3.5 text-pmmg-khaki pointer-events-none"></i>
-                    <input type="text" id="espSearchInput" autocomplete="off" placeholder="Buscar rua, bairro, cia, batalhão, telefone..." class="w-full pl-8 pr-7 py-2 bg-pmmg-black/90 text-xs text-gray-100 placeholder-gray-400 rounded-xl border border-pmmg-khaki/60 focus:outline-none focus:border-pmmg-gold transition-all" oninput="syncUnitsSearchWithGlobal(this.value, 'espSearchDropdown')" onfocus="syncUnitsSearchWithGlobal(this.value, 'espSearchDropdown')">
+                    <input type="text" id="espSearchInput" autocomplete="off" placeholder="Buscar rua, bairro, cia, batalhão, telefone..." class="w-full pl-8 pr-7 py-2 bg-[#161616] text-xs text-white placeholder-gray-200 opacity-100 rounded-xl border border-pmmg-khaki/60 focus:outline-none focus:border-pmmg-gold transition-all" oninput="syncUnitsSearchWithGlobal(this.value, 'espSearchDropdown')" onfocus="syncUnitsSearchWithGlobal(this.value, 'espSearchDropdown')">
                     <button type="button" onclick="clearUnitsLocalSearch('espSearchInput', 'espSearchDropdown')" class="absolute right-2.5 top-2 text-gray-400 hover:text-pmmg-khaki p-0.5"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
-                    <div id="espSearchDropdown" class="hidden mt-1.5 bg-pmmg-dark/98 backdrop-blur-md border border-pmmg-khaki/70 rounded-xl shadow-2xl max-h-[65vh] overflow-y-auto divide-y divide-pmmg-border z-50"></div>
+                    <div id="espSearchDropdown" class="hidden mt-1.5 bg-[#161616] text-white border border-pmmg-khaki/70 rounded-xl shadow-2xl max-h-[65vh] overflow-y-auto divide-y divide-pmmg-border z-50"></div>
                 </div>
             </div>
 
@@ -6026,9 +6090,9 @@
                 <!-- Campo de Pesquisa Expansível ao clicar na Lupa dentro da Unidade/Cia -->
                 <div id="skeletonSearchBoxWrapper" class="hidden relative pt-1">
                     <i data-lucide="search" class="absolute left-3 top-3.5 w-3.5 h-3.5 text-pmmg-khaki pointer-events-none"></i>
-                    <input type="text" id="skeletonSearchInput" autocomplete="off" placeholder="Buscar rua, bairro, cia, batalhão, telefone..." class="w-full pl-8 pr-7 py-2 bg-pmmg-black/90 text-xs text-gray-100 placeholder-gray-400 rounded-xl border border-pmmg-khaki/60 focus:outline-none focus:border-pmmg-gold transition-all" oninput="syncUnitsSearchWithGlobal(this.value, 'skeletonSearchDropdown')" onfocus="syncUnitsSearchWithGlobal(this.value, 'skeletonSearchDropdown')">
+                    <input type="text" id="skeletonSearchInput" autocomplete="off" placeholder="Buscar rua, bairro, cia, batalhão, telefone..." class="w-full pl-8 pr-7 py-2 bg-[#161616] text-xs text-white placeholder-gray-200 opacity-100 rounded-xl border border-pmmg-khaki/60 focus:outline-none focus:border-pmmg-gold transition-all" oninput="syncUnitsSearchWithGlobal(this.value, 'skeletonSearchDropdown')" onfocus="syncUnitsSearchWithGlobal(this.value, 'skeletonSearchDropdown')">
                     <button type="button" onclick="clearUnitsLocalSearch('skeletonSearchInput', 'skeletonSearchDropdown')" class="absolute right-2.5 top-3 text-gray-400 hover:text-pmmg-khaki p-0.5"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
-                    <div id="skeletonSearchDropdown" class="hidden mt-1.5 bg-pmmg-dark/98 backdrop-blur-md border border-pmmg-khaki/70 rounded-xl shadow-2xl max-h-[65vh] overflow-y-auto divide-y divide-pmmg-border z-50"></div>
+                    <div id="skeletonSearchDropdown" class="hidden mt-1.5 bg-[#161616] text-white border border-pmmg-khaki/70 rounded-xl shadow-2xl max-h-[65vh] overflow-y-auto divide-y divide-pmmg-border z-50"></div>
                 </div>
             </div>
 
@@ -6095,7 +6159,7 @@
                                 type="text" 
                                 id="internalSearch18" 
                                 placeholder="Buscar rua, bairro, cia, ZQC, hospital, ramal..." 
-                                class="w-full pl-8 pr-8 py-1.5 bg-pmmg-black/90 text-xs text-gray-100 placeholder-gray-400 rounded-lg border border-pmmg-border focus:outline-none focus:border-pmmg-khaki"
+                                class="w-full pl-8 pr-8 py-1.5 bg-[#161616] text-xs text-white placeholder-gray-200 opacity-100 rounded-lg border border-pmmg-border focus:outline-none focus:border-pmmg-khaki"
                                 onkeyup="filter18BpmContent(); syncUnitsSearchWithGlobal(this.value, 'internal18GlobalDropdown');"
                             >
                             <button id="clear18SearchBtn" onclick="clear18Search(); clearUnitsLocalSearch('internalSearch18', 'internal18GlobalDropdown');" class="hidden absolute right-2.5 top-2 text-gray-400 hover:text-pmmg-khaki">
@@ -6106,7 +6170,7 @@
                             <span id="internal18StatsText">0 resultados</span>
                         </div>
                     </div>
-                    <div id="internal18GlobalDropdown" class="hidden mt-1.5 bg-pmmg-dark/98 backdrop-blur-md border border-pmmg-khaki/70 rounded-xl shadow-2xl max-h-[60vh] overflow-y-auto divide-y divide-pmmg-border z-50"></div>
+                    <div id="internal18GlobalDropdown" class="hidden mt-1.5 bg-[#161616] text-white border border-pmmg-khaki/70 rounded-xl shadow-2xl max-h-[60vh] overflow-y-auto divide-y divide-pmmg-border z-50"></div>
                 </div>
             </div>
 
@@ -11468,28 +11532,9 @@
         }
         setInterval(updateAzimuteFullscreenClock, 1000);
 
-        // TELA CHEIA AUTOMÁTICA NO PRIMEIRO TOQUE/INTERAÇÃO + BOTÃO TELA CHEIA APENAS ÍCONE
-        let azimuteAutoFullscreenDone = false;
-
+        // MODO TELA CHEIA EXCLUSIVAMENTE MANUAL (BOTÃO #btnHeaderFullscreen)
         function isAzimuteCurrentlyFullscreen() {
             return !!(document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement);
-        }
-
-        function requestAzimuteFullscreenSilent() {
-            const docEl = document.documentElement;
-            if (isAzimuteCurrentlyFullscreen()) return Promise.resolve(true);
-            try {
-                if (docEl.requestFullscreen) {
-                    return docEl.requestFullscreen().then(() => true).catch(() => false);
-                } else if (docEl.webkitRequestFullscreen) {
-                    docEl.webkitRequestFullscreen();
-                    return Promise.resolve(true);
-                } else if (docEl.msRequestFullscreen) {
-                    docEl.msRequestFullscreen();
-                    return Promise.resolve(true);
-                }
-            } catch (e) {}
-            return Promise.resolve(false);
         }
 
         function updateFullscreenButtonsUi() {
@@ -11516,18 +11561,12 @@
             window.setLayoutMode(s.manualMode || 'app', false);
             updateAzimuteFullscreenClock();
             updateFullscreenButtonsUi();
-            if (typeof requestAzimuteFullscreenSilent === 'function') {
-                requestAzimuteFullscreenSilent();
-            }
         });
 
         window.toggleAzimuteFullscreen = function(ev) {
             if (ev && typeof ev.stopPropagation === 'function') {
                 ev.stopPropagation();
             }
-            azimuteAutoFullscreenDone = true;
-            removeFirstInteractionFullscreenListeners();
-
             const docEl = document.documentElement;
             const isFull = isAzimuteCurrentlyFullscreen();
             if (!isFull) {
@@ -11554,37 +11593,6 @@
                 if (typeof showToast === 'function') showToast('Tela Cheia desativada.');
             }
         };
-
-        function handleFirstUserInteractionFullscreen(e) {
-            if (azimuteAutoFullscreenDone || isAzimuteCurrentlyFullscreen()) {
-                azimuteAutoFullscreenDone = true;
-                removeFirstInteractionFullscreenListeners();
-                return;
-            }
-            if (e && e.target && e.target.closest && e.target.closest('#btnHeaderFullscreen')) {
-                azimuteAutoFullscreenDone = true;
-                removeFirstInteractionFullscreenListeners();
-                return;
-            }
-            requestAzimuteFullscreenSilent().then((entered) => {
-                if (entered || isAzimuteCurrentlyFullscreen()) {
-                    azimuteAutoFullscreenDone = true;
-                    removeFirstInteractionFullscreenListeners();
-                    updateFullscreenButtonsUi();
-                }
-            });
-        }
-
-        function removeFirstInteractionFullscreenListeners() {
-            ['click', 'touchend', 'pointerup', 'keydown'].forEach(evtName => {
-                document.removeEventListener(evtName, handleFirstUserInteractionFullscreen, true);
-            });
-        }
-
-        // Registra os gatilhos de primeiro toque/interação em todos os modos (App, GRID e PC)
-        ['click', 'touchend', 'pointerup', 'keydown'].forEach(evtName => {
-            document.addEventListener(evtName, handleFirstUserInteractionFullscreen, { capture: true, passive: true });
-        });
 
         document.addEventListener('fullscreenchange', updateFullscreenButtonsUi);
         document.addEventListener('webkitfullscreenchange', updateFullscreenButtonsUi);
@@ -12161,7 +12169,7 @@
                 if (typeof window.toggleRpasAircraftDataBox === 'function') window.toggleRpasAircraftDataBox(false);
             } else if (viewId === 'atalhos') {
                 if (activeBadge) activeBadge.classList.remove('hidden');
-                if (activeName) activeName.textContent = 'Sistemas e Consultas';
+                if (activeName) activeName.textContent = 'Recursos';
                 if (typeof window.toggleApoioCategoryBox === 'function') {
                     window.toggleApoioCategoryBox('sistemas', false);
                     window.toggleApoioCategoryBox('radio', false);
