@@ -1544,16 +1544,73 @@
 
             <!-- 2. FAIXA COMPACTA: APOIO MAIS PRÓXIMO (GPS) (POSICIONADA ABAIXO DE ACESSO RÁPIDO) -->
             <div id="homeNearestSupportSection" class="bg-pmmg-card border border-pmmg-khaki/50 rounded-2xl p-3 sm:p-3.5 shadow-xl max-w-7xl mx-auto space-y-2.5">
-                <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border pb-1.5">
+                <div class="flex items-center justify-between gap-2 border-b border-pmmg-border pb-1.5">
                     <span class="text-[10px] font-extrabold uppercase tracking-wider text-pmmg-khaki flex items-center gap-1.5">
                         <i data-lucide="radar" class="w-3.5 h-3.5 text-pmmg-gold"></i>Apoio Mais Próximo (GPS)
                     </span>
-                    <span id="homeSupportGpsStatus" class="text-[10px] font-mono text-emerald-400 font-bold">Cálculo Automático via Satélite</span>
+                    <button type="button" onclick="toggleHomeNearestSupportTools()" id="btnToggleNearestSupportTools" class="p-1.5 rounded-lg bg-pmmg-dark hover:bg-pmmg-cardHover text-pmmg-khaki border border-pmmg-gold/40 hover:border-pmmg-gold transition-all cursor-pointer shrink-0" title="Ferramentas: Personalizar exibição e salvar endereços">
+                        <i data-lucide="wrench" class="w-3.5 h-3.5 text-pmmg-gold"></i>
+                    </button>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                    <!-- a) Unidade Policial mais próxima (Batalhão/Cia) ou Base / BSC (exclusivamente das 14h às 23h) -->
-                    <div class="bg-pmmg-dark p-2.5 rounded-xl border border-pmmg-border border-l-4 border-l-pmmg-khaki flex items-center justify-between gap-2">
+                <!-- PAINEL DE FERRAMENTAS DO APOIO MAIS PRÓXIMO (OCULTO POR PADRÃO) -->
+                <div id="homeNearestSupportToolsPanel" class="hidden bg-pmmg-black/95 border border-pmmg-gold/60 rounded-xl p-3 sm:p-3.5 space-y-3 shadow-2xl">
+                    <div class="flex items-center justify-between border-b border-pmmg-border pb-2">
+                        <span class="text-[10px] font-extrabold uppercase tracking-wider text-pmmg-gold flex items-center gap-1.5">
+                            <i data-lucide="wrench" class="w-3.5 h-3.5"></i>Personalizar Apoio Mais Próximo
+                        </span>
+                        <button type="button" onclick="toggleHomeNearestSupportTools(false)" class="px-2.5 py-1 rounded-lg bg-pmmg-dark hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-gold/50 text-[10px] font-extrabold uppercase cursor-pointer">
+                            Fechar
+                        </button>
+                    </div>
+
+                    <!-- a) Escolher quais informações exibir no card -->
+                    <div class="space-y-1.5">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400 block">Exibir no Card:</span>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                            <label class="bg-pmmg-dark px-2.5 py-2 rounded-lg border border-pmmg-border flex items-center gap-2 cursor-pointer select-none">
+                                <input type="checkbox" id="chkSupportShowPolice" onchange="saveNearestSupportPrefs()" checked class="w-3.5 h-3.5 accent-[#C5A869] cursor-pointer">
+                                <span class="text-[11px] font-bold text-gray-200 truncate">Unidade Policial</span>
+                            </label>
+                            <label class="bg-pmmg-dark px-2.5 py-2 rounded-lg border border-pmmg-border flex items-center gap-2 cursor-pointer select-none">
+                                <input type="checkbox" id="chkSupportShowHospital" onchange="saveNearestSupportPrefs()" checked class="w-3.5 h-3.5 accent-[#C5A869] cursor-pointer">
+                                <span class="text-[11px] font-bold text-gray-200 truncate">Hospital</span>
+                            </label>
+                            <label class="bg-pmmg-dark px-2.5 py-2 rounded-lg border border-pmmg-border flex items-center gap-2 cursor-pointer select-none">
+                                <input type="checkbox" id="chkSupportShowSaved" onchange="saveNearestSupportPrefs()" checked class="w-3.5 h-3.5 accent-[#C5A869] cursor-pointer">
+                                <span class="text-[11px] font-bold text-gray-200 truncate">Pontos Salvos</span>
+                            </label>
+                            <label class="bg-pmmg-dark px-2.5 py-2 rounded-lg border border-pmmg-border flex items-center gap-2 cursor-pointer select-none">
+                                <input type="checkbox" id="chkSupportShowFuel" onchange="saveNearestSupportPrefs()" checked class="w-3.5 h-3.5 accent-[#C5A869] cursor-pointer">
+                                <span class="text-[11px] font-bold text-gray-200 truncate">Abastecimento</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- b) Cadastrar, nomear e salvar endereços personalizados -->
+                    <div class="space-y-2 pt-2 border-t border-pmmg-border/80">
+                        <div class="flex items-center justify-between gap-2">
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-pmmg-khaki">Cadastrar Novo Endereço</span>
+                            <button type="button" onclick="fillCustomSupportPlaceWithCurrentGps()" class="px-2 py-1 rounded bg-pmmg-dark hover:bg-pmmg-cardHover text-pmmg-gold border border-pmmg-gold/40 text-[10px] font-bold flex items-center gap-1 cursor-pointer">
+                                <i data-lucide="locate-fixed" class="w-3 h-3"></i>
+                                <span>Usar GPS Atual</span>
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-12 gap-2">
+                            <input type="text" id="inputCustomSupportName" placeholder="Nome (ex: Base de Apoio, DP Plantão)" class="sm:col-span-4 px-2.5 py-2 bg-pmmg-dark text-xs text-white placeholder-gray-500 rounded-lg border border-pmmg-border focus:outline-none focus:border-pmmg-gold">
+                            <input type="text" id="inputCustomSupportAddr" placeholder="Endereço ou Lat, Long (ex: Av. Amazonas, 6455, BH)" class="sm:col-span-6 px-2.5 py-2 bg-pmmg-dark text-xs text-white placeholder-gray-500 rounded-lg border border-pmmg-border focus:outline-none focus:border-pmmg-gold">
+                            <button type="button" id="btnAddCustomSupportPlace" onclick="addCustomSupportPlace()" class="sm:col-span-2 px-3 py-2 bg-pmmg-dark hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-gold/70 font-extrabold rounded-lg text-[11px] uppercase flex items-center justify-center gap-1 cursor-pointer transition-all">
+                                <i data-lucide="plus" class="w-3.5 h-3.5 text-pmmg-gold"></i>
+                                <span>Salvar</span>
+                            </button>
+                        </div>
+                        <div id="customSupportSavedManagerList" class="space-y-1.5 max-h-40 overflow-y-auto"></div>
+                    </div>
+                </div>
+
+                <div id="homeNearestSupportCardsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    <!-- a) Unidade Policial mais próxima (Regra silenciosa de BSC 14h-23h nos bastidores) -->
+                    <div id="homeSupportPoliceCard" class="bg-pmmg-dark p-2.5 rounded-xl border border-pmmg-border border-l-4 border-l-pmmg-khaki flex items-center justify-between gap-2">
                         <div class="min-w-0 flex-1">
                             <div class="flex items-center gap-1.5 flex-wrap">
                                 <span id="homeClosestPoliceTypeLabel" class="text-[10px] font-bold uppercase text-pmmg-khaki">Unidade Policial Mais Próxima</span>
@@ -1567,8 +1624,23 @@
                         </a>
                     </div>
 
-                    <!-- b) Ponto de Abastecimento mais próximo + distância + botão rápido de rota -->
-                    <div class="bg-pmmg-dark p-2.5 rounded-xl border border-pmmg-border border-l-4 border-l-pmmg-gold flex items-center justify-between gap-2">
+                    <!-- b) Hospital Mais Próximo (Regra de Referência Máxima João XXIII) -->
+                    <div id="homeSupportHospitalCard" class="bg-pmmg-dark p-2.5 rounded-xl border border-pmmg-border border-l-4 border-l-red-500 flex items-center justify-between gap-2">
+                        <div class="min-w-0 flex-1">
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                <span class="text-[10px] font-bold uppercase text-red-400">Hospital Mais Próximo</span>
+                                <span id="homeClosestHospitalCardDist" class="text-[10px] font-mono font-extrabold bg-pmmg-card text-pmmg-gold px-1.5 py-0.5 rounded border border-pmmg-gold/40 shrink-0">-- km</span>
+                            </div>
+                            <strong id="homeClosestHospitalCardName" class="text-xs sm:text-sm font-extrabold text-white block truncate mt-0.5">Hospital João XXIII</strong>
+                            <span id="homeClosestHospitalCardAddr" class="text-[10px] text-gray-400 block truncate">Av. Prof. Alfredo Balena, 400 - Santa Efigênia, BH</span>
+                        </div>
+                        <a id="homeClosestHospitalCardRouteBtn" href="https://www.google.com/maps/dir/?api=1&destination=-19.9242,-43.9317&travelmode=driving" target="_blank" class="px-2.5 py-2 bg-pmmg-dark hover:bg-pmmg-border text-red-400 border border-red-500/50 font-extrabold rounded-lg text-[11px] flex items-center gap-1 shrink-0 shadow transition-all active:scale-95" title="Traçar rota para o Hospital Mais Próximo">
+                            <i data-lucide="navigation" class="w-3.5 h-3.5"></i> <span>Rota</span>
+                        </a>
+                    </div>
+
+                    <!-- c) Ponto de Abastecimento mais próximo -->
+                    <div id="homeSupportFuelCard" class="bg-pmmg-dark p-2.5 rounded-xl border border-pmmg-border border-l-4 border-l-pmmg-gold flex items-center justify-between gap-2">
                         <div class="min-w-0 flex-1">
                             <div class="flex items-center gap-1.5">
                                 <span class="text-[10px] font-bold uppercase text-pmmg-gold">Abastecimento Mais Próximo</span>
@@ -1581,6 +1653,9 @@
                             <i data-lucide="fuel" class="w-3.5 h-3.5"></i> <span>Rota</span>
                         </a>
                     </div>
+
+                    <!-- d) Container dinâmico para Pontos Salvos pelo Militar -->
+                    <div id="homeSupportCustomPlacesContainer" class="contents"></div>
                 </div>
 
                 <!-- Elementos de compatibilidade ocultos para preservar 100% das referências de script existentes -->
@@ -9518,6 +9593,288 @@
             });
         })();
 
+        
+        // ================= FERRAMENTAS E ENDEREÇOS PERSONALIZADOS DO CARD APOIO MAIS PRÓXIMO =================
+        const AZIMUTE_SUPPORT_PREFS_KEY = 'azimute_nearest_support_prefs_v1';
+        const AZIMUTE_SUPPORT_PLACES_KEY = 'azimute_nearest_support_custom_places_v1';
+
+        function getNearestSupportPrefs() {
+            const defaults = { showPolice: true, showHospital: true, showSaved: true, showFuel: true };
+            try {
+                const raw = localStorage.getItem(AZIMUTE_SUPPORT_PREFS_KEY);
+                if (!raw) return defaults;
+                const parsed = JSON.parse(raw);
+                return {
+                    showPolice: parsed.showPolice !== false,
+                    showHospital: parsed.showHospital !== false,
+                    showSaved: parsed.showSaved !== false,
+                    showFuel: parsed.showFuel !== false
+                };
+            } catch (e) {
+                return defaults;
+            }
+        }
+
+        function applyNearestSupportPrefsToDom() {
+            const prefs = getNearestSupportPrefs();
+            const cPol = document.getElementById('chkSupportShowPolice');
+            const cHosp = document.getElementById('chkSupportShowHospital');
+            const cSaved = document.getElementById('chkSupportShowSaved');
+            const cFuel = document.getElementById('chkSupportShowFuel');
+            if (cPol) cPol.checked = prefs.showPolice;
+            if (cHosp) cHosp.checked = prefs.showHospital;
+            if (cSaved) cSaved.checked = prefs.showSaved;
+            if (cFuel) cFuel.checked = prefs.showFuel;
+
+            const cardPol = document.getElementById('homeSupportPoliceCard');
+            const cardHosp = document.getElementById('homeSupportHospitalCard');
+            const cardFuel = document.getElementById('homeSupportFuelCard');
+            const boxSaved = document.getElementById('homeSupportCustomPlacesContainer');
+
+            if (cardPol) cardPol.classList.toggle('hidden', !prefs.showPolice);
+            if (cardHosp) cardHosp.classList.toggle('hidden', !prefs.showHospital);
+            if (cardFuel) cardFuel.classList.toggle('hidden', !prefs.showFuel);
+            if (boxSaved) boxSaved.classList.toggle('hidden', !prefs.showSaved);
+        }
+
+        function saveNearestSupportPrefs() {
+            const cPol = document.getElementById('chkSupportShowPolice');
+            const cHosp = document.getElementById('chkSupportShowHospital');
+            const cSaved = document.getElementById('chkSupportShowSaved');
+            const cFuel = document.getElementById('chkSupportShowFuel');
+            const prefs = {
+                showPolice: cPol ? cPol.checked : true,
+                showHospital: cHosp ? cHosp.checked : true,
+                showSaved: cSaved ? cSaved.checked : true,
+                showFuel: cFuel ? cFuel.checked : true
+            };
+            try {
+                localStorage.setItem(AZIMUTE_SUPPORT_PREFS_KEY, JSON.stringify(prefs));
+            } catch (e) {}
+            applyNearestSupportPrefsToDom();
+        }
+
+        function toggleHomeNearestSupportTools(forceState) {
+            const panel = document.getElementById('homeNearestSupportToolsPanel');
+            if (!panel) return;
+            const willOpen = typeof forceState === 'boolean' ? forceState : panel.classList.contains('hidden');
+            panel.classList.toggle('hidden', !willOpen);
+            if (willOpen) {
+                applyNearestSupportPrefsToDom();
+                renderCustomSupportSavedManagerList();
+            }
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        function getSavedCustomSupportPlaces() {
+            try {
+                const raw = localStorage.getItem(AZIMUTE_SUPPORT_PLACES_KEY);
+                const list = raw ? JSON.parse(raw) : [];
+                return Array.isArray(list) ? list : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function setSavedCustomSupportPlaces(list) {
+            try {
+                localStorage.setItem(AZIMUTE_SUPPORT_PLACES_KEY, JSON.stringify(list));
+            } catch (e) {}
+        }
+
+        function fillCustomSupportPlaceWithCurrentGps() {
+            const addrInput = document.getElementById('inputCustomSupportAddr');
+            const nameInput = document.getElementById('inputCustomSupportName');
+            let lat = azimuteLastGeoLat;
+            let lon = azimuteLastGeoLon;
+            if (typeof lat !== 'number' || typeof lon !== 'number' || isNaN(lat) || isNaN(lon)) {
+                try {
+                    lat = parseFloat(localStorage.getItem('azimute_last_lat'));
+                    lon = parseFloat(localStorage.getItem('azimute_last_lon'));
+                } catch (e) {}
+            }
+            if (typeof lat === 'number' && typeof lon === 'number' && !isNaN(lat) && !isNaN(lon)) {
+                if (addrInput) addrInput.value = lat.toFixed(6) + ', ' + lon.toFixed(6);
+                if (nameInput && !nameInput.value.trim()) nameInput.focus();
+                if (typeof showToast === 'function') showToast('Coordenada GPS atual preenchida!');
+            } else {
+                if (typeof showToast === 'function') showToast('Aguardando sinal GPS para capturar coordenada.');
+            }
+        }
+
+        async function addCustomSupportPlace() {
+            const nameEl = document.getElementById('inputCustomSupportName');
+            const addrEl = document.getElementById('inputCustomSupportAddr');
+            const btnEl = document.getElementById('btnAddCustomSupportPlace');
+            const nome = (nameEl ? nameEl.value : '').trim();
+            const rawAddr = (addrEl ? addrEl.value : '').trim();
+
+            if (!nome || !rawAddr) {
+                if (typeof showToast === 'function') showToast('Preencha o nome e o endereço/coordenada do local.');
+                return;
+            }
+
+            if (btnEl) btnEl.disabled = true;
+
+            let lat = null;
+            let lon = null;
+            let resolvedAddr = rawAddr;
+
+            // 1. Verifica se o militar digitou "Lat, Lon" diretamente
+            const coordMatch = rawAddr.match(/^(-?\d{1,2}\.\d+)\s*[,;\s]\s*(-?\d{1,3}\.\d+)$/);
+            if (coordMatch) {
+                lat = parseFloat(coordMatch[1]);
+                lon = parseFloat(coordMatch[2]);
+                const qthCurr = document.getElementById('statusBarQth');
+                if (qthCurr && qthCurr.textContent && qthCurr.textContent !== '--' && typeof azimuteLastGeoLat === 'number' && Math.abs(azimuteLastGeoLat - lat) < 0.0005) {
+                    resolvedAddr = qthCurr.textContent.trim();
+                } else {
+                    resolvedAddr = 'Coord: ' + lat.toFixed(5) + ', ' + lon.toFixed(5);
+                }
+            } else if (navigator.onLine !== false) {
+                // 2. Geocodifica o endereço digitado na RMBH / Minas Gerais via Nominatim
+                try {
+                    const q = encodeURIComponent(rawAddr + ', Minas Gerais, Brasil');
+                    const res = await fetch('https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=br&q=' + q);
+                    if (res.ok) {
+                        const arr = await res.json();
+                        if (Array.isArray(arr) && arr.length > 0) {
+                            lat = parseFloat(arr[0].lat);
+                            lon = parseFloat(arr[0].lon);
+                        }
+                    }
+                } catch (e) {}
+            }
+
+            // 3. Fallback para GPS atual caso sem internet ou endereço genérico
+            if (lat === null || lon === null || isNaN(lat) || isNaN(lon)) {
+                if (typeof azimuteLastGeoLat === 'number' && typeof azimuteLastGeoLon === 'number') {
+                    lat = azimuteLastGeoLat;
+                    lon = azimuteLastGeoLon;
+                } else {
+                    try {
+                        const cLat = parseFloat(localStorage.getItem('azimute_last_lat'));
+                        const cLon = parseFloat(localStorage.getItem('azimute_last_lon'));
+                        if (!isNaN(cLat) && !isNaN(cLon)) {
+                            lat = cLat;
+                            lon = cLon;
+                        }
+                    } catch (e) {}
+                }
+            }
+
+            const list = getSavedCustomSupportPlaces();
+            list.push({
+                id: 'custom_sup_' + Date.now(),
+                nome: nome,
+                endereco: resolvedAddr,
+                lat: lat,
+                lon: lon
+            });
+            setSavedCustomSupportPlaces(list);
+
+            if (nameEl) nameEl.value = '';
+            if (addrEl) addrEl.value = '';
+            if (btnEl) btnEl.disabled = false;
+
+            renderCustomSupportSavedManagerList();
+            renderHomeNearestSupportCustomPlaces(azimuteLastGeoLat, azimuteLastGeoLon);
+            if (typeof showToast === 'function') showToast('Endereço "' + nome + '" salvo no Apoio Mais Próximo!');
+        }
+
+        function removeCustomSupportPlace(id) {
+            const list = getSavedCustomSupportPlaces().filter(item => item.id !== id);
+            setSavedCustomSupportPlaces(list);
+            renderCustomSupportSavedManagerList();
+            renderHomeNearestSupportCustomPlaces(azimuteLastGeoLat, azimuteLastGeoLon);
+            if (typeof showToast === 'function') showToast('Endereço removido.');
+        }
+
+        function renderCustomSupportSavedManagerList() {
+            const container = document.getElementById('customSupportSavedManagerList');
+            if (!container) return;
+            const list = getSavedCustomSupportPlaces();
+            if (!list.length) {
+                container.innerHTML = '<p class="text-[11px] text-gray-500 italic">Nenhum endereço personalizado salvo ainda.</p>';
+                return;
+            }
+            container.innerHTML = list.map(item => `
+                <div class="bg-pmmg-dark px-2.5 py-1.5 rounded-lg border border-pmmg-border flex items-center justify-between gap-2 text-xs">
+                    <div class="min-w-0 flex-1">
+                        <strong class="text-pmmg-khaki font-bold block truncate">${escapeHtmlSafe(item.nome)}</strong>
+                        <span class="text-[10px] text-gray-400 block truncate">${escapeHtmlSafe(item.endereco)}</span>
+                    </div>
+                    <button type="button" onclick="removeCustomSupportPlace('${item.id}')" class="p-1.5 rounded bg-pmmg-black hover:bg-red-950 text-gray-400 hover:text-red-400 border border-pmmg-border transition-colors cursor-pointer shrink-0" title="Excluir endereço salvo">
+                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                    </button>
+                </div>
+            `).join('');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        function escapeHtmlSafe(str) {
+            return String(str || '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+        }
+
+        function renderHomeNearestSupportCustomPlaces(refLat, refLon) {
+            const container = document.getElementById('homeSupportCustomPlacesContainer');
+            if (!container) return;
+            const list = getSavedCustomSupportPlaces();
+            if (!list.length) {
+                container.innerHTML = '';
+                return;
+            }
+
+            let lat = typeof refLat === 'number' && !isNaN(refLat) ? refLat : null;
+            let lon = typeof refLon === 'number' && !isNaN(refLon) ? refLon : null;
+            if (lat === null || lon === null) {
+                try {
+                    const cLat = parseFloat(localStorage.getItem('azimute_last_lat'));
+                    const cLon = parseFloat(localStorage.getItem('azimute_last_lon'));
+                    if (!isNaN(cLat) && !isNaN(cLon)) {
+                        lat = cLat;
+                        lon = cLon;
+                    }
+                } catch (e) {}
+            }
+
+            container.innerHTML = list.map(item => {
+                const hasCoords = typeof item.lat === 'number' && typeof item.lon === 'number' && !isNaN(item.lat) && !isNaN(item.lon);
+                let distBadge = '-- km';
+                if (hasCoords && lat !== null && lon !== null && typeof azimuteCalcDistKm === 'function' && typeof calcEstimatedDriveMinutes === 'function') {
+                    const d = azimuteCalcDistKm(lat, lon, item.lat, item.lon);
+                    const est = calcEstimatedDriveMinutes(d);
+                    distBadge = '~' + est.roadKm + 'km • ~' + est.mins + 'min';
+                }
+                const routeHref = hasCoords
+                    ? 'https://www.google.com/maps/dir/?api=1&destination=' + item.lat + ',' + item.lon + '&travelmode=driving'
+                    : 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(item.endereco) + '&travelmode=driving';
+
+                return `
+                    <div class="bg-pmmg-dark p-2.5 rounded-xl border border-pmmg-border border-l-4 border-l-sky-400 flex items-center justify-between gap-2">
+                        <div class="min-w-0 flex-1">
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                <span class="text-[10px] font-bold uppercase text-sky-400">Ponto Salvo</span>
+                                <span class="text-[10px] font-mono font-extrabold bg-pmmg-card text-pmmg-gold px-1.5 py-0.5 rounded border border-pmmg-gold/40 shrink-0">${distBadge}</span>
+                            </div>
+                            <strong class="text-xs sm:text-sm font-extrabold text-white block truncate mt-0.5">${escapeHtmlSafe(item.nome)}</strong>
+                            <span class="text-[10px] text-gray-400 block truncate">${escapeHtmlSafe(item.endereco)}</span>
+                        </div>
+                        <a href="${routeHref}" target="_blank" rel="noopener noreferrer" class="px-2.5 py-2 bg-pmmg-dark hover:bg-pmmg-border text-sky-300 border border-sky-500/50 font-extrabold rounded-lg text-[11px] flex items-center gap-1 shrink-0 shadow transition-all active:scale-95" title="Traçar rota para ${escapeHtmlSafe(item.nome)}">
+                            <i data-lucide="navigation" class="w-3.5 h-3.5"></i> <span>Rota</span>
+                        </a>
+                    </div>
+                `;
+            }).join('');
+
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            applyNearestSupportPrefsToDom();
+            renderHomeNearestSupportCustomPlaces(azimuteLastGeoLat, azimuteLastGeoLon);
+        });
+
         // ================= DOIS METRÔNOMOS DE RCP LUMINOSOS E SONOROS (WEB AUDIO API 100% OFFLINE) =================
         let azimuteAudioCtx = null;
 
@@ -10099,16 +10456,15 @@
             const policeDrive = closestPolice.drive;
             const policeUrl = 'https://www.google.com/maps/dir/?api=1&destination=' + closestPolice.lat + ',' + closestPolice.lon + '&travelmode=driving';
 
-            // Atualiza Caixa "Apoio Mais Próximo (GPS)" no Modo App / Home
+            // Atualiza Caixa "Apoio Mais Próximo (GPS)" no Modo App / Home (Sem textos informativos de horário de BSC)
             const hpTypeLbl = document.getElementById('homeClosestPoliceTypeLabel');
             const hpName = document.getElementById('homeClosestPoliceName');
             const hpAddr = document.getElementById('homeClosestPoliceAddr');
             const hpDist = document.getElementById('homeClosestPoliceDist');
             const hpBtn = document.getElementById('homeClosestPoliceRouteBtn');
-            const hpStatus = document.getElementById('homeSupportGpsStatus');
 
             if (hpTypeLbl) {
-                hpTypeLbl.textContent = isClosestBsc ? 'Base / BSC (14h às 23h)' : 'Unidade Policial Mais Próxima';
+                hpTypeLbl.textContent = isClosestBsc ? 'Base / BSC Mais Próxima' : 'Unidade Policial Mais Próxima';
                 hpTypeLbl.className = isClosestBsc
                     ? 'text-[10px] font-extrabold uppercase text-amber-300'
                     : 'text-[10px] font-bold uppercase text-pmmg-khaki';
@@ -10117,10 +10473,20 @@
             if (hpAddr) hpAddr.textContent = closestPolice.endereco;
             if (hpDist) hpDist.textContent = '~' + policeDrive.roadKm + 'km • ~' + policeDrive.mins + 'min';
             if (hpBtn) hpBtn.href = policeUrl;
-            if (hpStatus) {
-                hpStatus.textContent = bscOpenNow
-                    ? 'GPS Ativo • BSCs em funcionamento (14h às 23h)'
-                    : 'GPS Ativo • BSCs fechadas (Exibindo apenas Unidades Policiais)';
+
+            // Atualiza Hospital Mais Próximo diretamente no card "Apoio Mais Próximo" (Regra João XXIII)
+            const hhName = document.getElementById('homeClosestHospitalCardName');
+            const hhAddr = document.getElementById('homeClosestHospitalCardAddr');
+            const hhDist = document.getElementById('homeClosestHospitalCardDist');
+            const hhBtn = document.getElementById('homeClosestHospitalCardRouteBtn');
+            if (hhName) hhName.textContent = closestHosp.nome;
+            if (hhAddr) hhAddr.textContent = closestHosp.endereco || 'Referência de Emergência';
+            if (hhDist) hhDist.textContent = '~' + driveEst.roadKm + 'km • ~' + driveEst.mins + 'min';
+            if (hhBtn) hhBtn.href = hospUrl;
+
+            // Atualiza Pontos Personalizados Salvos pelo Militar com distância GPS em tempo real
+            if (typeof renderHomeNearestSupportCustomPlaces === 'function') {
+                renderHomeNearestSupportCustomPlaces(lat, lon);
             }
 
             // Atualiza Card de Destaque Máximo "Unidades Próximas" no Modo GRID
