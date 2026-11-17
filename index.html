@@ -7691,200 +7691,198 @@
                 <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki">Configurações</span>
             </div>
 
-<div id="apoioAjustesExpandableBody" class="bg-[#161616] border border-[#C5A869]/45 rounded-2xl p-4 sm:p-5 shadow-xl space-y-5">
-                    
-                    <!-- 1. BOTÕES DO RODAPÉ DA TELA INÍCIO E ORDEM EXATA (LOCALSTORAGE) -->
-                    <div class="bg-pmmg-dark p-4 rounded-xl border border-pmmg-border space-y-3">
-                        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border/80 pb-2">
-                            <div>
-                                <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki flex items-center gap-1.5">
-                                    <i data-lucide="panel-bottom" class="w-4 h-4 text-pmmg-gold"></i>1. Botões do Rodapé da Tela Início e Ordem Exata
-                                </span>
-                                <p class="text-[11px] text-gray-400 mt-0.5">Marque quais abas aparecem no menu inferior e use as setas (↑ / ↓) para definir a ordem exata.</p>
-                            </div>
-                        </div>
+            <div id="configuracoesMainContainer" class="bg-[#161616] border border-[#C5A869]/45 rounded-2xl p-4 sm:p-5 shadow-xl space-y-5">
 
+                <!-- 1. AERONAVES REMOTAMENTE PILOTADAS (RECOMENDAÇÃO AUTOMÁTICA POR CLIMA) -->
+                <div class="bg-pmmg-dark p-4 rounded-xl border border-pmmg-border space-y-3">
+                    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border/80 pb-2">
+                        <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki flex items-center gap-1.5">
+                            <i data-lucide="plane" class="w-4 h-4 text-pmmg-gold"></i>1. Aeronaves Remotamente Pilotadas (Drones)
+                        </span>
+                        <span class="text-[10px] font-mono text-gray-400">Cruzamento Clima x Frota</span>
+                    </div>
+
+                    <label for="chkEnableRpasAutoFleetRec" class="bg-pmmg-black/80 hover:bg-pmmg-black p-3.5 rounded-xl border border-pmmg-border flex items-center justify-between gap-3 cursor-pointer select-none">
+                        <div>
+                            <strong class="text-white text-xs sm:text-sm font-bold block">Recomendação Automática de Aeronave por Clima</strong>
+                            <span class="text-[11px] text-gray-400 block mt-0.5">
+                                Ativa ou desativa a análise comparativa automática das aeronaves cadastradas conforme o clima GPS na aba Drones.
+                            </span>
+                        </div>
+                        <input type="checkbox" id="chkEnableRpasAutoFleetRec" onchange="updateAzimuteUiPreferenceFromInputs()" class="w-4 h-4 rounded border-pmmg-border bg-pmmg-dark text-pmmg-khaki accent-[#C5A869] cursor-pointer shrink-0" checked>
+                    </label>
+                </div>
+
+                <!-- 2. BOTÕES DO ACESSO RÁPIDO E ORDEM NA TELA INÍCIO -->
+                <div class="bg-pmmg-dark p-4 rounded-xl border border-pmmg-border space-y-3">
+                    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border/80 pb-2">
+                        <div>
+                            <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki flex items-center gap-1.5">
+                                <i data-lucide="grid" class="w-4 h-4 text-pmmg-gold"></i>2. Acesso Rápido da Tela Início (Botões e Ordem)
+                            </span>
+                            <p class="text-[11px] text-gray-400 mt-0.5">Marque quais botões aparecem em Acesso Rápido e use as setas (↑ / ↓) para definir a ordem de exibição.</p>
+                        </div>
+                    </div>
+
+                    <div id="ajustesQuickAccessList" class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-80 overflow-y-auto pr-1">
+                        <!-- Preenchido dinamicamente por renderQuickAccessCustomizerList() -->
+                    </div>
+                </div>
+
+                <!-- 3. RODAPÉ DA TELA INÍCIO, BLOCOS E BOTÕES DE TOPO -->
+                <div class="bg-pmmg-dark p-4 rounded-xl border border-pmmg-border space-y-4">
+                    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border/80 pb-2">
+                        <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki flex items-center gap-1.5">
+                            <i data-lucide="panel-bottom" class="w-4 h-4 text-pmmg-gold"></i>3. Rodapé, Botões de Topo e Blocos da Tela Início
+                        </span>
+                        <span class="text-[10px] font-mono text-gray-400">Visibilidade e Ordem</span>
+                    </div>
+
+                    <!-- 3A. Ordem e Visibilidade dos Itens do Rodapé -->
+                    <div class="space-y-2">
+                        <div>
+                            <span class="text-[10.5px] font-extrabold uppercase tracking-wider text-pmmg-gold block">A. Ordem e Visibilidade dos Itens do Rodapé</span>
+                            <p class="text-[11px] text-gray-400 mt-0.5">Marque quais abas aparecem no menu inferior e use as setas (↑ / ↓) para ordenar.</p>
+                        </div>
                         <div id="ajustesFooterButtonsList" class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-80 overflow-y-auto pr-1">
                             <!-- Preenchido dinamicamente por renderFooterButtonsCustomizerList() -->
                         </div>
                     </div>
 
-                    <!-- 2. DISPOSIÇÃO E VISIBILIDADE DOS BOTÕES DA TELA INÍCIO (TOPO, BLOCOS E ACESSO RÁPIDO) -->
-                    <div class="bg-pmmg-dark p-4 rounded-xl border border-pmmg-border space-y-4">
-                        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border/80 pb-2">
-                            <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki flex items-center gap-1.5">
-                                <i data-lucide="layout-template" class="w-4 h-4 text-pmmg-gold"></i>2. Disposição e Visibilidade dos Botões da Tela Início
-                            </span>
-                            <span class="text-[10px] font-mono text-gray-400">Topo, Blocos e Acesso Rápido</span>
-                        </div>
+                    <!-- 3B. Visibilidade dos Botões de Topo -->
+                    <div class="pt-3 border-t border-pmmg-border/70 space-y-2">
+                        <span class="text-[10.5px] font-extrabold uppercase tracking-wider text-pmmg-gold block">B. Visibilidade dos Botões de Topo</span>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 text-xs">
+                            <!-- Botão Recarregar -->
+                            <label for="chkShowReloadBtn" class="bg-pmmg-black/80 hover:bg-pmmg-black p-3 rounded-xl border border-pmmg-border flex items-center justify-between gap-2.5 cursor-pointer select-none">
+                                <div>
+                                    <strong class="text-white font-bold block">Botão Recarregar (Topo)</strong>
+                                    <span class="text-[10.5px] text-gray-400">Ícone de atualização rápida no topo</span>
+                                </div>
+                                <input type="checkbox" id="chkShowReloadBtn" onchange="updateAzimuteUiPreferenceFromInputs()" class="w-4 h-4 rounded border-pmmg-border bg-pmmg-dark text-pmmg-khaki accent-[#C5A869] cursor-pointer shrink-0" checked>
+                            </label>
 
-                        <!-- 2A. Botões do Topo & Barra da Tela Inicial -->
-                        <div class="space-y-2">
-                            <span class="text-[10.5px] font-extrabold uppercase tracking-wider text-pmmg-gold block">A. Botões do Topo e Barra da Tela Inicial</span>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 text-xs">
-                                <!-- Botão Recarregar -->
-                                <label for="chkShowReloadBtn" class="bg-pmmg-black/80 hover:bg-pmmg-black p-3 rounded-xl border border-pmmg-border flex items-center justify-between gap-2.5 cursor-pointer select-none">
-                                    <div>
-                                        <strong class="text-white font-bold block">Botão Recarregar (Topo)</strong>
-                                        <span class="text-[10.5px] text-gray-400">Ícone de atualização rápida no topo</span>
-                                    </div>
-                                    <input type="checkbox" id="chkShowReloadBtn" onchange="updateAzimuteUiPreferenceFromInputs()" class="w-4 h-4 rounded border-pmmg-border bg-pmmg-dark text-pmmg-khaki accent-[#C5A869] cursor-pointer shrink-0" checked>
-                                </label>
+                            <!-- Botão Tela Cheia -->
+                            <label for="chkShowFullscreenBtn" class="bg-pmmg-black/80 hover:bg-pmmg-black p-3 rounded-xl border border-pmmg-border flex items-center justify-between gap-2.5 cursor-pointer select-none">
+                                <div>
+                                    <strong class="text-white font-bold block">Botão Tela Cheia (Topo)</strong>
+                                    <span class="text-[10.5px] text-gray-400">Alternar visualização em tela cheia</span>
+                                </div>
+                                <input type="checkbox" id="chkShowFullscreenBtn" onchange="updateAzimuteUiPreferenceFromInputs()" class="w-4 h-4 rounded border-pmmg-border bg-pmmg-dark text-pmmg-khaki accent-[#C5A869] cursor-pointer shrink-0" checked>
+                            </label>
 
-                                <!-- Botão Tela Cheia -->
-                                <label for="chkShowFullscreenBtn" class="bg-pmmg-black/80 hover:bg-pmmg-black p-3 rounded-xl border border-pmmg-border flex items-center justify-between gap-2.5 cursor-pointer select-none">
-                                    <div>
-                                        <strong class="text-white font-bold block">Botão Tela Cheia (Topo)</strong>
-                                        <span class="text-[10.5px] text-gray-400">Alternar visualização em tela cheia</span>
-                                    </div>
-                                    <input type="checkbox" id="chkShowFullscreenBtn" onchange="updateAzimuteUiPreferenceFromInputs()" class="w-4 h-4 rounded border-pmmg-border bg-pmmg-dark text-pmmg-khaki accent-[#C5A869] cursor-pointer shrink-0" checked>
-                                </label>
+                            <!-- Botão Cruz Vermelha (Hospital João XXIII) -->
+                            <label for="chkShowHeaderHospBtn" class="bg-pmmg-black/80 hover:bg-pmmg-black p-3 rounded-xl border border-pmmg-border flex items-center justify-between gap-2.5 cursor-pointer select-none">
+                                <div>
+                                    <strong class="text-white font-bold block">Botão Cruz Vermelha (Topo)</strong>
+                                    <span class="text-[10.5px] text-gray-400">Rota rápida para o Hospital João XXIII</span>
+                                </div>
+                                <input type="checkbox" id="chkShowHeaderHospBtn" onchange="updateAzimuteUiPreferenceFromInputs()" class="w-4 h-4 rounded border-pmmg-border bg-pmmg-dark text-pmmg-khaki accent-[#C5A869] cursor-pointer shrink-0" checked>
+                            </label>
 
-                                <!-- Botão Cruz Vermelha (Hospital João XXIII) -->
-                                <label for="chkShowHeaderHospBtn" class="bg-pmmg-black/80 hover:bg-pmmg-black p-3 rounded-xl border border-pmmg-border flex items-center justify-between gap-2.5 cursor-pointer select-none">
-                                    <div>
-                                        <strong class="text-white font-bold block">Botão Cruz Vermelha (Topo)</strong>
-                                        <span class="text-[10.5px] text-gray-400">Rota rápida para o Hospital João XXIII</span>
-                                    </div>
-                                    <input type="checkbox" id="chkShowHeaderHospBtn" onchange="updateAzimuteUiPreferenceFromInputs()" class="w-4 h-4 rounded border-pmmg-border bg-pmmg-dark text-pmmg-khaki accent-[#C5A869] cursor-pointer shrink-0" checked>
-                                </label>
+                            <!-- Rede do Batalhão no Topo -->
+                            <label for="chkShowHeaderRede" class="bg-pmmg-black/80 hover:bg-pmmg-black p-3 rounded-xl border border-pmmg-border flex items-center justify-between gap-2.5 cursor-pointer select-none">
+                                <div>
+                                    <strong class="text-white font-bold block">Rede do BPM no Topo</strong>
+                                    <span class="text-[10.5px] text-gray-400">Exibir "| 5º BPM A" ao lado de AZIMUTE</span>
+                                </div>
+                                <input type="checkbox" id="chkShowHeaderRede" onchange="updateAzimuteUiPreferenceFromInputs()" class="w-4 h-4 rounded border-pmmg-border bg-pmmg-dark text-pmmg-khaki accent-[#C5A869] cursor-pointer shrink-0" checked>
+                            </label>
 
-                                <!-- Rede do Batalhão no Topo -->
-                                <label for="chkShowHeaderRede" class="bg-pmmg-black/80 hover:bg-pmmg-black p-3 rounded-xl border border-pmmg-border flex items-center justify-between gap-2.5 cursor-pointer select-none">
-                                    <div>
-                                        <strong class="text-white font-bold block">Rede do BPM no Topo</strong>
-                                        <span class="text-[10.5px] text-gray-400">Exibir "| 5º BPM A" ao lado de AZIMUTE</span>
-                                    </div>
-                                    <input type="checkbox" id="chkShowHeaderRede" onchange="updateAzimuteUiPreferenceFromInputs()" class="w-4 h-4 rounded border-pmmg-border bg-pmmg-dark text-pmmg-khaki accent-[#C5A869] cursor-pointer shrink-0" checked>
-                                </label>
+                            <!-- Barra de Localização (GPS | QTH) -->
+                            <label for="chkShowStatusBarQth" class="bg-pmmg-black/80 hover:bg-pmmg-black p-3 rounded-xl border border-pmmg-border flex items-center justify-between gap-2.5 cursor-pointer select-none">
+                                <div>
+                                    <strong class="text-white font-bold block">Barra de Localização (GPS | QTH)</strong>
+                                    <span class="text-[10.5px] text-gray-400">Endereço atual acima da pesquisa</span>
+                                </div>
+                                <input type="checkbox" id="chkShowStatusBarQth" onchange="updateAzimuteUiPreferenceFromInputs()" class="w-4 h-4 rounded border-pmmg-border bg-pmmg-dark text-pmmg-khaki accent-[#C5A869] cursor-pointer shrink-0" checked>
+                            </label>
 
-                                <!-- Barra de Localização (GPS | QTH) -->
-                                <label for="chkShowStatusBarQth" class="bg-pmmg-black/80 hover:bg-pmmg-black p-3 rounded-xl border border-pmmg-border flex items-center justify-between gap-2.5 cursor-pointer select-none">
-                                    <div>
-                                        <strong class="text-white font-bold block">Barra de Localização (GPS | QTH)</strong>
-                                        <span class="text-[10.5px] text-gray-400">Endereço atual acima da pesquisa</span>
-                                    </div>
-                                    <input type="checkbox" id="chkShowStatusBarQth" onchange="updateAzimuteUiPreferenceFromInputs()" class="w-4 h-4 rounded border-pmmg-border bg-pmmg-dark text-pmmg-khaki accent-[#C5A869] cursor-pointer shrink-0" checked>
-                                </label>
-
-                                <!-- Caixa de Pesquisa Global -->
-                                <label for="chkShowSearchBox" class="bg-pmmg-black/80 hover:bg-pmmg-black p-3 rounded-xl border border-pmmg-border flex items-center justify-between gap-2.5 cursor-pointer select-none">
-                                    <div>
-                                        <strong class="text-white font-bold block">Caixa de Pesquisa Global</strong>
-                                        <span class="text-[10.5px] text-gray-400">Campo "Buscar rua, bairro, drone..."</span>
-                                    </div>
-                                    <input type="checkbox" id="chkShowSearchBox" onchange="updateAzimuteUiPreferenceFromInputs()" class="w-4 h-4 rounded border-pmmg-border bg-pmmg-dark text-pmmg-khaki accent-[#C5A869] cursor-pointer shrink-0" checked>
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- 2B. Disposição e Visibilidade dos Blocos da Tela Inicial -->
-                        <div class="pt-3 border-t border-pmmg-border/70 space-y-2">
-                            <div class="flex flex-wrap items-center justify-between gap-2">
-                                <span class="text-[10.5px] font-extrabold uppercase tracking-wider text-pmmg-gold block">B. Blocos da Tela Inicial e Ordem Vertical</span>
-                                <button type="button" onclick="invertHomeBlocksOrder()" class="px-2.5 py-1 rounded-lg bg-pmmg-black hover:bg-pmmg-card text-pmmg-khaki border border-pmmg-gold/50 text-[10.5px] font-extrabold flex items-center gap-1 cursor-pointer transition-all">
-                                    <i data-lucide="arrow-up-down" class="w-3.5 h-3.5 text-pmmg-gold"></i>
-                                    <span id="lblHomeBlocksOrderStatus">Ordem: 1º Acesso Rápido • 2º Apoio (GPS)</span>
-                                </button>
-                            </div>
-
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
-                                <label for="chkShowQuickAccessBlock" class="bg-pmmg-black/80 hover:bg-pmmg-black p-3 rounded-xl border border-pmmg-border flex items-center justify-between gap-2.5 cursor-pointer select-none">
-                                    <div>
-                                        <strong class="text-white font-bold block">Exibir Bloco "Acesso Rápido"</strong>
-                                        <span class="text-[10.5px] text-gray-400">Grade de atalhos rápidos na Tela Inicial</span>
-                                    </div>
-                                    <input type="checkbox" id="chkShowQuickAccessBlock" onchange="updateAzimuteUiPreferenceFromInputs()" class="w-4 h-4 rounded border-pmmg-border bg-pmmg-dark text-pmmg-khaki accent-[#C5A869] cursor-pointer shrink-0" checked>
-                                </label>
-
-                                <label for="chkShowNearestSupportBlock" class="bg-pmmg-black/80 hover:bg-pmmg-black p-3 rounded-xl border border-pmmg-border flex items-center justify-between gap-2.5 cursor-pointer select-none">
-                                    <div>
-                                        <strong class="text-white font-bold block">Exibir Bloco "Apoio Mais Próximo (GPS)"</strong>
-                                        <span class="text-[10.5px] text-gray-400">Unidade Policial/BSC e Abastecimento mais próximos</span>
-                                    </div>
-                                    <input type="checkbox" id="chkShowNearestSupportBlock" onchange="updateAzimuteUiPreferenceFromInputs()" class="w-4 h-4 rounded border-pmmg-border bg-pmmg-dark text-pmmg-khaki accent-[#C5A869] cursor-pointer shrink-0" checked>
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- 2C. Botões do Acesso Rápido e Ordem na Tela Inicial -->
-                        <div class="pt-3 border-t border-pmmg-border/70 space-y-2">
-                            <div>
-                                <span class="text-[10.5px] font-extrabold uppercase tracking-wider text-pmmg-gold block">C. Botões do Acesso Rápido e Ordem de Exibição</span>
-                                <p class="text-[11px] text-gray-400 mt-0.5">Marque os botões que aparecem em Acesso Rápido e use as setas (↑ / ↓) para ordenar.</p>
-                            </div>
-
-                            <div id="ajustesQuickAccessList" class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-80 overflow-y-auto pr-1">
-                                <!-- Preenchido dinamicamente por renderQuickAccessCustomizerList() -->
-                            </div>
+                            <!-- Caixa de Pesquisa Global -->
+                            <label for="chkShowSearchBox" class="bg-pmmg-black/80 hover:bg-pmmg-black p-3 rounded-xl border border-pmmg-border flex items-center justify-between gap-2.5 cursor-pointer select-none">
+                                <div>
+                                    <strong class="text-white font-bold block">Caixa de Pesquisa Global</strong>
+                                    <span class="text-[10.5px] text-gray-400">Campo "Buscar rua, bairro, drone..."</span>
+                                </div>
+                                <input type="checkbox" id="chkShowSearchBox" onchange="updateAzimuteUiPreferenceFromInputs()" class="w-4 h-4 rounded border-pmmg-border bg-pmmg-dark text-pmmg-khaki accent-[#C5A869] cursor-pointer shrink-0" checked>
+                            </label>
                         </div>
                     </div>
 
-                    <!-- 3. SELETOR MANUAL DE MODOS (APP, GRID, PC) -->
-                    <div class="bg-pmmg-dark p-4 rounded-xl border border-pmmg-border space-y-3">
-                        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border/80 pb-2">
-                            <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki flex items-center gap-1.5">
-                                <i data-lucide="monitor-smartphone" class="w-4 h-4 text-pmmg-gold"></i>3. Seletor Manual de Modos (App, GRID, PC)
-                            </span>
-                            <span id="ajustesCurrentModeBadge" class="text-[10px] font-mono text-gray-400">Modo Ativo: App</span>
+                    <!-- 3C. Disposição e Visibilidade dos Blocos da Tela Inicial -->
+                    <div class="pt-3 border-t border-pmmg-border/70 space-y-2">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <span class="text-[10.5px] font-extrabold uppercase tracking-wider text-pmmg-gold block">C. Blocos da Tela Inicial e Ordem Vertical</span>
+                            <button type="button" onclick="invertHomeBlocksOrder()" class="px-2.5 py-1 rounded-lg bg-pmmg-black hover:bg-pmmg-card text-pmmg-khaki border border-pmmg-gold/50 text-[10.5px] font-extrabold flex items-center gap-1 cursor-pointer transition-all">
+                                <i data-lucide="arrow-up-down" class="w-3.5 h-3.5 text-pmmg-gold"></i>
+                                <span id="lblHomeBlocksOrderStatus">Ordem: 1º Acesso Rápido • 2º Apoio (GPS)</span>
+                            </button>
                         </div>
 
-                        <div class="bg-pmmg-black/90 p-3 rounded-xl border border-pmmg-border flex flex-wrap items-center justify-between gap-2">
-                            <div>
-                                <span class="text-[10px] font-bold uppercase text-pmmg-khaki block">Alternar Layout Manualmente</span>
-                                <span class="text-[11px] text-gray-400">Escolha entre App (vertical), GRID (3 colunas horizontais) ou PC (desktop)</span>
-                            </div>
-                            <div class="flex items-center bg-[#161616] p-1 rounded-xl border border-pmmg-border text-xs">
-                                <button type="button" onclick="setLayoutMode('app', true)" id="btn-mode-app" class="px-3 py-1.5 rounded-lg font-extrabold bg-pmmg-dark text-pmmg-khaki border border-pmmg-gold shadow-sm transition-all cursor-pointer" title="Modo App">
-                                    App
-                                </button>
-                                <span class="text-pmmg-border select-none px-1">|</span>
-                                <button type="button" onclick="setLayoutMode('grid', true)" id="btn-mode-grid" class="px-3 py-1.5 rounded-lg font-semibold text-gray-400 border border-transparent hover:text-gray-200 transition-all cursor-pointer" title="Modo GRID">
-                                    GRID
-                                </button>
-                                <span class="text-pmmg-border select-none px-1">|</span>
-                                <button type="button" onclick="setLayoutMode('web', true)" id="btn-mode-web" class="px-3 py-1.5 rounded-lg font-semibold text-gray-400 border border-transparent hover:text-gray-200 transition-all cursor-pointer" title="Modo PC">
-                                    PC
-                                </button>
-                            </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+                            <label for="chkShowQuickAccessBlock" class="bg-pmmg-black/80 hover:bg-pmmg-black p-3 rounded-xl border border-pmmg-border flex items-center justify-between gap-2.5 cursor-pointer select-none">
+                                <div>
+                                    <strong class="text-white font-bold block">Exibir Bloco "Acesso Rápido"</strong>
+                                    <span class="text-[10.5px] text-gray-400">Grade de atalhos rápidos na Tela Inicial</span>
+                                </div>
+                                <input type="checkbox" id="chkShowQuickAccessBlock" onchange="updateAzimuteUiPreferenceFromInputs()" class="w-4 h-4 rounded border-pmmg-border bg-pmmg-dark text-pmmg-khaki accent-[#C5A869] cursor-pointer shrink-0" checked>
+                            </label>
+
+                            <label for="chkShowNearestSupportBlock" class="bg-pmmg-black/80 hover:bg-pmmg-black p-3 rounded-xl border border-pmmg-border flex items-center justify-between gap-2.5 cursor-pointer select-none">
+                                <div>
+                                    <strong class="text-white font-bold block">Exibir Bloco "Apoio Mais Próximo (GPS)"</strong>
+                                    <span class="text-[10.5px] text-gray-400">Unidade Policial/BSC e Abastecimento mais próximos</span>
+                                </div>
+                                <input type="checkbox" id="chkShowNearestSupportBlock" onchange="updateAzimuteUiPreferenceFromInputs()" class="w-4 h-4 rounded border-pmmg-border bg-pmmg-dark text-pmmg-khaki accent-[#C5A869] cursor-pointer shrink-0" checked>
+                            </label>
                         </div>
                     </div>
-
-                    <!-- 4. AERONAVES REMOTAMENTE PILOTADAS (RECOMENDAÇÃO AUTOMÁTICA POR CLIMA) -->
-                    <div class="bg-pmmg-dark p-4 rounded-xl border border-pmmg-border space-y-3">
-                        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border/80 pb-2">
-                            <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki flex items-center gap-1.5">
-                                <i data-lucide="plane" class="w-4 h-4 text-pmmg-gold"></i>4. Aeronaves Remotamente Pilotadas (RPAS)
-                            </span>
-                            <span class="text-[10px] font-mono text-gray-400">Cruzamento Clima x Frota</span>
-                        </div>
-
-                        <label for="chkEnableRpasAutoFleetRec" class="bg-pmmg-black/80 hover:bg-pmmg-black p-3.5 rounded-xl border border-pmmg-border flex items-center justify-between gap-3 cursor-pointer select-none">
-                            <div>
-                                <strong class="text-white text-xs sm:text-sm font-bold block">Recomendação Automática de Aeronave por Clima</strong>
-                                <span class="text-[11px] text-gray-400 block mt-0.5">
-                                    Quando houver mais de 1 drone cadastrado e nenhum selecionado, destaca em verde as aeronaves aptas e em vermelho as restritas conforme o clima GPS local.
-                                </span>
-                            </div>
-                            <input type="checkbox" id="chkEnableRpasAutoFleetRec" onchange="updateAzimuteUiPreferenceFromInputs()" class="w-4 h-4 rounded border-pmmg-border bg-pmmg-dark text-pmmg-khaki accent-[#C5A869] cursor-pointer shrink-0" checked>
-                        </label>
-                    </div>
-
-                    <!-- BARRA DE AÇÃO PERMANENTE: SALVAR CONFIGURAÇÕES + RESTAURAR PADRÃO -->
-                    <div class="pt-2 border-t border-pmmg-border flex flex-wrap items-center justify-between gap-3">
-                        <button type="button" onclick="resetAllAzimuteSettings()" class="px-3.5 py-2 rounded-xl bg-pmmg-black hover:bg-pmmg-dark text-gray-400 hover:text-gray-200 border border-pmmg-border text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer" title="Restaurar todas as configurações para o padrão original">
-                            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
-                            <span>Restaurar Padrão</span>
-                        </button>
-
-                        <button type="button" onclick="saveAllAzimuteSettings(true)" class="px-5 py-2.5 rounded-xl bg-pmmg-dark hover:bg-pmmg-cardHover active:scale-95 text-pmmg-khaki border-2 border-pmmg-gold font-extrabold text-xs sm:text-sm uppercase tracking-wider flex items-center gap-2 shadow-lg transition-all cursor-pointer">
-                            <i data-lucide="save" class="w-4 h-4 text-pmmg-gold"></i>
-                            <span>SALVAR CONFIGURAÇÕES</span>
-                        </button>
-                    </div>
-
                 </div>
 
+                <!-- 4. SELETOR MANUAL DE MODO DE EXIBIÇÃO (APP | GRID | PC) -->
+                <div class="bg-pmmg-dark p-4 rounded-xl border border-pmmg-border space-y-3">
+                    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border/80 pb-2">
+                        <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki flex items-center gap-1.5">
+                            <i data-lucide="monitor-smartphone" class="w-4 h-4 text-pmmg-gold"></i>4. Seletor Manual de Modo de Exibição (App | GRID | PC)
+                        </span>
+                        <span id="ajustesCurrentModeBadge" class="text-[10px] font-mono text-gray-400">Modo Ativo: App</span>
+                    </div>
+
+                    <div class="bg-pmmg-black/90 p-3 rounded-xl border border-pmmg-border flex flex-wrap items-center justify-between gap-2">
+                        <div>
+                            <span class="text-[10px] font-bold uppercase text-pmmg-khaki block">Alternar Layout Manualmente</span>
+                            <span class="text-[11px] text-gray-400">Escolha entre App (vertical), GRID (3 colunas horizontais) ou PC (desktop)</span>
+                        </div>
+                        <div class="flex items-center bg-[#161616] p-1 rounded-xl border border-pmmg-border text-xs">
+                            <button type="button" onclick="setLayoutMode('app', true)" id="btn-mode-app" class="px-3 py-1.5 rounded-lg font-extrabold bg-pmmg-dark text-pmmg-khaki border border-pmmg-gold shadow-sm transition-all cursor-pointer" title="Modo App">
+                                App
+                            </button>
+                            <span class="text-pmmg-border select-none px-1">|</span>
+                            <button type="button" onclick="setLayoutMode('grid', true)" id="btn-mode-grid" class="px-3 py-1.5 rounded-lg font-semibold text-gray-400 border border-transparent hover:text-gray-200 transition-all cursor-pointer" title="Modo GRID">
+                                GRID
+                            </button>
+                            <span class="text-pmmg-border select-none px-1">|</span>
+                            <button type="button" onclick="setLayoutMode('web', true)" id="btn-mode-web" class="px-3 py-1.5 rounded-lg font-semibold text-gray-400 border border-transparent hover:text-gray-200 transition-all cursor-pointer" title="Modo PC">
+                                PC
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BARRA DE AÇÃO PERMANENTE: SALVAR CONFIGURAÇÕES + RESTAURAR PADRÃO -->
+                <div class="pt-2 border-t border-pmmg-border flex flex-wrap items-center justify-between gap-3">
+                    <button type="button" onclick="resetAllAzimuteSettings()" class="px-3.5 py-2 rounded-xl bg-pmmg-black hover:bg-pmmg-dark text-gray-400 hover:text-gray-200 border border-pmmg-border text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer" title="Restaurar todas as configurações para o padrão original">
+                        <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                        <span>Restaurar Padrão</span>
+                    </button>
+
+                    <button type="button" onclick="saveAllAzimuteSettings(true)" class="px-5 py-2.5 rounded-xl bg-pmmg-dark hover:bg-pmmg-cardHover active:scale-95 text-pmmg-khaki border-2 border-pmmg-gold font-extrabold text-xs sm:text-sm uppercase tracking-wider flex items-center gap-2 shadow-lg transition-all cursor-pointer">
+                        <i data-lucide="save" class="w-4 h-4 text-pmmg-gold"></i>
+                        <span>SALVAR CONFIGURAÇÕES</span>
+                    </button>
+                </div>
+
+            </div>
         </section>
 
     </main>
@@ -11734,7 +11732,7 @@
         };
 
         window.toggleApoioAjustesBox = function(forceOpen = null) {
-            const bodyEl = document.getElementById('apoioAjustesExpandableBody');
+            const bodyEl = document.getElementById('configuracoesMainContainer') || document.getElementById('apoioAjustesExpandableBody');
             const lblEl = document.getElementById('lblApoioAjustesToggle');
             const iconEl = document.getElementById('iconApoioAjustesChevron');
             if (!bodyEl) return;
@@ -11940,6 +11938,9 @@
             renderQuickAccessCustomizerList();
             window.renderFooterButtonsCustomizerList();
             window.applyAzimuteUiSettings();
+            if (typeof window.renderRpasFleetSelector === 'function') {
+                window.renderRpasFleetSelector();
+            }
             if (notify && typeof showToast === 'function') {
                 showToast('Configurações salvas permanentemente no aparelho!');
             }
@@ -11958,6 +11959,9 @@
             window.renderFooterButtonsCustomizerList();
             renderQuickAccessGrid();
             renderQuickAccessCustomizerList();
+            if (typeof window.renderRpasFleetSelector === 'function') {
+                window.renderRpasFleetSelector();
+            }
             if (typeof showToast === 'function') {
                 showToast('Todas as configurações foram restauradas para o padrão!');
             }
@@ -12688,12 +12692,7 @@
                 if (typeof renderQuickAccessCustomizerList === 'function') {
                     renderQuickAccessCustomizerList();
                 }
-                if (typeof window.renderFooterButtonsCustomizerList === 'function') {
-                    window.renderFooterButtonsCustomizerList();
-                }
-                if (typeof renderQuickAccessCustomizerList === 'function') {
-                    renderQuickAccessCustomizerList();
-                }
+                if (typeof lucide !== 'undefined') lucide.createIcons();
             }
 
             // Atualiza estado visual dos itens na Sidebar do Modo PC (#pcSidebar) - Escuro e sóbrio com linha fina dourada/cáqui
