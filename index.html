@@ -4914,7 +4914,7 @@
         <section id="view-atalhos" class="hidden space-y-4">
             <!-- TÍTULO ÚNICO EM LINHA DIRETA PADRONIZADO COM OS DEMAIS MENUS -->
             <div class="px-1 pt-0.5 flex items-center justify-between">
-                <h2 class="text-xl sm:text-3xl font-military text-pmmg-khaki uppercase tracking-wide leading-none whitespace-nowrap">Consultas e Recursos</h2>
+                <h2 class="text-xl sm:text-3xl font-military text-pmmg-khaki uppercase tracking-wide leading-none whitespace-nowrap">Sistemas e Consultas</h2>
             </div>
 
             <!-- CATEGORIA 1: SISTEMAS DE CONSULTA (FECHADA POR PADRÃO) -->
@@ -5195,19 +5195,146 @@
 
 <div id="apoioAjustesExpandableBody" class="hidden p-4 sm:p-5 pt-3 border-t border-pmmg-border space-y-5">
                     
-                    <!-- A. MODO DE EXIBIÇÃO (App | GRID | PC) -->
+                    <!-- 1. BOTÕES DO RODAPÉ DA TELA INÍCIO E ORDEM EXATA (LOCALSTORAGE) -->
+                    <div class="bg-pmmg-dark p-4 rounded-xl border border-pmmg-border space-y-3">
+                        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border/80 pb-2">
+                            <div>
+                                <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki flex items-center gap-1.5">
+                                    <i data-lucide="panel-bottom" class="w-4 h-4 text-pmmg-gold"></i>1. Botões do Rodapé da Tela Início e Ordem Exata
+                                </span>
+                                <p class="text-[11px] text-gray-400 mt-0.5">Marque quais abas aparecem no menu inferior e use as setas (↑ / ↓) para definir a ordem exata.</p>
+                            </div>
+                        </div>
+
+                        <div id="ajustesFooterButtonsList" class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-80 overflow-y-auto pr-1">
+                            <!-- Preenchido dinamicamente por renderFooterButtonsCustomizerList() -->
+                        </div>
+                    </div>
+
+                    <!-- 2. DISPOSIÇÃO E VISIBILIDADE DOS BOTÕES DA TELA INÍCIO (TOPO, BLOCOS E ACESSO RÁPIDO) -->
+                    <div class="bg-pmmg-dark p-4 rounded-xl border border-pmmg-border space-y-4">
+                        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border/80 pb-2">
+                            <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki flex items-center gap-1.5">
+                                <i data-lucide="layout-template" class="w-4 h-4 text-pmmg-gold"></i>2. Disposição e Visibilidade dos Botões da Tela Início
+                            </span>
+                            <span class="text-[10px] font-mono text-gray-400">Topo, Blocos e Acesso Rápido</span>
+                        </div>
+
+                        <!-- 2A. Botões do Topo & Barra da Tela Inicial -->
+                        <div class="space-y-2">
+                            <span class="text-[10.5px] font-extrabold uppercase tracking-wider text-pmmg-gold block">A. Botões do Topo e Barra da Tela Inicial</span>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 text-xs">
+                                <!-- Botão Recarregar -->
+                                <label for="chkShowReloadBtn" class="bg-pmmg-black/80 hover:bg-pmmg-black p-3 rounded-xl border border-pmmg-border flex items-center justify-between gap-2.5 cursor-pointer select-none">
+                                    <div>
+                                        <strong class="text-white font-bold block">Botão Recarregar (Topo)</strong>
+                                        <span class="text-[10.5px] text-gray-400">Ícone de atualização rápida no topo</span>
+                                    </div>
+                                    <input type="checkbox" id="chkShowReloadBtn" onchange="updateAzimuteUiPreferenceFromInputs()" class="w-4 h-4 rounded border-pmmg-border bg-pmmg-dark text-pmmg-khaki accent-[#C5A869] cursor-pointer shrink-0" checked>
+                                </label>
+
+                                <!-- Botão Tela Cheia -->
+                                <label for="chkShowFullscreenBtn" class="bg-pmmg-black/80 hover:bg-pmmg-black p-3 rounded-xl border border-pmmg-border flex items-center justify-between gap-2.5 cursor-pointer select-none">
+                                    <div>
+                                        <strong class="text-white font-bold block">Botão Tela Cheia (Topo)</strong>
+                                        <span class="text-[10.5px] text-gray-400">Alternar visualização em tela cheia</span>
+                                    </div>
+                                    <input type="checkbox" id="chkShowFullscreenBtn" onchange="updateAzimuteUiPreferenceFromInputs()" class="w-4 h-4 rounded border-pmmg-border bg-pmmg-dark text-pmmg-khaki accent-[#C5A869] cursor-pointer shrink-0" checked>
+                                </label>
+
+                                <!-- Botão Cruz Vermelha (Hospital João XXIII) -->
+                                <label for="chkShowHeaderHospBtn" class="bg-pmmg-black/80 hover:bg-pmmg-black p-3 rounded-xl border border-pmmg-border flex items-center justify-between gap-2.5 cursor-pointer select-none">
+                                    <div>
+                                        <strong class="text-white font-bold block">Botão Cruz Vermelha (Topo)</strong>
+                                        <span class="text-[10.5px] text-gray-400">Rota rápida para o Hospital João XXIII</span>
+                                    </div>
+                                    <input type="checkbox" id="chkShowHeaderHospBtn" onchange="updateAzimuteUiPreferenceFromInputs()" class="w-4 h-4 rounded border-pmmg-border bg-pmmg-dark text-pmmg-khaki accent-[#C5A869] cursor-pointer shrink-0" checked>
+                                </label>
+
+                                <!-- Rede do Batalhão no Topo -->
+                                <label for="chkShowHeaderRede" class="bg-pmmg-black/80 hover:bg-pmmg-black p-3 rounded-xl border border-pmmg-border flex items-center justify-between gap-2.5 cursor-pointer select-none">
+                                    <div>
+                                        <strong class="text-white font-bold block">Rede do BPM no Topo</strong>
+                                        <span class="text-[10.5px] text-gray-400">Exibir "| 5º BPM A" ao lado de AZIMUTE</span>
+                                    </div>
+                                    <input type="checkbox" id="chkShowHeaderRede" onchange="updateAzimuteUiPreferenceFromInputs()" class="w-4 h-4 rounded border-pmmg-border bg-pmmg-dark text-pmmg-khaki accent-[#C5A869] cursor-pointer shrink-0" checked>
+                                </label>
+
+                                <!-- Barra de Localização (GPS | QTH) -->
+                                <label for="chkShowStatusBarQth" class="bg-pmmg-black/80 hover:bg-pmmg-black p-3 rounded-xl border border-pmmg-border flex items-center justify-between gap-2.5 cursor-pointer select-none">
+                                    <div>
+                                        <strong class="text-white font-bold block">Barra de Localização (GPS | QTH)</strong>
+                                        <span class="text-[10.5px] text-gray-400">Endereço atual acima da pesquisa</span>
+                                    </div>
+                                    <input type="checkbox" id="chkShowStatusBarQth" onchange="updateAzimuteUiPreferenceFromInputs()" class="w-4 h-4 rounded border-pmmg-border bg-pmmg-dark text-pmmg-khaki accent-[#C5A869] cursor-pointer shrink-0" checked>
+                                </label>
+
+                                <!-- Caixa de Pesquisa Global -->
+                                <label for="chkShowSearchBox" class="bg-pmmg-black/80 hover:bg-pmmg-black p-3 rounded-xl border border-pmmg-border flex items-center justify-between gap-2.5 cursor-pointer select-none">
+                                    <div>
+                                        <strong class="text-white font-bold block">Caixa de Pesquisa Global</strong>
+                                        <span class="text-[10.5px] text-gray-400">Campo "Buscar rua, bairro, drone..."</span>
+                                    </div>
+                                    <input type="checkbox" id="chkShowSearchBox" onchange="updateAzimuteUiPreferenceFromInputs()" class="w-4 h-4 rounded border-pmmg-border bg-pmmg-dark text-pmmg-khaki accent-[#C5A869] cursor-pointer shrink-0" checked>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- 2B. Disposição e Visibilidade dos Blocos da Tela Inicial -->
+                        <div class="pt-3 border-t border-pmmg-border/70 space-y-2">
+                            <div class="flex flex-wrap items-center justify-between gap-2">
+                                <span class="text-[10.5px] font-extrabold uppercase tracking-wider text-pmmg-gold block">B. Blocos da Tela Inicial e Ordem Vertical</span>
+                                <button type="button" onclick="invertHomeBlocksOrder()" class="px-2.5 py-1 rounded-lg bg-pmmg-black hover:bg-pmmg-card text-pmmg-khaki border border-pmmg-gold/50 text-[10.5px] font-extrabold flex items-center gap-1 cursor-pointer transition-all">
+                                    <i data-lucide="arrow-up-down" class="w-3.5 h-3.5 text-pmmg-gold"></i>
+                                    <span id="lblHomeBlocksOrderStatus">Ordem: 1º Acesso Rápido • 2º Apoio (GPS)</span>
+                                </button>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+                                <label for="chkShowQuickAccessBlock" class="bg-pmmg-black/80 hover:bg-pmmg-black p-3 rounded-xl border border-pmmg-border flex items-center justify-between gap-2.5 cursor-pointer select-none">
+                                    <div>
+                                        <strong class="text-white font-bold block">Exibir Bloco "Acesso Rápido"</strong>
+                                        <span class="text-[10.5px] text-gray-400">Grade de atalhos rápidos na Tela Inicial</span>
+                                    </div>
+                                    <input type="checkbox" id="chkShowQuickAccessBlock" onchange="updateAzimuteUiPreferenceFromInputs()" class="w-4 h-4 rounded border-pmmg-border bg-pmmg-dark text-pmmg-khaki accent-[#C5A869] cursor-pointer shrink-0" checked>
+                                </label>
+
+                                <label for="chkShowNearestSupportBlock" class="bg-pmmg-black/80 hover:bg-pmmg-black p-3 rounded-xl border border-pmmg-border flex items-center justify-between gap-2.5 cursor-pointer select-none">
+                                    <div>
+                                        <strong class="text-white font-bold block">Exibir Bloco "Apoio Mais Próximo (GPS)"</strong>
+                                        <span class="text-[10.5px] text-gray-400">Unidade Policial/BSC e Abastecimento mais próximos</span>
+                                    </div>
+                                    <input type="checkbox" id="chkShowNearestSupportBlock" onchange="updateAzimuteUiPreferenceFromInputs()" class="w-4 h-4 rounded border-pmmg-border bg-pmmg-dark text-pmmg-khaki accent-[#C5A869] cursor-pointer shrink-0" checked>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- 2C. Botões do Acesso Rápido e Ordem na Tela Inicial -->
+                        <div class="pt-3 border-t border-pmmg-border/70 space-y-2">
+                            <div>
+                                <span class="text-[10.5px] font-extrabold uppercase tracking-wider text-pmmg-gold block">C. Botões do Acesso Rápido e Ordem de Exibição</span>
+                                <p class="text-[11px] text-gray-400 mt-0.5">Marque os botões que aparecem em Acesso Rápido e use as setas (↑ / ↓) para ordenar.</p>
+                            </div>
+
+                            <div id="ajustesQuickAccessList" class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-80 overflow-y-auto pr-1">
+                                <!-- Preenchido dinamicamente por renderQuickAccessCustomizerList() -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. SELETOR MANUAL DE MODOS (APP, GRID, PC) -->
                     <div class="bg-pmmg-dark p-4 rounded-xl border border-pmmg-border space-y-3">
                         <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border/80 pb-2">
                             <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki flex items-center gap-1.5">
-                                <i data-lucide="monitor-smartphone" class="w-4 h-4 text-pmmg-gold"></i>1. Modo de Exibição
+                                <i data-lucide="monitor-smartphone" class="w-4 h-4 text-pmmg-gold"></i>3. Seletor Manual de Modos (App, GRID, PC)
                             </span>
-                            <span id="ajustesCurrentModeBadge" class="text-[10px] font-mono text-gray-400">Modo: App</span>
+                            <span id="ajustesCurrentModeBadge" class="text-[10px] font-mono text-gray-400">Modo Ativo: App</span>
                         </div>
 
                         <div class="bg-pmmg-black/90 p-3 rounded-xl border border-pmmg-border flex flex-wrap items-center justify-between gap-2">
                             <div>
-                                <span class="text-[10px] font-bold uppercase text-pmmg-khaki block">Seletor de Layout</span>
-                                <span class="text-[11px] text-gray-400">A orientação da tela segue naturalmente o sistema do aparelho</span>
+                                <span class="text-[10px] font-bold uppercase text-pmmg-khaki block">Alternar Layout Manualmente</span>
+                                <span class="text-[11px] text-gray-400">Escolha entre App (vertical), GRID (3 colunas horizontais) ou PC (desktop)</span>
                             </div>
                             <div class="flex items-center bg-[#161616] p-1 rounded-xl border border-pmmg-border text-xs">
                                 <button type="button" onclick="setLayoutMode('app', true)" id="btn-mode-app" class="px-3 py-1.5 rounded-lg font-extrabold bg-pmmg-dark text-pmmg-khaki border border-pmmg-gold shadow-sm transition-all cursor-pointer" title="Modo App">
@@ -5225,111 +5352,7 @@
                         </div>
                     </div>
 
-                    <!-- B. CHAVES SELETORAS DO CABEÇALHO E PÁGINA INICIAL -->
-                    <div class="bg-pmmg-dark p-4 rounded-xl border border-pmmg-border space-y-3">
-                        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border/80 pb-2">
-                            <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki flex items-center gap-1.5">
-                                <i data-lucide="layout-template" class="w-4 h-4 text-pmmg-gold"></i>2. Itens Visíveis no Cabeçalho e Pesquisa (Tela Inicial)
-                            </span>
-                            <span class="text-[10px] font-mono text-gray-400">Marque o que deseja exibir</span>
-                        </div>
-
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 text-xs">
-                            <!-- 1. Botão Recarregar Página -->
-                            <label for="chkShowReloadBtn" class="bg-pmmg-black/80 hover:bg-pmmg-black p-3 rounded-xl border border-pmmg-border flex items-center justify-between gap-2.5 cursor-pointer select-none">
-                                <div>
-                                    <strong class="text-white font-bold block">Ícone de Atualização (Topo)</strong>
-                                    <span class="text-[10.5px] text-gray-400">Exibir botão de recarga no topo direito</span>
-                                </div>
-                                <input type="checkbox" id="chkShowReloadBtn" onchange="updateAzimuteUiPreferenceFromInputs()" class="w-4 h-4 rounded border-pmmg-border bg-pmmg-dark text-pmmg-khaki accent-[#C5A869] cursor-pointer shrink-0" checked>
-                            </label>
-
-                            <!-- 2. Rede do Batalhão no Topo -->
-                            <label for="chkShowHeaderRede" class="bg-pmmg-black/80 hover:bg-pmmg-black p-3 rounded-xl border border-pmmg-border flex items-center justify-between gap-2.5 cursor-pointer select-none">
-                                <div>
-                                    <strong class="text-white font-bold block">Rede do BPM no Topo</strong>
-                                    <span class="text-[10.5px] text-gray-400">Exibir "| 5º BPM A" ao lado de AZIMUTE</span>
-                                </div>
-                                <input type="checkbox" id="chkShowHeaderRede" onchange="updateAzimuteUiPreferenceFromInputs()" class="w-4 h-4 rounded border-pmmg-border bg-pmmg-dark text-pmmg-khaki accent-[#C5A869] cursor-pointer shrink-0" checked>
-                            </label>
-
-                            <!-- 3. Botão Cruz Vermelha (Hospital João XXIII) -->
-                            <label for="chkShowHeaderHospBtn" class="bg-pmmg-black/80 hover:bg-pmmg-black p-3 rounded-xl border border-pmmg-border flex items-center justify-between gap-2.5 cursor-pointer select-none">
-                                <div>
-                                    <strong class="text-white font-bold block">Botão Cruz Vermelha (Topo)</strong>
-                                    <span class="text-[10.5px] text-gray-400">Rota rápida para o Hospital João XXIII</span>
-                                </div>
-                                <input type="checkbox" id="chkShowHeaderHospBtn" onchange="updateAzimuteUiPreferenceFromInputs()" class="w-4 h-4 rounded border-pmmg-border bg-pmmg-dark text-pmmg-khaki accent-[#C5A869] cursor-pointer shrink-0" checked>
-                            </label>
-
-                            <!-- 4. Barra de Localização (GPS | QTH) -->
-                            <label for="chkShowStatusBarQth" class="bg-pmmg-black/80 hover:bg-pmmg-black p-3 rounded-xl border border-pmmg-border flex items-center justify-between gap-2.5 cursor-pointer select-none">
-                                <div>
-                                    <strong class="text-white font-bold block">Barra de Localização (GPS | QTH)</strong>
-                                    <span class="text-[10.5px] text-gray-400">Endereço atual acima da pesquisa</span>
-                                </div>
-                                <input type="checkbox" id="chkShowStatusBarQth" onchange="updateAzimuteUiPreferenceFromInputs()" class="w-4 h-4 rounded border-pmmg-border bg-pmmg-dark text-pmmg-khaki accent-[#C5A869] cursor-pointer shrink-0" checked>
-                            </label>
-
-                            <!-- 5. Caixa de Pesquisa Global -->
-                            <label for="chkShowSearchBox" class="bg-pmmg-black/80 hover:bg-pmmg-black p-3 rounded-xl border border-pmmg-border flex items-center justify-between gap-2.5 cursor-pointer select-none">
-                                <div>
-                                    <strong class="text-white font-bold block">Caixa de Pesquisa Global</strong>
-                                    <span class="text-[10.5px] text-gray-400">Campo "Buscar rua, bairro, drone..."</span>
-                                </div>
-                                <input type="checkbox" id="chkShowSearchBox" onchange="updateAzimuteUiPreferenceFromInputs()" class="w-4 h-4 rounded border-pmmg-border bg-pmmg-dark text-pmmg-khaki accent-[#C5A869] cursor-pointer shrink-0" checked>
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- C. BLOCOS DA TELA INICIAL E ORDEM DOS BLOCOS -->
-                    <div class="bg-pmmg-dark p-4 rounded-xl border border-pmmg-border space-y-3">
-                        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border/80 pb-2">
-                            <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki flex items-center gap-1.5">
-                                <i data-lucide="layers" class="w-4 h-4 text-pmmg-gold"></i>3. Blocos da Tela Inicial e Ordem de Exibição
-                            </span>
-                            <button type="button" onclick="invertHomeBlocksOrder()" class="px-2.5 py-1 rounded-lg bg-pmmg-black hover:bg-pmmg-card text-pmmg-khaki border border-pmmg-gold/50 text-[10.5px] font-extrabold flex items-center gap-1 cursor-pointer transition-all">
-                                <i data-lucide="arrow-up-down" class="w-3.5 h-3.5 text-pmmg-gold"></i>
-                                <span id="lblHomeBlocksOrderStatus">Ordem: 1º Acesso Rápido • 2º Apoio (GPS)</span>
-                            </button>
-                        </div>
-
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
-                            <label for="chkShowQuickAccessBlock" class="bg-pmmg-black/80 hover:bg-pmmg-black p-3 rounded-xl border border-pmmg-border flex items-center justify-between gap-2.5 cursor-pointer select-none">
-                                <div>
-                                    <strong class="text-white font-bold block">Exibir Bloco "Acesso Rápido"</strong>
-                                    <span class="text-[10.5px] text-gray-400">Grade de atalhos rápidos na Tela Inicial</span>
-                                </div>
-                                <input type="checkbox" id="chkShowQuickAccessBlock" onchange="updateAzimuteUiPreferenceFromInputs()" class="w-4 h-4 rounded border-pmmg-border bg-pmmg-dark text-pmmg-khaki accent-[#C5A869] cursor-pointer shrink-0" checked>
-                            </label>
-
-                            <label for="chkShowNearestSupportBlock" class="bg-pmmg-black/80 hover:bg-pmmg-black p-3 rounded-xl border border-pmmg-border flex items-center justify-between gap-2.5 cursor-pointer select-none">
-                                <div>
-                                    <strong class="text-white font-bold block">Exibir Bloco "Apoio Mais Próximo (GPS)"</strong>
-                                    <span class="text-[10.5px] text-gray-400">Unidade Policial/BSC e Abastecimento mais próximos</span>
-                                </div>
-                                <input type="checkbox" id="chkShowNearestSupportBlock" onchange="updateAzimuteUiPreferenceFromInputs()" class="w-4 h-4 rounded border-pmmg-border bg-pmmg-dark text-pmmg-khaki accent-[#C5A869] cursor-pointer shrink-0" checked>
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- D. ESCOLHER QUAIS ATALHOS APARECEM NA TELA INICIAL E A ORDEM DELES -->
-                    <div class="bg-pmmg-dark p-4 rounded-xl border border-pmmg-border space-y-3">
-                        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border/80 pb-2">
-                            <div>
-                                <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki flex items-center gap-1.5">
-                                    <i data-lucide="grid" class="w-4 h-4 text-pmmg-gold"></i>4. Atalhos do Acesso Rápido e Ordem na Tela Inicial
-                                </span>
-                                <p class="text-[11px] text-gray-400 mt-0.5">Marque os atalhos desejados e use as setas (↑ / ↓) para ordenar.</p>
-                            </div>
-                        </div>
-
-                        <div id="ajustesQuickAccessList" class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-80 overflow-y-auto pr-1">
-                            <!-- Preenchido dinamicamente por renderQuickAccessCustomizerList() -->
-                        </div>
-                    </div>
-
-                    <!-- E. BARRA DE AÇÃO PERMANENTE: BOTÃO "SALVAR CONFIGURAÇÕES" + BOTÃO DISCRETO "RESTAURAR PADRÃO" -->
+                    <!-- BARRA DE AÇÃO PERMANENTE: SALVAR CONFIGURAÇÕES + RESTAURAR PADRÃO -->
                     <div class="pt-2 border-t border-pmmg-border flex flex-wrap items-center justify-between gap-3">
                         <button type="button" onclick="resetAllAzimuteSettings()" class="px-3.5 py-2 rounded-xl bg-pmmg-black hover:bg-pmmg-dark text-gray-400 hover:text-gray-200 border border-pmmg-border text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer" title="Restaurar todas as configurações para o padrão original">
                             <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
@@ -7705,7 +7728,7 @@
 
     <!-- MENU GLOBAL INFERIOR COM 5 ABAS PADRONIZADAS (MODO APP) -->
     <nav id="mobileBottomNav" class="fixed bottom-0 left-0 right-0 z-40 bg-pmmg-black/95 backdrop-blur-md border-t border-pmmg-khaki/25 px-1.5 py-1.5 shadow-2xl">
-        <div class="max-w-3xl mx-auto grid grid-cols-7 gap-1 text-[9.5px] sm:text-[10.5px] font-bold items-center">
+        <div id="mobileBottomNavGrid" class="max-w-3xl mx-auto grid grid-cols-7 gap-1 text-[9.5px] sm:text-[10.5px] font-bold items-center">
             <!-- 1. Início -->
             <button type="button" onclick="showView('home')" id="bnav-home" class="bnav-active flex flex-col items-center justify-center py-1.5 px-1 rounded-lg transition-all cursor-pointer">
                 <i data-lucide="home" class="w-4 h-4 mb-0.5"></i>
@@ -10958,20 +10981,62 @@
             if (typeof showToast === 'function') showToast('Mapa do ' + cfg.label + 'baixado para uso offline!');
         };
 
-        // ALTERNADOR DOS 3 MODOS DE VISUALIZAÇÃO: App | GRID | PC
+        // ALTERNADOR DOS 3 MODOS DE VISUALIZAÇÃO E PERSONALIZAÇÃO TOTAL (LOCALSTORAGE)
         const AZIMUTE_UI_SETTINGS_STORAGE_KEY = 'azimute_ui_settings_v1';
+
+        const AZIMUTE_FOOTER_NAV_CATALOG = [
+            { id: 'home', label: 'Início', icon: 'home', defaultEnabled: true, locked: false },
+            { id: 'regioes', label: 'Unidades', icon: 'shield', defaultEnabled: true, locked: false },
+            { id: 'gps', label: 'Geolocalização', icon: 'locate-fixed', defaultEnabled: true, locked: false },
+            { id: 'saude', label: 'APH/SAÚDE', icon: 'cross', defaultEnabled: true, locked: false },
+            { id: 'estadios', label: 'Estádios', icon: 'trophy', defaultEnabled: true, locked: false },
+            { id: 'rpas', label: 'Drones', icon: 'drone', defaultEnabled: true, locked: false },
+            { id: 'atalhos', label: 'Apoio', icon: 'folder', defaultEnabled: true, locked: true }
+        ];
+
+        function getDefaultFooterButtonsConfig() {
+            return AZIMUTE_FOOTER_NAV_CATALOG.map(item => ({
+                id: item.id,
+                enabled: item.defaultEnabled
+            }));
+        }
+
+        function normalizeFooterButtonsConfig(rawList) {
+            const def = getDefaultFooterButtonsConfig();
+            if (!Array.isArray(rawList) || rawList.length === 0) return def;
+            const validIds = new Set(AZIMUTE_FOOTER_NAV_CATALOG.map(c => c.id));
+            const seen = new Set();
+            const normalized = [];
+            rawList.forEach(entry => {
+                if (!entry || !validIds.has(entry.id) || seen.has(entry.id)) return;
+                seen.add(entry.id);
+                const isLocked = entry.id === 'atalhos';
+                normalized.push({
+                    id: entry.id,
+                    enabled: isLocked ? true : Boolean(entry.enabled)
+                });
+            });
+            AZIMUTE_FOOTER_NAV_CATALOG.forEach(c => {
+                if (!seen.has(c.id)) {
+                    normalized.push({ id: c.id, enabled: c.defaultEnabled });
+                }
+            });
+            return normalized;
+        }
 
         function getDefaultAzimuteUiSettings() {
             return {
                 manualMode: 'app',
                 showReloadBtn: true,
+                showFullscreenBtn: true,
                 showHeaderRede: true,
                 showHeaderHospBtn: true,
                 showStatusBarQth: true,
                 showSearchBox: true,
                 showQuickAccessBlock: true,
                 showNearestSupportBlock: true,
-                homeBlocksOrder: ['quick_access', 'nearest_support']
+                homeBlocksOrder: ['quick_access', 'nearest_support'],
+                footerButtons: getDefaultFooterButtonsConfig()
             };
         }
 
@@ -10985,6 +11050,7 @@
                 return {
                     manualMode: ['app', 'grid', 'web'].includes(parsed.manualMode) ? parsed.manualMode : def.manualMode,
                     showReloadBtn: parsed.showReloadBtn !== undefined ? Boolean(parsed.showReloadBtn) : def.showReloadBtn,
+                    showFullscreenBtn: parsed.showFullscreenBtn !== undefined ? Boolean(parsed.showFullscreenBtn) : def.showFullscreenBtn,
                     showHeaderRede: parsed.showHeaderRede !== undefined ? Boolean(parsed.showHeaderRede) : def.showHeaderRede,
                     showHeaderHospBtn: parsed.showHeaderHospBtn !== undefined ? Boolean(parsed.showHeaderHospBtn) : def.showHeaderHospBtn,
                     showStatusBarQth: parsed.showStatusBarQth !== undefined ? Boolean(parsed.showStatusBarQth) : def.showStatusBarQth,
@@ -10993,7 +11059,8 @@
                     showNearestSupportBlock: parsed.showNearestSupportBlock !== undefined ? Boolean(parsed.showNearestSupportBlock) : def.showNearestSupportBlock,
                     homeBlocksOrder: Array.isArray(parsed.homeBlocksOrder) && parsed.homeBlocksOrder.length === 2
                         ? parsed.homeBlocksOrder
-                        : def.homeBlocksOrder
+                        : def.homeBlocksOrder,
+                    footerButtons: normalizeFooterButtonsConfig(parsed.footerButtons)
                 };
             } catch (e) {
                 return def;
@@ -11005,6 +11072,80 @@
                 localStorage.setItem(AZIMUTE_UI_SETTINGS_STORAGE_KEY, JSON.stringify(settingsObj));
             } catch (e) {}
         }
+
+        function getFooterCatIconHtml(item) {
+            if (item.icon === 'cross') {
+                return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-pmmg-gold shrink-0"><path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6V3z"/></svg>`;
+            }
+            if (item.icon === 'drone') {
+                return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-pmmg-gold shrink-0"><rect x="9" y="9" width="6" height="6" rx="1"/><path d="M9 9 5.5 5.5"/><path d="M15 9l3.5-3.5"/><path d="M9 15l-3.5 3.5"/><path d="M15 15l3.5 3.5"/><circle cx="4.5" cy="4.5" r="2.5"/><circle cx="19.5" cy="4.5" r="2.5"/><circle cx="4.5" cy="19.5" r="2.5"/><circle cx="19.5" cy="19.5" r="2.5"/></svg>`;
+            }
+            return `<i data-lucide="${item.icon}" class="w-4 h-4 text-pmmg-gold shrink-0"></i>`;
+        }
+
+        window.renderFooterButtonsCustomizerList = function() {
+            const listEl = document.getElementById('ajustesFooterButtonsList');
+            if (!listEl) return;
+            const s = getAzimuteUiSettings();
+            const cfg = normalizeFooterButtonsConfig(s.footerButtons);
+            const catalogMap = {};
+            AZIMUTE_FOOTER_NAV_CATALOG.forEach(c => { catalogMap[c.id] = c; });
+
+            listEl.innerHTML = cfg.map((entry, idx) => {
+                const item = catalogMap[entry.id];
+                if (!item) return '';
+                const isFirst = idx === 0;
+                const isLast = idx === cfg.length - 1;
+                const isLocked = Boolean(item.locked);
+                return `
+                    <div class="flex items-center justify-between gap-2 p-2.5 rounded-xl border ${entry.enabled ? 'bg-pmmg-black/90 border-pmmg-gold/50' : 'bg-pmmg-black/40 border-pmmg-border opacity-70'} transition-all">
+                        <label class="flex items-center gap-2.5 ${isLocked ? 'cursor-default' : 'cursor-pointer'} select-none min-w-0 flex-1">
+                            <input type="checkbox" ${entry.enabled ? 'checked' : ''} ${isLocked ? 'disabled' : ''} onchange="toggleFooterButtonEnabled('${item.id}')" class="w-4 h-4 rounded border-pmmg-border bg-pmmg-black text-pmmg-khaki focus:ring-pmmg-khaki accent-[#C5A869] ${isLocked ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'} shrink-0">
+                            <span class="text-[10px] font-mono text-gray-400 w-5 shrink-0">${idx + 1}º</span>
+                            ${getFooterCatIconHtml(item)}
+                            <span class="text-xs font-bold ${entry.enabled ? 'text-white' : 'text-gray-400'} truncate">${item.label}${isLocked ? ' (Fixo)' : ''}</span>
+                        </label>
+                        <div class="flex items-center gap-1 shrink-0">
+                            <button type="button" onclick="moveFooterButtonItem(${idx}, -1)" ${isFirst ? 'disabled' : ''} class="px-2 py-1 rounded bg-pmmg-card hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-border text-[10px] font-extrabold ${isFirst ? 'opacity-30 cursor-not-allowed' : 'cursor-pointer'}" title="Mover para esquerda">
+                                ↑
+                            </button>
+                            <button type="button" onclick="moveFooterButtonItem(${idx}, 1)" ${isLast ? 'disabled' : ''} class="px-2 py-1 rounded bg-pmmg-card hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-border text-[10px] font-extrabold ${isLast ? 'opacity-30 cursor-not-allowed' : 'cursor-pointer'}" title="Mover para direita">
+                                ↓
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        };
+
+        window.toggleFooterButtonEnabled = function(btnId) {
+            if (btnId === 'atalhos') return;
+            const s = getAzimuteUiSettings();
+            const cfg = normalizeFooterButtonsConfig(s.footerButtons);
+            const target = cfg.find(x => x.id === btnId);
+            if (!target) return;
+            target.enabled = !target.enabled;
+            s.footerButtons = cfg;
+            saveAzimuteUiSettingsToStorage(s);
+            window.applyAzimuteUiSettings();
+            window.renderFooterButtonsCustomizerList();
+        };
+
+        window.moveFooterButtonItem = function(index, direction) {
+            const s = getAzimuteUiSettings();
+            const cfg = normalizeFooterButtonsConfig(s.footerButtons);
+            const newIdx = index + direction;
+            if (newIdx < 0 || newIdx >= cfg.length) return;
+            const temp = cfg[index];
+            cfg[index] = cfg[newIdx];
+            cfg[newIdx] = temp;
+            s.footerButtons = cfg;
+            saveAzimuteUiSettingsToStorage(s);
+            window.applyAzimuteUiSettings();
+            window.renderFooterButtonsCustomizerList();
+        };
 
         window.toggleApoioCategoryBox = function(catKey, forceOpen = null) {
             const boxEl = document.getElementById(`boxApoioCat-${catKey}`);
@@ -11051,6 +11192,7 @@
                 if (lblEl) lblEl.textContent = 'Fechar';
                 if (iconEl) iconEl.style.transform = 'rotate(180deg)';
                 window.syncAjustesInputsFromStorage();
+                window.renderFooterButtonsCustomizerList();
                 if (typeof renderQuickAccessCustomizerList === 'function') renderQuickAccessCustomizerList();
             } else {
                 bodyEl.classList.add('hidden');
@@ -11069,6 +11211,7 @@
 
             const mapChecks = {
                 chkShowReloadBtn: s.showReloadBtn,
+                chkShowFullscreenBtn: s.showFullscreenBtn,
                 chkShowHeaderRede: s.showHeaderRede,
                 chkShowHeaderHospBtn: s.showHeaderHospBtn,
                 chkShowStatusBarQth: s.showStatusBarQth,
@@ -11100,17 +11243,23 @@
                 btnReload.style.display = s.showReloadBtn ? '' : 'none';
             }
 
-            // 2. Rede do Batalhão no Topo ("| 5º BPM A")
+            // 2. Botão Tela Cheia (Ícone no topo)
+            const btnFull = document.getElementById('btnHeaderFullscreen');
+            if (btnFull) {
+                btnFull.style.display = s.showFullscreenBtn ? '' : 'none';
+            }
+
+            // 3. Rede do Batalhão no Topo ("| 5º BPM A")
             const redeBtn = document.getElementById('statusBarBtnRede');
             const redePipe = document.getElementById('headerRedePipe');
             if (redeBtn) redeBtn.style.display = s.showHeaderRede ? '' : 'none';
             if (redePipe) redePipe.style.display = s.showHeaderRede ? '' : 'none';
 
-            // 3. Botão Cruz Vermelha no Topo
+            // 4. Botão Cruz Vermelha no Topo
             const hospBtn = document.getElementById('statusBarBtnHosp');
             if (hospBtn) hospBtn.style.display = s.showHeaderHospBtn ? '' : 'none';
 
-            // 4. Barra de Localização (GPS | QTH)
+            // 5. Barra de Localização (GPS | QTH)
             const statusBar = document.getElementById('operationalStatusBar');
             if (statusBar) {
                 if (isHome && s.showStatusBarQth) {
@@ -11122,7 +11271,7 @@
                 }
             }
 
-            // 5. Caixa de Pesquisa Global
+            // 6. Caixa de Pesquisa Global
             const searchBox = document.getElementById('homeSearchBoxContainer');
             if (searchBox) {
                 if (isHome && s.showSearchBox) {
@@ -11134,7 +11283,7 @@
                 }
             }
 
-            // 6. Blocos da Tela Inicial (Acesso Rápido e Apoio Mais Próximo) + Ordem de Exibição
+            // 7. Blocos da Tela Inicial (Acesso Rápido e Apoio Mais Próximo) + Ordem de Exibição
             const homeView = document.getElementById('view-home');
             const qaSection = document.getElementById('homeQuickAccessSection');
             const nsSection = document.getElementById('homeNearestSupportSection');
@@ -11168,6 +11317,28 @@
                 }
             }
 
+            // 8. Botões do Rodapé da Tela Início (#mobileBottomNavGrid) — Visibilidade e Ordem Exata
+            const bottomGrid = document.getElementById('mobileBottomNavGrid');
+            if (bottomGrid) {
+                const footerCfg = normalizeFooterButtonsConfig(s.footerButtons);
+                let visibleCount = 0;
+                footerCfg.forEach(entry => {
+                    const btnEl = document.getElementById(`bnav-${entry.id}`);
+                    if (!btnEl) return;
+                    bottomGrid.appendChild(btnEl);
+                    if (entry.enabled) {
+                        btnEl.classList.remove('hidden');
+                        btnEl.style.removeProperty('display');
+                        visibleCount++;
+                    } else {
+                        btnEl.classList.add('hidden');
+                        btnEl.style.setProperty('display', 'none', 'important');
+                    }
+                });
+                const cols = Math.max(1, visibleCount);
+                bottomGrid.style.gridTemplateColumns = `repeat(${cols}, minmax(0, 1fr))`;
+            }
+
             window.syncAjustesInputsFromStorage();
         };
 
@@ -11178,6 +11349,7 @@
                 return el ? Boolean(el.checked) : fallback;
             };
             s.showReloadBtn = getChk('chkShowReloadBtn', s.showReloadBtn);
+            s.showFullscreenBtn = getChk('chkShowFullscreenBtn', s.showFullscreenBtn);
             s.showHeaderRede = getChk('chkShowHeaderRede', s.showHeaderRede);
             s.showHeaderHospBtn = getChk('chkShowHeaderHospBtn', s.showHeaderHospBtn);
             s.showStatusBarQth = getChk('chkShowStatusBarQth', s.showStatusBarQth);
@@ -11206,10 +11378,14 @@
 
         window.saveAllAzimuteSettings = function(notify = true) {
             window.updateAzimuteUiPreferenceFromInputs();
+            const s = getAzimuteUiSettings();
+            saveAzimuteUiSettingsToStorage(s);
             const qaCfg = getQuickAccessConfig();
             saveQuickAccessConfig(qaCfg);
             renderQuickAccessGrid();
             renderQuickAccessCustomizerList();
+            window.renderFooterButtonsCustomizerList();
+            window.applyAzimuteUiSettings();
             if (notify && typeof showToast === 'function') {
                 showToast('Configurações salvas permanentemente no aparelho!');
             }
@@ -11225,6 +11401,7 @@
             window.setLayoutMode('app', false);
             window.syncAjustesInputsFromStorage();
             window.applyAzimuteUiSettings();
+            window.renderFooterButtonsCustomizerList();
             renderQuickAccessGrid();
             renderQuickAccessCustomizerList();
             if (typeof showToast === 'function') {
@@ -11984,7 +12161,7 @@
                 if (typeof window.toggleRpasAircraftDataBox === 'function') window.toggleRpasAircraftDataBox(false);
             } else if (viewId === 'atalhos') {
                 if (activeBadge) activeBadge.classList.remove('hidden');
-                if (activeName) activeName.textContent = 'Consultas e Recursos';
+                if (activeName) activeName.textContent = 'Sistemas e Consultas';
                 if (typeof window.toggleApoioCategoryBox === 'function') {
                     window.toggleApoioCategoryBox('sistemas', false);
                     window.toggleApoioCategoryBox('radio', false);
@@ -11999,6 +12176,9 @@
                 window.azimuteOpenAjustesNext = false;
                 if (typeof window.syncAjustesInputsFromStorage === 'function') {
                     window.syncAjustesInputsFromStorage();
+                }
+                if (typeof window.renderFooterButtonsCustomizerList === 'function') {
+                    window.renderFooterButtonsCustomizerList();
                 }
                 if (typeof renderQuickAccessCustomizerList === 'function') {
                     renderQuickAccessCustomizerList();
