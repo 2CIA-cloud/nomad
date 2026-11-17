@@ -4549,6 +4549,37 @@
                 </button>
             </div>
 
+            <!-- BOTÕES DIRETOS DE LIGAÇÃO TELEFÔNICA: SAMU (192) E BOMBEIROS (193) -->
+            <div id="saudeEmergencyPhonesBar" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <a href="tel:192" class="bg-[#161616] hover:bg-pmmg-cardHover active:scale-[0.99] px-4 py-3 rounded-xl border border-[#C5A869]/50 hover:border-red-500/80 flex items-center justify-between gap-3 shadow-md transition-all group">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        <div class="p-2 rounded-lg bg-[#0D0D0D] text-red-400 border border-red-500/40 shrink-0">
+                            <i data-lucide="phone-call" class="w-4 h-4"></i>
+                        </div>
+                        <span class="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-white group-hover:text-pmmg-khaki truncate">
+                            LIGAR SAMU — 192
+                        </span>
+                    </div>
+                    <span class="text-[11px] font-mono font-extrabold text-red-400 bg-[#0D0D0D] px-2.5 py-1 rounded border border-red-500/40 shrink-0">
+                        192
+                    </span>
+                </a>
+
+                <a href="tel:193" class="bg-[#161616] hover:bg-pmmg-cardHover active:scale-[0.99] px-4 py-3 rounded-xl border border-[#C5A869]/50 hover:border-amber-500/80 flex items-center justify-between gap-3 shadow-md transition-all group">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        <div class="p-2 rounded-lg bg-[#0D0D0D] text-amber-400 border border-amber-500/40 shrink-0">
+                            <i data-lucide="phone-call" class="w-4 h-4"></i>
+                        </div>
+                        <span class="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-white group-hover:text-pmmg-khaki truncate">
+                            LIGAR BOMBEIROS — 193
+                        </span>
+                    </div>
+                    <span class="text-[11px] font-mono font-extrabold text-amber-400 bg-[#0D0D0D] px-2.5 py-1 rounded border border-amber-500/40 shrink-0">
+                        193
+                    </span>
+                </a>
+            </div>
+
             <!-- 1. REDE HOSPITALAR UNIFICADA (GPS CONTÍNUO • HOSPITAL INDICADO + OUTRAS OPÇÕES EM ORDEM CRESCENTE) -->
             <div id="saudeSmartHospitalPanel" class="bg-pmmg-card border border-pmmg-khaki/50 rounded-2xl overflow-hidden shadow-2xl">
                 <button type="button" onclick="toggleSaudeSmartHospitalBox()" id="btnToggleSaudeSmartHospital" class="w-full p-4 sm:p-5 flex items-center justify-between gap-3 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
@@ -4675,7 +4706,7 @@
                 <!-- Conteúdo interno fechado por padrão: Card Didático Protocolo MARCH no topo + Grade de Protocolos -->
                 <div id="offlineAphGuideExpandableBody" class="hidden p-4 sm:p-5 pt-3 border-t border-pmmg-border space-y-4">
                     
-                    <!-- CARD DIDÁTICO RÁPIDO E VISUAL: SEQUÊNCIA DO PROTOCOLO MARCH (MANUAL PMMG) -->
+                    <!-- CARD DIDÁTICO RÁPIDO E VISUAL: SEQUÊNCIA DO PROTOCOLO MARCH (MANUAL PMMG 2026/2027) -->
                     <div id="aphMarchProtocolDidacticCard" class="bg-[#0D0D0D] border border-[#C5A869]/60 border-l-4 border-l-red-500 rounded-2xl p-4 sm:p-5 space-y-3.5 shadow-xl">
                         <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border pb-2.5">
                             <div class="flex items-center gap-2.5">
@@ -4684,52 +4715,52 @@
                                 </span>
                                 <div>
                                     <h4 class="text-lg sm:text-xl font-military text-white uppercase tracking-wider leading-none">
-                                        Protocolo MARCH • Sequência de Atendimento (Manual PMMG)
+                                        Protocolo MARCH • O Que Fazer em Cada Etapa (Manual PMMG 2026/2027)
                                     </h4>
                                     <span class="text-[11px] text-gray-400 block mt-0.5">
-                                        Ordem prioritária de avaliação e intervenção rápida no atendimento pré-hospitalar
+                                        Conduta objetiva por prioridade no atendimento pré-hospitalar
                                     </span>
                                 </div>
                             </div>
                             <span class="text-[10px] font-mono font-bold uppercase text-pmmg-khaki bg-[#161616] px-2.5 py-1 rounded border border-[#C5A869]/40">
-                                Consulta Rápida Offline
+                                Manual PMMG 2026/2027
                             </span>
                         </div>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5 text-xs">
-                            <!-- M — Maciço -->
-                            <div class="bg-[#161616] p-3 rounded-xl border border-red-500/40 flex flex-col justify-between space-y-1.5">
-                                <div class="flex items-center gap-2">
+                        <div class="space-y-2.5 text-xs">
+                            <!-- M — Maciço (Hemorragia Maciça) -->
+                            <div class="bg-[#161616] p-3.5 rounded-xl border border-red-500/45 space-y-1.5">
+                                <div class="flex items-center gap-2.5">
                                     <span class="w-7 h-7 rounded-lg bg-red-950 text-red-400 border border-red-500/50 font-military text-xl font-bold flex items-center justify-center shrink-0 leading-none">
                                         M
                                     </span>
                                     <strong class="text-white font-extrabold uppercase tracking-wide text-xs sm:text-sm">
-                                        M — Maciço
+                                        M — Maciço (Hemorragia Maciça)
                                     </strong>
                                 </div>
-                                <p class="text-[11px] text-gray-300 leading-relaxed">
-                                    Controle imediato de sangramento maciço / Torniquete e preenchimento.
+                                <p class="text-xs text-gray-200 leading-relaxed pl-0.5">
+                                    Identificar sangramento pulsante ou poças de sangue; cortar fardamento com tesoura ponta romba; aplicar torniquete emergencial (mais alto e apertado sobre a roupa na Zona Quente) ou controlado (5 a 7 cm acima da ferida em local seguro); preencher feridas juncionais (pescoço, axila, virilha) com gaze hemostática/comprimida + compressão direta e bandagem.
                                 </p>
                             </div>
 
-                            <!-- A — Aéreas -->
-                            <div class="bg-[#161616] p-3 rounded-xl border border-sky-500/40 flex flex-col justify-between space-y-1.5">
-                                <div class="flex items-center gap-2">
+                            <!-- A — Aéreas (Vias Aéreas) -->
+                            <div class="bg-[#161616] p-3.5 rounded-xl border border-sky-500/45 space-y-1.5">
+                                <div class="flex items-center gap-2.5">
                                     <span class="w-7 h-7 rounded-lg bg-sky-950 text-sky-400 border border-sky-500/50 font-military text-xl font-bold flex items-center justify-center shrink-0 leading-none">
                                         A
                                     </span>
                                     <strong class="text-white font-extrabold uppercase tracking-wide text-xs sm:text-sm">
-                                        A — Aéreas
+                                        A — Aéreas (Vias Aéreas)
                                     </strong>
                                 </div>
-                                <p class="text-[11px] text-gray-300 leading-relaxed">
-                                    Controle e desobstrução das vias aéreas / Posicionamento e cânula.
+                                <p class="text-xs text-gray-200 leading-relaxed pl-0.5">
+                                    Se consciente, manter na posição mais confortável (sentado e inclinado se trauma facial); se inconsciente, inspecionar boca, remover objetos sólidos em pinça, lateralizar para escoar fluidos, realizar Elevação do Queixo ou Tração Mandibular (suspeita cervical), inserir Cânula Nasofaríngea (exceto em trauma facial/base de crânio) e posicionar em Decúbito Lateral (Posição de Recuperação).
                                 </p>
                             </div>
 
                             <!-- R — Respiração -->
-                            <div class="bg-[#161616] p-3 rounded-xl border border-amber-500/40 flex flex-col justify-between space-y-1.5">
-                                <div class="flex items-center gap-2">
+                            <div class="bg-[#161616] p-3.5 rounded-xl border border-amber-500/45 space-y-1.5">
+                                <div class="flex items-center gap-2.5">
                                     <span class="w-7 h-7 rounded-lg bg-amber-950 text-amber-300 border border-amber-500/50 font-military text-xl font-bold flex items-center justify-center shrink-0 leading-none">
                                         R
                                     </span>
@@ -4737,14 +4768,14 @@
                                         R — Respiração
                                     </strong>
                                 </div>
-                                <p class="text-[11px] text-gray-300 leading-relaxed">
-                                    Manutenção da respiração / Selo de tórax valvulado em ferida soprante.
+                                <p class="text-xs text-gray-200 leading-relaxed pl-0.5">
+                                    Avaliar simetria do tórax, frequência respiratória, dispneia e cianose; buscar ferimentos penetrantes na frente, laterais e costas do tórax; limpar o local e aplicar Selo de Tórax Valvulado sem tocar no adesivo para evitar pneumotórax hipertensivo.
                                 </p>
                             </div>
 
                             <!-- C — Circulação -->
-                            <div class="bg-[#161616] p-3 rounded-xl border border-rose-500/40 flex flex-col justify-between space-y-1.5">
-                                <div class="flex items-center gap-2">
+                            <div class="bg-[#161616] p-3.5 rounded-xl border border-rose-500/45 space-y-1.5">
+                                <div class="flex items-center gap-2.5">
                                     <span class="w-7 h-7 rounded-lg bg-rose-950 text-rose-400 border border-rose-500/50 font-military text-xl font-bold flex items-center justify-center shrink-0 leading-none">
                                         C
                                     </span>
@@ -4752,14 +4783,14 @@
                                         C — Circulação
                                     </strong>
                                 </div>
-                                <p class="text-[11px] text-gray-300 leading-relaxed">
-                                    Avaliação de choque — pulso radial, perfusão capilar, consciência — e revisão de torniquete.
+                                <p class="text-xs text-gray-200 leading-relaxed pl-0.5">
+                                    Revisar torniquetes e curativos aplicados; avaliar sinais de choque verificando Pulso Radial, Perfusão Capilar Digital (&lt; 2s) e Nível de Consciência; realizar conversão de torniquete apenas se não houver choque, amputação ou evacuação &gt; 2h.
                                 </p>
                             </div>
 
                             <!-- H — Hipotermia -->
-                            <div class="bg-[#161616] p-3 rounded-xl border border-[#C5A869]/50 flex flex-col justify-between space-y-1.5 sm:col-span-2 lg:col-span-1">
-                                <div class="flex items-center gap-2">
+                            <div class="bg-[#161616] p-3.5 rounded-xl border border-[#C5A869]/50 space-y-1.5">
+                                <div class="flex items-center gap-2.5">
                                     <span class="w-7 h-7 rounded-lg bg-pmmg-khakiBadge text-pmmg-khaki border border-[#C5A869]/50 font-military text-xl font-bold flex items-center justify-center shrink-0 leading-none">
                                         H
                                     </span>
@@ -4767,8 +4798,8 @@
                                         H — Hipotermia
                                     </strong>
                                 </div>
-                                <p class="text-[11px] text-gray-300 leading-relaxed">
-                                    Prevenção da hipotermia e controle da Tríade da Morte.
+                                <p class="text-xs text-gray-200 leading-relaxed pl-0.5">
+                                    Combater a Tríade da Morte (Hipotermia + Acidose + Coagulopatia); isolar o ferido do solo frio, trocar roupas molhadas, manter colete para retenção térmica, envolver com Manta Térmica aluminizada e aplicar fontes de calor no tórax, axilas ou virilhas.
                                 </p>
                             </div>
                         </div>
