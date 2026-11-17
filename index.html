@@ -1508,6 +1508,9 @@
 
         <!-- ================= VIEW AERONAVES REMOTAMENTE PILOTADAS (RPAS) ================= -->
         <section id="view-rpas" class="hidden space-y-4">
+            <div class="px-1 pt-0.5 flex items-center justify-between">
+                <h2 class="text-xl sm:text-3xl font-military text-pmmg-khaki uppercase tracking-wide leading-none whitespace-nowrap">Aeronaves Remotamente Pilotadas</h2>
+            </div>
             <div id="rpasSubtabPainel" class="space-y-4">
                 
                 <!-- 1. PARÂMETROS DE VOO & CONDIÇÕES METEOROLÓGICAS (CAIXA FECHADA POR PADRÃO, VISUAL ESCURO E LIMPO) -->
@@ -1539,7 +1542,7 @@
                                     Monitoramento de Vento, Rajadas, Temperatura e Precipitação
                                 </span>
                                 <p class="text-[11px] text-gray-400 italic">
-                                    Alerta sonoro desativado por padrão (se desejar aviso sonoro de mudança climática, ative o som no botão ao lado).
+                                    Nota: efeitos sonoros desativados por padrão. Caso deseje alerta sonoro, ative o som manualmente no botão ao lado.
                                 </p>
                             </div>
 
@@ -11769,6 +11772,7 @@
             } else if (viewId === 'rpas') {
                 if (typeof window.toggleRpasFlightParamsBox === 'function') window.toggleRpasFlightParamsBox(false);
                 if (typeof window.toggleRpasChecklistBox === 'function') window.toggleRpasChecklistBox(false);
+                if (typeof window.toggleRpasAircraftDataBox === 'function') window.toggleRpasAircraftDataBox(false);
             }
 
             const target = document.getElementById(`view-${viewId}`);
@@ -12298,7 +12302,7 @@
             });
             index.push({
                 title: 'Aeronaves Remotamente Pilotadas (RPAS / Drones)',
-                category: 'Aba Principal • Drones PMMG',
+                category: 'Aba Principal • Aeronaves Remotamente Pilotadas',
                 badgeColor: 'bg-sky-950 text-sky-400 border-sky-500/40',
                 keywords: 'drone drones rpas arp mavic manual materiais para pilotos sarpas voo',
                 snippet: 'Manuais Técnicos de Aeronaves (DJI Mavic 3 Enterprise), Materiais para Pilotos (EAD) e SARPAS.',
