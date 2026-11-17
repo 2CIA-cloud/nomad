@@ -5231,7 +5231,7 @@
                 </button>
 
                 <div id="boxApoioCat-registro" class="hidden p-4 sm:p-5 pt-3 border-t border-pmmg-border space-y-3">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         <!-- 1. REDS -->
                         <a href="https://api-sso.sids.mg.gov.br/authenticationendpoint/login.do?client_id=kT8uHiArnyXY4UrLHxYwEcaJsIUa&commonAuthCallerPath=%2Foauth2%2Fauthorize&forceAuth=false&passiveAuth=false&redirect_uri=https%3A%2F%2Fweb.sids.mg.gov.br%2Freds%2Findex.do&response_type=code&scope=openid&tenantDomain=carbon.super&sessionDataKey=0d7a6245-ae7c-4816-a15e-68d8167dfe8d&relyingParty=kT8uHiArnyXY4UrLHxYwEcaJsIUa&type=oidc&sp=REDS&isSaaSApp=false&authenticators=BasicAuthenticator%3ALOCAL" target="_blank" rel="noopener noreferrer" class="bg-[#0D0D0D] p-4 rounded-xl border border-[#C5A869]/40 hover:border-[#C5A869] flex items-center justify-between group transition-all">
                             <span class="text-xl sm:text-2xl font-military text-white font-bold uppercase group-hover:text-pmmg-gold transition-colors">REDS</span>
@@ -5255,84 +5255,6 @@
                                 <i data-lucide="shield-check" class="w-5 h-5"></i>
                             </div>
                         </a>
-
-                        <!-- 4. CÓDIGO Q (INCLUINDO ALFABETO FONÉTICO INTERNACIONAL OTAN NA MESMA GAVETA DA DIAO) -->
-                        <button type="button" onclick="toggleApoioQcodeInnerBox()" id="btnToggleApoioQcodeInner" class="bg-[#0D0D0D] p-4 rounded-xl border border-[#C5A869]/40 hover:border-[#C5A869] flex items-center justify-between group transition-all text-left cursor-pointer">
-                            <span class="text-xl sm:text-2xl font-military text-pmmg-khaki font-bold uppercase group-hover:text-white transition-colors">CÓDIGO Q</span>
-                            <div class="flex items-center gap-2 shrink-0">
-                                <span id="lblApoioQcodeInner" class="text-[10px] font-bold text-pmmg-khaki uppercase">Abrir</span>
-                                <div class="p-2 bg-[#161616] text-pmmg-gold border border-pmmg-border rounded-lg group-hover:border-[#C5A869] transition-colors">
-                                    <i data-lucide="chevron-down" id="icoApoioQcodeInner" class="w-4 h-4 transition-transform duration-200"></i>
-                                </div>
-                            </div>
-                        </button>
-
-                        <!-- 5. EMENTÁRIO -->
-                        <a href="https://ementario.policiamilitar.mg.gov.br/principal" target="_blank" rel="noopener noreferrer" class="bg-[#0D0D0D] p-4 rounded-xl border border-[#C5A869]/40 hover:border-[#C5A869] flex items-center justify-between group transition-all">
-                            <span class="text-xl sm:text-2xl font-military text-white font-bold uppercase group-hover:text-emerald-400 transition-colors">EMENTÁRIO</span>
-                            <div class="p-2.5 bg-[#161616] text-emerald-400 border border-pmmg-border rounded-lg group-hover:border-[#C5A869] transition-colors shrink-0">
-                                <i data-lucide="book-open" class="w-5 h-5"></i>
-                            </div>
-                        </a>
-                    </div>
-
-                    <!-- PAINEL EXPANSÍVEL DO CÓDIGO Q E ALFABETO FONÉTICO INTERNACIONAL (OTAN) -->
-                    <div id="boxApoioQcodeInner" class="hidden bg-[#0D0D0D] p-4 pt-3 rounded-xl border border-[#C5A869]/40 space-y-5 text-xs">
-
-                            <!-- 1. ALFABETO FONÉTICO INTERNACIONAL (OTAN) -->
-                            <div>
-                                <h4 class="font-bold text-pmmg-khaki border-b border-pmmg-border pb-1.5 mb-2.5 uppercase">Alfabeto Fonético Internacional (OTAN)</h4>
-                                <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-2 font-mono">
-                                    <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">A:</strong> Alpha</div>
-                                    <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">B:</strong> Bravo</div>
-                                    <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">C:</strong> Charlie</div>
-                                    <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">D:</strong> Delta</div>
-                                    <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">E:</strong> Echo</div>
-                                    <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">F:</strong> Foxtrot</div>
-                                    <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">G:</strong> Golf</div>
-                                    <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">H:</strong> Hotel</div>
-                                    <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">I:</strong> India</div>
-                                    <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">J:</strong> Juliett</div>
-                                    <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">K:</strong> Kilo</div>
-                                    <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">L:</strong> Lima</div>
-                                    <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">M:</strong> Mike</div>
-                                    <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">N:</strong> November</div>
-                                    <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">O:</strong> Oscar</div>
-                                    <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">P:</strong> Papa</div>
-                                    <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">Q:</strong> Quebec</div>
-                                    <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">R:</strong> Romeo</div>
-                                    <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">S:</strong> Sierra</div>
-                                    <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">T:</strong> Tango</div>
-                                    <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">U:</strong> Uniform</div>
-                                    <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">V:</strong> Victor</div>
-                                    <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">W:</strong> Whiskey</div>
-                                    <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">X:</strong> X-ray</div>
-                                    <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">Y:</strong> Yankee</div>
-                                    <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">Z:</strong> Zulu</div>
-                                </div>
-                            </div>
-
-                            <!-- 2. CÓDIGO Q PRINCIPAL -->
-                            <div>
-                                <h4 class="font-bold text-pmmg-khaki border-b border-pmmg-border pb-1.5 mb-2.5 uppercase">Código Q • Comunicação Via Rádio</h4>
-                                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 font-mono">
-                                    <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">QAP:</strong> Na escuta / Em prontidão</div>
-                                    <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">QRA:</strong> Nome do operador / unidade</div>
-                                    <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">QRL:</strong> Ocupado / Em ocorrência</div>
-                                    <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">QRM:</strong> Interferência de rádio</div>
-                                    <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">QRU:</strong> Ocorrência / Novidades</div>
-                                    <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">QRV:</strong> À disposição / Pronto</div>
-                                    <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">QRX:</strong> Aguarde um momento</div>
-                                    <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">QSL:</strong> Entendido / Confirmado</div>
-                                    <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">QSO:</strong> Contato / Comunicação</div>
-                                    <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">QTA:</strong> Cancelar mensagem / missão</div>
-                                    <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">QTC:</strong> Mensagem / Comunicado</div>
-                                    <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">QTH:</strong> Endereço / Localização exata</div>
-                                    <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">QTI:</strong> A caminho / Destino</div>
-                                    <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">QTR:</strong> Horário exato</div>
-                                    <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">TKS:</strong> Obrigado / Ciente</div>
-                                </div>
-                            </div>
                     </div>
                 </div>
             </div>
@@ -5352,9 +5274,17 @@
                     </div>
                 </button>
 
-                <div id="boxApoioCat-gestao" class="hidden p-4 sm:p-5 pt-3 border-t border-pmmg-border">
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        <!-- 1. SIGOP -->
+                <div id="boxApoioCat-gestao" class="hidden p-4 sm:p-5 pt-3 border-t border-pmmg-border space-y-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                        <!-- 1º INTRANET -->
+                        <a href="https://intranet.policiamilitar.mg.gov.br/autenticacaosso/login.jsf" target="_blank" rel="noopener noreferrer" class="bg-[#0D0D0D] p-4 rounded-xl border border-[#C5A869]/40 hover:border-[#C5A869] flex items-center justify-between group transition-all">
+                            <span class="text-xl sm:text-2xl font-military text-white font-bold uppercase group-hover:text-pmmg-khaki transition-colors">INTRANET</span>
+                            <div class="p-2.5 bg-[#161616] text-pmmg-khaki border border-pmmg-border rounded-lg group-hover:border-[#C5A869] transition-colors shrink-0">
+                                <i data-lucide="shield" class="w-5 h-5"></i>
+                            </div>
+                        </a>
+
+                        <!-- 2º SIGOP -->
                         <a href="https://intranet.policiamilitar.mg.gov.br/lite/daop/web/" target="_blank" rel="noopener noreferrer" class="bg-[#0D0D0D] p-4 rounded-xl border border-[#C5A869]/40 hover:border-[#C5A869] flex items-center justify-between group transition-all">
                             <span class="text-xl sm:text-2xl font-military text-white font-bold uppercase group-hover:text-pmmg-gold transition-colors">SIGOP</span>
                             <div class="p-2.5 bg-[#161616] text-pmmg-gold border border-pmmg-border rounded-lg group-hover:border-[#C5A869] transition-colors shrink-0">
@@ -5362,7 +5292,7 @@
                             </div>
                         </a>
 
-                        <!-- 2. STELECOM -->
+                        <!-- 3º STELECOM -->
                         <a href="https://intranet.policiamilitar.mg.gov.br/telefonia/paginas/pesquisaTelefones/pesquisaTelefones.jsf" target="_blank" rel="noopener noreferrer" class="bg-[#0D0D0D] p-4 rounded-xl border border-[#C5A869]/40 hover:border-[#C5A869] flex items-center justify-between group transition-all">
                             <span class="text-xl sm:text-2xl font-military text-white font-bold uppercase group-hover:text-pmmg-khaki transition-colors">STELECOM</span>
                             <div class="p-2.5 bg-[#161616] text-pmmg-khaki border border-pmmg-border rounded-lg group-hover:border-[#C5A869] transition-colors shrink-0">
@@ -5370,13 +5300,87 @@
                             </div>
                         </a>
 
-                        <!-- 3. INTRANET -->
-                        <a href="https://intranet.policiamilitar.mg.gov.br/autenticacaosso/login.jsf" target="_blank" rel="noopener noreferrer" class="bg-[#0D0D0D] p-4 rounded-xl border border-[#C5A869]/40 hover:border-[#C5A869] flex items-center justify-between group transition-all">
-                            <span class="text-xl sm:text-2xl font-military text-white font-bold uppercase group-hover:text-pmmg-khaki transition-colors">INTRANET</span>
-                            <div class="p-2.5 bg-[#161616] text-pmmg-khaki border border-pmmg-border rounded-lg group-hover:border-[#C5A869] transition-colors shrink-0">
-                                <i data-lucide="shield" class="w-5 h-5"></i>
+                        <!-- 4º CÓDIGO Q (COM ALFABETO FONÉTICO INTERNACIONAL OTAN) -->
+                        <button type="button" onclick="toggleApoioQcodeInnerBox()" id="btnToggleApoioQcodeInner" class="bg-[#0D0D0D] p-4 rounded-xl border border-[#C5A869]/40 hover:border-[#C5A869] flex items-center justify-between group transition-all text-left cursor-pointer">
+                            <span class="text-xl sm:text-2xl font-military text-pmmg-khaki font-bold uppercase group-hover:text-white transition-colors">CÓDIGO Q</span>
+                            <div class="flex items-center gap-2 shrink-0">
+                                <span id="lblApoioQcodeInner" class="text-[10px] font-bold text-pmmg-khaki uppercase">Abrir</span>
+                                <div class="p-2 bg-[#161616] text-pmmg-gold border border-pmmg-border rounded-lg group-hover:border-[#C5A869] transition-colors">
+                                    <i data-lucide="chevron-down" id="icoApoioQcodeInner" class="w-4 h-4 transition-transform duration-200"></i>
+                                </div>
+                            </div>
+                        </button>
+
+                        <!-- 5º EMENTÁRIO -->
+                        <a href="https://ementario.policiamilitar.mg.gov.br/principal" target="_blank" rel="noopener noreferrer" class="bg-[#0D0D0D] p-4 rounded-xl border border-[#C5A869]/40 hover:border-[#C5A869] flex items-center justify-between group transition-all">
+                            <span class="text-xl sm:text-2xl font-military text-white font-bold uppercase group-hover:text-emerald-400 transition-colors">EMENTÁRIO</span>
+                            <div class="p-2.5 bg-[#161616] text-emerald-400 border border-pmmg-border rounded-lg group-hover:border-[#C5A869] transition-colors shrink-0">
+                                <i data-lucide="book-open" class="w-5 h-5"></i>
                             </div>
                         </a>
+                    </div>
+
+                    <!-- Nota discreta logo abaixo dos botões SIGOP e STELECOM -->
+                    <p class="text-[11px] text-gray-400 italic px-1">
+                        Para acessar os links do SIGOP e STELECOM, é necessário estar previamente logado na Intranet.
+                    </p>
+
+                    <!-- PAINEL EXPANSÍVEL DO CÓDIGO Q E ALFABETO FONÉTICO INTERNACIONAL (OTAN) -->
+                    <div id="boxApoioQcodeInner" class="hidden bg-[#0D0D0D] p-4 pt-3 rounded-xl border border-[#C5A869]/40 space-y-5 text-xs">
+                        <!-- 1. ALFABETO FONÉTICO INTERNACIONAL (OTAN) -->
+                        <div>
+                            <h4 class="font-bold text-pmmg-khaki border-b border-pmmg-border pb-1.5 mb-2.5 uppercase">Alfabeto Fonético Internacional (OTAN)</h4>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-2 font-mono">
+                                <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">A:</strong> Alpha</div>
+                                <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">B:</strong> Bravo</div>
+                                <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">C:</strong> Charlie</div>
+                                <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">D:</strong> Delta</div>
+                                <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">E:</strong> Echo</div>
+                                <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">F:</strong> Foxtrot</div>
+                                <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">G:</strong> Golf</div>
+                                <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">H:</strong> Hotel</div>
+                                <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">I:</strong> India</div>
+                                <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">J:</strong> Juliett</div>
+                                <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">K:</strong> Kilo</div>
+                                <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">L:</strong> Lima</div>
+                                <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">M:</strong> Mike</div>
+                                <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">N:</strong> November</div>
+                                <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">O:</strong> Oscar</div>
+                                <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">P:</strong> Papa</div>
+                                <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">Q:</strong> Quebec</div>
+                                <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">R:</strong> Romeo</div>
+                                <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">S:</strong> Sierra</div>
+                                <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">T:</strong> Tango</div>
+                                <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">U:</strong> Uniform</div>
+                                <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">V:</strong> Victor</div>
+                                <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">W:</strong> Whiskey</div>
+                                <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">X:</strong> X-ray</div>
+                                <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">Y:</strong> Yankee</div>
+                                <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">Z:</strong> Zulu</div>
+                            </div>
+                        </div>
+
+                        <!-- 2. CÓDIGO Q PRINCIPAL -->
+                        <div>
+                            <h4 class="font-bold text-pmmg-khaki border-b border-pmmg-border pb-1.5 mb-2.5 uppercase">Código Q • Comunicação Via Rádio</h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 font-mono">
+                                <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">QAP:</strong> Na escuta / Em prontidão</div>
+                                <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">QRA:</strong> Nome do operador / unidade</div>
+                                <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">QRL:</strong> Ocupado / Em ocorrência</div>
+                                <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">QRM:</strong> Interferência de rádio</div>
+                                <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">QRU:</strong> Ocorrência / Novidades</div>
+                                <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">QRV:</strong> À disposição / Pronto</div>
+                                <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">QRX:</strong> Aguarde um momento</div>
+                                <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">QSL:</strong> Entendido / Confirmado</div>
+                                <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">QSO:</strong> Contato / Comunicação</div>
+                                <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">QTA:</strong> Cancelar mensagem / missão</div>
+                                <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">QTC:</strong> Mensagem / Comunicado</div>
+                                <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">QTH:</strong> Endereço / Localização exata</div>
+                                <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">QTI:</strong> A caminho / Destino</div>
+                                <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">QTR:</strong> Horário exato</div>
+                                <div class="bg-[#161616] p-2 rounded border border-pmmg-border"><strong class="text-pmmg-gold">TKS:</strong> Obrigado / Ciente</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
