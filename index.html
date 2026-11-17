@@ -1798,9 +1798,9 @@
                                 </p>
                             </div>
 
-                            <!-- Telemetria Cruzada em Tempo Real (4 Cartões Fixos) -->
-                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-1 text-xs">
-                                <!-- Coordenada GPS & Altitude -->
+                            <!-- Telemetria Cruzada em Tempo Real (Alta Resolução Open-Meteo) -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 pt-1 text-xs">
+                                <!-- 1. Coordenada GPS & Altitude -->
                                 <div class="bg-[#161616] p-3 rounded-xl border border-pmmg-border space-y-1">
                                     <div class="flex items-center justify-between">
                                         <span class="text-[10px] font-bold uppercase text-pmmg-khaki">Posição GPS</span>
@@ -1810,17 +1810,18 @@
                                     <span id="rpasTelemetryAltitude" class="text-[11px] text-gray-400 block truncate">Altitude local: -- m</span>
                                 </div>
 
-                                <!-- Vento Atual & Rajadas vs Limite Fixo (43 km/h) -->
+                                <!-- 2. Vento 10m / 80m & Rajadas -->
                                 <div id="rpasMetricCardWind" class="bg-[#161616] p-3 rounded-xl border border-pmmg-border space-y-1">
                                     <div class="flex items-center justify-between">
-                                        <span class="text-[10px] font-bold uppercase text-gray-300">Vento & Rajadas</span>
+                                        <span class="text-[10px] font-bold uppercase text-gray-300">Vento (10m/80m) & Raj.</span>
                                         <span id="rpasMetricLimitWind" class="text-[10px] font-mono text-pmmg-khaki font-bold">Máx: 43 km/h</span>
                                     </div>
-                                    <strong id="rpasTelemetryWind" class="text-sm sm:text-base font-mono text-white font-extrabold block">-- km/h (Raj: -- km/h)</strong>
+                                    <strong id="rpasTelemetryWind" class="text-xs sm:text-sm font-mono text-white font-extrabold block">-- km/h (Raj: --)</strong>
+                                    <span id="rpasTelemetryWind80m" class="text-[10px] font-mono text-gray-300 block">Vento 80m: -- km/h</span>
                                     <span id="rpasMetricStatusWind" class="text-[10px] font-mono text-gray-400 block">Sem leitura atual</span>
                                 </div>
 
-                                <!-- Temperatura Local vs Limite Fixo (-10°C a 40°C) -->
+                                <!-- 3. Temperatura Local -->
                                 <div id="rpasMetricCardTemp" class="bg-[#161616] p-3 rounded-xl border border-pmmg-border space-y-1">
                                     <div class="flex items-center justify-between">
                                         <span class="text-[10px] font-bold uppercase text-gray-300">Temperatura Local</span>
@@ -1830,17 +1831,44 @@
                                     <span id="rpasMetricStatusTemp" class="text-[10px] font-mono text-gray-400 block">Sem leitura atual</span>
                                 </div>
 
-                                <!-- Chuva / Precipitação & Condição vs Limite Fixo (0 mm / 40%) -->
+                                <!-- 4. Chuva / Precipitação & Condição -->
                                 <div id="rpasMetricCardRain" class="bg-[#161616] p-3 rounded-xl border border-pmmg-border space-y-1">
                                     <div class="flex items-center justify-between">
-                                        <span class="text-[10px] font-bold uppercase text-gray-300">Chuva & Condição</span>
+                                        <span class="text-[10px] font-bold uppercase text-gray-300">Precipitação & Chuva</span>
                                         <span id="rpasMetricLimitRain" class="text-[10px] font-mono text-pmmg-khaki font-bold">Máx: 0 mm / 40%</span>
                                     </div>
-                                    <strong id="rpasTelemetryRain" class="text-sm sm:text-base font-mono text-white font-extrabold block truncate">-- mm • Prob: --%</strong>
+                                    <strong id="rpasTelemetryRain" class="text-xs sm:text-sm font-mono text-white font-extrabold block truncate">-- mm • Prob: --%</strong>
                                     <span id="rpasTelemetryCond" class="text-[10px] font-mono text-pmmg-khaki block truncate">Condição: --</span>
+                                </div>
+
+                                <!-- 5. Visibilidade Horizontal -->
+                                <div id="rpasMetricCardVis" class="bg-[#161616] p-3 rounded-xl border border-pmmg-border space-y-1">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-[10px] font-bold uppercase text-gray-300">Visibilidade</span>
+                                        <span id="rpasMetricLimitVis" class="text-[10px] font-mono text-pmmg-khaki font-bold">Mín: 3.0 km</span>
+                                    </div>
+                                    <strong id="rpasTelemetryVis" class="text-sm sm:text-base font-mono text-white font-extrabold block">-- km</strong>
+                                    <span id="rpasMetricStatusVis" class="text-[10px] font-mono text-gray-400 block">Sem leitura atual</span>
                                 </div>
                             </div>
                         </div>
+
+                        <!-- PAINEL DE ANÁLISE E RECOMENDAÇÃO DE AERONAVE POR CLIMA (EXIBIDO AUTOMATICAMENTE QUANDO FROTA > 1 DRONE E SEM ESCOLHA PRÉVIA) -->
+                        <div id="rpasAutoFleetRecommendationPanel" class="hidden bg-[#0D0D0D] border border-[#C5A869]/50 rounded-2xl p-4 sm:p-5 space-y-3">
+                            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border pb-2">
+                                <div>
+                                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-pmmg-gold block">Cruzamento Clima Local x Frota Cadastrada</span>
+                                    <h4 class="text-lg sm:text-xl font-military text-white uppercase tracking-wide leading-none mt-0.5">
+                                        Análise e Recomendação de Aeronave por Clima
+                                    </h4>
+                                </div>
+                                <span id="rpasAutoRecFleetCountBadge" class="text-[10px] font-mono text-pmmg-khaki bg-[#161616] px-2.5 py-1 rounded border border-pmmg-border">
+                                    -- Aeronaves Avaliadas
+                                </span>
+                            </div>
+                            <div id="rpasAutoFleetRecommendationList" class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                                <!-- Preenchido dinamicamente por renderRpasAutoFleetRecommendation() -->
+                            </div>                        </div>
                     </div>
                 </div>
 
@@ -7822,6 +7850,26 @@
                         </div>
                     </div>
 
+                    <!-- 4. AERONAVES REMOTAMENTE PILOTADAS (RECOMENDAÇÃO AUTOMÁTICA POR CLIMA) -->
+                    <div class="bg-pmmg-dark p-4 rounded-xl border border-pmmg-border space-y-3">
+                        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border/80 pb-2">
+                            <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki flex items-center gap-1.5">
+                                <i data-lucide="plane" class="w-4 h-4 text-pmmg-gold"></i>4. Aeronaves Remotamente Pilotadas (RPAS)
+                            </span>
+                            <span class="text-[10px] font-mono text-gray-400">Cruzamento Clima x Frota</span>
+                        </div>
+
+                        <label for="chkEnableRpasAutoFleetRec" class="bg-pmmg-black/80 hover:bg-pmmg-black p-3.5 rounded-xl border border-pmmg-border flex items-center justify-between gap-3 cursor-pointer select-none">
+                            <div>
+                                <strong class="text-white text-xs sm:text-sm font-bold block">Recomendação Automática de Aeronave por Clima</strong>
+                                <span class="text-[11px] text-gray-400 block mt-0.5">
+                                    Quando houver mais de 1 drone cadastrado e nenhum selecionado, destaca em verde as aeronaves aptas e em vermelho as restritas conforme o clima GPS local.
+                                </span>
+                            </div>
+                            <input type="checkbox" id="chkEnableRpasAutoFleetRec" onchange="updateAzimuteUiPreferenceFromInputs()" class="w-4 h-4 rounded border-pmmg-border bg-pmmg-dark text-pmmg-khaki accent-[#C5A869] cursor-pointer shrink-0" checked>
+                        </label>
+                    </div>
+
                     <!-- BARRA DE AÇÃO PERMANENTE: SALVAR CONFIGURAÇÕES + RESTAURAR PADRÃO -->
                     <div class="pt-2 border-t border-pmmg-border flex flex-wrap items-center justify-between gap-3">
                         <button type="button" onclick="resetAllAzimuteSettings()" class="px-3.5 py-2 rounded-xl bg-pmmg-black hover:bg-pmmg-dark text-gray-400 hover:text-gray-200 border border-pmmg-border text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer" title="Restaurar todas as configurações para o padrão original">
@@ -8711,15 +8759,125 @@
                     minTempC: -10,
                     maxTempC: 40,
                     maxRainMm: 0,
-                    maxRainProbPct: 40
+                    maxRainProbPct: 40,
+                    minVisibilityKm: 3.0
                 }
             }
         ];
 
+        let azimuteRpasHasExplicitSelection = false;
+
+        window.isRpasAutoFleetRecEnabled = function() {
+            const s = typeof getAzimuteUiSettings === 'function' ? getAzimuteUiSettings() : { enableRpasAutoFleetRec: true };
+            return s.enableRpasAutoFleetRec !== false;
+        };
+
         window.getSelectedRpasAircraft = function() {
             const sel = document.getElementById('rpasFleetSelectInput');
-            const selectedId = sel ? sel.value : AZIMUTE_RPAS_FLEET_CATALOG[0].id;
+            const selectedId = sel ? sel.value : '';
+            if (!selectedId || selectedId === '__auto__') {
+                return AZIMUTE_RPAS_FLEET_CATALOG[0];
+            }
             return AZIMUTE_RPAS_FLEET_CATALOG.find(item => item.id === selectedId) || AZIMUTE_RPAS_FLEET_CATALOG[0];
+        };
+
+        window.evaluateSingleRpasAgainstSnapshot = function(rpa, snapshot) {
+            const limits = (rpa && rpa.limits) ? rpa.limits : AZIMUTE_FIXED_RPAS_LIMITS;
+            const minVisKm = typeof limits.minVisibilityKm === 'number' ? limits.minVisibilityKm : 3.0;
+            const reasons = [];
+
+            if (snapshot.windKmh > limits.maxWindKmh) {
+                reasons.push(`<strong>Vento sustentado a 10m excedido:</strong> ${snapshot.windKmh} km/h ultrapassa o limite técnico da aeronave (${limits.maxWindKmh} km/h).`);
+            }
+            if (typeof snapshot.wind80mKmh === 'number' && !isNaN(snapshot.wind80mKmh) && snapshot.wind80mKmh > limits.maxWindKmh) {
+                reasons.push(`<strong>Vento em altitude (80m) excedido:</strong> ${snapshot.wind80mKmh} km/h ultrapassa o limite máximo de resistência (${limits.maxWindKmh} km/h).`);
+            }
+            if (snapshot.gustsKmh > limits.maxWindKmh) {
+                reasons.push(`<strong>Rajadas de vento excedidas:</strong> ${snapshot.gustsKmh} km/h ultrapassam o teto de resistência da aeronave (${limits.maxWindKmh} km/h).`);
+            }
+            if (snapshot.tempC > limits.maxTempC) {
+                reasons.push(`<strong>Temperatura máxima excedida:</strong> ${snapshot.tempC} °C acima do limite técnico da aeronave/bateria (${limits.maxTempC} °C).`);
+            } else if (snapshot.tempC < limits.minTempC) {
+                reasons.push(`<strong>Temperatura mínima excedida:</strong> ${snapshot.tempC} °C abaixo do limite mínimo técnico (${limits.minTempC} °C).`);
+            }
+            if (snapshot.precipMm > limits.maxRainMm) {
+                reasons.push(`<strong>Precipitação ativa detectada:</strong> ${snapshot.precipMm} mm excede o limite de proteção (${limits.maxRainMm} mm).`);
+            }
+            if (limits.maxRainMm === 0 && snapshot.weatherCode >= 51) {
+                reasons.push(`<strong>Condição adversa (${snapshot.conditionText}):</strong> Aeronave sem proteção IP contra chuva/garoa/trovoada.`);
+            }
+            if (snapshot.rainProbPct > limits.maxRainProbPct) {
+                reasons.push(`<strong>Probabilidade de chuva elevada:</strong> ${snapshot.rainProbPct}% excede o limite de segurança (${limits.maxRainProbPct}%).`);
+            }
+            if (typeof snapshot.visibilityKm === 'number' && !isNaN(snapshot.visibilityKm) && snapshot.visibilityKm < minVisKm) {
+                reasons.push(`<strong>Visibilidade reduzida:</strong> ${snapshot.visibilityKm.toFixed(1)} km está abaixo do mínimo recomendado (${minVisKm.toFixed(1)} km) para operação VLOS.`);
+            }
+
+            return {
+                apt: reasons.length === 0,
+                reasons
+            };
+        };
+
+        window.renderRpasAutoFleetRecommendation = function(snapshot) {
+            const panel = document.getElementById('rpasAutoFleetRecommendationPanel');
+            const listEl = document.getElementById('rpasAutoFleetRecommendationList');
+            const countBadge = document.getElementById('rpasAutoRecFleetCountBadge');
+            if (!panel || !listEl) return;
+
+            const fleetCount = AZIMUTE_RPAS_FLEET_CATALOG.length;
+            const autoEnabled = window.isRpasAutoFleetRecEnabled();
+            const sel = document.getElementById('rpasFleetSelectInput');
+            const isUnselectedMode = !azimuteRpasHasExplicitSelection || (sel && sel.value === '__auto__');
+
+            // Exibir lista comparativa SOMENTE quando houver > 1 drone cadastrado, opção ativa em Configurações e sem escolha prévia
+            if (!autoEnabled || fleetCount <= 1 || !isUnselectedMode || !snapshot || !snapshot.hasValidWeather) {
+                panel.classList.add('hidden');
+                return;
+            }
+
+            panel.classList.remove('hidden');
+            if (countBadge) countBadge.textContent = `${fleetCount} Aeronaves Avaliadas`;
+
+            listEl.innerHTML = AZIMUTE_RPAS_FLEET_CATALOG.map(rpa => {
+                const evalRes = window.evaluateSingleRpasAgainstSnapshot(rpa, snapshot);
+                if (evalRes.apt) {
+                    return `
+                        <div class="bg-emerald-950/30 border-2 border-emerald-500 rounded-xl p-3.5 space-y-2">
+                            <div class="flex items-center justify-between gap-2">
+                                <div>
+                                    <span class="text-[10px] font-mono font-bold text-emerald-300 uppercase">Prefixo ${rpa.prefixo}</span>
+                                    <h5 class="text-base font-military text-white uppercase tracking-wide leading-none mt-0.5">${rpa.modelo}</h5>
+                                </div>
+                                <span class="px-2 py-0.5 rounded bg-emerald-600 text-pmmg-black font-extrabold text-[10px] uppercase shrink-0">APTA PARA VOO</span>
+                            </div>
+                            <p class="text-[11px] text-emerald-200 leading-relaxed">
+                                Clima local dentro dos limites técnicos deste modelo (Vento máx: ${rpa.limits.maxWindKmh} km/h).
+                            </p>
+                            <div class="flex justify-end pt-1">
+                                <button type="button" onclick="selectRpasAircraftFromFleet('${rpa.id}', true)" class="px-3 py-1.5 rounded-lg bg-[#0D0D0D] hover:bg-pmmg-cardHover text-emerald-300 border border-emerald-500/60 text-[10.5px] font-extrabold uppercase cursor-pointer">
+                                    Selecionar Esta Aeronave
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    return `
+                        <div class="bg-red-950/35 border-2 border-red-500 rounded-xl p-3.5 space-y-2">
+                            <div class="flex items-center justify-between gap-2">
+                                <div>
+                                    <span class="text-[10px] font-mono font-bold text-red-300 uppercase">Prefixo ${rpa.prefixo}</span>
+                                    <h5 class="text-base font-military text-white uppercase tracking-wide leading-none mt-0.5">${rpa.modelo}</h5>
+                                </div>
+                                <span class="px-2 py-0.5 rounded bg-red-600 text-white font-extrabold text-[10px] uppercase shrink-0">NÃO APTA</span>
+                            </div>
+                            <ul class="list-disc pl-4 space-y-1 text-[11px] text-gray-200">
+                                ${evalRes.reasons.map(r => `<li>${r}</li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                }
+            }).join('');
         };
 
         window.toggleRpasFleetSelectorBox = function(forceOpen = null) {
@@ -8760,21 +8918,38 @@
             const sel = document.getElementById('rpasFleetSelectInput');
             const countBadge = document.getElementById('rpasFleetCountBadge');
             if (!sel) return;
-            const currentVal = sel.value || AZIMUTE_RPAS_FLEET_CATALOG[0].id;
-            sel.innerHTML = AZIMUTE_RPAS_FLEET_CATALOG.map(rpa =>
-                `<option value="${rpa.id}">${rpa.modelo} • Prefixo: ${rpa.prefixo}</option>`
-            ).join('');
-            sel.value = AZIMUTE_RPAS_FLEET_CATALOG.some(r => r.id === currentVal) ? currentVal : AZIMUTE_RPAS_FLEET_CATALOG[0].id;
-            if (countBadge) {
-                countBadge.textContent = AZIMUTE_RPAS_FLEET_CATALOG.length === 1
-                    ? '1 Aeronave Cadastrada'
-                    : `${AZIMUTE_RPAS_FLEET_CATALOG.length} Aeronaves Cadastradas`;
+
+            const fleetCount = AZIMUTE_RPAS_FLEET_CATALOG.length;
+            const autoEnabled = window.isRpasAutoFleetRecEnabled();
+
+            if (fleetCount > 1 && autoEnabled && !azimuteRpasHasExplicitSelection) {
+                sel.innerHTML = `<option value="__auto__" selected>Automático (Comparar toda a frota pelo clima local)</option>` +
+                    AZIMUTE_RPAS_FLEET_CATALOG.map(rpa =>
+                        `<option value="${rpa.id}">${rpa.modelo} • Prefixo: ${rpa.prefixo}</option>`
+                    ).join('');
+            } else {
+                const currentVal = (sel.value && sel.value !== '__auto__') ? sel.value : AZIMUTE_RPAS_FLEET_CATALOG[0].id;
+                sel.innerHTML = AZIMUTE_RPAS_FLEET_CATALOG.map(rpa =>
+                    `<option value="${rpa.id}">${rpa.modelo} • Prefixo: ${rpa.prefixo}</option>`
+                ).join('');
+                sel.value = AZIMUTE_RPAS_FLEET_CATALOG.some(r => r.id === currentVal) ? currentVal : AZIMUTE_RPAS_FLEET_CATALOG[0].id;
             }
-            window.selectRpasAircraftFromFleet(sel.value);
+
+            if (countBadge) {
+                countBadge.textContent = fleetCount === 1
+                    ? '1 Aeronave Cadastrada'
+                    : `${fleetCount} Aeronaves Cadastradas`;
+            }
+            window.selectRpasAircraftFromFleet(sel.value, false);
         };
 
-        window.selectRpasAircraftFromFleet = function(rpaId) {
-            const rpa = AZIMUTE_RPAS_FLEET_CATALOG.find(item => item.id === rpaId) || AZIMUTE_RPAS_FLEET_CATALOG[0];
+        window.selectRpasAircraftFromFleet = function(rpaId, isUserAction = true) {
+            if (isUserAction) {
+                azimuteRpasHasExplicitSelection = (rpaId !== '__auto__');
+                const sel = document.getElementById('rpasFleetSelectInput');
+                if (sel && rpaId && sel.value !== rpaId) sel.value = rpaId;
+            }
+            const rpa = window.getSelectedRpasAircraft();
             if (!rpa) return;
             const setTxt = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
             setTxt('rpasFleetHeaderBadge', rpa.prefixo);
@@ -9002,32 +9177,34 @@
 
         function renderRpasEvaluationResult(snapshot, isPeriodicCheck) {
             const limits = getRpasConfiguredLimits();
+            const minVisKm = typeof limits.minVisibilityKm === 'number' ? limits.minVisibilityKm : 3.0;
 
-            // Atualiza rótulos dos limites nos minicards
             const limW = document.getElementById('rpasMetricLimitWind');
             const limT = document.getElementById('rpasMetricLimitTemp');
             const limR = document.getElementById('rpasMetricLimitRain');
+            const limV = document.getElementById('rpasMetricLimitVis');
             if (limW) limW.textContent = `Máx: ${limits.maxWindKmh} km/h`;
             if (limT) limT.textContent = `${limits.minTempC}°C a ${limits.maxTempC}°C`;
             if (limR) limR.textContent = `Máx: ${limits.maxRainMm}mm / ${limits.maxRainProbPct}%`;
+            if (limV) limV.textContent = `Mín: ${minVisKm.toFixed(1)} km`;
 
-            // Se faltar coordenada GPS válida ou dados climáticos essenciais ->Estado 3: CINZA/AMARELO ("AVALIAÇÃO INDETERMINADA")
             if (!snapshot || !snapshot.hasValidGps || !snapshot.hasValidWeather) {
                 const missingParts = [];
                 if (!snapshot || !snapshot.hasValidGps) missingParts.push('coordenada GPS ativa do dispositivo');
                 if (!snapshot || !snapshot.hasValidWeather) missingParts.push('telemetria climática local (Open-Meteo)');
-                setRpasPanelIndeterminate(`Não foi possível obter ${missingParts.join('e ')}. Ative o GPS e verifique a conexão para cruzar os parâmetros.`);
+                setRpasPanelIndeterminate(`Não foi possível obter ${missingParts.join(' e ')}. Ative o GPS e verifique a conexão para cruzar os parâmetros.`);
                 return;
             }
 
-            // Atualiza os 4 cartões de telemetria
             const gpsBadge = document.getElementById('rpasTelemetryGpsBadge');
             const coordsEl = document.getElementById('rpasTelemetryCoords');
             const altEl = document.getElementById('rpasTelemetryAltitude');
             const windEl = document.getElementById('rpasTelemetryWind');
+            const wind80El = document.getElementById('rpasTelemetryWind80m');
             const tempEl = document.getElementById('rpasTelemetryTemp');
             const rainEl = document.getElementById('rpasTelemetryRain');
             const condEl = document.getElementById('rpasTelemetryCond');
+            const visEl = document.getElementById('rpasTelemetryVis');
             const tsBadge = document.getElementById('rpasEvalTimestampBadge');
 
             if (gpsBadge) {
@@ -9039,97 +9216,91 @@
             if (coordsEl) coordsEl.textContent = `${snapshot.lat.toFixed(5)}, ${snapshot.lon.toFixed(5)}`;
             if (altEl) altEl.textContent = `Altitude local: ${snapshot.elevation !== null ? Math.round(snapshot.elevation) + 'm' : '-- m'}`;
             if (windEl) windEl.textContent = `${snapshot.windKmh} km/h (Raj: ${snapshot.gustsKmh} km/h)`;
+            if (wind80El) wind80El.textContent = `Vento 80m: ${typeof snapshot.wind80mKmh === 'number' && !isNaN(snapshot.wind80mKmh) ? snapshot.wind80mKmh + ' km/h' : '-- km/h'}`;
             if (tempEl) tempEl.textContent = `${snapshot.tempC} °C`;
             if (rainEl) rainEl.textContent = `${snapshot.precipMm} mm • Prob: ${snapshot.rainProbPct}%`;
             if (condEl) condEl.textContent = `Condição: ${snapshot.conditionText}`;
-            if (tsBadge) tsBadge.textContent = `Sincronizado às ${snapshot.timeStr}`;
+            if (visEl) visEl.textContent = typeof snapshot.visibilityKm === 'number' && !isNaN(snapshot.visibilityKm) ? `${snapshot.visibilityKm.toFixed(1)} km` : '-- km';
+            if (tsBadge) tsBadge.textContent = `Alta Res. • ${snapshot.timeStr}`;
 
-            // Verifica cada parâmetro contra os limites configurados da aeronave
-            const exceededReasons = [];
+            const selectedRpa = typeof window.getSelectedRpasAircraft === 'function' ? window.getSelectedRpasAircraft() : null;
+            const singleEval = window.evaluateSingleRpasAgainstSnapshot(selectedRpa, snapshot);
+            const exceededReasons = singleEval.reasons;
 
-            // 1. Vento / Rajadas
             const cardWind = document.getElementById('rpasMetricCardWind');
             const statusWind = document.getElementById('rpasMetricStatusWind');
-            const maxMeasuredWind = Math.max(snapshot.windKmh, snapshot.gustsKmh);
-            if (snapshot.windKmh >limits.maxWindKmh) {
-                exceededReasons.push(`<strong>Vento sustentado excedido:</strong>Velocidade atual do vento (${snapshot.windKmh} km/h) ultrapassa o limite máximo configurado da aeronave (${limits.maxWindKmh} km/h).`);
-            }
-            if (snapshot.gustsKmh >limits.maxWindKmh) {
-                exceededReasons.push(`<strong>Rajada de vento excedida:</strong>Rajadas atuais (${snapshot.gustsKmh} km/h) ultrapassam o limite máximo de resistência (${limits.maxWindKmh} km/h).`);
-            }
-            if (maxMeasuredWind >limits.maxWindKmh) {
+            const maxMeasuredWind = Math.max(
+                snapshot.windKmh,
+                snapshot.gustsKmh,
+                typeof snapshot.wind80mKmh === 'number' && !isNaN(snapshot.wind80mKmh) ? snapshot.wind80mKmh : 0
+            );
+            if (maxMeasuredWind > limits.maxWindKmh) {
                 if (cardWind) cardWind.className = 'bg-red-950/40 p-3 rounded-xl border-2 border-red-500 space-y-1';
                 if (statusWind) {
                     statusWind.textContent = 'LIMITE DE VENTO EXCEDIDO';
                     statusWind.className = 'text-[10px] font-mono text-red-400 font-extrabold block';
                 }
             } else {
-                if (cardWind) cardWind.className = 'bg-pmmg-dark p-3 rounded-xl border border-emerald-500/40 space-y-1';
+                if (cardWind) cardWind.className = 'bg-[#161616] p-3 rounded-xl border border-emerald-500/40 space-y-1';
                 if (statusWind) {
-                    statusWind.textContent = ` Dentro do limite (margem: ${(limits.maxWindKmh - maxMeasuredWind).toFixed(1)} km/h)`;
+                    statusWind.textContent = `Margem: ${(limits.maxWindKmh - maxMeasuredWind).toFixed(1)} km/h`;
                     statusWind.className = 'text-[10px] font-mono text-emerald-400 font-bold block';
                 }
             }
 
-            // 2. Temperatura
             const cardTemp = document.getElementById('rpasMetricCardTemp');
             const statusTemp = document.getElementById('rpasMetricStatusTemp');
-            if (snapshot.tempC >limits.maxTempC) {
-                exceededReasons.push(`<strong>Temperatura máxima excedida:</strong>Temperatura local (${snapshot.tempC} °C) está acima do limite técnico da aeronave/bateria (${limits.maxTempC} °C).`);
-            } else if (snapshot.tempC < limits.minTempC) {
-                exceededReasons.push(`<strong>Temperatura mínima excedida:</strong>Temperatura local (${snapshot.tempC} °C) está abaixo do limite mínimo técnico (${limits.minTempC} °C).`);
-            }
-            if (snapshot.tempC >limits.maxTempC || snapshot.tempC < limits.minTempC) {
+            if (snapshot.tempC > limits.maxTempC || snapshot.tempC < limits.minTempC) {
                 if (cardTemp) cardTemp.className = 'bg-red-950/40 p-3 rounded-xl border-2 border-red-500 space-y-1';
                 if (statusTemp) {
                     statusTemp.textContent = 'FORA DA FAIXA TÉRMICA';
                     statusTemp.className = 'text-[10px] font-mono text-red-400 font-extrabold block';
                 }
             } else {
-                if (cardTemp) cardTemp.className = 'bg-pmmg-dark p-3 rounded-xl border border-emerald-500/40 space-y-1';
+                if (cardTemp) cardTemp.className = 'bg-[#161616] p-3 rounded-xl border border-emerald-500/40 space-y-1';
                 if (statusTemp) {
                     statusTemp.textContent = 'Faixa térmica segura';
                     statusTemp.className = 'text-[10px] font-mono text-emerald-400 font-bold block';
                 }
             }
 
-            // 3. Chuva / Precipitação e Código WMO de Chuva/Tempestade
             const cardRain = document.getElementById('rpasMetricCardRain');
-            const isRainWmo = snapshot.weatherCode >= 51; // Códigos WMO >= 51 indicam garoa, chuva ou trovoadas
-            let rainExceeded = false;
-
-            if (snapshot.precipMm >limits.maxRainMm) {
-                rainExceeded = true;
-                exceededReasons.push(`<strong>Precipitação ativa acima do limite:</strong>Volume de chuva atual (${snapshot.precipMm} mm) excede o limite de proteção da aeronave (${limits.maxRainMm} mm).`);
-            }
-            if (limits.maxRainMm === 0 && isRainWmo) {
-                rainExceeded = true;
-                exceededReasons.push(`<strong>Condição meteorológica adversa (${snapshot.conditionText}):</strong>Aeronave configurada sem proteção IP contra precipitação/garoa/trovoada.`);
-            }
-            if (snapshot.rainProbPct >limits.maxRainProbPct) {
-                rainExceeded = true;
-                exceededReasons.push(`<strong>Probabilidade de chuva elevada:</strong>Chance de chuva nas próximas horas (${snapshot.rainProbPct}%) excede o teto de segurança configurado (${limits.maxRainProbPct}%).`);
-            }
-
+            const isRainWmo = snapshot.weatherCode >= 51;
+            const rainExceeded = (snapshot.precipMm > limits.maxRainMm) || (limits.maxRainMm === 0 && isRainWmo) || (snapshot.rainProbPct > limits.maxRainProbPct);
             if (rainExceeded) {
                 if (cardRain) cardRain.className = 'bg-red-950/40 p-3 rounded-xl border-2 border-red-500 space-y-1';
             } else {
-                if (cardRain) cardRain.className = 'bg-pmmg-dark p-3 rounded-xl border border-emerald-500/40 space-y-1';
+                if (cardRain) cardRain.className = 'bg-[#161616] p-3 rounded-xl border border-emerald-500/40 space-y-1';
             }
 
-            // Verifica áreas de atenção de tráfego aéreo / aeródromos / helipontos via GPS ou local selecionado
+            const cardVis = document.getElementById('rpasMetricCardVis');
+            const statusVis = document.getElementById('rpasMetricStatusVis');
+            const visExceeded = typeof snapshot.visibilityKm === 'number' && !isNaN(snapshot.visibilityKm) && snapshot.visibilityKm < minVisKm;
+            if (visExceeded) {
+                if (cardVis) cardVis.className = 'bg-red-950/40 p-3 rounded-xl border-2 border-red-500 space-y-1';
+                if (statusVis) {
+                    statusVis.textContent = 'VISIBILIDADE BAIXA';
+                    statusVis.className = 'text-[10px] font-mono text-red-400 font-extrabold block';
+                }
+            } else {
+                if (cardVis) cardVis.className = 'bg-[#161616] p-3 rounded-xl border border-emerald-500/40 space-y-1';
+                if (statusVis) {
+                    statusVis.textContent = 'VLOS adequado';
+                    statusVis.className = 'text-[10px] font-mono text-emerald-400 font-bold block';
+                }
+            }
+
+            window.renderRpasAutoFleetRecommendation(snapshot);
+
             const airspaceCautionReasons = evaluateRpasAirspaceCautionZones(snapshot.lat, snapshot.lon);
-            const selectedRpa = typeof window.getSelectedRpasAircraft === 'function' ? window.getSelectedRpasAircraft() : null;
             const rpaLabel = selectedRpa ? `${selectedRpa.modelo} (${selectedRpa.prefixo})` : 'DJI Mavic 3 Enterprise (M3E)';
 
-            // Renderiza Estado Final (VERMELHO: VOO NÃO RECOMENDADO | ÂMBAR/DOURADO: VOE COM CUIDADO | VERDE: VOO RECOMENDADO)
             const box = document.getElementById('rpasEvaluationStateBox');
             const iconBadge = document.getElementById('rpasEvalIconBadge');
             const titleEl = document.getElementById('rpasEvalStateTitle');
             const reasonsBox = document.getElementById('rpasEvalReasonsContainer');
 
             if (exceededReasons.length > 0) {
-                // ESTADO VERMELHO: "VOO NÃO RECOMENDADO (LIMITE EXCEDIDO)"
                 if (box) {
                     box.className = 'bg-red-950/35 border-2 border-red-500 border-l-8 border-l-red-500 rounded-2xl p-4 sm:p-5 space-y-3 transition-all shadow-[0_0_25px_rgba(220,38,38,0.25)]';
                 }
@@ -9150,7 +9321,6 @@
                     `;
                 }
             } else if (airspaceCautionReasons.length > 0) {
-                // ESTADO INTERMEDIÁRIO ÂMBAR / DOURADO: "VOE COM CUIDADO"
                 if (box) {
                     box.className = 'bg-amber-950/35 border-2 border-amber-400 border-l-8 border-l-[#C5A869] rounded-2xl p-4 sm:p-5 space-y-3 transition-all shadow-[0_0_25px_rgba(245,158,11,0.25)]';
                 }
@@ -9171,12 +9341,11 @@
                             ${airspaceCautionReasons.map(r => `<li>${r}</li>`).join('')}
                         </ul>
                         <p class="text-[11px] text-pmmg-khaki font-semibold">
-                            Meteorologia local dentro dos limites (Vento: ${snapshot.windKmh} km/h, Rajadas: ${snapshot.gustsKmh} km/h, Temp: ${snapshot.tempC}°C, Chuva: ${snapshot.precipMm} mm). Exige autorização SARPAS (DECEA) ativa e vigilância constante de aeronaves tripuladas.
+                            Meteorologia local dentro dos limites (Vento 10m: ${snapshot.windKmh} km/h, Vento 80m: ${snapshot.wind80mKmh ?? '--'} km/h, Rajadas: ${snapshot.gustsKmh} km/h, Temp: ${snapshot.tempC}°C, Chuva: ${snapshot.precipMm} mm, Visib.: ${snapshot.visibilityKm ? snapshot.visibilityKm.toFixed(1) + ' km' : '--'}). Exige autorização SARPAS (DECEA) ativa e vigilância constante de aeronaves tripuladas.
                         </p>
                     `;
                 }
             } else {
-                // ESTADO VERDE: "VOO RECOMENDADO"
                 if (box) {
                     box.className = 'bg-emerald-950/30 border-2 border-emerald-500/80 border-l-8 border-l-emerald-400 rounded-2xl p-4 sm:p-5 space-y-3 transition-all shadow-[0_0_20px_rgba(16,185,129,0.18)]';
                 }
@@ -9191,7 +9360,7 @@
                 if (reasonsBox) {
                     reasonsBox.innerHTML = `
                         <p class="text-emerald-300 font-bold text-xs">
-                            Aeronave: ${rpaLabel} • Todos os parâmetros meteorológicos locais na coordenada GPS atual (Vento: ${snapshot.windKmh} km/h, Rajadas: ${snapshot.gustsKmh} km/h, Temp: ${snapshot.tempC}°C, Chuva: ${snapshot.precipMm} mm / ${snapshot.rainProbPct}%) estão dentro dos limites técnicos e fora de zonas críticas de aeródromo/heliponto. Mantenha verificação visual constante e protocolo SARPAS.
+                            Aeronave: ${rpaLabel} • Todos os parâmetros meteorológicos de alta resolução na coordenada GPS atual (Vento 10m: ${snapshot.windKmh} km/h, Vento 80m: ${snapshot.wind80mKmh ?? '--'} km/h, Rajadas: ${snapshot.gustsKmh} km/h, Temp: ${snapshot.tempC}°C, Chuva: ${snapshot.precipMm} mm / ${snapshot.rainProbPct}%, Visibilidade: ${snapshot.visibilityKm ? snapshot.visibilityKm.toFixed(1) + ' km' : '--'}) estão dentro dos limites técnicos e fora de zonas críticas de aeródromo/heliponto. Mantenha verificação visual constante e protocolo SARPAS.
                         </p>
                     `;
                 }
@@ -9200,7 +9369,7 @@
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
-        // Busca clima na coordenada GPS atual, cruza com limites e verifica mudança climática brusca
+        // Busca clima de alta confiabilidade e atualização em tempo real (Open-Meteo API com vento 10m/80m, rajadas, precipitação e visibilidade)
         window.evaluateRpasFlightConditions = async function(isManualTrigger) {
             const spinner = document.getElementById('rpasSyncSpinnerIcon');
             if (spinner) spinner.classList.add('animate-spin');
@@ -9228,12 +9397,12 @@
 
             if (navigator.onLine === false) {
                 if (spinner) spinner.classList.remove('animate-spin');
-                setRpasPanelIndeterminate('Dispositivo offline sem telemetria meteorológica em tempo real. Não é possível validar vento, rajadas e chuva atuais.');
+                setRpasPanelIndeterminate('Dispositivo offline sem telemetria meteorológica em tempo real. Não é possível validar vento, rajadas, chuva e visibilidade atuais.');
                 return;
             }
 
             try {
-                const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,precipitation,weather_code,wind_speed_10m,wind_gusts_10m&hourly=precipitation_probability&forecast_days=1&timezone=America%2FSao_Paulo&_cb=${Date.now()}`;
+                const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat.toFixed(6)}&longitude=${lon.toFixed(6)}&models=best_match&current=temperature_2m,precipitation,rain,showers,weather_code,wind_speed_10m,wind_gusts_10m,visibility&hourly=precipitation_probability,precipitation,wind_speed_10m,wind_speed_80m,wind_gusts_10m,visibility&forecast_days=1&wind_speed_unit=kmh&timezone=America%2FSao_Paulo&_cb=${Date.now()}`;
                 const res = await fetch(url, { cache: 'no-store' });
                 if (!res.ok) throw new Error('Falha HTTP Open-Meteo');
                 const data = await res.json();
@@ -9245,10 +9414,23 @@
                 const cur = data.current;
                 const currentHour = new Date().getHours();
                 let maxRainProb = 0;
-                if (data.hourly && Array.isArray(data.hourly.precipitation_probability)) {
-                    const sliceProbs = data.hourly.precipitation_probability.slice(currentHour, currentHour + 3);
-                    maxRainProb = sliceProbs.length ? Math.max(...sliceProbs) : (data.hourly.precipitation_probability[0] || 0);
+                let wind80mKmh = null;
+                let visibilityMeters = typeof cur.visibility === 'number' ? cur.visibility : null;
+
+                if (data.hourly) {
+                    if (Array.isArray(data.hourly.precipitation_probability)) {
+                        const sliceProbs = data.hourly.precipitation_probability.slice(currentHour, currentHour + 3);
+                        maxRainProb = sliceProbs.length ? Math.max(...sliceProbs) : (data.hourly.precipitation_probability[0] || 0);
+                    }
+                    if (Array.isArray(data.hourly.wind_speed_80m) && data.hourly.wind_speed_80m[currentHour] !== undefined) {
+                        wind80mKmh = Number(data.hourly.wind_speed_80m[currentHour]);
+                    }
+                    if (visibilityMeters === null && Array.isArray(data.hourly.visibility) && data.hourly.visibility[currentHour] !== undefined) {
+                        visibilityMeters = Number(data.hourly.visibility[currentHour]);
+                    }
                 }
+
+                const visibilityKm = visibilityMeters !== null && !isNaN(visibilityMeters) ? Number((visibilityMeters / 1000).toFixed(1)) : null;
 
                 const newSnapshot = {
                     hasValidGps: true,
@@ -9259,15 +9441,16 @@
                     elevation: typeof data.elevation === 'number' ? data.elevation : null,
                     tempC: Number(cur.temperature_2m),
                     windKmh: Number(cur.wind_speed_10m),
+                    wind80mKmh: wind80mKmh !== null && !isNaN(wind80mKmh) ? Number(wind80mKmh.toFixed(1)) : null,
                     gustsKmh: Number(cur.wind_gusts_10m !== undefined ? cur.wind_gusts_10m : cur.wind_speed_10m),
                     precipMm: Number(cur.precipitation || 0),
                     rainProbPct: Number(maxRainProb || 0),
+                    visibilityKm,
                     weatherCode: Number(cur.weather_code || 0),
                     conditionText: typeof decodeWmoWeather === 'function' ? decodeWmoWeather(cur.weather_code) : 'Monitorado',
                     timeStr: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
                 };
 
-                // Detecção de mudança climática brusca ou extrapolação de limite enquanto a aba Drones está aberta
                 const limits = getRpasConfiguredLimits();
                 const alertReasons = [];
                 const prev = azimuteRpasLastWeatherSnapshot;
@@ -9283,22 +9466,22 @@
                     }
                 }
 
-                if (newSnapshot.windKmh >limits.maxWindKmh || newSnapshot.gustsKmh >limits.maxWindKmh) {
-                    alertReasons.push(`Vento/Rajada atual (${Math.max(newSnapshot.windKmh, newSnapshot.gustsKmh)} km/h) acima do limite técnico da aeronave (${limits.maxWindKmh} km/h).`);
+                const peakWind = Math.max(newSnapshot.windKmh, newSnapshot.gustsKmh, newSnapshot.wind80mKmh || 0);
+                if (peakWind > limits.maxWindKmh) {
+                    alertReasons.push(`Vento/Rajada atual (${peakWind} km/h) acima do limite técnico da aeronave (${limits.maxWindKmh} km/h).`);
                 }
-                if (newSnapshot.precipMm >limits.maxRainMm || (limits.maxRainMm === 0 && newSnapshot.weatherCode >= 51)) {
+                if (newSnapshot.precipMm > limits.maxRainMm || (limits.maxRainMm === 0 && newSnapshot.weatherCode >= 51)) {
                     alertReasons.push(`Chuva/Precipitação detectada (${newSnapshot.precipMm} mm • ${newSnapshot.conditionText}) acima do limite configurado (${limits.maxRainMm} mm).`);
                 }
-                if (newSnapshot.rainProbPct >limits.maxRainProbPct) {
+                if (newSnapshot.rainProbPct > limits.maxRainProbPct) {
                     alertReasons.push(`Probabilidade de chuva (${newSnapshot.rainProbPct}%) acima do limite máximo configurado (${limits.maxRainProbPct}%).`);
                 }
 
                 azimuteRpasLastWeatherSnapshot = newSnapshot;
                 renderRpasEvaluationResult(newSnapshot, !isManualTrigger);
 
-                // Se a aba Drones estiver visível e houver alerta de mudança brusca ou limite de vento/chuva excedido, emite alerta visual e bipe sonoro
                 const viewRpas = document.getElementById('view-rpas');
-                if (viewRpas && !viewRpas.classList.contains('hidden') && alertReasons.length >0) {
+                if (viewRpas && !viewRpas.classList.contains('hidden') && alertReasons.length > 0) {
                     window.triggerRpasWeatherChangeAlert(alertReasons, false);
                 }
             } catch (err) {
@@ -11400,6 +11583,7 @@
                 showQuickAccessBlock: true,
                 showNearestSupportBlock: true,
                 homeBlocksOrder: ['quick_access', 'nearest_support'],
+                enableRpasAutoFleetRec: true,
                 footerButtons: getDefaultFooterButtonsConfig()
             };
         }
@@ -11424,6 +11608,7 @@
                     homeBlocksOrder: Array.isArray(parsed.homeBlocksOrder) && parsed.homeBlocksOrder.length === 2
                         ? parsed.homeBlocksOrder
                         : def.homeBlocksOrder,
+                    enableRpasAutoFleetRec: parsed.enableRpasAutoFleetRec !== undefined ? Boolean(parsed.enableRpasAutoFleetRec) : def.enableRpasAutoFleetRec,
                     footerButtons: normalizeFooterButtonsConfig(parsed.footerButtons)
                 };
             } catch (e) {
@@ -11584,7 +11769,8 @@
                 chkShowStatusBarQth: s.showStatusBarQth,
                 chkShowSearchBox: s.showSearchBox,
                 chkShowQuickAccessBlock: s.showQuickAccessBlock,
-                chkShowNearestSupportBlock: s.showNearestSupportBlock
+                chkShowNearestSupportBlock: s.showNearestSupportBlock,
+                chkEnableRpasAutoFleetRec: s.enableRpasAutoFleetRec
             };
             Object.entries(mapChecks).forEach(([id, val]) => {
                 const el = document.getElementById(id);
@@ -11723,6 +11909,7 @@
             s.showSearchBox = getChk('chkShowSearchBox', s.showSearchBox);
             s.showQuickAccessBlock = getChk('chkShowQuickAccessBlock', s.showQuickAccessBlock);
             s.showNearestSupportBlock = getChk('chkShowNearestSupportBlock', s.showNearestSupportBlock);
+            s.enableRpasAutoFleetRec = getChk('chkEnableRpasAutoFleetRec', s.enableRpasAutoFleetRec);
 
             saveAzimuteUiSettingsToStorage(s);
             window.applyAzimuteUiSettings();
