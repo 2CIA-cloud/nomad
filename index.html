@@ -15694,6 +15694,54 @@ window.obterQTHProximo = function (lat, lng) {
 };
 
 carregarBaseQTH();
+        // === BASE DE BATALHÕES E COMPANHIAS (1º, 22º E 34º BPM) ===
+let UNIDADES_1RPM = {};
+
+window.carregarUnidades1RPM = async function () {
+  try {
+    const cache = localStorage.getItem('azimute_unidades_1rpm_v1');
+    if (cache) UNIDADES_1RPM = JSON.parse(cache);
+
+    const resp = await fetch('./unidades_1rpm.json');
+    if (resp.ok) {
+      UNIDADES_1RPM = await resp.json();
+      try {
+        localStorage.setItem('azimute_unidades_1rpm_v1', JSON.stringify(UNIDADES_1RPM));
+      } catch (e) {}
+    }
+  } catch (err) {
+    console.warn('Falha ao carregar unidades_1rpm.json:', err);
+  }
+};
+
+window.buscarUnidadePorBairro = function (termo) {
+  if (!termo || !Object.keys(UNIDADES_1RPM).length) return [];
+  const norm = (s) =>
+    s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+  const alvo = norm(termo);
+  const resultados = [];
+
+  Object.values(UNIDADES_1RPM).forEach((bpm) => {
+    (bpm.companhias || []).forEach((cia) => {
+      const matchBairro = (cia.bairros || []).some((b) => norm(b).includes(alvo));
+      const matchCorredor = (cia.corredores || []).some((c) => norm(c).includes(alvo));
+      if (matchBairro || matchCorredor) {
+        resultados.push({
+          batalhao: bpm.unidade,
+          companhia: cia.cia,
+          nomeCia: cia.nome,
+          sedeCia: cia.sede,
+          telefones: cia.telefones,
+          deplan: bpm.delegacias_apoio?.[0] || null
+        });
+      }
+    });
+  });
+
+  return resultados;
+};
+
+carregarUnidades1RPM();
     </script>
 
 </body>
