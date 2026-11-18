@@ -12260,125 +12260,6 @@
   <p>Gerado para consulta offline em: ${new Date().toLocaleString('pt-BR')}</p>
   ${contentHtml}
 
-    <script>
-        // ================= FECHADOR AUTOMÁTICO DE CAIXAS (ACORDEÃO GLOBAL) =================
-        (function initAzimuteGlobalAutoCloseBoxes() {
-            function isAutoCloseBoxesEnabled() {
-                try {
-                    const raw = localStorage.getItem('azimute_ui_settings_v3');
-                    if (!raw) return true;
-                    const parsed = JSON.parse(raw);
-                    return parsed.autoCloseBoxes !== false;
-                } catch (e) {
-                    return true;
-                }
-            }
-
-            const ACCORDION_GROUPS = [
-                // 1. Aba Ajustes
-                [
-                    { box: 'boxAjustesSec-drones', close: () => window.toggleAjustesSectionBox && window.toggleAjustesSectionBox('drones', false) },
-                    { box: 'boxAjustesSec-acesso_rapido', close: () => window.toggleAjustesSectionBox && window.toggleAjustesSectionBox('acesso_rapido', false) },
-                    { box: 'boxAjustesSec-rodape_topo', close: () => window.toggleAjustesSectionBox && window.toggleAjustesSectionBox('rodape_topo', false) },
-                    { box: 'boxAjustesSec-modo_exibicao', close: () => window.toggleAjustesSectionBox && window.toggleAjustesSectionBox('modo_exibicao', false) },
-                    { box: 'boxAjustesSec-acordeao_global', close: () => window.toggleAjustesSectionBox && window.toggleAjustesSectionBox('acordeao_global', false) }
-                ],
-                // 2. Aba Geolocalização
-                [
-                    { box: 'localWeatherExpandableBody', close: () => window.toggleGeoWeatherBox && window.toggleGeoWeatherBox(false) },
-                    { box: 'localConnectivityExpandableBody', close: () => window.toggleGeoConnectivityBox && window.toggleGeoConnectivityBox(false) },
-                    { box: 'digitalCompassExpandableBody', close: () => window.toggleDigitalCompassBox && window.toggleDigitalCompassBox(false) },
-                    { box: 'offlineMapsGuideContent', close: () => window.toggleOfflineMapsGuideBox && window.toggleOfflineMapsGuideBox(false) },
-                    { box: 'gpsClosestHospitalExpandableBody', close: () => window.toggleGpsClosestHospitalBox && window.toggleGpsClosestHospitalBox(false) }
-                ],
-                // 3. Aba APH / Saúde
-                [
-                    { box: 'saudeSmartHospitalExpandableBody', close: () => window.toggleSaudeSmartHospitalBox && window.toggleSaudeSmartHospitalBox(false) },
-                    { box: 'offlineAphGuideExpandableBody', close: () => window.toggleOfflineAphGuideBox && window.toggleOfflineAphGuideBox(false) },
-                    { box: 'aphMarchProtocolExpandableBody', close: () => window.toggleAphMarchProtocolBox && window.toggleAphMarchProtocolBox(false) },
-                    { box: 'rcpMetronomeModuleExpandableBody', close: () => window.toggleRcpMetronomeModuleBox && window.toggleRcpMetronomeModuleBox(false) },
-                    { box: 'saudeAssistantIaExpandableBody', close: () => window.toggleSaudeAssistantIaBox && window.toggleSaudeAssistantIaBox(false) },
-                    { box: 'saudeHospitalNetworkListExpandableBody', close: () => window.toggleSaudeHospitalNetworkListBox && window.toggleSaudeHospitalNetworkListBox(false) }
-                ],
-                // 4. Aba Drones / RPAS
-                [
-                    { box: 'rpasFleetSelectorExpandableBody', close: () => window.toggleRpasFleetSelectorBox && window.toggleRpasFleetSelectorBox(false) },
-                    { box: 'rpasFlightParamsExpandableBody', close: () => window.toggleRpasFlightParamsBox && window.toggleRpasFlightParamsBox(false) },
-                    { box: 'rpasChecklistExpandableBody', close: () => window.toggleRpasChecklistBox && window.toggleRpasChecklistBox(false) },
-                    { box: 'rpasPilotMaterialsExpandableBody', close: () => window.toggleRpasPilotMaterialsBox && window.toggleRpasPilotMaterialsBox(false) }
-                ],
-                // 5. Aba Funções / Apoio
-                [
-                    { box: 'boxApoioCat-abordagem', close: () => window.toggleApoioCategoryBox && window.toggleApoioCategoryBox('abordagem', false) },
-                    { box: 'boxApoioCat-gestao', close: () => window.toggleApoioCategoryBox && window.toggleApoioCategoryBox('gestao', false) },
-                    { box: 'boxApoioCat-transito', close: () => window.toggleApoioCategoryBox && window.toggleApoioCategoryBox('transito', false) },
-                    { box: 'boxApoioCat-manutencao', close: () => window.toggleApoioCategoryBox && window.toggleApoioCategoryBox('manutencao', false) }
-                ],
-                // 6. Tela Início (Painéis retráteis)
-                [
-                    { box: 'quickAccessCustomizerPanel', close: () => typeof toggleQuickAccessCustomizer === 'function' && toggleQuickAccessCustomizer(false) },
-                    { box: 'homeNearestSupportToolsPanel', close: () => typeof toggleHomeNearestSupportTools === 'function' && toggleHomeNearestSupportTools(false) }
-                ],
-                // 7. Estádios (Fluxo de Torcedores)
-                [
-                    { box: 'box-stag-fluxo-mineirao', close: () => window.toggleStadiumCollapsibleBox && window.toggleStadiumCollapsibleBox('fluxo-mineirao', false) },
-                    { box: 'box-stag-fluxo-arenamrv', close: () => window.toggleStadiumCollapsibleBox && window.toggleStadiumCollapsibleBox('fluxo-arenamrv', false) },
-                    { box: 'box-stag-fluxo-independencia', close: () => window.toggleStadiumCollapsibleBox && window.toggleStadiumCollapsibleBox('fluxo-independencia', false) }
-                ]
-            ];
-
-            let isClosingOthers = false;
-            const prevOpenState = new Map();
-
-            function syncAccordionGroups() {
-                if (isClosingOthers) return;
-                const enabled = isAutoCloseBoxesEnabled();
-
-                ACCORDION_GROUPS.forEach(group => {
-                    let newlyOpenedItem = null;
-                    group.forEach(item => {
-                        const el = document.getElementById(item.box);
-                        if (!el) return;
-                        const isOpenNow = !el.classList.contains('hidden');
-                        const wasOpen = prevOpenState.get(item.box) || false;
-                        if (isOpenNow && !wasOpen) {
-                            newlyOpenedItem = item;
-                        }
-                        prevOpenState.set(item.box, isOpenNow);
-                    });
-
-                    if (enabled && newlyOpenedItem) {
-                        isClosingOthers = true;
-                        try {
-                            group.forEach(item => {
-                                if (item.box !== newlyOpenedItem.box) {
-                                    const el = document.getElementById(item.box);
-                                    if (el && !el.classList.contains('hidden')) {
-                                        item.close();
-                                        prevOpenState.set(item.box, false);
-                                    }
-                                }
-                            });
-                        } finally {
-                            isClosingOthers = false;
-                        }
-                    }
-                });
-            }
-
-            document.addEventListener('DOMContentLoaded', () => {
-                syncAccordionGroups();
-                const observer = new MutationObserver(() => {
-                    syncAccordionGroups();
-                });
-                observer.observe(document.body, {
-                    attributes: true,
-                    attributeFilter: ['class'],
-                    subtree: true
-                });
-            });
-        })();
-    </script>
 </body>
 </html>`;
 
@@ -15627,5 +15508,126 @@
 
         initCloudPersistence();
     </script>
+
+    <script>
+        // ================= FECHADOR AUTOMÁTICO DE CAIXAS (ACORDEÃO GLOBAL) =================
+        (function initAzimuteGlobalAutoCloseBoxes() {
+            function isAutoCloseBoxesEnabled() {
+                try {
+                    const raw = localStorage.getItem('azimute_ui_settings_v3');
+                    if (!raw) return true;
+                    const parsed = JSON.parse(raw);
+                    return parsed.autoCloseBoxes !== false;
+                } catch (e) {
+                    return true;
+                }
+            }
+
+            const ACCORDION_GROUPS = [
+                // 1. Aba Ajustes
+                [
+                    { box: 'boxAjustesSec-drones', close: () => window.toggleAjustesSectionBox && window.toggleAjustesSectionBox('drones', false) },
+                    { box: 'boxAjustesSec-acesso_rapido', close: () => window.toggleAjustesSectionBox && window.toggleAjustesSectionBox('acesso_rapido', false) },
+                    { box: 'boxAjustesSec-rodape_topo', close: () => window.toggleAjustesSectionBox && window.toggleAjustesSectionBox('rodape_topo', false) },
+                    { box: 'boxAjustesSec-modo_exibicao', close: () => window.toggleAjustesSectionBox && window.toggleAjustesSectionBox('modo_exibicao', false) },
+                    { box: 'boxAjustesSec-acordeao_global', close: () => window.toggleAjustesSectionBox && window.toggleAjustesSectionBox('acordeao_global', false) }
+                ],
+                // 2. Aba Geolocalização
+                [
+                    { box: 'localWeatherExpandableBody', close: () => window.toggleGeoWeatherBox && window.toggleGeoWeatherBox(false) },
+                    { box: 'localConnectivityExpandableBody', close: () => window.toggleGeoConnectivityBox && window.toggleGeoConnectivityBox(false) },
+                    { box: 'digitalCompassExpandableBody', close: () => window.toggleDigitalCompassBox && window.toggleDigitalCompassBox(false) },
+                    { box: 'offlineMapsGuideContent', close: () => window.toggleOfflineMapsGuideBox && window.toggleOfflineMapsGuideBox(false) },
+                    { box: 'gpsClosestHospitalExpandableBody', close: () => window.toggleGpsClosestHospitalBox && window.toggleGpsClosestHospitalBox(false) }
+                ],
+                // 3. Aba APH / Saúde
+                [
+                    { box: 'saudeSmartHospitalExpandableBody', close: () => window.toggleSaudeSmartHospitalBox && window.toggleSaudeSmartHospitalBox(false) },
+                    { box: 'offlineAphGuideExpandableBody', close: () => window.toggleOfflineAphGuideBox && window.toggleOfflineAphGuideBox(false) },
+                    { box: 'aphMarchProtocolExpandableBody', close: () => window.toggleAphMarchProtocolBox && window.toggleAphMarchProtocolBox(false) },
+                    { box: 'rcpMetronomeModuleExpandableBody', close: () => window.toggleRcpMetronomeModuleBox && window.toggleRcpMetronomeModuleBox(false) },
+                    { box: 'saudeAssistantIaExpandableBody', close: () => window.toggleSaudeAssistantIaBox && window.toggleSaudeAssistantIaBox(false) },
+                    { box: 'saudeHospitalNetworkListExpandableBody', close: () => window.toggleSaudeHospitalNetworkListBox && window.toggleSaudeHospitalNetworkListBox(false) }
+                ],
+                // 4. Aba Drones / RPAS
+                [
+                    { box: 'rpasFleetSelectorExpandableBody', close: () => window.toggleRpasFleetSelectorBox && window.toggleRpasFleetSelectorBox(false) },
+                    { box: 'rpasFlightParamsExpandableBody', close: () => window.toggleRpasFlightParamsBox && window.toggleRpasFlightParamsBox(false) },
+                    { box: 'rpasChecklistExpandableBody', close: () => window.toggleRpasChecklistBox && window.toggleRpasChecklistBox(false) },
+                    { box: 'rpasPilotMaterialsExpandableBody', close: () => window.toggleRpasPilotMaterialsBox && window.toggleRpasPilotMaterialsBox(false) }
+                ],
+                // 5. Aba Funções / Apoio
+                [
+                    { box: 'boxApoioCat-abordagem', close: () => window.toggleApoioCategoryBox && window.toggleApoioCategoryBox('abordagem', false) },
+                    { box: 'boxApoioCat-gestao', close: () => window.toggleApoioCategoryBox && window.toggleApoioCategoryBox('gestao', false) },
+                    { box: 'boxApoioCat-transito', close: () => window.toggleApoioCategoryBox && window.toggleApoioCategoryBox('transito', false) },
+                    { box: 'boxApoioCat-manutencao', close: () => window.toggleApoioCategoryBox && window.toggleApoioCategoryBox('manutencao', false) }
+                ],
+                // 6. Tela Início (Painéis retráteis)
+                [
+                    { box: 'quickAccessCustomizerPanel', close: () => typeof toggleQuickAccessCustomizer === 'function' && toggleQuickAccessCustomizer(false) },
+                    { box: 'homeNearestSupportToolsPanel', close: () => typeof toggleHomeNearestSupportTools === 'function' && toggleHomeNearestSupportTools(false) }
+                ],
+                // 7. Estádios (Fluxo de Torcedores)
+                [
+                    { box: 'box-stag-fluxo-mineirao', close: () => window.toggleStadiumCollapsibleBox && window.toggleStadiumCollapsibleBox('fluxo-mineirao', false) },
+                    { box: 'box-stag-fluxo-arenamrv', close: () => window.toggleStadiumCollapsibleBox && window.toggleStadiumCollapsibleBox('fluxo-arenamrv', false) },
+                    { box: 'box-stag-fluxo-independencia', close: () => window.toggleStadiumCollapsibleBox && window.toggleStadiumCollapsibleBox('fluxo-independencia', false) }
+                ]
+            ];
+
+            let isClosingOthers = false;
+            const prevOpenState = new Map();
+
+            function syncAccordionGroups() {
+                if (isClosingOthers) return;
+                const enabled = isAutoCloseBoxesEnabled();
+
+                ACCORDION_GROUPS.forEach(group => {
+                    let newlyOpenedItem = null;
+                    group.forEach(item => {
+                        const el = document.getElementById(item.box);
+                        if (!el) return;
+                        const isOpenNow = !el.classList.contains('hidden');
+                        const wasOpen = prevOpenState.get(item.box) || false;
+                        if (isOpenNow && !wasOpen) {
+                            newlyOpenedItem = item;
+                        }
+                        prevOpenState.set(item.box, isOpenNow);
+                    });
+
+                    if (enabled && newlyOpenedItem) {
+                        isClosingOthers = true;
+                        try {
+                            group.forEach(item => {
+                                if (item.box !== newlyOpenedItem.box) {
+                                    const el = document.getElementById(item.box);
+                                    if (el && !el.classList.contains('hidden')) {
+                                        item.close();
+                                        prevOpenState.set(item.box, false);
+                                    }
+                                }
+                            });
+                        } finally {
+                            isClosingOthers = false;
+                        }
+                    }
+                });
+            }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                syncAccordionGroups();
+                const observer = new MutationObserver(() => {
+                    syncAccordionGroups();
+                });
+                observer.observe(document.body, {
+                    attributes: true,
+                    attributeFilter: ['class'],
+                    subtree: true
+                });
+            });
+        })();
+    </script>
+
 </body>
 </html>
