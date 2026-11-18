@@ -2,32 +2,12 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"content="width=device-width, initial-scale=1.0">
-    <title>AZIMUTE | Navegação e Informação</title>
-    <link rel="manifest" href="./manifest.webmanifest">
-    <meta name="theme-color" content="#0D0D0D">
-    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>AZIMUTE - Sistema Geral de Consulta Rápida (PMMG)</title>
+    <link rel="manifest"href="manifest.json">
+    <meta name="theme-color"content="#0F0F0F">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="AZIMUTE">
-    <link rel="shortcut icon" href="./favicon.ico">
-    <link rel="icon" type="image/x-icon" href="./favicon.ico">
-    <link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="./icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="512x512" href="./icon-512x512.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="AZIMUTE | Navegação e Informação">
-    <meta property="og:description" content="Plataforma de navegação, orientação territorial e consulta de informações para apoio à atividade policial.">
-    <meta property="og:image" content="./og-image.png">
-    <meta property="og:image:type" content="image/png">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="AZIMUTE | Navegação e Informação">
-    <meta name="twitter:description" content="Plataforma de navegação, orientação territorial e consulta de informações para apoio à atividade policial.">
-    <meta name="twitter:image" content="./og-image.png">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Lucide Icons -->
@@ -164,13 +144,18 @@
             margin-left: auto;
             margin-right: auto;
         }
-        /* Ativa o Painel de 3 Colunas Limpas no Modo GRID EXCLUSIVAMENTE na Tela Início (home) */
+        /* Ativa o Painel de 3 Colunas Limpas no Modo GRID EXCLUSIVAMENTE na Tela Início (home) — Manual (Ajustes) ou Horizontal */
         body.mode-grid #gridModeTacticalCockpit.grid-cockpit-active:not(.hidden) {
             display: grid !important;
-            grid-template-columns: 2.3fr 4.7fr 5fr;
-            gap: 0.6rem;
-            align-items: stretch;
-            margin-bottom: 0.35rem;
+            grid-template-columns: minmax(0, 2.3fr) minmax(0, 4.7fr) minmax(0, 5fr) !important;
+            gap: 0.5rem !important;
+            align-items: stretch !important;
+            width: 100% !important;
+            margin-bottom: 0.35rem !important;
+        }
+        body.mode-grid #gridModeTacticalCockpit.grid-cockpit-active:not(.hidden) > div {
+            min-width: 0 !important;
+            overflow: hidden !important;
         }
         body.mode-grid #gridModeTacticalCockpit:not(.grid-cockpit-active),
         body.mode-grid #gridModeTacticalCockpit.hidden {
@@ -183,11 +168,6 @@
         body.mode-grid main#mainContainer > section#view-home.azimute-active-view > #homeQuickAccessSection > div:first-child,
         body.mode-grid main#mainContainer > section#view-home.azimute-active-view > #homeQuickAccessSection > #homeQuickAccessGrid {
             display: none !important;
-        }
-        @media (max-width: 640px) {
-            body.mode-grid #gridModeTacticalCockpit.grid-cockpit-active:not(.hidden) {
-                grid-template-columns: 1fr;
-            }
         }
         body.mode-grid .subtabs-bar {
             display: grid !important;
@@ -343,31 +323,41 @@
             display: inline-flex !important;
         }
 
-        /* ALTO CONTRASTE OPACO (#FFFFFF SOBRE #161616) NA PESQUISA DE UNIDADES, BATALHÕES E CIAS */
+        /* ALTO CONTRASTE OPACO (#FFFFFF / #E0E0E0 SOBRE #161616) EM TODAS AS CAIXAS DE PESQUISA */
+        #globalSearch,
         #unidadesSearchInput,
         #rpm1SearchInput,
         #rpm2SearchInput,
         #rpm3SearchInput,
         #espSearchInput,
         #skeletonSearchInput,
-        #internalSearch18 {
+        #internalSearch18,
+        input[type="search"],
+        input[id*="Search"],
+        input[id*="search"] {
             background-color: #161616 !important;
             color: #FFFFFF !important;
             -webkit-text-fill-color: #FFFFFF !important;
             opacity: 1 !important;
             caret-color: #C5A869 !important;
+            border-color: rgba(197, 168, 105, 0.55) !important;
         }
+        #globalSearch::placeholder,
         #unidadesSearchInput::placeholder,
         #rpm1SearchInput::placeholder,
         #rpm2SearchInput::placeholder,
         #rpm3SearchInput::placeholder,
         #espSearchInput::placeholder,
         #skeletonSearchInput::placeholder,
-        #internalSearch18::placeholder {
-            color: #E5E7EB !important;
-            -webkit-text-fill-color: #E5E7EB !important;
+        #internalSearch18::placeholder,
+        input[type="search"]::placeholder,
+        input[id*="Search"]::placeholder,
+        input[id*="search"]::placeholder {
+            color: #E0E0E0 !important;
+            -webkit-text-fill-color: #E0E0E0 !important;
             opacity: 1 !important;
         }
+        #globalSearchDropdown,
         #unidadesSearchResultsDropdown,
         #rpm1SearchDropdown,
         #rpm2SearchDropdown,
@@ -379,6 +369,15 @@
             color: #FFFFFF !important;
             opacity: 1 !important;
             backdrop-filter: none !important;
+        }
+        #globalSearchDropdown h4,
+        #globalSearchDropdown strong {
+            color: #FFFFFF !important;
+            opacity: 1 !important;
+        }
+        #globalSearchDropdown p,
+        #globalSearchDropdown span {
+            opacity: 1 !important;
         }
         #unidadesSearchResultsDropdown h4,
         #rpm1SearchDropdown h4,
@@ -417,6 +416,61 @@
         button, a, span, strong, p, h1, h2, h3, h4, h5, h6, label {
             min-width: 0;
         }
+
+        /* ESPAÇAMENTO SEGURO NO MODO INSTALADO (PWA STANDALONE) PARA NUNCA CORTAR O NOME DA PÁGINA NO TOPO */
+        header#mainTopHeader {
+            padding-top: env(safe-area-inset-top, 0px);
+        }
+        main#mainContainer {
+            padding-top: calc(1rem + env(safe-area-inset-top, 0px));
+        }
+        body.has-home-header main#mainContainer {
+            padding-top: 0.75rem;
+        }
+        @media (display-mode: standalone) {
+            body {
+                padding-top: max(12px, env(safe-area-inset-top, 12px));
+            }
+            header#mainTopHeader {
+                padding-top: max(12px, env(safe-area-inset-top, 12px)) !important;
+            }
+            main#mainContainer {
+                padding-top: max(16px, calc(0.75rem + env(safe-area-inset-top, 12px))) !important;
+            }
+            body.has-home-header main#mainContainer {
+                padding-top: 0.75rem !important;
+            }
+            main#mainContainer > section[id^="view-"] > div:first-child {
+                display: flex !important;
+                align-items: center !important;
+                min-height: 2rem !important;
+                padding-top: 0.35rem !important;
+                padding-bottom: 0.25rem !important;
+                overflow: visible !important;
+            }
+            main#mainContainer > section[id^="view-"] > div:first-child span {
+                display: inline-block !important;
+                line-height: 1.35 !important;
+                overflow: visible !important;
+            }
+        }
+        body.pwa-standalone header#mainTopHeader {
+            padding-top: max(12px, env(safe-area-inset-top, 12px)) !important;
+        }
+        body.pwa-standalone main#mainContainer {
+            padding-top: max(16px, calc(0.75rem + env(safe-area-inset-top, 12px))) !important;
+        }
+        body.pwa-standalone.has-home-header main#mainContainer {
+            padding-top: 0.75rem !important;
+        }
+        body.pwa-standalone main#mainContainer > section[id^="view-"] > div:first-child {
+            display: flex !important;
+            align-items: center !important;
+            min-height: 2rem !important;
+            padding-top: 0.35rem !important;
+            padding-bottom: 0.25rem !important;
+            overflow: visible !important;
+        }
     </style>
 </head>
 <body class="bg-pmmg-black text-gray-200 font-sans min-h-screen pb-16 antialiased selection:bg-pmmg-khaki selection:text-pmmg-black mode-app">
@@ -425,9 +479,12 @@
         <div class="bg-pmmg-card border-2 border-pmmg-khaki/80 rounded-2xl max-w-md w-full p-6 sm:p-8 space-y-6 shadow-2xl relative overflow-hidden">
             <div class="absolute -top-10 -right-10 w-32 h-32 bg-pmmg-khaki/10 rounded-full blur-2xl pointer-events-none"></div>
             
-            <div class="text-center space-y-3">
-                <img src="./icon-192x192.png" alt="AZIMUTE" class="w-16 h-16 mx-auto rounded-2xl border border-pmmg-khaki/60 shadow-inner object-contain bg-pmmg-black">
-                <h2 class="text-3xl font-military tracking-widest text-pmmg-khaki uppercase leading-none">AZIMUTE</h2>
+            <div class="text-center space-y-2">
+                <div class="w-14 h-14 mx-auto rounded-2xl bg-pmmg-khaki/15 border border-pmmg-khaki/60 flex items-center justify-center text-pmmg-khaki shadow-inner">
+                    <i data-lucide="shield-check"class="w-8 h-8"></i>
+                </div>
+                <h2 class="text-3xl font-military tracking-widest text-pmmg-khaki uppercase leading-none">AZIMUTE PMMG</h2>
+                <p class="text-xs text-gray-400">Sistema de Consulta Rápida Restrito • Autenticação de Acesso</p>
             </div>
 
             <div class="space-y-4">
@@ -475,6 +532,9 @@
                 </button>
             </div>
 
+            <div class="pt-2 border-t border-pmmg-border text-center">
+                <p class="text-[10px] text-gray-500">Polícia Militar de Minas Gerais • Região Metropolitana de Belo Horizonte</p>
+            </div>
         </div>
     </div>
     <script>
@@ -646,7 +706,7 @@
                     id="globalSearch" 
                     autocomplete="off"
                     placeholder="Buscar rua, bairro, drone, gasolina, bnmp, cia..." 
-                    class="w-full pl-8 pr-7 py-2 bg-pmmg-black/90 text-xs text-gray-100 placeholder-gray-400 rounded-xl border border-pmmg-border focus:outline-none focus:border-pmmg-khaki focus:ring-1 focus:ring-pmmg-khaki transition-all"
+                    class="w-full pl-8 pr-7 py-2 bg-[#161616] text-xs text-white placeholder-[#E0E0E0] opacity-100 rounded-xl border border-pmmg-khaki/60 focus:outline-none focus:border-pmmg-gold transition-all"
                     oninput="handleGlobalSearch()"
                     onfocus="handleGlobalSearch()"
                 >
@@ -1486,7 +1546,10 @@
         </section>
 
         <!-- ================= VIEW 1: HOME (PAINEL INICIAL) ================= -->
-        <section id="view-home" class="azimute-active-view space-y-4">
+        <section id="view-home" class="azimute-active-view flex flex-col gap-4">
+            <!-- SLOT DINÂMICO DA CAIXA DE PESQUISA NA TELA INICIAL -->
+            <div id="homeSearchBlockSlot" class="max-w-7xl w-full mx-auto"></div>
+
             <!-- 1. SEÇÃO "ACESSO RÁPIDO" (POSICIONADA ACIMA DE APOIO MAIS PRÓXIMO + MODO PERSONALIZAR COM LOCALSTORAGE) -->
             <div id="homeQuickAccessSection" class="max-w-7xl mx-auto space-y-2.5">
                 <div class="flex items-center justify-between px-1">
@@ -1563,8 +1626,23 @@
                     <span class="text-[10px] font-extrabold uppercase tracking-wider text-pmmg-khaki flex items-center gap-1.5">
                         <i data-lucide="radar" class="w-3.5 h-3.5 text-pmmg-gold"></i>Apoio Mais Próximo (GPS)
                     </span>
-                    <button type="button" onclick="toggleHomeNearestSupportTools()" id="btnToggleNearestSupportTools" class="p-1.5 rounded-lg bg-pmmg-dark hover:bg-pmmg-cardHover text-pmmg-khaki border border-pmmg-gold/40 hover:border-pmmg-gold transition-all cursor-pointer shrink-0" title="Ferramentas: Personalizar exibição e salvar endereços">
-                        <i data-lucide="wrench" class="w-3.5 h-3.5 text-pmmg-gold"></i>
+                    <div class="flex items-center gap-1.5 shrink-0">
+                        <button type="button" onclick="toggleHomeQuickCommerceBar()" class="px-2 py-1 rounded-lg bg-pmmg-dark hover:bg-pmmg-cardHover text-pmmg-khaki border border-pmmg-gold/45 hover:border-pmmg-gold text-[10px] font-extrabold flex items-center gap-1 transition-all cursor-pointer" title="Cadastrar comércio ou serviço para busca rápida via GPS">
+                            <i data-lucide="plus" class="w-3 h-3 text-pmmg-gold"></i>
+                            <span>Comércio</span>
+                        </button>
+                        <button type="button" onclick="toggleHomeNearestSupportTools()" id="btnToggleNearestSupportTools" class="p-1.5 rounded-lg bg-pmmg-dark hover:bg-pmmg-cardHover text-pmmg-khaki border border-pmmg-gold/40 hover:border-pmmg-gold transition-all cursor-pointer shrink-0" title="Ferramentas: Personalizar exibição e salvar endereços">
+                            <i data-lucide="wrench" class="w-3.5 h-3.5 text-pmmg-gold"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- BARRA DIRETA DE CADASTRO DE COMÉRCIO / SERVIÇO NA TELA INICIAL -->
+                <div id="homeQuickCommerceBar" class="hidden bg-pmmg-black/90 border border-[#C5A869]/50 rounded-xl p-2.5 flex items-center gap-2">
+                    <input type="text" id="inputHomeQuickCommerce" onkeydown="if(event.key==='Enter'){event.preventDefault();addHomeQuickCommerceCategory();}" placeholder="Ex: Farmácia, Borracharia, Chaveiro, Padaria..." class="flex-1 min-w-0 px-2.5 py-1.5 bg-[#161616] text-xs text-white placeholder-[#E0E0E0] rounded-lg border border-[#C5A869]/55 focus:outline-none focus:border-pmmg-gold">
+                    <button type="button" onclick="addHomeQuickCommerceCategory()" class="px-3 py-1.5 bg-[#161616] hover:bg-pmmg-cardHover text-pmmg-khaki border border-[#C5A869] font-extrabold rounded-lg text-[11px] uppercase flex items-center gap-1 cursor-pointer shrink-0">
+                        <i data-lucide="plus" class="w-3.5 h-3.5 text-pmmg-gold"></i>
+                        <span>Salvar</span>
                     </button>
                 </div>
 
@@ -4748,99 +4826,95 @@
                 <!-- Conteúdo interno fechado por padrão: Card Didático Protocolo MARCH no topo + Grade de Protocolos -->
                 <div id="offlineAphGuideExpandableBody" class="hidden p-4 sm:p-5 pt-3 border-t border-pmmg-border space-y-4">
                     
-                    <!-- CARD DIDÁTICO RÁPIDO E VISUAL: SEQUÊNCIA DO PROTOCOLO MARCH (MANUAL PMMG 2026/2027) -->
-                    <div id="aphMarchProtocolDidacticCard" class="bg-[#0D0D0D] border border-[#C5A869]/60 border-l-4 border-l-red-500 rounded-2xl p-4 sm:p-5 space-y-3.5 shadow-xl">
-                        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border pb-2.5">
-                            <div class="flex items-center gap-2.5">
-                                <span class="px-2.5 py-1 rounded-lg bg-red-950/90 text-red-400 border border-red-500/50 font-mono font-extrabold text-xs tracking-widest uppercase">
-                                    M • A • R • C • H
+                    <!-- CAIXA RETRÁTIL PROTOCOLO M.A.R.C.H (FECHADA POR PADRÃO, TÍTULO NA HORIZONTAL E ALTO CONTRASTE) -->
+                    <div id="aphMarchProtocolDidacticCard" class="bg-[#161616] border border-[#C5A869]/60 rounded-2xl overflow-hidden shadow-xl">
+                        <button type="button" onclick="toggleAphMarchProtocolBox()" id="btnToggleAphMarchProtocol" class="w-full p-4 sm:p-5 flex items-center justify-between gap-3 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <span class="px-3 py-1.5 rounded-lg bg-[#0D0D0D] text-[#C5A869] border border-[#C5A869]/60 font-mono font-extrabold text-xs sm:text-sm tracking-[0.2em] uppercase whitespace-nowrap shrink-0">
+                                    M.A.R.C.H
                                 </span>
-                                <div>
-                                    <h4 class="text-lg sm:text-xl font-military text-white uppercase tracking-wider leading-none">
-                                        Protocolo MARCH • O Que Fazer em Cada Etapa (Manual PMMG 2026/2027)
-                                    </h4>
-                                    <span class="text-[11px] text-gray-400 block mt-0.5">
-                                        Conduta objetiva por prioridade no atendimento pré-hospitalar
-                                    </span>
-                                </div>
+                                <h4 class="text-lg sm:text-xl font-military text-white uppercase tracking-wider leading-none whitespace-nowrap">
+                                    Protocolo M.A.R.C.H
+                                </h4>
                             </div>
-                            <span class="text-[10px] font-mono font-bold uppercase text-pmmg-khaki bg-[#161616] px-2.5 py-1 rounded border border-[#C5A869]/40">
-                                Manual PMMG 2026/2027
-                            </span>
-                        </div>
+                            <div class="flex items-center gap-2 shrink-0">
+                                <span id="lblAphMarchProtocolToggle" class="text-[11px] font-bold text-[#C5A869]">Abrir</span>
+                                <i data-lucide="chevron-down" id="icoAphMarchProtocolChevron" class="w-4 h-4 text-[#C5A869] transition-transform duration-200"></i>
+                            </div>
+                        </button>
 
-                        <div class="space-y-2.5 text-xs">
+                        <div id="aphMarchProtocolExpandableBody" class="hidden p-4 sm:p-5 pt-3 border-t border-[#2e2b24] bg-[#161616] space-y-3 text-xs">
                             <!-- M — Maciço (Hemorragia Maciça) -->
-                            <div class="bg-[#161616] p-3.5 rounded-xl border border-red-500/45 space-y-1.5">
+                            <div class="bg-[#161616] p-3.5 rounded-xl border border-[#C5A869]/45 space-y-1.5">
                                 <div class="flex items-center gap-2.5">
-                                    <span class="w-7 h-7 rounded-lg bg-red-950 text-red-400 border border-red-500/50 font-military text-xl font-bold flex items-center justify-center shrink-0 leading-none">
+                                    <span class="w-7 h-7 rounded-lg bg-[#0D0D0D] text-[#C5A869] border border-[#C5A869]/60 font-military text-xl font-bold flex items-center justify-center shrink-0 leading-none">
                                         M
                                     </span>
-                                    <strong class="text-white font-extrabold uppercase tracking-wide text-xs sm:text-sm">
+                                    <strong class="text-[#C5A869] font-extrabold uppercase tracking-wide text-xs sm:text-sm">
                                         M — Maciço (Hemorragia Maciça)
                                     </strong>
                                 </div>
-                                <p class="text-xs text-gray-200 leading-relaxed pl-0.5">
+                                <p class="text-xs text-[#F0F0F0] leading-relaxed pl-0.5">
                                     Identificar sangramento pulsante ou poças de sangue; cortar fardamento com tesoura ponta romba; aplicar torniquete emergencial (mais alto e apertado sobre a roupa na Zona Quente) ou controlado (5 a 7 cm acima da ferida em local seguro); preencher feridas juncionais (pescoço, axila, virilha) com gaze hemostática/comprimida + compressão direta e bandagem.
                                 </p>
                             </div>
 
                             <!-- A — Aéreas (Vias Aéreas) -->
-                            <div class="bg-[#161616] p-3.5 rounded-xl border border-sky-500/45 space-y-1.5">
+                            <div class="bg-[#161616] p-3.5 rounded-xl border border-[#C5A869]/45 space-y-1.5">
                                 <div class="flex items-center gap-2.5">
-                                    <span class="w-7 h-7 rounded-lg bg-sky-950 text-sky-400 border border-sky-500/50 font-military text-xl font-bold flex items-center justify-center shrink-0 leading-none">
+                                    <span class="w-7 h-7 rounded-lg bg-[#0D0D0D] text-[#C5A869] border border-[#C5A869]/60 font-military text-xl font-bold flex items-center justify-center shrink-0 leading-none">
                                         A
                                     </span>
-                                    <strong class="text-white font-extrabold uppercase tracking-wide text-xs sm:text-sm">
+                                    <strong class="text-[#C5A869] font-extrabold uppercase tracking-wide text-xs sm:text-sm">
                                         A — Aéreas (Vias Aéreas)
                                     </strong>
                                 </div>
-                                <p class="text-xs text-gray-200 leading-relaxed pl-0.5">
+                                <p class="text-xs text-[#F0F0F0] leading-relaxed pl-0.5">
                                     Se consciente, manter na posição mais confortável (sentado e inclinado se trauma facial); se inconsciente, inspecionar boca, remover objetos sólidos em pinça, lateralizar para escoar fluidos, realizar Elevação do Queixo ou Tração Mandibular (suspeita cervical), inserir Cânula Nasofaríngea (exceto em trauma facial/base de crânio) e posicionar em Decúbito Lateral (Posição de Recuperação).
                                 </p>
                             </div>
 
                             <!-- R — Respiração -->
-                            <div class="bg-[#161616] p-3.5 rounded-xl border border-amber-500/45 space-y-1.5">
+                            <div class="bg-[#161616] p-3.5 rounded-xl border border-[#C5A869]/45 space-y-1.5">
                                 <div class="flex items-center gap-2.5">
-                                    <span class="w-7 h-7 rounded-lg bg-amber-950 text-amber-300 border border-amber-500/50 font-military text-xl font-bold flex items-center justify-center shrink-0 leading-none">
+                                    <span class="w-7 h-7 rounded-lg bg-[#0D0D0D] text-[#C5A869] border border-[#C5A869]/60 font-military text-xl font-bold flex items-center justify-center shrink-0 leading-none">
                                         R
                                     </span>
-                                    <strong class="text-white font-extrabold uppercase tracking-wide text-xs sm:text-sm">
+                                    <strong class="text-[#C5A869] font-extrabold uppercase tracking-wide text-xs sm:text-sm">
                                         R — Respiração
                                     </strong>
                                 </div>
-                                <p class="text-xs text-gray-200 leading-relaxed pl-0.5">
+                                <p class="text-xs text-[#F0F0F0] leading-relaxed pl-0.5">
                                     Avaliar simetria do tórax, frequência respiratória, dispneia e cianose; buscar ferimentos penetrantes na frente, laterais e costas do tórax; limpar o local e aplicar Selo de Tórax Valvulado sem tocar no adesivo para evitar pneumotórax hipertensivo.
                                 </p>
                             </div>
 
                             <!-- C — Circulação -->
-                            <div class="bg-[#161616] p-3.5 rounded-xl border border-rose-500/45 space-y-1.5">
+                            <div class="bg-[#161616] p-3.5 rounded-xl border border-[#C5A869]/45 space-y-1.5">
                                 <div class="flex items-center gap-2.5">
-                                    <span class="w-7 h-7 rounded-lg bg-rose-950 text-rose-400 border border-rose-500/50 font-military text-xl font-bold flex items-center justify-center shrink-0 leading-none">
+                                    <span class="w-7 h-7 rounded-lg bg-[#0D0D0D] text-[#C5A869] border border-[#C5A869]/60 font-military text-xl font-bold flex items-center justify-center shrink-0 leading-none">
                                         C
                                     </span>
-                                    <strong class="text-white font-extrabold uppercase tracking-wide text-xs sm:text-sm">
+                                    <strong class="text-[#C5A869] font-extrabold uppercase tracking-wide text-xs sm:text-sm">
                                         C — Circulação
                                     </strong>
                                 </div>
-                                <p class="text-xs text-gray-200 leading-relaxed pl-0.5">
+                                <p class="text-xs text-[#F0F0F0] leading-relaxed pl-0.5">
                                     Revisar torniquetes e curativos aplicados; avaliar sinais de choque verificando Pulso Radial, Perfusão Capilar Digital (&lt; 2s) e Nível de Consciência; realizar conversão de torniquete apenas se não houver choque, amputação ou evacuação &gt; 2h.
                                 </p>
                             </div>
 
                             <!-- H — Hipotermia -->
-                            <div class="bg-[#161616] p-3.5 rounded-xl border border-[#C5A869]/50 space-y-1.5">
+                            <div class="bg-[#161616] p-3.5 rounded-xl border border-[#C5A869]/45 space-y-1.5">
                                 <div class="flex items-center gap-2.5">
-                                    <span class="w-7 h-7 rounded-lg bg-pmmg-khakiBadge text-pmmg-khaki border border-[#C5A869]/50 font-military text-xl font-bold flex items-center justify-center shrink-0 leading-none">
+                                    <span class="w-7 h-7 rounded-lg bg-[#0D0D0D] text-[#C5A869] border border-[#C5A869]/60 font-military text-xl font-bold flex items-center justify-center shrink-0 leading-none">
                                         H
                                     </span>
-                                    <strong class="text-white font-extrabold uppercase tracking-wide text-xs sm:text-sm">
+                                    <strong class="text-[#C5A869] font-extrabold uppercase tracking-wide text-xs sm:text-sm">
                                         H — Hipotermia
                                     </strong>
                                 </div>
-                                <p class="text-xs text-gray-200 leading-relaxed pl-0.5">
+                                <p class="text-xs text-[#F0F0F0] leading-relaxed pl-0.5">
                                     Combater a Tríade da Morte (Hipotermia + Acidose + Coagulopatia); isolar o ferido do solo frio, trocar roupas molhadas, manter colete para retenção térmica, envolver com Manta Térmica aluminizada e aplicar fontes de calor no tórax, axilas ou virilhas.
                                 </p>
                             </div>
@@ -7966,32 +8040,26 @@
                             </div>
                         </div>
 
-                        <!-- 3C. Disposição e Visibilidade dos Blocos da Tela Inicial -->
-                        <div class="pt-3 border-t border-pmmg-border/70 space-y-2">
+                        <!-- 3C. Posição e Visibilidade dos Blocos da Tela Inicial (Subir / Descer) -->
+                        <div class="pt-3 border-t border-pmmg-border/70 space-y-2.5">
                             <div class="flex flex-wrap items-center justify-between gap-2">
-                                <span class="text-[10.5px] font-extrabold uppercase tracking-wider text-pmmg-gold block">C. Blocos da Tela Inicial e Ordem Vertical</span>
-                                <button type="button" onclick="invertHomeBlocksOrder()" class="px-2.5 py-1 rounded-lg bg-pmmg-black hover:bg-pmmg-card text-pmmg-khaki border border-pmmg-gold/50 text-[10.5px] font-extrabold flex items-center gap-1 cursor-pointer transition-all">
-                                    <i data-lucide="arrow-up-down" class="w-3.5 h-3.5 text-pmmg-gold"></i>
-                                    <span id="lblHomeBlocksOrderStatus">Ordem: 1º Acesso Rápido • 2º Apoio (GPS)</span>
-                                </button>
+                                <div>
+                                    <span class="text-[10.5px] font-extrabold uppercase tracking-wider text-pmmg-gold block">C. Posição dos Blocos da Tela Inicial (Subir / Descer)</span>
+                                    <p class="text-[11px] text-gray-400 mt-0.5">Use as setas (↑ / ↓) para escolher a ordem vertical da Barra de Pesquisa, Acesso Rápido e Card de Proximidade/Apoio.</p>
+                                </div>
+                                <span id="lblHomeBlocksOrderStatus" class="text-[10px] font-mono text-pmmg-khaki bg-pmmg-black px-2 py-1 rounded border border-pmmg-gold/40">
+                                    1º Pesquisa • 2º Acesso Rápido • 3º Apoio (GPS)
+                                </span>
                             </div>
 
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
-                                <label for="chkShowQuickAccessBlock" class="bg-pmmg-black/80 hover:bg-pmmg-black p-3 rounded-xl border border-pmmg-border flex items-center justify-between gap-2.5 cursor-pointer select-none">
-                                    <div>
-                                        <strong class="text-white font-bold block">Exibir Bloco "Acesso Rápido"</strong>
-                                        <span class="text-[10.5px] text-gray-400">Grade de atalhos rápidos na Tela Inicial</span>
-                                    </div>
-                                    <input type="checkbox" id="chkShowQuickAccessBlock" onchange="updateAzimuteUiPreferenceFromInputs()" class="w-4 h-4 rounded border-pmmg-border bg-pmmg-dark text-pmmg-khaki accent-[#C5A869] cursor-pointer shrink-0" checked>
-                                </label>
+                            <div id="ajustesHomeBlocksOrderList" class="space-y-2">
+                                <!-- Preenchido dinamicamente por renderHomeBlocksOrderCustomizerList() -->
+                            </div>
 
-                                <label for="chkShowNearestSupportBlock" class="bg-pmmg-black/80 hover:bg-pmmg-black p-3 rounded-xl border border-pmmg-border flex items-center justify-between gap-2.5 cursor-pointer select-none">
-                                    <div>
-                                        <strong class="text-white font-bold block">Exibir Bloco "Apoio Mais Próximo (GPS)"</strong>
-                                        <span class="text-[10.5px] text-gray-400">Unidade Policial/BSC e Hospital mais próximos</span>
-                                    </div>
-                                    <input type="checkbox" id="chkShowNearestSupportBlock" onchange="updateAzimuteUiPreferenceFromInputs()" class="w-4 h-4 rounded border-pmmg-border bg-pmmg-dark text-pmmg-khaki accent-[#C5A869] cursor-pointer shrink-0" checked>
-                                </label>
+                            <!-- Checkboxes ocultos de compatibilidade -->
+                            <div class="hidden">
+                                <input type="checkbox" id="chkShowQuickAccessBlock" checked>
+                                <input type="checkbox" id="chkShowNearestSupportBlock" checked>
                             </div>
                         </div>
                     </div>
@@ -8031,6 +8099,35 @@
                                 </button>
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                <!-- 5. FECHADOR AUTOMÁTICO DE CAIXAS (ACORDEÃO GLOBAL • CAIXA FECHADA POR PADRÃO) -->
+                <div class="bg-pmmg-dark rounded-xl border border-pmmg-border overflow-hidden">
+                    <button type="button" onclick="toggleAjustesSectionBox('acordeao_global')" id="btnToggleAjustesSec-acordeao_global" class="w-full p-3.5 sm:p-4 flex items-center justify-between gap-2 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
+                        <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki flex items-center gap-2">
+                            <i data-lucide="layers" class="w-4 h-4 text-pmmg-gold shrink-0"></i>
+                            <span>5. Fechador Automático de Caixas</span>
+                        </span>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <span id="lblAjustesSec-acordeao_global" class="text-[11px] font-bold text-pmmg-khaki">Abrir</span>
+                            <i data-lucide="chevron-down" id="icoAjustesSec-acordeao_global" class="w-4 h-4 text-pmmg-gold transition-transform duration-200"></i>
+                        </div>
+                    </button>
+
+                    <div id="boxAjustesSec-acordeao_global" class="hidden p-3.5 sm:p-4 pt-3 border-t border-pmmg-border/80 space-y-3">
+                        <label for="chkAutoCloseBoxes" class="bg-pmmg-black/80 hover:bg-pmmg-black p-3.5 rounded-xl border border-pmmg-border flex items-center justify-between gap-3 cursor-pointer select-none">
+                            <div>
+                                <strong class="text-white text-xs sm:text-sm font-bold block">Fechador Automático de Caixas</strong>
+                                <span class="text-[11px] text-gray-400 block mt-0.5">
+                                    Ao abrir uma segunda caixa ou gaveta retrátil, fecha automaticamente a caixa anterior que estava aberta.
+                                </span>
+                            </div>
+                            <span class="relative inline-flex items-center shrink-0 cursor-pointer">
+                                <input type="checkbox" id="chkAutoCloseBoxes" onchange="updateAzimuteUiPreferenceFromInputs()" class="sr-only peer" checked>
+                                <span class="w-11 h-6 bg-[#26231c] border border-pmmg-border rounded-full peer peer-checked:bg-[#C5A869] peer-checked:border-[#C5A869] transition-all after:content-[''] after:absolute after:top-[3px] after:left-[3px] after:bg-white peer-checked:after:bg-[#0D0D0D] after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-5"></span>
+                            </span>
+                        </label>
                     </div>
                 </div>
 
@@ -8539,6 +8636,23 @@
                 body.classList.add('hidden');
                 if (lbl) lbl.textContent = 'Abrir';
                 if (icon) icon.style.transform = 'rotate(0deg)';
+            }
+        };
+
+        window.toggleAphMarchProtocolBox = function(forceOpen = null) {
+            const box = document.getElementById('aphMarchProtocolExpandableBody');
+            const lbl = document.getElementById('lblAphMarchProtocolToggle');
+            const ico = document.getElementById('icoAphMarchProtocolChevron');
+            if (!box) return;
+            const willOpen = forceOpen !== null ? forceOpen : box.classList.contains('hidden');
+            if (willOpen) {
+                box.classList.remove('hidden');
+                if (lbl) lbl.textContent = 'Fechar';
+                if (ico) ico.style.transform = 'rotate(180deg)';
+            } else {
+                box.classList.add('hidden');
+                if (lbl) lbl.textContent = 'Abrir';
+                if (ico) ico.style.transform = 'rotate(0deg)';
             }
         };
 
@@ -10330,6 +10444,68 @@
             }
         }
 
+        function toggleHomeQuickCommerceBar(forceOpen = null) {
+            const bar = document.getElementById('homeQuickCommerceBar');
+            if (!bar) return;
+            const shouldOpen = forceOpen !== null ? forceOpen : bar.classList.contains('hidden');
+            if (shouldOpen) {
+                bar.classList.remove('hidden');
+                const inp = document.getElementById('inputHomeQuickCommerce');
+                if (inp) setTimeout(() => inp.focus(), 50);
+            } else {
+                bar.classList.add('hidden');
+            }
+        }
+
+        function addHomeQuickCommerceCategory() {
+            const inp = document.getElementById('inputHomeQuickCommerce');
+            const term = (inp ? inp.value : '').trim();
+            if (!term) {
+                if (typeof showToast === 'function') showToast('Digite o nome do comércio ou serviço.');
+                return;
+            }
+            const list = getRastreamentoCategories();
+            const exists = list.some(x => x.term.toLowerCase() === term.toLowerCase());
+            if (exists) {
+                list.forEach(x => {
+                    if (x.term.toLowerCase() === term.toLowerCase()) x.enabled = true;
+                });
+            } else {
+                list.push({
+                    id: 'ras_' + Date.now(),
+                    term: term,
+                    enabled: true
+                });
+            }
+            setRastreamentoCategories(list);
+            if (inp) inp.value = '';
+            toggleHomeQuickCommerceBar(false);
+            if (typeof renderRastreamentoCategoriesManagerList === 'function') renderRastreamentoCategoriesManagerList();
+
+            const coords = getCurrentRastreamentoCoords();
+            renderHomeSupportRastreamentoCards(coords.lat, coords.lon);
+            if (coords.lat !== null && coords.lon !== null) {
+                updateAzimuteGpsRastreamento(coords.lat, coords.lon, true);
+            }
+            if (typeof showToast === 'function') showToast('Comércio salvo: "' + term + '"');
+        }
+
+        function buildNativeGeoSearchUrl(term, refLat, refLon) {
+            const cleanTerm = String(term || '').trim();
+            const encodedTerm = encodeURIComponent(cleanTerm);
+            const hasCoords = (typeof refLat === 'number' && typeof refLon === 'number' && !isNaN(refLat) && !isNaN(refLon));
+            if (hasCoords) {
+                const latStr = refLat.toFixed(6);
+                const lonStr = refLon.toFixed(6);
+                const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
+                if (isMobile) {
+                    return 'geo:0,0?q=' + encodedTerm + encodeURIComponent('@' + latStr + ',' + lonStr);
+                }
+                return 'https://www.google.com/maps/search/' + encodedTerm + '/@' + latStr + ',' + lonStr + ',15z';
+            }
+            return 'geo:0,0?q=' + encodedTerm;
+        }
+
         function renderHomeSupportRastreamentoCards(refLat, refLon) {
             const container = document.getElementById('homeSupportRastreamentoContainer');
             if (!container) return;
@@ -10340,84 +10516,52 @@
                 return;
             }
 
+            const coords = (typeof refLat === 'number' && typeof refLon === 'number' && !isNaN(refLat) && !isNaN(refLon))
+                ? { lat: refLat, lon: refLon }
+                : getCurrentRastreamentoCoords();
+
             container.innerHTML = activeCategories.map(cat => {
                 const key = cat.term.toLowerCase();
                 const hit = azimuteRastreamentoResultsMap[key];
+                const geoHref = buildNativeGeoSearchUrl(cat.term, coords.lat, coords.lon);
 
-                if (!hit) {
-                    return `
-                        <div class="bg-[#161616] p-2.5 rounded-xl border border-[#C5A869]/60 flex items-center justify-between gap-2 min-w-0 overflow-hidden">
-                            <div class="min-w-0 flex-1">
-                                <div class="flex items-center gap-1.5 flex-wrap">
-                                    <span class="text-[10px] font-extrabold uppercase text-pmmg-gold truncate">Rastreamento • ${escapeHtmlSafe(cat.term)}</span>
-                                    <span class="text-[10px] font-mono font-bold bg-[#0D0D0D] text-pmmg-khaki px-1.5 py-0.5 rounded border border-[#C5A869]/40 shrink-0">Buscando...</span>
-                                </div>
-                                <strong class="text-xs font-bold text-gray-200 block truncate mt-0.5">Localizando estabelecimento próximo via GPS...</strong>
-                                <span class="text-[10px] text-gray-400 block truncate">OpenStreetMap / Overpass API</span>
-                            </div>
-                        </div>
-                    `;
+                let subtitleHtml = '<span class="text-[10px] text-gray-400 block truncate">Busca direta por GPS atual</span>';
+                let badgeHtml = '';
+                if (hit && !hit.notFound && hit.name) {
+                    let liveDistKm = hit.distKm;
+                    if (coords.lat !== null && coords.lon !== null && typeof azimuteCalcDistKm === 'function') {
+                        liveDistKm = azimuteCalcDistKm(coords.lat, coords.lon, hit.lat, hit.lon);
+                    }
+                    const distText = formatRastreamentoDistanceLabel(liveDistKm);
+                    badgeHtml = `<span class="text-[10px] font-mono font-extrabold bg-pmmg-card text-pmmg-khaki px-1.5 py-0.5 rounded border border-pmmg-khaki/40 shrink-0">${escapeHtmlSafe(distText)}</span>`;
+                    subtitleHtml = `<span class="text-[10px] text-gray-300 block truncate">${escapeHtmlSafe(hit.name)}</span>`;
                 }
-
-                if (hit.notFound) {
-                    const fallbackMapsUrl = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(cat.term + ' perto de mim');
-                    return `
-                        <div class="bg-[#161616] p-2.5 rounded-xl border border-[#C5A869]/60 flex items-center justify-between gap-2 min-w-0 overflow-hidden">
-                            <div class="min-w-0 flex-1">
-                                <div class="flex items-center gap-1.5 flex-wrap">
-                                    <span class="text-[10px] font-extrabold uppercase text-pmmg-gold truncate">Rastreamento • ${escapeHtmlSafe(cat.term)}</span>
-                                    <span class="text-[10px] font-mono font-bold bg-[#0D0D0D] text-gray-400 px-1.5 py-0.5 rounded border border-pmmg-border shrink-0">Raio 9 km</span>
-                                </div>
-                                <strong class="text-xs font-bold text-white block truncate mt-0.5">Nenhum registro no raio imediato</strong>
-                                <span class="text-[10px] text-gray-400 block truncate">Abrir busca direta no mapa</span>
-                            </div>
-                            <a href="${fallbackMapsUrl}" target="_blank" rel="noopener noreferrer" class="px-2.5 py-2 bg-[#0D0D0D] hover:bg-pmmg-border text-pmmg-khaki border border-[#C5A869] font-extrabold rounded-lg text-[11px] flex items-center gap-1 shrink-0 transition-all active:scale-95" title="Buscar ${escapeHtmlSafe(cat.term)} no Maps">
-                                <i data-lucide="navigation" class="w-3.5 h-3.5 text-pmmg-gold"></i> <span>ROTA</span>
-                            </a>
-                        </div>
-                    `;
-                }
-
-                let liveDistKm = hit.distKm;
-                if (typeof refLat === 'number' && typeof refLon === 'number' && !isNaN(refLat) && !isNaN(refLon) && typeof azimuteCalcDistKm === 'function') {
-                    liveDistKm = azimuteCalcDistKm(refLat, refLon, hit.lat, hit.lon);
-                }
-                const distText = formatRastreamentoDistanceLabel(liveDistKm);
-                const routeHref = `https://www.google.com/maps/dir/?api=1&destination=${hit.lat},${hit.lon}&travelmode=driving`;
 
                 return `
-                    <div class="bg-[#161616] p-2.5 rounded-xl border border-[#C5A869]/70 flex items-center justify-between gap-2 min-w-0 overflow-hidden">
+                    <div class="bg-pmmg-dark p-2.5 rounded-xl border border-pmmg-border border-l-4 border-l-[#C5A869] flex items-center justify-between gap-2 min-w-0 overflow-hidden">
                         <div class="min-w-0 flex-1">
                             <div class="flex items-center gap-1.5 flex-wrap">
-                                <span class="text-[10px] font-extrabold uppercase text-pmmg-gold truncate">Rastreamento • ${escapeHtmlSafe(cat.term)}</span>
-                                <span class="text-[10px] font-mono font-extrabold bg-[#0D0D0D] text-pmmg-khaki px-1.5 py-0.5 rounded border border-[#C5A869]/50 shrink-0">${distText}</span>
+                                <span class="text-[10px] font-bold uppercase text-pmmg-khaki truncate">Comércio • ${escapeHtmlSafe(cat.term)}</span>
+                                ${badgeHtml}
                             </div>
-                            <strong class="text-xs sm:text-sm font-extrabold text-white block truncate mt-0.5">${escapeHtmlSafe(hit.name)}</strong>
-                            <span class="text-[10px] text-gray-400 block truncate">${escapeHtmlSafe(hit.address)}</span>
+                            <strong class="text-xs sm:text-sm font-extrabold text-white block truncate mt-0.5">${escapeHtmlSafe(cat.term)}</strong>
+                            ${subtitleHtml}
                         </div>
-                        <a href="${routeHref}" target="_blank" rel="noopener noreferrer" class="px-2.5 py-2 bg-[#0D0D0D] hover:bg-pmmg-border text-pmmg-khaki border border-[#C5A869] font-extrabold rounded-lg text-[11px] flex items-center gap-1 shrink-0 transition-all active:scale-95" title="Traçar rota para ${escapeHtmlSafe(hit.name)}">
-                            <i data-lucide="navigation" class="w-3.5 h-3.5 text-pmmg-gold"></i> <span>ROTA</span>
-                        </a>
+                        <div class="flex items-center gap-1.5 shrink-0">
+                            <a href="${geoHref}" class="px-2.5 py-2 bg-[#161616] hover:bg-pmmg-cardHover text-pmmg-khaki border border-[#C5A869] font-extrabold rounded-lg text-[10.5px] uppercase flex items-center gap-1 shrink-0 shadow transition-all active:scale-95" title="Abrir ${escapeHtmlSafe(cat.term)} no Maps / Waze centrado no GPS atual">
+                                <i data-lucide="search" class="w-3.5 h-3.5 text-pmmg-gold shrink-0"></i>
+                                <span>Buscar Mais Próximo</span>
+                            </a>
+                            <button type="button" onclick="removeRastreamentoCategory('${cat.id}')" class="p-1.5 rounded-lg bg-[#161616] hover:bg-red-950 text-gray-400 hover:text-red-300 border border-pmmg-border cursor-pointer shrink-0" title="Remover comércio">
+                                <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                            </button>
+                        </div>
                     </div>
                 `;
             }).join('');
 
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            applyNearestSupportPrefsToDom();
-            renderHomeNearestSupportCustomPlaces(azimuteLastGeoLat, azimuteLastGeoLon);
-            renderRastreamentoCategoriesManagerList();
-            const initCoords = getCurrentRastreamentoCoords();
-            renderHomeSupportRastreamentoCards(initCoords.lat, initCoords.lon);
-            if (initCoords.lat !== null && initCoords.lon !== null) {
-                updateAzimuteGpsRastreamento(initCoords.lat, initCoords.lon, true);
-            }
-        });
-
-        // ================= DOIS METRÔNOMOS DE RCP LUMINOSOS E SONOROS (WEB AUDIO API 100% OFFLINE) =================
-        let azimuteAudioCtx = null;
 
         function getAzimuteAudioContext() {
             if (!azimuteAudioCtx) {
@@ -11015,15 +11159,18 @@
             if (hpDist) hpDist.textContent = '~' + policeDrive.roadKm + 'km • ~' + policeDrive.mins + 'min';
             if (hpBtn) hpBtn.href = policeUrl;
 
-            // Atualiza Hospital Mais Próximo diretamente no card "Apoio Mais Próximo" (Regra João XXIII)
+            // Atualiza Hospital Mais Próximo REAL (fisicamente mais próximo via GPS contínuo) no card da Tela Inicial
+            const physicalClosestHosp = hospEval.closest || closestHosp;
+            const physicalDriveEst = { roadKm: physicalClosestHosp.roadKmStr, mins: physicalClosestHosp.mins };
+            const physicalHospUrl = physicalClosestHosp.routeUrl;
             const hhName = document.getElementById('homeClosestHospitalCardName');
             const hhAddr = document.getElementById('homeClosestHospitalCardAddr');
             const hhDist = document.getElementById('homeClosestHospitalCardDist');
             const hhBtn = document.getElementById('homeClosestHospitalCardRouteBtn');
-            if (hhName) hhName.textContent = closestHosp.nome;
-            if (hhAddr) hhAddr.textContent = closestHosp.endereco || 'Referência de Emergência';
-            if (hhDist) hhDist.textContent = '~' + driveEst.roadKm + 'km • ~' + driveEst.mins + 'min';
-            if (hhBtn) hhBtn.href = hospUrl;
+            if (hhName) hhName.textContent = physicalClosestHosp.nome;
+            if (hhAddr) hhAddr.textContent = physicalClosestHosp.endereco || 'Unidade Hospitalar Mais Próxima';
+            if (hhDist) hhDist.textContent = '~' + physicalDriveEst.roadKm + 'km • ~' + physicalDriveEst.mins + 'min';
+            if (hhBtn) hhBtn.href = physicalHospUrl;
 
             // Atualiza Pontos Personalizados Salvos pelo Militar com distância GPS em tempo real
             if (typeof renderHomeNearestSupportCustomPlaces === 'function') {
@@ -12112,8 +12259,128 @@
   <h1>AZIMUTE PMMG • Dados Offline: ${bpmName} (REDE: ${shortRede})</h1>
   <p>Gerado para consulta offline em: ${new Date().toLocaleString('pt-BR')}</p>
   ${contentHtml}
+
+    <script>
+        // ================= FECHADOR AUTOMÁTICO DE CAIXAS (ACORDEÃO GLOBAL) =================
+        (function initAzimuteGlobalAutoCloseBoxes() {
+            function isAutoCloseBoxesEnabled() {
+                try {
+                    const raw = localStorage.getItem('azimute_ui_settings_v3');
+                    if (!raw) return true;
+                    const parsed = JSON.parse(raw);
+                    return parsed.autoCloseBoxes !== false;
+                } catch (e) {
+                    return true;
+                }
+            }
+
+            const ACCORDION_GROUPS = [
+                // 1. Aba Ajustes
+                [
+                    { box: 'boxAjustesSec-drones', close: () => window.toggleAjustesSectionBox && window.toggleAjustesSectionBox('drones', false) },
+                    { box: 'boxAjustesSec-acesso_rapido', close: () => window.toggleAjustesSectionBox && window.toggleAjustesSectionBox('acesso_rapido', false) },
+                    { box: 'boxAjustesSec-rodape_topo', close: () => window.toggleAjustesSectionBox && window.toggleAjustesSectionBox('rodape_topo', false) },
+                    { box: 'boxAjustesSec-modo_exibicao', close: () => window.toggleAjustesSectionBox && window.toggleAjustesSectionBox('modo_exibicao', false) },
+                    { box: 'boxAjustesSec-acordeao_global', close: () => window.toggleAjustesSectionBox && window.toggleAjustesSectionBox('acordeao_global', false) }
+                ],
+                // 2. Aba Geolocalização
+                [
+                    { box: 'localWeatherExpandableBody', close: () => window.toggleGeoWeatherBox && window.toggleGeoWeatherBox(false) },
+                    { box: 'localConnectivityExpandableBody', close: () => window.toggleGeoConnectivityBox && window.toggleGeoConnectivityBox(false) },
+                    { box: 'digitalCompassExpandableBody', close: () => window.toggleDigitalCompassBox && window.toggleDigitalCompassBox(false) },
+                    { box: 'offlineMapsGuideContent', close: () => window.toggleOfflineMapsGuideBox && window.toggleOfflineMapsGuideBox(false) },
+                    { box: 'gpsClosestHospitalExpandableBody', close: () => window.toggleGpsClosestHospitalBox && window.toggleGpsClosestHospitalBox(false) }
+                ],
+                // 3. Aba APH / Saúde
+                [
+                    { box: 'saudeSmartHospitalExpandableBody', close: () => window.toggleSaudeSmartHospitalBox && window.toggleSaudeSmartHospitalBox(false) },
+                    { box: 'offlineAphGuideExpandableBody', close: () => window.toggleOfflineAphGuideBox && window.toggleOfflineAphGuideBox(false) },
+                    { box: 'aphMarchProtocolExpandableBody', close: () => window.toggleAphMarchProtocolBox && window.toggleAphMarchProtocolBox(false) },
+                    { box: 'rcpMetronomeModuleExpandableBody', close: () => window.toggleRcpMetronomeModuleBox && window.toggleRcpMetronomeModuleBox(false) },
+                    { box: 'saudeAssistantIaExpandableBody', close: () => window.toggleSaudeAssistantIaBox && window.toggleSaudeAssistantIaBox(false) },
+                    { box: 'saudeHospitalNetworkListExpandableBody', close: () => window.toggleSaudeHospitalNetworkListBox && window.toggleSaudeHospitalNetworkListBox(false) }
+                ],
+                // 4. Aba Drones / RPAS
+                [
+                    { box: 'rpasFleetSelectorExpandableBody', close: () => window.toggleRpasFleetSelectorBox && window.toggleRpasFleetSelectorBox(false) },
+                    { box: 'rpasFlightParamsExpandableBody', close: () => window.toggleRpasFlightParamsBox && window.toggleRpasFlightParamsBox(false) },
+                    { box: 'rpasChecklistExpandableBody', close: () => window.toggleRpasChecklistBox && window.toggleRpasChecklistBox(false) },
+                    { box: 'rpasPilotMaterialsExpandableBody', close: () => window.toggleRpasPilotMaterialsBox && window.toggleRpasPilotMaterialsBox(false) }
+                ],
+                // 5. Aba Funções / Apoio
+                [
+                    { box: 'boxApoioCat-abordagem', close: () => window.toggleApoioCategoryBox && window.toggleApoioCategoryBox('abordagem', false) },
+                    { box: 'boxApoioCat-gestao', close: () => window.toggleApoioCategoryBox && window.toggleApoioCategoryBox('gestao', false) },
+                    { box: 'boxApoioCat-transito', close: () => window.toggleApoioCategoryBox && window.toggleApoioCategoryBox('transito', false) },
+                    { box: 'boxApoioCat-manutencao', close: () => window.toggleApoioCategoryBox && window.toggleApoioCategoryBox('manutencao', false) }
+                ],
+                // 6. Tela Início (Painéis retráteis)
+                [
+                    { box: 'quickAccessCustomizerPanel', close: () => typeof toggleQuickAccessCustomizer === 'function' && toggleQuickAccessCustomizer(false) },
+                    { box: 'homeNearestSupportToolsPanel', close: () => typeof toggleHomeNearestSupportTools === 'function' && toggleHomeNearestSupportTools(false) }
+                ],
+                // 7. Estádios (Fluxo de Torcedores)
+                [
+                    { box: 'box-stag-fluxo-mineirao', close: () => window.toggleStadiumCollapsibleBox && window.toggleStadiumCollapsibleBox('fluxo-mineirao', false) },
+                    { box: 'box-stag-fluxo-arenamrv', close: () => window.toggleStadiumCollapsibleBox && window.toggleStadiumCollapsibleBox('fluxo-arenamrv', false) },
+                    { box: 'box-stag-fluxo-independencia', close: () => window.toggleStadiumCollapsibleBox && window.toggleStadiumCollapsibleBox('fluxo-independencia', false) }
+                ]
+            ];
+
+            let isClosingOthers = false;
+            const prevOpenState = new Map();
+
+            function syncAccordionGroups() {
+                if (isClosingOthers) return;
+                const enabled = isAutoCloseBoxesEnabled();
+
+                ACCORDION_GROUPS.forEach(group => {
+                    let newlyOpenedItem = null;
+                    group.forEach(item => {
+                        const el = document.getElementById(item.box);
+                        if (!el) return;
+                        const isOpenNow = !el.classList.contains('hidden');
+                        const wasOpen = prevOpenState.get(item.box) || false;
+                        if (isOpenNow && !wasOpen) {
+                            newlyOpenedItem = item;
+                        }
+                        prevOpenState.set(item.box, isOpenNow);
+                    });
+
+                    if (enabled && newlyOpenedItem) {
+                        isClosingOthers = true;
+                        try {
+                            group.forEach(item => {
+                                if (item.box !== newlyOpenedItem.box) {
+                                    const el = document.getElementById(item.box);
+                                    if (el && !el.classList.contains('hidden')) {
+                                        item.close();
+                                        prevOpenState.set(item.box, false);
+                                    }
+                                }
+                            });
+                        } finally {
+                            isClosingOthers = false;
+                        }
+                    }
+                });
+            }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                syncAccordionGroups();
+                const observer = new MutationObserver(() => {
+                    syncAccordionGroups();
+                });
+                observer.observe(document.body, {
+                    attributes: true,
+                    attributeFilter: ['class'],
+                    subtree: true
+                });
+            });
+        })();
+    </script>
 </body>
-<\/html>`;
+</html>`;
 
             const blob = new Blob([offlineDoc], { type: 'text/html;charset=utf-8' });
             const url = URL.createObjectURL(blob);
@@ -12505,8 +12772,9 @@
                 showSearchBox: true,
                 showQuickAccessBlock: true,
                 showNearestSupportBlock: true,
-                homeBlocksOrder: ['quick_access', 'nearest_support'],
+                homeBlocksOrder: ['search_box', 'quick_access', 'nearest_support'],
                 enableRpasAutoFleetRec: true,
+                autoCloseBoxes: true,
                 footerButtons: getDefaultFooterButtonsConfig()
             };
         }
@@ -12528,9 +12796,15 @@
                     showSearchBox: parsed.showSearchBox !== undefined ? Boolean(parsed.showSearchBox) : def.showSearchBox,
                     showQuickAccessBlock: parsed.showQuickAccessBlock !== undefined ? Boolean(parsed.showQuickAccessBlock) : def.showQuickAccessBlock,
                     showNearestSupportBlock: parsed.showNearestSupportBlock !== undefined ? Boolean(parsed.showNearestSupportBlock) : def.showNearestSupportBlock,
-                    homeBlocksOrder: Array.isArray(parsed.homeBlocksOrder) && parsed.homeBlocksOrder.length === 2
-                        ? parsed.homeBlocksOrder
-                        : def.homeBlocksOrder,
+                    homeBlocksOrder: (function() {
+                        const valid = ['search_box', 'quick_access', 'nearest_support'];
+                        if (Array.isArray(parsed.homeBlocksOrder)) {
+                            const filtered = parsed.homeBlocksOrder.filter(k => valid.includes(k));
+                            valid.forEach(k => { if (!filtered.includes(k)) filtered.push(k); });
+                            if (filtered.length === 3) return filtered;
+                        }
+                        return def.homeBlocksOrder;
+                    })(),
                     enableRpasAutoFleetRec: parsed.enableRpasAutoFleetRec !== undefined ? Boolean(parsed.enableRpasAutoFleetRec) : def.enableRpasAutoFleetRec,
                     footerButtons: normalizeFooterButtonsConfig(parsed.footerButtons)
                 };
@@ -12581,7 +12855,7 @@
         };
 
         window.closeAllAjustesSectionBoxes = function() {
-            ['drones', 'acesso_rapido', 'rodape_topo', 'modo_exibicao'].forEach(secKey => {
+            ['drones', 'acesso_rapido', 'rodape_topo', 'modo_exibicao', 'acordeao_global'].forEach(secKey => {
                 window.toggleAjustesSectionBox(secKey, false);
             });
         };
@@ -12752,7 +13026,8 @@
                 chkShowSearchBox: s.showSearchBox,
                 chkShowQuickAccessBlock: s.showQuickAccessBlock,
                 chkShowNearestSupportBlock: s.showNearestSupportBlock,
-                chkEnableRpasAutoFleetRec: s.enableRpasAutoFleetRec
+                chkEnableRpasAutoFleetRec: s.enableRpasAutoFleetRec,
+                chkAutoCloseBoxes: s.autoCloseBoxes !== false
             };
             Object.entries(mapChecks).forEach(([id, val]) => {
                 const el = document.getElementById(id);
@@ -12806,8 +13081,9 @@
                 }
             }
 
-            // 6. Caixa de Pesquisa Global
+            // 6. Caixa de Pesquisa Global + Posição Dinâmica nos Blocos da Tela Inicial
             const searchBox = document.getElementById('homeSearchBoxContainer');
+            const searchSlot = document.getElementById('homeSearchBlockSlot');
             if (searchBox) {
                 if (isHome && s.showSearchBox) {
                     searchBox.classList.remove('hidden');
@@ -12818,31 +13094,47 @@
                 }
             }
 
-            // 7. Blocos da Tela Inicial (Acesso Rápido e Apoio Mais Próximo) + Ordem de Exibição
+            // 7. Blocos da Tela Inicial (Barra de Pesquisa, Acesso Rápido e Card de Proximidade/Apoio) + Ordem de Exibição
             const homeView = document.getElementById('view-home');
             const qaSection = document.getElementById('homeQuickAccessSection');
             const nsSection = document.getElementById('homeNearestSupportSection');
             const gridQaCard = document.getElementById('gridQuickAccessBlockCard');
             const gridNsCard = document.getElementById('gridNearestSupportBlockCard');
 
-            if (qaSection) qaSection.style.display = s.showQuickAccessBlock ? '' : 'none';
-            if (nsSection) nsSection.style.display = s.showNearestSupportBlock ? '' : 'none';
+            if (qaSection) {
+                qaSection.style.display = s.showQuickAccessBlock ? '' : 'none';
+                qaSection.classList.add('w-full');
+            }
+            if (nsSection) {
+                nsSection.style.display = s.showNearestSupportBlock ? '' : 'none';
+                nsSection.classList.add('w-full');
+            }
+            if (searchSlot) {
+                searchSlot.style.display = (isHome && s.showSearchBox) ? '' : 'none';
+                if (searchBox && searchSlot && searchBox.parentElement !== searchSlot) {
+                    searchSlot.appendChild(searchBox);
+                }
+            }
             if (gridQaCard) gridQaCard.style.display = s.showQuickAccessBlock ? '' : 'none';
             if (gridNsCard) gridNsCard.style.display = s.showNearestSupportBlock ? '' : 'none';
 
-            const firstIsQa = s.homeBlocksOrder[0] !== 'nearest_support';
-            if (homeView && qaSection && nsSection) {
-                if (firstIsQa) {
-                    homeView.insertBefore(qaSection, nsSection);
-                    qaSection.style.setProperty('order', '1', 'important');
-                    nsSection.style.setProperty('order', '2', 'important');
-                } else {
-                    homeView.insertBefore(nsSection, qaSection);
-                    nsSection.style.setProperty('order', '1', 'important');
-                    qaSection.style.setProperty('order', '2', 'important');
-                }
+            const blockMap = {
+                search_box: searchSlot,
+                quick_access: qaSection,
+                nearest_support: nsSection
+            };
+            const orderArr = Array.isArray(s.homeBlocksOrder) ? s.homeBlocksOrder : ['search_box', 'quick_access', 'nearest_support'];
+            if (homeView) {
+                orderArr.forEach((key, idx) => {
+                    const el = blockMap[key];
+                    if (el) {
+                        el.style.setProperty('order', String(idx + 1), 'important');
+                        homeView.appendChild(el);
+                    }
+                });
             }
 
+            const firstIsQa = orderArr.indexOf('quick_access') < orderArr.indexOf('nearest_support');
             const gridCol3 = document.getElementById('gridCol3Container');
             if (gridCol3 && gridQaCard && gridNsCard) {
                 if (firstIsQa) {
@@ -12850,6 +13142,10 @@
                 } else {
                     gridCol3.insertBefore(gridNsCard, gridQaCard);
                 }
+            }
+
+            if (typeof window.renderHomeBlocksOrderCustomizerList === 'function') {
+                window.renderHomeBlocksOrderCustomizerList();
             }
 
             // 8. Botões do Rodapé (#mobileBottomNavGrid) — Visibilidade, Ordem Exata e Largura Autoajustável (3 a 7 botões)
@@ -12896,24 +13192,96 @@
             s.showQuickAccessBlock = getChk('chkShowQuickAccessBlock', s.showQuickAccessBlock);
             s.showNearestSupportBlock = getChk('chkShowNearestSupportBlock', s.showNearestSupportBlock);
             s.enableRpasAutoFleetRec = getChk('chkEnableRpasAutoFleetRec', s.enableRpasAutoFleetRec);
+            s.autoCloseBoxes = getChk('chkAutoCloseBoxes', s.autoCloseBoxes !== false);
 
             saveAzimuteUiSettingsToStorage(s);
             window.applyAzimuteUiSettings();
         };
 
-        window.invertHomeBlocksOrder = function() {
+        window.moveHomeBlockOrder = function(index, delta) {
             const s = getAzimuteUiSettings();
-            const firstIsQa = s.homeBlocksOrder[0] !== 'nearest_support';
-            s.homeBlocksOrder = firstIsQa
-                ? ['nearest_support', 'quick_access']
-                : ['quick_access', 'nearest_support'];
+            const arr = [...s.homeBlocksOrder];
+            const target = index + delta;
+            if (target < 0 || target >= arr.length) return;
+            const tmp = arr[index];
+            arr[index] = arr[target];
+            arr[target] = tmp;
+            s.homeBlocksOrder = arr;
             saveAzimuteUiSettingsToStorage(s);
             window.applyAzimuteUiSettings();
-            if (typeof showToast === 'function') {
-                showToast(firstIsQa
-                    ? 'Ordem alterada: 1º Apoio Mais Próximo • 2º Acesso Rápido'
-                    : 'Ordem alterada: 1º Acesso Rápido • 2º Apoio Mais Próximo');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+            if (typeof showToast === 'function') showToast('Ordem dos blocos da Tela Inicial atualizada!');
+        };
+
+        window.toggleHomeBlockVisibilityByKey = function(key) {
+            const s = getAzimuteUiSettings();
+            if (key === 'search_box') s.showSearchBox = !s.showSearchBox;
+            if (key === 'quick_access') s.showQuickAccessBlock = !s.showQuickAccessBlock;
+            if (key === 'nearest_support') s.showNearestSupportBlock = !s.showNearestSupportBlock;
+            saveAzimuteUiSettingsToStorage(s);
+            window.syncAjustesInputsFromStorage();
+            window.applyAzimuteUiSettings();
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        };
+
+        window.renderHomeBlocksOrderCustomizerList = function() {
+            const container = document.getElementById('ajustesHomeBlocksOrderList');
+            const badge = document.getElementById('lblHomeBlocksOrderStatus');
+            const s = getAzimuteUiSettings();
+            const meta = {
+                search_box: {
+                    label: 'Barra de Pesquisa Global',
+                    desc: 'Campo "Buscar rua, bairro, drone..."',
+                    visible: s.showSearchBox
+                },
+                quick_access: {
+                    label: 'Acesso Rápido',
+                    desc: 'Grade de atalhos rápidos configuráveis',
+                    visible: s.showQuickAccessBlock
+                },
+                nearest_support: {
+                    label: 'Card de Proximidade / Apoio (GPS)',
+                    desc: 'Unidade Policial, Hospital, Abastecimento e Comércios',
+                    visible: s.showNearestSupportBlock
+                }
+            };
+            const orderArr = Array.isArray(s.homeBlocksOrder) ? s.homeBlocksOrder : ['search_box', 'quick_access', 'nearest_support'];
+            if (badge) {
+                const shortNames = { search_box: 'Pesquisa', quick_access: 'Acesso Rápido', nearest_support: 'Apoio (GPS)' };
+                badge.textContent = orderArr.map((k, i) => `${i + 1}º ${shortNames[k] || k}`).join(' • ');
             }
+            if (!container) return;
+            container.innerHTML = orderArr.map((key, idx) => {
+                const info = meta[key] || { label: key, desc: '', visible: true };
+                const isFirst = idx === 0;
+                const isLast = idx === orderArr.length - 1;
+                return `
+                    <div class="bg-pmmg-black/85 p-3 rounded-xl border ${info.visible ? 'border-[#C5A869]/50' : 'border-pmmg-border opacity-70'} flex items-center justify-between gap-2.5">
+                        <label class="flex items-center gap-2.5 min-w-0 flex-1 cursor-pointer select-none">
+                            <input type="checkbox" ${info.visible ? 'checked' : ''} onchange="toggleHomeBlockVisibilityByKey('${key}')" class="w-4 h-4 rounded border-pmmg-border bg-pmmg-dark text-pmmg-khaki accent-[#C5A869] cursor-pointer shrink-0">
+                            <div class="min-w-0">
+                                <div class="flex items-center gap-1.5">
+                                    <span class="text-[10px] font-mono font-extrabold px-1.5 py-0.5 rounded bg-[#161616] text-pmmg-gold border border-[#C5A869]/40">${idx + 1}º</span>
+                                    <strong class="text-xs font-extrabold text-white truncate">${info.label}</strong>
+                                </div>
+                                <span class="text-[10.5px] text-gray-400 block truncate mt-0.5">${info.desc}</span>
+                            </div>
+                        </label>
+                        <div class="flex items-center gap-1 shrink-0">
+                            <button type="button" onclick="moveHomeBlockOrder(${idx}, -1)" ${isFirst ? 'disabled' : ''} class="p-1.5 rounded-lg bg-[#161616] hover:bg-pmmg-cardHover disabled:opacity-30 text-pmmg-khaki border border-pmmg-border cursor-pointer" title="Subir posição">
+                                <i data-lucide="arrow-up" class="w-3.5 h-3.5"></i>
+                            </button>
+                            <button type="button" onclick="moveHomeBlockOrder(${idx}, 1)" ${isLast ? 'disabled' : ''} class="p-1.5 rounded-lg bg-[#161616] hover:bg-pmmg-cardHover disabled:opacity-30 text-pmmg-khaki border border-pmmg-border cursor-pointer" title="Descer posição">
+                                <i data-lucide="arrow-down" class="w-3.5 h-3.5"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        };
+
+        window.invertHomeBlocksOrder = function() {
+            window.moveHomeBlockOrder(0, 1);
         };
 
         window.saveAllAzimuteSettings = function(notify = true) {
@@ -12986,6 +13354,8 @@
                 body.classList.add('mode-grid');
                 if (btnGrid) btnGrid.className = activeCls;
                 if (typeof syncGridCockpitVisibility === 'function') syncGridCockpitVisibility(azimuteCurrentViewId || 'home');
+                if (typeof renderQuickAccessGrid === 'function') renderQuickAccessGrid();
+                window.dispatchEvent(new Event('resize'));
                 if (notify && typeof showToast === 'function') showToast('Modo GRID ativado!');
             } else {
                 body.classList.remove('pc-sidebar-closed', 'pc-sidebar-collapsed');
@@ -13504,6 +13874,10 @@
             const mainTopHdr = document.getElementById('mainTopHeader');
             const topStatusBar = document.getElementById('operationalStatusBar');
             const searchContainer = document.getElementById('homeSearchBoxContainer');
+            document.body.classList.toggle('has-home-header', viewId === 'home');
+            if ((window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true) {
+                document.body.classList.add('pwa-standalone');
+            }
             if (viewId === 'home') {
                 if (mainTopHdr) {
                     mainTopHdr.classList.remove('hidden');
@@ -13568,6 +13942,7 @@
             if (viewId === 'saude') {
                 if (typeof window.toggleSaudeSmartHospitalBox === 'function') window.toggleSaudeSmartHospitalBox(false);
                 if (typeof window.toggleOfflineAphGuideBox === 'function') window.toggleOfflineAphGuideBox(false);
+                if (typeof window.toggleAphMarchProtocolBox === 'function') window.toggleAphMarchProtocolBox(false);
                 if (typeof window.toggleRcpMetronomeModuleBox === 'function') window.toggleRcpMetronomeModuleBox(false);
                 if (typeof window.toggleSaudeAssistantIaBox === 'function') window.toggleSaudeAssistantIaBox(false);
                 if (typeof window.toggleSaudeHospitalNetworkListBox === 'function') window.toggleSaudeHospitalNetworkListBox(false);
