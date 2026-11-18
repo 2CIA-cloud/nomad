@@ -3,10 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"content="width=device-width, initial-scale=1.0">
-    <title>AZIMUTE - Sistema Geral de Consulta Rápida (PMMG)</title>
-    <link rel="manifest"href="manifest.json">
-    <meta name="theme-color"content="#0F0F0F">
-    <meta name="apple-mobile-web-app-capable"content="yes">
+    <title>AZIMUTE | Navegação e Informação</title>
+    <link rel="manifest" href="./manifest.webmanifest">
+    <meta name="theme-color" content="#0D0D0D">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="AZIMUTE">
+    <link rel="shortcut icon" href="./favicon.ico">
+    <link rel="icon" type="image/x-icon" href="./favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="./icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="./icon-512x512.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="AZIMUTE | Navegação e Informação">
+    <meta property="og:description" content="Plataforma de navegação, orientação territorial e consulta de informações para apoio à atividade policial.">
+    <meta property="og:image" content="./og-image.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="AZIMUTE | Navegação e Informação">
+    <meta name="twitter:description" content="Plataforma de navegação, orientação territorial e consulta de informações para apoio à atividade policial.">
+    <meta name="twitter:image" content="./og-image.png">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Lucide Icons -->
@@ -143,18 +164,13 @@
             margin-left: auto;
             margin-right: auto;
         }
-        /* Ativa o Painel de 3 Colunas Limpas no Modo GRID EXCLUSIVAMENTE na Tela Início (home) — Manual (Ajustes) ou Horizontal */
+        /* Ativa o Painel de 3 Colunas Limpas no Modo GRID EXCLUSIVAMENTE na Tela Início (home) */
         body.mode-grid #gridModeTacticalCockpit.grid-cockpit-active:not(.hidden) {
             display: grid !important;
-            grid-template-columns: minmax(0, 2.3fr) minmax(0, 4.7fr) minmax(0, 5fr) !important;
-            gap: 0.5rem !important;
-            align-items: stretch !important;
-            width: 100% !important;
-            margin-bottom: 0.35rem !important;
-        }
-        body.mode-grid #gridModeTacticalCockpit.grid-cockpit-active:not(.hidden) > div {
-            min-width: 0 !important;
-            overflow: hidden !important;
+            grid-template-columns: 2.3fr 4.7fr 5fr;
+            gap: 0.6rem;
+            align-items: stretch;
+            margin-bottom: 0.35rem;
         }
         body.mode-grid #gridModeTacticalCockpit:not(.grid-cockpit-active),
         body.mode-grid #gridModeTacticalCockpit.hidden {
@@ -167,6 +183,11 @@
         body.mode-grid main#mainContainer > section#view-home.azimute-active-view > #homeQuickAccessSection > div:first-child,
         body.mode-grid main#mainContainer > section#view-home.azimute-active-view > #homeQuickAccessSection > #homeQuickAccessGrid {
             display: none !important;
+        }
+        @media (max-width: 640px) {
+            body.mode-grid #gridModeTacticalCockpit.grid-cockpit-active:not(.hidden) {
+                grid-template-columns: 1fr;
+            }
         }
         body.mode-grid .subtabs-bar {
             display: grid !important;
@@ -322,41 +343,31 @@
             display: inline-flex !important;
         }
 
-        /* ALTO CONTRASTE OPACO (#FFFFFF / #E0E0E0 SOBRE #161616) EM TODAS AS CAIXAS DE PESQUISA */
-        #globalSearch,
+        /* ALTO CONTRASTE OPACO (#FFFFFF SOBRE #161616) NA PESQUISA DE UNIDADES, BATALHÕES E CIAS */
         #unidadesSearchInput,
         #rpm1SearchInput,
         #rpm2SearchInput,
         #rpm3SearchInput,
         #espSearchInput,
         #skeletonSearchInput,
-        #internalSearch18,
-        input[type="search"],
-        input[id*="Search"],
-        input[id*="search"] {
+        #internalSearch18 {
             background-color: #161616 !important;
             color: #FFFFFF !important;
             -webkit-text-fill-color: #FFFFFF !important;
             opacity: 1 !important;
             caret-color: #C5A869 !important;
-            border-color: rgba(197, 168, 105, 0.55) !important;
         }
-        #globalSearch::placeholder,
         #unidadesSearchInput::placeholder,
         #rpm1SearchInput::placeholder,
         #rpm2SearchInput::placeholder,
         #rpm3SearchInput::placeholder,
         #espSearchInput::placeholder,
         #skeletonSearchInput::placeholder,
-        #internalSearch18::placeholder,
-        input[type="search"]::placeholder,
-        input[id*="Search"]::placeholder,
-        input[id*="search"]::placeholder {
-            color: #E0E0E0 !important;
-            -webkit-text-fill-color: #E0E0E0 !important;
+        #internalSearch18::placeholder {
+            color: #E5E7EB !important;
+            -webkit-text-fill-color: #E5E7EB !important;
             opacity: 1 !important;
         }
-        #globalSearchDropdown,
         #unidadesSearchResultsDropdown,
         #rpm1SearchDropdown,
         #rpm2SearchDropdown,
@@ -368,15 +379,6 @@
             color: #FFFFFF !important;
             opacity: 1 !important;
             backdrop-filter: none !important;
-        }
-        #globalSearchDropdown h4,
-        #globalSearchDropdown strong {
-            color: #FFFFFF !important;
-            opacity: 1 !important;
-        }
-        #globalSearchDropdown p,
-        #globalSearchDropdown span {
-            opacity: 1 !important;
         }
         #unidadesSearchResultsDropdown h4,
         #rpm1SearchDropdown h4,
@@ -423,12 +425,9 @@
         <div class="bg-pmmg-card border-2 border-pmmg-khaki/80 rounded-2xl max-w-md w-full p-6 sm:p-8 space-y-6 shadow-2xl relative overflow-hidden">
             <div class="absolute -top-10 -right-10 w-32 h-32 bg-pmmg-khaki/10 rounded-full blur-2xl pointer-events-none"></div>
             
-            <div class="text-center space-y-2">
-                <div class="w-14 h-14 mx-auto rounded-2xl bg-pmmg-khaki/15 border border-pmmg-khaki/60 flex items-center justify-center text-pmmg-khaki shadow-inner">
-                    <i data-lucide="shield-check"class="w-8 h-8"></i>
-                </div>
-                <h2 class="text-3xl font-military tracking-widest text-pmmg-khaki uppercase leading-none">AZIMUTE PMMG</h2>
-                <p class="text-xs text-gray-400">Sistema de Consulta Rápida Restrito • Autenticação de Acesso</p>
+            <div class="text-center space-y-3">
+                <img src="./icon-192x192.png" alt="AZIMUTE" class="w-16 h-16 mx-auto rounded-2xl border border-pmmg-khaki/60 shadow-inner object-contain bg-pmmg-black">
+                <h2 class="text-3xl font-military tracking-widest text-pmmg-khaki uppercase leading-none">AZIMUTE</h2>
             </div>
 
             <div class="space-y-4">
@@ -476,9 +475,6 @@
                 </button>
             </div>
 
-            <div class="pt-2 border-t border-pmmg-border text-center">
-                <p class="text-[10px] text-gray-500">Polícia Militar de Minas Gerais • Região Metropolitana de Belo Horizonte</p>
-            </div>
         </div>
     </div>
     <script>
@@ -650,7 +646,7 @@
                     id="globalSearch" 
                     autocomplete="off"
                     placeholder="Buscar rua, bairro, drone, gasolina, bnmp, cia..." 
-                    class="w-full pl-8 pr-7 py-2 bg-[#161616] text-xs text-white placeholder-[#E0E0E0] opacity-100 rounded-xl border border-pmmg-khaki/60 focus:outline-none focus:border-pmmg-gold transition-all"
+                    class="w-full pl-8 pr-7 py-2 bg-pmmg-black/90 text-xs text-gray-100 placeholder-gray-400 rounded-xl border border-pmmg-border focus:outline-none focus:border-pmmg-khaki focus:ring-1 focus:ring-pmmg-khaki transition-all"
                     oninput="handleGlobalSearch()"
                     onfocus="handleGlobalSearch()"
                 >
@@ -8038,35 +8034,6 @@
                     </div>
                 </div>
 
-                <!-- 5. FECHADOR AUTOMÁTICO DE CAIXAS (ACORDEÃO GLOBAL • CAIXA FECHADA POR PADRÃO) -->
-                <div class="bg-pmmg-dark rounded-xl border border-pmmg-border overflow-hidden">
-                    <button type="button" onclick="toggleAjustesSectionBox('acordeao_global')" id="btnToggleAjustesSec-acordeao_global" class="w-full p-3.5 sm:p-4 flex items-center justify-between gap-2 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
-                        <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki flex items-center gap-2">
-                            <i data-lucide="layers" class="w-4 h-4 text-pmmg-gold shrink-0"></i>
-                            <span>5. Fechador Automático de Caixas</span>
-                        </span>
-                        <div class="flex items-center gap-2 shrink-0">
-                            <span id="lblAjustesSec-acordeao_global" class="text-[11px] font-bold text-pmmg-khaki">Abrir</span>
-                            <i data-lucide="chevron-down" id="icoAjustesSec-acordeao_global" class="w-4 h-4 text-pmmg-gold transition-transform duration-200"></i>
-                        </div>
-                    </button>
-
-                    <div id="boxAjustesSec-acordeao_global" class="hidden p-3.5 sm:p-4 pt-3 border-t border-pmmg-border/80 space-y-3">
-                        <label for="chkAutoCloseBoxes" class="bg-pmmg-black/80 hover:bg-pmmg-black p-3.5 rounded-xl border border-pmmg-border flex items-center justify-between gap-3 cursor-pointer select-none">
-                            <div>
-                                <strong class="text-white text-xs sm:text-sm font-bold block">Fechador Automático de Caixas</strong>
-                                <span class="text-[11px] text-gray-400 block mt-0.5">
-                                    Ao abrir uma segunda caixa ou gaveta retrátil, fecha automaticamente a caixa anterior que estava aberta.
-                                </span>
-                            </div>
-                            <span class="relative inline-flex items-center shrink-0 cursor-pointer">
-                                <input type="checkbox" id="chkAutoCloseBoxes" onchange="updateAzimuteUiPreferenceFromInputs()" class="sr-only peer" checked>
-                                <span class="w-11 h-6 bg-[#26231c] border border-pmmg-border rounded-full peer peer-checked:bg-[#C5A869] peer-checked:border-[#C5A869] transition-all after:content-[''] after:absolute after:top-[3px] after:left-[3px] after:bg-white peer-checked:after:bg-[#0D0D0D] after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-5"></span>
-                            </span>
-                        </label>
-                    </div>
-                </div>
-
                 <!-- BARRA DE AÇÃO PERMANENTE: SALVAR AJUSTES + RESTAURAR PADRÃO -->
                 <div class="pt-3 border-t border-pmmg-border flex flex-wrap items-center justify-between gap-3">
                     <button type="button" onclick="resetAllAzimuteSettings()" class="px-3.5 py-2 rounded-xl bg-pmmg-black hover:bg-pmmg-dark text-gray-400 hover:text-gray-200 border border-pmmg-border text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer" title="Restaurar todos os ajustes para o padrão original">
@@ -12145,125 +12112,6 @@
   <h1>AZIMUTE PMMG • Dados Offline: ${bpmName} (REDE: ${shortRede})</h1>
   <p>Gerado para consulta offline em: ${new Date().toLocaleString('pt-BR')}</p>
   ${contentHtml}
-
-    <script>
-        // ================= FECHADOR AUTOMÁTICO DE CAIXAS (ACORDEÃO GLOBAL) =================
-        (function initAzimuteGlobalAutoCloseBoxes() {
-            function isAutoCloseBoxesEnabled() {
-                try {
-                    const raw = localStorage.getItem('azimute_ui_settings_v3');
-                    if (!raw) return true;
-                    const parsed = JSON.parse(raw);
-                    return parsed.autoCloseBoxes !== false;
-                } catch (e) {
-                    return true;
-                }
-            }
-
-            const ACCORDION_GROUPS = [
-                // 1. Aba Ajustes
-                [
-                    { box: 'boxAjustesSec-drones', close: () => window.toggleAjustesSectionBox && window.toggleAjustesSectionBox('drones', false) },
-                    { box: 'boxAjustesSec-acesso_rapido', close: () => window.toggleAjustesSectionBox && window.toggleAjustesSectionBox('acesso_rapido', false) },
-                    { box: 'boxAjustesSec-rodape_topo', close: () => window.toggleAjustesSectionBox && window.toggleAjustesSectionBox('rodape_topo', false) },
-                    { box: 'boxAjustesSec-modo_exibicao', close: () => window.toggleAjustesSectionBox && window.toggleAjustesSectionBox('modo_exibicao', false) },
-                    { box: 'boxAjustesSec-acordeao_global', close: () => window.toggleAjustesSectionBox && window.toggleAjustesSectionBox('acordeao_global', false) }
-                ],
-                // 2. Aba Geolocalização
-                [
-                    { box: 'localWeatherExpandableBody', close: () => window.toggleGeoWeatherBox && window.toggleGeoWeatherBox(false) },
-                    { box: 'localConnectivityExpandableBody', close: () => window.toggleGeoConnectivityBox && window.toggleGeoConnectivityBox(false) },
-                    { box: 'digitalCompassExpandableBody', close: () => window.toggleDigitalCompassBox && window.toggleDigitalCompassBox(false) },
-                    { box: 'offlineMapsGuideContent', close: () => window.toggleOfflineMapsGuideBox && window.toggleOfflineMapsGuideBox(false) },
-                    { box: 'gpsClosestHospitalExpandableBody', close: () => window.toggleGpsClosestHospitalBox && window.toggleGpsClosestHospitalBox(false) }
-                ],
-                // 3. Aba APH / Saúde
-                [
-                    { box: 'saudeSmartHospitalExpandableBody', close: () => window.toggleSaudeSmartHospitalBox && window.toggleSaudeSmartHospitalBox(false) },
-                    { box: 'offlineAphGuideExpandableBody', close: () => window.toggleOfflineAphGuideBox && window.toggleOfflineAphGuideBox(false) },
-                    { box: 'rcpMetronomeModuleExpandableBody', close: () => window.toggleRcpMetronomeModuleBox && window.toggleRcpMetronomeModuleBox(false) },
-                    { box: 'saudeAssistantIaExpandableBody', close: () => window.toggleSaudeAssistantIaBox && window.toggleSaudeAssistantIaBox(false) },
-                    { box: 'saudeHospitalNetworkListExpandableBody', close: () => window.toggleSaudeHospitalNetworkListBox && window.toggleSaudeHospitalNetworkListBox(false) }
-                ],
-                // 4. Aba Drones / RPAS
-                [
-                    { box: 'rpasFleetSelectorExpandableBody', close: () => window.toggleRpasFleetSelectorBox && window.toggleRpasFleetSelectorBox(false) },
-                    { box: 'rpasFlightParamsExpandableBody', close: () => window.toggleRpasFlightParamsBox && window.toggleRpasFlightParamsBox(false) },
-                    { box: 'rpasChecklistExpandableBody', close: () => window.toggleRpasChecklistBox && window.toggleRpasChecklistBox(false) },
-                    { box: 'rpasPilotMaterialsExpandableBody', close: () => window.toggleRpasPilotMaterialsBox && window.toggleRpasPilotMaterialsBox(false) }
-                ],
-                // 5. Aba Funções / Apoio
-                [
-                    { box: 'boxApoioCat-abordagem', close: () => window.toggleApoioCategoryBox && window.toggleApoioCategoryBox('abordagem', false) },
-                    { box: 'boxApoioCat-gestao', close: () => window.toggleApoioCategoryBox && window.toggleApoioCategoryBox('gestao', false) },
-                    { box: 'boxApoioCat-transito', close: () => window.toggleApoioCategoryBox && window.toggleApoioCategoryBox('transito', false) },
-                    { box: 'boxApoioCat-manutencao', close: () => window.toggleApoioCategoryBox && window.toggleApoioCategoryBox('manutencao', false) }
-                ],
-                // 6. Tela Início (Painéis retráteis)
-                [
-                    { box: 'quickAccessCustomizerPanel', close: () => typeof toggleQuickAccessCustomizer === 'function' && toggleQuickAccessCustomizer(false) },
-                    { box: 'homeNearestSupportToolsPanel', close: () => typeof toggleHomeNearestSupportTools === 'function' && toggleHomeNearestSupportTools(false) }
-                ],
-                // 7. Estádios (Fluxo de Torcedores)
-                [
-                    { box: 'box-stag-fluxo-mineirao', close: () => window.toggleStadiumCollapsibleBox && window.toggleStadiumCollapsibleBox('fluxo-mineirao', false) },
-                    { box: 'box-stag-fluxo-arenamrv', close: () => window.toggleStadiumCollapsibleBox && window.toggleStadiumCollapsibleBox('fluxo-arenamrv', false) },
-                    { box: 'box-stag-fluxo-independencia', close: () => window.toggleStadiumCollapsibleBox && window.toggleStadiumCollapsibleBox('fluxo-independencia', false) }
-                ]
-            ];
-
-            let isClosingOthers = false;
-            const prevOpenState = new Map();
-
-            function syncAccordionGroups() {
-                if (isClosingOthers) return;
-                const enabled = isAutoCloseBoxesEnabled();
-
-                ACCORDION_GROUPS.forEach(group => {
-                    let newlyOpenedItem = null;
-                    group.forEach(item => {
-                        const el = document.getElementById(item.box);
-                        if (!el) return;
-                        const isOpenNow = !el.classList.contains('hidden');
-                        const wasOpen = prevOpenState.get(item.box) || false;
-                        if (isOpenNow && !wasOpen) {
-                            newlyOpenedItem = item;
-                        }
-                        prevOpenState.set(item.box, isOpenNow);
-                    });
-
-                    if (enabled && newlyOpenedItem) {
-                        isClosingOthers = true;
-                        try {
-                            group.forEach(item => {
-                                if (item.box !== newlyOpenedItem.box) {
-                                    const el = document.getElementById(item.box);
-                                    if (el && !el.classList.contains('hidden')) {
-                                        item.close();
-                                        prevOpenState.set(item.box, false);
-                                    }
-                                }
-                            });
-                        } finally {
-                            isClosingOthers = false;
-                        }
-                    }
-                });
-            }
-
-            document.addEventListener('DOMContentLoaded', () => {
-                syncAccordionGroups();
-                const observer = new MutationObserver(() => {
-                    syncAccordionGroups();
-                });
-                observer.observe(document.body, {
-                    attributes: true,
-                    attributeFilter: ['class'],
-                    subtree: true
-                });
-            });
-        })();
-    </script>
 </body>
 </html>`;
 
@@ -12659,7 +12507,6 @@
                 showNearestSupportBlock: true,
                 homeBlocksOrder: ['quick_access', 'nearest_support'],
                 enableRpasAutoFleetRec: true,
-                autoCloseBoxes: true,
                 footerButtons: getDefaultFooterButtonsConfig()
             };
         }
@@ -12734,7 +12581,7 @@
         };
 
         window.closeAllAjustesSectionBoxes = function() {
-            ['drones', 'acesso_rapido', 'rodape_topo', 'modo_exibicao', 'acordeao_global'].forEach(secKey => {
+            ['drones', 'acesso_rapido', 'rodape_topo', 'modo_exibicao'].forEach(secKey => {
                 window.toggleAjustesSectionBox(secKey, false);
             });
         };
@@ -12905,8 +12752,7 @@
                 chkShowSearchBox: s.showSearchBox,
                 chkShowQuickAccessBlock: s.showQuickAccessBlock,
                 chkShowNearestSupportBlock: s.showNearestSupportBlock,
-                chkEnableRpasAutoFleetRec: s.enableRpasAutoFleetRec,
-                chkAutoCloseBoxes: s.autoCloseBoxes !== false
+                chkEnableRpasAutoFleetRec: s.enableRpasAutoFleetRec
             };
             Object.entries(mapChecks).forEach(([id, val]) => {
                 const el = document.getElementById(id);
@@ -13050,7 +12896,6 @@
             s.showQuickAccessBlock = getChk('chkShowQuickAccessBlock', s.showQuickAccessBlock);
             s.showNearestSupportBlock = getChk('chkShowNearestSupportBlock', s.showNearestSupportBlock);
             s.enableRpasAutoFleetRec = getChk('chkEnableRpasAutoFleetRec', s.enableRpasAutoFleetRec);
-            s.autoCloseBoxes = getChk('chkAutoCloseBoxes', s.autoCloseBoxes !== false);
 
             saveAzimuteUiSettingsToStorage(s);
             window.applyAzimuteUiSettings();
@@ -13141,8 +12986,6 @@
                 body.classList.add('mode-grid');
                 if (btnGrid) btnGrid.className = activeCls;
                 if (typeof syncGridCockpitVisibility === 'function') syncGridCockpitVisibility(azimuteCurrentViewId || 'home');
-                if (typeof renderQuickAccessGrid === 'function') renderQuickAccessGrid();
-                window.dispatchEvent(new Event('resize'));
                 if (notify && typeof showToast === 'function') showToast('Modo GRID ativado!');
             } else {
                 body.classList.remove('pc-sidebar-closed', 'pc-sidebar-collapsed');
