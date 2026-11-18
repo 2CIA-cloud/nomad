@@ -3,7 +3,15 @@ const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './dados.json',
-  './manifest.json'
+  './manifest.json',
+  './favicon.ico',
+  './favicon-16x16.png',
+  './favicon-32x32.png',
+  './apple-touch-icon.png',
+  './icon-192x192.png',
+  './icon-512x512.png',
+  './icon-maskable-512x512.png',
+  './og-image.png'
 ];
 
 // Instala e guarda os arquivos principais na memória do celular (Modo Avião)
