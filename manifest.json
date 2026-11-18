@@ -4,27 +4,14 @@
   "description": "Sistema Geral de Consulta Rápida - PMMG",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#0D0D0D",
-  "theme_color": "#0D0D0D",
+  "background_color": "#0F0F0F",
+  "theme_color": "#0F0F0F",
   "orientation": "any",
   "icons": [
     {
-      "src": "./icon-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "./icon-512x512.png",
+      "src": "https://cdn-icons-png.flaticon.com/512/854/854878.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "./icon-maskable-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
+      "type": "image/png"
     }
   ]
 }
