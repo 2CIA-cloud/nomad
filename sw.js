@@ -1,4 +1,4 @@
-const CACHE_NAME = 'azimute-pmmg-v3.2-icons';
+const CACHE_NAME = 'azimute-pmmg-v3.3';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
