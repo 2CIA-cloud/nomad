@@ -1,0 +1,20 @@
+[
+  {
+    "orgao": "DEPLAN 1 (CEFLAN 1)",
+    "descricao": "Central de Flagrantes 1",
+    "endereco": "Rua Pouso Alegre, 417 - Floresta",
+    "telefone": "(31) 3429-9300"
+  },
+  {
+    "orgao": "DEAM",
+    "descricao": "Plantão Atendimento à Mulher",
+    "endereco": "Av. Barbacena, 288 - Barro Preto / Av. Afonso Pena, 2.300",
+    "telefone": "(31) 3330-5752"
+  },
+  {
+    "orgao": "CEFLAG / TJMG",
+    "descricao": "Audiências de Custódia / Fórum Lafayette",
+    "endereco": "Av. Augusto de Lima, 1.549 - Barro Preto",
+    "telefone": "-"
+  }
+]

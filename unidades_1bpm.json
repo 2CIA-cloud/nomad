@@ -1,0 +1,55 @@
+{
+  "batalhao": "1º BPM",
+  "sede": "Praça Marechal Floriano Peixoto, s/n - Santa Efigênia, Belo Horizonte/MG",
+  "telefones": [
+    "(31) 3307-0312",
+    "(31) 3307-0319"
+  ],
+  "cias": [
+    {
+      "cia": "1ª Cia TM",
+      "funcao": "Recobrimento Tático",
+      "sede": "Praça Marechal Floriano Peixoto, s/n"
+    },
+    {
+      "cia": "3ª Cia PM",
+      "funcao": "Eixo Leste Central e Área Hospitalar",
+      "bairros": [
+        "Centro (leste)",
+        "Funcionários (norte/leste)",
+        "Santa Efigênia (intra-Contorno)"
+      ]
+    },
+    {
+      "cia": "4ª Cia PM",
+      "funcao": "Eixo Centro-Sul, Savassi e Circuito Liberdade",
+      "bairros": [
+        "Boa Viagem",
+        "Centro (sul)",
+        "Funcionários (oeste/sul)",
+        "Lourdes (leste)",
+        "Savassi"
+      ]
+    },
+    {
+      "cia": "5ª Cia PM",
+      "funcao": "Eixo Centro-Oeste, Barro Preto e Santo Agostinho",
+      "bairros": [
+        "Barro Preto",
+        "Centro (oeste)",
+        "Lourdes (oeste)",
+        "Santo Agostinho"
+      ]
+    },
+    {
+      "cia": "6ª Cia PM",
+      "funcao": "Hipercentro e Terminais de Transporte",
+      "bairros": [
+        "Terminal Rodoviário",
+        "Praça Sete",
+        "Mercado Central",
+        "Praça da Estação"
+      ]
+    }
+  ]
+}

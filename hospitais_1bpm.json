@@ -1,0 +1,38 @@
+[
+  {
+    "nome": "Hospital João XXIII (HPS)",
+    "perfil": "Trauma 24h",
+    "endereco": "Av. Professor Alfredo Balena, 400 - Santa Efigênia",
+    "telefone": "(31) 3239-9300"
+  },
+  {
+    "nome": "Hospital da Polícia Militar (HPM)",
+    "perfil": "Militar 24h",
+    "endereco": "Av. do Contorno, 2.787 - Santa Efigênia",
+    "telefone": "(31) 3071-5200"
+  },
+  {
+    "nome": "Pronto-Socorro Mater Dei Contorno",
+    "perfil": "Trauma / Urgência 24h",
+    "endereco": "Av. do Contorno, 9.000 - Barro Preto",
+    "telefone": "(31) 3339-9000"
+  },
+  {
+    "nome": "Hospital Felício Rocho",
+    "perfil": "Urgência / Trauma 24h",
+    "endereco": "Av. do Contorno, 9.530 - Barro Preto",
+    "telefone": "(31) 3514-7000"
+  },
+  {
+    "nome": "UPA Centro-Sul",
+    "perfil": "Pronto Atendimento 24h",
+    "endereco": "Av. Dom Pedro II, 45 - Carlos Prates",
+    "telefone": "(31) 3277-7700"
+  },
+  {
+    "nome": "1º Batalhão de Bombeiros (Abastecimento)",
+    "perfil": "Abastecimento Complementar",
+    "endereco": "Rua Piauí, 1.815 - Funcionários",
+    "telefone": "(31) 3289-8069"
+  }
+]

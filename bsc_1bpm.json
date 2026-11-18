@@ -1,0 +1,62 @@
+[
+  {
+    "cia": "3ª Cia",
+    "base": "Base Área Hospitalar",
+    "referencia": "Av. Professor Alfredo Balena / Praça Hugo Werneck",
+    "horario": "Turnos estratégicos"
+  },
+  {
+    "cia": "4ª Cia",
+    "base": "Base Boa Viagem",
+    "referencia": "Praça Afonso Arinos",
+    "horario": "14h00 às 23h30"
+  },
+  {
+    "cia": "4ª Cia",
+    "base": "Base Savassi",
+    "referencia": "Praça Diogo de Vasconcelos",
+    "horario": "14h00 às 23h30"
+  },
+  {
+    "cia": "4ª Cia",
+    "base": "Base Lourdes",
+    "referencia": "Praça Marília de Dirceu",
+    "horario": "14h00 às 23h30"
+  },
+  {
+    "cia": "5ª Cia",
+    "base": "Base Assembleia",
+    "referencia": "Praça Carlos Chagas / ALMG",
+    "horario": "14h00 às 23h30"
+  },
+  {
+    "cia": "5ª Cia",
+    "base": "Base Santo Agostinho",
+    "referencia": "Av. Amazonas c/ Rua Martim de Carvalho",
+    "horario": "14h00 às 23h30"
+  },
+  {
+    "cia": "5ª Cia",
+    "base": "Base Barro Preto",
+    "referencia": "Av. Amazonas c/ Praça Raul Soares",
+    "horario": "14h00 às 23h30"
+  },
+  {
+    "cia": "6ª Cia",
+    "base": "Base Terminal Rodoviário",
+    "referencia": "Praça Rio Branco",
+    "horario": "24 horas"
+  },
+  {
+    "cia": "6ª Cia",
+    "base": "Base Praça Sete",
+    "referencia": "Praça Sete de Setembro",
+    "horario": "07h00 às 23h30"
+  },
+  {
+    "cia": "6ª Cia",
+    "base": "Base Mercado Central",
+    "referencia": "Av. Amazonas c/ Rua Santa Catarina",
+    "horario": "14h00 às 23h30"
+  }
+]
