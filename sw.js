@@ -1,9 +1,9 @@
-const CACHE_NAME = 'azimute-pmmg-v3.0';
+const CACHE_NAME = 'azimute-pmmg-v3.2-icons';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './dados.json',
-  './manifest.json',
+  './manifest.webmanifest',
   './favicon.ico',
   './favicon-16x16.png',
   './favicon-32x32.png',
@@ -24,7 +24,7 @@ self.addEventListener('install', (event) => {
   );
 });
 
-// Limpa caches antigos automaticamente quando você sobe atualização no GitHub
+// Limpa caches antigos automaticamente quando sobe atualização (força atualização dos ícones)
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
@@ -39,7 +39,7 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Estratégia Network-First para dados.json e index.html (sempre busca a versão mais nova se tiver internet; se estiver sem sinal no beco/estádio, usa a memória offline)
+// Estratégia Network-First para dados.json, manifest.webmanifest e index.html
 self.addEventListener('fetch', (event) => {
   const req = event.request;
   if (req.method !== 'GET') return;
