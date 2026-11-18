@@ -15631,6 +15631,69 @@
                 });
             });
         })();
+        // === MOTOR DE TRADUÇÃO DE GPS PARA QTH (BASE PBH OFFLINE) ===
+let BASE_QTH_BH = [];
+
+window.carregarBaseQTH = async function () {
+  try {
+    const cacheLocal = localStorage.getItem('azimute_base_qth_v1');
+    if (cacheLocal) {
+      BASE_QTH_BH = JSON.parse(cacheLocal);
+    }
+    const resp = await fetch('./base_qth_bh.json');
+    if (resp.ok) {
+      BASE_QTH_BH = await resp.json();
+      try {
+        localStorage.setItem('azimute_base_qth_v1', JSON.stringify(BASE_QTH_BH));
+      } catch (e) {}
+    }
+  } catch (err) {
+    console.warn('Falha ao carregar base QTH:', err);
+  }
+};
+
+window.obterQTHProximo = function (lat, lng) {
+  if (!BASE_QTH_BH.length) return 'Base QTH carregando...';
+
+  let melhorVia = null;
+  let distVia = Infinity;
+  let melhorMarco = null;
+  let distMarco = Infinity;
+
+  for (let i = 0; i < BASE_QTH_BH.length; i++) {
+    const item = BASE_QTH_BH[i];
+    const dLat = (item.lat - lat) * 111320;
+    const dLng = (item.lng - lng) * 104600;
+    const dist = Math.sqrt(dLat * dLat + dLng * dLng);
+
+    if (item.c === 'VIA') {
+      if (dist < distVia) {
+        distVia = dist;
+        melhorVia = item;
+      }
+    } else {
+      if (dist < distMarco) {
+        distMarco = dist;
+        melhorMarco = item;
+      }
+    }
+  }
+
+  const partes = [];
+  if (melhorVia && distVia <= 150) {
+    partes.push(`${melhorVia.n} (~${Math.round(distVia)}m)`);
+  }
+  if (melhorMarco && distMarco <= 250) {
+    const detalhe = melhorMarco.b ? ` - ${melhorMarco.b}` : '';
+    partes.push(`Ref.: ${melhorMarco.n}${detalhe} (~${Math.round(distMarco)}m)`);
+  }
+
+  return partes.length
+    ? partes.join(' | ')
+    : `Coordenada isolada (${lat.toFixed(5)}, ${lng.toFixed(5)})`;
+};
+
+carregarBaseQTH();
     </script>
 
 </body>
