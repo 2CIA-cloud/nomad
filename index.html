@@ -1095,7 +1095,7 @@
             <div class="relative z-10 flex items-center justify-between px-1">
                 <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki">Geolocalização</span>
             </div>
-      <div id="az-geo-module" class="az-geo-module relative z-10">
+     <div id="az-geo-module" class="az-geo-module relative z-10">
   <style>
     .az-geo-module {
       --geo-bg: #0D0D0D;
@@ -1218,7 +1218,6 @@
       margin-top: 2px;
     }
 
-    /* Barra Turn-by-Turn (estilo navegacao) */
     .az-geo-tbt-bar {
       display: none;
       align-items: center;
@@ -1278,7 +1277,6 @@
       touch-action: none;
     }
 
-    /* Botao Minha Posicao flutuante, translucido, sem texto e arrastavel */
     .az-geo-locate-fab {
       position: absolute;
       right: 12px;
@@ -1466,7 +1464,6 @@
       color: var(--geo-gold);
     }
 
-    /* Popup do mapa corrigido (botoes nitidos e separados) */
     .az-geo-popup-card {
       min-width: 190px;
       color: #111111;
@@ -1509,7 +1506,6 @@
       color: #F2F0EA;
     }
 
-    /* Card Resumo Quadrante integrado dentro da caixa LOCALIZACAO */
     .az-quad-inline-card {
       margin-top: 10px;
       margin-bottom: 10px;
@@ -1651,7 +1647,6 @@
       justify-content: center;
     }
 
-    /* Modal de Reconstrucao 2.5D do Terreno e Visao Lateral */
     .az-terrain-modal {
       position: fixed;
       inset: 0;
@@ -1724,7 +1719,6 @@
       background: #0A0A0A;
     }
 
-    /* Mini-mapa RADAR persistente durante rota ativa */
     .az-radar-hud {
       position: fixed;
       right: 12px;
@@ -1786,7 +1780,6 @@
     }
   </style>
 
-  <!-- Botao da gaveta do mapa (inicia fechada) -->
   <button type="button" id="azGeoDrawerToggle" class="az-geo-drawer-btn" aria-expanded="false" onclick="window.azimuteToggleGeoDrawer()">
     <span>MAPA INTERATIVO RMBH</span>
     <span id="azGeoDrawerArrow">ABRIR +</span>
@@ -1810,7 +1803,6 @@
     };
   </script>
 
-  <!-- Conteudo da gaveta do mapa -->
   <div id="azGeoDrawerBody" class="az-geo-drawer-body">
     <div class="az-geo-topbar">
       <div class="az-geo-search-wrap">
@@ -1819,10 +1811,8 @@
       </div>
     </div>
 
-    <!-- Caixa de selecao de ruas e bairros -->
     <div id="azGeoSearchResults" class="az-geo-results"></div>
 
-    <!-- Guia curva a curva durante rota ativa -->
     <div id="azGeoTbtBar" class="az-geo-tbt-bar">
       <div class="az-geo-tbt-main">
         <span id="azGeoTbtNext" class="az-geo-tbt-next">Siga pela via atual</span>
@@ -1831,7 +1821,6 @@
       <button type="button" id="azGeoStopRouteBtn" class="az-geo-btn subtle">Encerrar</button>
     </div>
 
-    <!-- Palco do mapa com botao Minha Posicao translucido, sem texto e arrastavel -->
     <div class="az-geo-stage" id="azGeoStage">
       <div id="azGeoMap"></div>
       <button type="button" id="azGeoCenterFab" class="az-geo-locate-fab" aria-label="Minha Posicao" title="Minha Posicao">
@@ -1846,7 +1835,6 @@
       </button>
     </div>
 
-    <!-- Caixa de rota (inicia fechada; abre ao selecionar destino) -->
     <div id="azGeoRouteBox" class="az-geo-collapsible">
       <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:6px;">
         <div class="az-geo-group" id="azGeoModes">
@@ -1859,7 +1847,6 @@
       </div>
     </div>
 
-    <!-- Barra enxuta abaixo do mapa -->
     <div class="az-geo-actions">
       <button type="button" id="azGeoAddPinBtn" class="az-geo-btn subtle">+ Alfinete</button>
       <button type="button" id="azGeoClearBtn" class="az-geo-btn subtle">Limpar</button>
@@ -1873,7 +1860,6 @@
       </button>
     </div>
 
-    <!-- Gaveta Municipios (inicia fechada) -->
     <div id="azGeoMunBox" class="az-geo-collapsible">
       <div class="az-geo-scroll-row">
         <button type="button" id="azGeoCitiesLeft" class="az-geo-scroll-btn" aria-label="Rolar esquerda">&lt;</button>
@@ -1890,7 +1876,6 @@
       </div>
     </div>
 
-    <!-- Gaveta Configuracoes (inicia fechada) -->
     <div id="azGeoCfgBox" class="az-geo-collapsible">
       <div class="az-geo-cfg-row">
         <span class="az-geo-label">Pegada:</span>
@@ -1920,7 +1905,6 @@
       </div>
     </div>
 
-    <!-- Formulario para salvar alfinete -->
     <div id="azGeoPinForm" class="az-geo-pin-form">
       <div class="az-geo-label" id="azGeoPinCoordsLabel">Novo Alfinete</div>
       <input id="azGeoPinTitle" class="az-geo-input" type="text" placeholder="Titulo do alfinete (ex: Ponto Base, Viatura, Acesso)" />
@@ -1945,7 +1929,6 @@
   </div>
 </div>
 
-<!-- Modal de Reconstrucao do Terreno & Visao Lateral (abre ao clicar no Quadrante) -->
 <div id="azTerrainModal" class="az-terrain-modal" onclick="if(event.target===this) window.azimuteToggleTerrainModal(false)">
   <div class="az-terrain-sheet" role="dialog" aria-label="Reconstrucao do Terreno e Relevo">
     <div class="az-terrain-top">
@@ -1971,7 +1954,6 @@
   </div>
 </div>
 
-<!-- Mini-mapa RADAR persistente quando ha rota ativa -->
 <div id="azRadarHud" class="az-radar-hud">
   <div class="az-radar-hud-head">
     <span>RADAR • ROTA ATIVA</span>
@@ -16681,14 +16663,12 @@ function initAzimuteGeo() {
   const orientWrap = document.getElementById("azGeoOrientations");
   const colorsWrap = document.getElementById("azGeoArrowColors");
 
-  // Modal de Reconstrucao do Terreno
   const terrainModal = document.getElementById("azTerrainModal");
   const terrainHeaderInfo = document.getElementById("azTerrainHeaderInfo");
   const terrainCenterAlt = document.getElementById("azTerrainCenterAlt");
   const canvas3d = document.getElementById("azTerrain3dCanvas");
   const canvasSide = document.getElementById("azTerrainSideCanvas");
 
-  // Mini-mapa RADAR
   const radarHud = document.getElementById("azRadarHud");
   const radarExpandBtn = document.getElementById("azRadarExpandBtn");
   const radarNextStepEl = document.getElementById("azRadarNextStep");
@@ -16705,7 +16685,6 @@ function initAzimuteGeo() {
     attribution: "&copy; OpenStreetMap"
   }).addTo(map);
 
-  // Inicializa mini-mapa RADAR
   let radarMap = null;
   let radarGpsMarker = null;
   let radarRouteLine = null;
@@ -16732,9 +16711,12 @@ function initAzimuteGeo() {
   const localLayer = L.layerGroup().addTo(map);
 
   let lastPos = null;
+  let prevTrackPos = null;
   let lastAltitude = null;
   let lastSpeed = 0;
   let lastGpsHeading = null;
+  let computedGpsCourse = null;
+  let lastMoveTimestamp = 0;
   let rawCompassHeading = 0;
   let stableHeading = 0;
   let hasAbsoluteCompass = false;
@@ -16745,7 +16727,6 @@ function initAzimuteGeo() {
   let firstGpsFix = true;
   let localPoints = [];
 
-  // Preferencias persistentes
   let currentTravelMode = "carro";
   let currentDestination = null;
   let activeRouteDest = null;
@@ -16766,7 +16747,6 @@ function initAzimuteGeo() {
   let pinDropMode = false;
   let pendingPinCoords = null;
 
-  // Estado do Quadrante e Relevo
   let lastStreetsFetchPos = null;
   let fetchingStreets = false;
   let cachedCurrentStreet = "Via atual";
@@ -16781,19 +16761,48 @@ function initAzimuteGeo() {
     return ((toDeg - fromDeg + 540) % 360) - 180;
   }
 
+  function isMovingCourseActive() {
+    const recentlyMoved = Date.now() - lastMoveTimestamp < 7000 && computedGpsCourse !== null;
+    const hasSpeed = lastSpeed >= 0.7 && (computedGpsCourse !== null || (typeof lastGpsHeading === "number" && !Number.isNaN(lastGpsHeading)));
+    return recentlyMoved || hasSpeed;
+  }
+
   function getTargetHeading() {
-    const useGpsCourse = lastSpeed >= 1.6 && typeof lastGpsHeading === "number" && !Number.isNaN(lastGpsHeading);
-    const base = useGpsCourse ? lastGpsHeading : rawCompassHeading;
-    const offset = orientationMode === "grid-destro" ? 90 : orientationMode === "grid-canhoto" ? -90 : 0;
-    return normalizeAngle(base + offset);
+    if (isMovingCourseActive()) {
+      if (typeof lastGpsHeading === "number" && !Number.isNaN(lastGpsHeading) && lastSpeed >= 1.2) {
+        return normalizeAngle(lastGpsHeading);
+      }
+      if (computedGpsCourse !== null) {
+        return normalizeAngle(computedGpsCourse);
+      }
+    }
+
+    const screenAngle =
+      window.screen && window.screen.orientation && typeof window.screen.orientation.angle === "number"
+        ? window.screen.orientation.angle
+        : 0;
+
+    let offset = 0;
+    if (screenAngle !== 0) {
+      offset = screenAngle;
+    } else if (orientationMode === "grid-destro") {
+      offset = 90;
+    } else if (orientationMode === "grid-canhoto") {
+      offset = -90;
+    }
+
+    return normalizeAngle(rawCompassHeading + offset);
   }
 
   function refreshStabilizedHeading(forceSnap) {
+    const moving = isMovingCourseActive();
     const target = getTargetHeading();
     const diff = shortestAngleDiff(stableHeading, target);
-    // Zona morta de 6 graus evita giro involuntario ao tocar no celular parado
-    if (forceSnap || Math.abs(diff) >= 6) {
-      stableHeading = normalizeAngle(stableHeading + diff * (forceSnap ? 1 : 0.65));
+    const deadzone = moving ? 2 : 6;
+
+    if (forceSnap || Math.abs(diff) >= deadzone) {
+      const factor = forceSnap || moving ? 0.85 : 0.65;
+      stableHeading = normalizeAngle(stableHeading + diff * factor);
       updateDirectionalIcons();
     }
   }
@@ -16844,14 +16853,19 @@ function initAzimuteGeo() {
     }
 
     if (terrainHeaderInfo) {
-      const orientTag = orientationMode === "grid-destro" ? "GRID D" : orientationMode === "grid-canhoto" ? "GRID C" : "APP";
-      terrainHeaderInfo.textContent = `RELEVO E ENTORNO • ${String(Math.round(deg)).padStart(3, "0")}° (${orientTag})`;
+      const srcTag = isMovingCourseActive()
+        ? "GPS RUMO"
+        : orientationMode === "grid-destro"
+        ? "GRID D"
+        : orientationMode === "grid-canhoto"
+        ? "GRID C"
+        : "APP";
+      terrainHeaderInfo.textContent = `RELEVO E ENTORNO • ${String(Math.round(deg)).padStart(3, "0")}° (${srcTag})`;
     }
 
     recomputeQuadranteSectors();
   }
 
-  // Injeta o card resumo do Quadrante diretamente dentro da caixa LOCALIZACAO
   function ensureQuadranteCardMounted() {
     if (document.getElementById("azQuadInlineCard")) return;
 
@@ -16900,7 +16914,6 @@ function initAzimuteGeo() {
       window.azimuteToggleTerrainModal(true);
     });
 
-    // Procura a caixa LOCALIZACAO existente no AZIMUTE para ancorar dentro dela
     const allElements = Array.from(document.querySelectorAll("div, section"));
     const locHeader = allElements.find(
       (el) => el.children.length === 0 && el.textContent && el.textContent.trim().toUpperCase() === "LOCALIZAÇÃO"
@@ -16924,7 +16937,6 @@ function initAzimuteGeo() {
       }
     }
 
-    // Fallback seguro logo acima do modulo do mapa
     const geoModule = document.getElementById("az-geo-module");
     if (geoModule && geoModule.parentElement) {
       geoModule.parentElement.insertBefore(card, geoModule);
@@ -16932,7 +16944,6 @@ function initAzimuteGeo() {
   }
   ensureQuadranteCardMounted();
 
-  // Le o nome da via atual diretamente da caixa LOCALIZACAO para manter sincronia
   function readSyncedStreetFromLocationCard() {
     const allElements = Array.from(document.querySelectorAll("div, span, h1, h2, h3, p"));
     const locHeader = allElements.find(
@@ -17008,7 +17019,6 @@ function initAzimuteGeo() {
     return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   }
 
-  // Distancia perpendicular exata do ponto P ate o segmento AB (evita erro de esquina)
   function pointToSegmentClosest(pLat, pLng, aLat, aLng, bLat, bLng) {
     const cosLat = Math.cos((pLat * Math.PI) / 180);
     const ax = (aLng - pLng) * cosLat;
@@ -17094,7 +17104,6 @@ function initAzimuteGeo() {
     marker.openPopup();
   }
 
-  // Botao Minha Posicao translucido e arrastavel dentro do mapa
   if (centerFab && stageEl) {
     let draggingFab = false;
     let fabMoved = false;
@@ -17178,6 +17187,7 @@ function initAzimuteGeo() {
         (pos) => {
           const { latitude, longitude, altitude } = pos.coords;
           lastPos = [latitude, longitude];
+          prevTrackPos = [latitude, longitude];
           if (typeof altitude === "number" && !Number.isNaN(altitude)) lastAltitude = altitude;
           firstGpsFix = false;
           map.invalidateSize();
@@ -17194,7 +17204,6 @@ function initAzimuteGeo() {
     }
   }
 
-  // Gavetas Municipios e Configuracoes
   if (munToggleBtn && munBox) {
     munToggleBtn.addEventListener("click", () => {
       const open = munBox.classList.toggle("is-open");
@@ -17211,7 +17220,6 @@ function initAzimuteGeo() {
     });
   }
 
-  // Rotas Carro / Moto / A pe (linha azul + Turn-by-Turn + RADAR HUD)
   if (modesWrap) {
     modesWrap.querySelectorAll("button[data-mode]").forEach((btn) => {
       btn.addEventListener("click", () => {
@@ -17355,7 +17363,6 @@ function initAzimuteGeo() {
       activeRouteCoords = route.geometry.coordinates.map(([lng, lat]) => [lat, lng]);
       activeRouteSteps = (route.legs && route.legs[0] && route.legs[0].steps) || [];
 
-      // Linha azul de contorno + linha azul principal de alto contraste
       L.polyline(activeRouteCoords, {
         color: "#1E3A8A",
         weight: isWalking ? 6 : 8,
@@ -17378,7 +17385,6 @@ function initAzimuteGeo() {
         }).addTo(radarMap);
       }
 
-      // Enquadra inicio da navegacao na posicao atual (estilo Google Maps) e ativa Seguir
       map.closePopup();
       map.setView(lastPos, 17);
       setFollowState(true);
@@ -17403,7 +17409,6 @@ function initAzimuteGeo() {
     }
   };
 
-  // Configuracoes: Pegada, Cor da Seta, Seguir, Relevo/Altitude
   function syncOrientationButtons() {
     if (!orientWrap) return;
     orientWrap.querySelectorAll("button[data-orient]").forEach((b) => {
@@ -17473,7 +17478,6 @@ function initAzimuteGeo() {
     });
   }
 
-  // Alfinetes personalizaveis
   function persistPins() {
     localStorage.setItem("az_geo_pins_v1", JSON.stringify(savedPins));
   }
@@ -17563,7 +17567,6 @@ function initAzimuteGeo() {
     });
   }
 
-  // Rolagem e selecao dos Municipios
   if (citiesLeft && citiesWrap) {
     citiesLeft.addEventListener("click", () => {
       citiesWrap.scrollBy({ left: -160, behavior: "smooth" });
@@ -17718,8 +17721,25 @@ function initAzimuteGeo() {
     }
   });
 
-  // Bussola absoluta com prioridade estrita (evita inversao Frente/Retaguarda)
   let compassListening = false;
+  function computeTiltCompensatedHeading(alpha, beta, gamma) {
+    const rad = Math.PI / 180;
+    const a = alpha * rad;
+    const b = (typeof beta === "number" ? beta : 0) * rad;
+    const g = (typeof gamma === "number" ? gamma : 0) * rad;
+
+    const useBackAxis = typeof beta === "number" && Math.abs(beta) > 50;
+    let vx, vy;
+    if (useBackAxis) {
+      vx = -Math.cos(a) * Math.sin(g) - Math.sin(a) * Math.sin(b) * Math.cos(g);
+      vy = -Math.sin(a) * Math.sin(g) + Math.cos(a) * Math.sin(b) * Math.cos(g);
+    } else {
+      vx = -Math.sin(a) * Math.cos(b);
+      vy = Math.cos(a) * Math.cos(b);
+    }
+    return normalizeAngle(Math.atan2(vx, vy) * (180 / Math.PI));
+  }
+
   function handleOrientationEvent(e, isAbsolute) {
     if (isAbsolute) hasAbsoluteCompass = true;
     if (!isAbsolute && hasAbsoluteCompass) return;
@@ -17728,7 +17748,7 @@ function initAzimuteGeo() {
     if (typeof e.webkitCompassHeading === "number" && !Number.isNaN(e.webkitCompassHeading)) {
       heading = e.webkitCompassHeading;
     } else if (typeof e.alpha === "number" && !Number.isNaN(e.alpha)) {
-      heading = normalizeAngle(360 - e.alpha);
+      heading = computeTiltCompensatedHeading(e.alpha, e.beta, e.gamma);
     }
     if (heading !== null) {
       rawCompassHeading = heading;
@@ -17759,7 +17779,6 @@ function initAzimuteGeo() {
   }
   startCompassListeners();
 
-  // Consulta altitude em lote (Open-Meteo Elevation) para o centro e as vias do entorno
   async function enrichStreetsWithElevation(centerLat, centerLng, streetsList) {
     if (!streetsList.length) return;
     const sample = streetsList.slice(0, 8);
@@ -17783,12 +17802,9 @@ function initAzimuteGeo() {
         });
         recomputeQuadranteSectors();
       }
-    } catch (e) {
-      // Mantem distancia horizontal caso esteja offline
-    }
+    } catch (e) {}
   }
 
-  // Motor do Quadrante com distancia perpendicular ao segmento da via
   async function fetchNearbyStreets(lat, lng, force) {
     if (fetchingStreets) return;
     if (!force && lastStreetsFetchPos) {
@@ -17945,7 +17961,6 @@ function initAzimuteGeo() {
     }
   }
 
-  // Desenho da Reconstrucao 2.5D do Terreno e Visao Lateral em Corte
   function drawTerrainReconstruction() {
     if (!canvas3d || !canvasSide) return;
 
@@ -17954,13 +17969,11 @@ function initAzimuteGeo() {
       terrainCenterAlt.textContent = cotaBase !== null ? `Cota: ${cotaBase} m` : "Cota: ---";
     }
 
-    // 1. Canvas 2.5D Wireframe em Perspectiva
     const ctx = canvas3d.getContext("2d");
     const w = canvas3d.width;
     const h = canvas3d.height;
     ctx.clearRect(0, 0, w, h);
 
-    // Grade isometrica de fundo
     ctx.strokeStyle = "#1E1E1A";
     ctx.lineWidth = 1;
     for (let gx = 30; gx < w; gx += 35) {
@@ -17979,7 +17992,6 @@ function initAzimuteGeo() {
     const cx = w / 2;
     const cy = h / 2 + 6;
 
-    // Eixo da via atual no centro
     ctx.strokeStyle = "#C5A869";
     ctx.lineWidth = 3;
     ctx.beginPath();
@@ -17987,7 +17999,6 @@ function initAzimuteGeo() {
     ctx.lineTo(cx + 85, cy - 16);
     ctx.stroke();
 
-    // Ponto central (usuario)
     ctx.fillStyle = arrowColor;
     ctx.beginPath();
     ctx.arc(cx, cy, 6, 0, Math.PI * 2);
@@ -18014,7 +18025,6 @@ function initAzimuteGeo() {
       const pyElev = n.py - zShift;
       const lineColor = delta >= 2 ? "#4ADE80" : delta <= -2 ? "#F87171" : "#60A5FA";
 
-      // Linha de ligacao inclinada
       ctx.strokeStyle = lineColor;
       ctx.lineWidth = 2;
       ctx.setLineDash([4, 3]);
@@ -18024,7 +18034,6 @@ function initAzimuteGeo() {
       ctx.stroke();
       ctx.setLineDash([]);
 
-      // Haste vertical de cota
       if (Math.abs(zShift) >= 3) {
         ctx.strokeStyle = "rgba(197, 168, 105, 0.45)";
         ctx.lineWidth = 1;
@@ -18034,13 +18043,11 @@ function initAzimuteGeo() {
         ctx.stroke();
       }
 
-      // No da via
       ctx.fillStyle = lineColor;
       ctx.beginPath();
       ctx.arc(n.px, pyElev, 4.5, 0, Math.PI * 2);
       ctx.fill();
 
-      // Rotulo
       const distM = Math.max(5, Math.round(st.distKm * 1000));
       const elevStr = typeof st.deltaElev === "number" ? ` (${st.deltaElev >= 0 ? "+" : ""}${st.deltaElev}m)` : "";
       ctx.fillStyle = "#F2F0EA";
@@ -18051,7 +18058,6 @@ function initAzimuteGeo() {
       ctx.fillText(`${distM}m${elevStr}`, n.px, pyElev + 13);
     });
 
-    // 2. Canvas Visao Lateral / Corte de Relevo (Retaguarda <-> Voce <-> Frente)
     const sctx = canvasSide.getContext("2d");
     const sw = canvasSide.width;
     const sh = canvasSide.height;
@@ -18078,7 +18084,6 @@ function initAzimuteGeo() {
     const pMid = { x: sw / 2, y: baseLineY };
     const pRight = { x: sw - 54, y: frontY };
 
-    // Preenchimento do perfil do terreno
     sctx.fillStyle = "rgba(197, 168, 105, 0.12)";
     sctx.beginPath();
     sctx.moveTo(pLeft.x, sh - 12);
@@ -18089,7 +18094,6 @@ function initAzimuteGeo() {
     sctx.closePath();
     sctx.fill();
 
-    // Linha do perfil
     sctx.strokeStyle = "#C5A869";
     sctx.lineWidth = 2.5;
     sctx.beginPath();
@@ -18098,7 +18102,6 @@ function initAzimuteGeo() {
     sctx.lineTo(pRight.x, pRight.y);
     sctx.stroke();
 
-    // Marcadores
     [
       { pt: pLeft, st: rearSt, tag: "RETAGUARDA" },
       { pt: pMid, st: { name: cachedCurrentStreet || "Via atual", deltaElev: 0 }, tag: "VOCÊ" },
@@ -18141,7 +18144,6 @@ function initAzimuteGeo() {
     }
   };
 
-  // GPS em tempo real
   if ("geolocation" in navigator) {
     navigator.geolocation.watchPosition(
       (pos) => {
@@ -18153,6 +18155,19 @@ function initAzimuteGeo() {
         lastSpeed = typeof speed === "number" && !Number.isNaN(speed) ? speed : 0;
         if (typeof heading === "number" && !Number.isNaN(heading)) {
           lastGpsHeading = heading;
+        }
+
+        if (!accuracy || accuracy <= 35) {
+          if (!prevTrackPos) {
+            prevTrackPos = [latitude, longitude];
+          } else {
+            const movedKm = calcDistanceKm(prevTrackPos[0], prevTrackPos[1], latitude, longitude);
+            if (movedKm >= 0.004) {
+              computedGpsCourse = calcBearingDeg(prevTrackPos[0], prevTrackPos[1], latitude, longitude);
+              prevTrackPos = [latitude, longitude];
+              lastMoveTimestamp = Date.now();
+            }
+          }
         }
 
         if (!gpsMarker) {
@@ -18196,11 +18211,11 @@ function initAzimuteGeo() {
           gpsCircle.setLatLng(lastPos).setRadius(accuracy);
         }
 
-        statusEl.textContent = `GPS ativo (+/- ${Math.round(accuracy || 0)}m)`;
+        const modeTag = isMovingCourseActive() ? "Rumo GPS" : "Bússola";
+        statusEl.textContent = `GPS ativo (+/- ${Math.round(accuracy || 0)}m • ${modeTag})`;
         refreshStabilizedHeading(false);
         updateTurnByTurnProgress();
 
-        // Filtra leituras de baixa precisao para nao confundir esquinas
         if (!accuracy || accuracy <= 35) {
           fetchNearbyStreets(latitude, longitude, false);
         } else {
@@ -18218,7 +18233,7 @@ function initAzimuteGeo() {
       (err) => {
         statusEl.textContent = "GPS indisponivel (" + (err.message || "verifique permissao") + ")";
       },
-      { enableHighAccuracy: true, maximumAge: 1500, timeout: 15000 }
+      { enableHighAccuracy: true, maximumAge: 1000, timeout: 15000 }
     );
   } else {
     statusEl.textContent = "Navegador sem suporte a GPS";
@@ -18251,7 +18266,6 @@ function initAzimuteGeo() {
     renderLocalLayer(localPoints);
   };
 
-  // Mantem o Quadrante sincronizado caso a caixa LOCALIZACAO atualize o endereco
   const locObserver = new MutationObserver(() => {
     ensureQuadranteCardMounted();
     const synced = readSyncedStreetFromLocationCard();
