@@ -14,6 +14,8 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Teko:wght@600;700&display=swap"rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
     <script>
         tailwind.config = {
             theme: {
@@ -1093,6 +1095,340 @@
             <div class="relative z-10 flex items-center justify-between px-1">
                 <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki">Geolocalização</span>
             </div>
+            <div id="az-geo-module" class="az-geo-module relative z-10">
+  <style>
+    .az-geo-module {
+      --geo-bg: #0D0D0D;
+      --geo-panel: #161616;
+      --geo-border: #2B271F;
+      --geo-gold: #C5A869;
+      --geo-gold-soft: rgba(197, 168, 105, 0.16);
+      --geo-text: #F2EFE9;
+      --geo-muted: #9E9789;
+      background: var(--geo-bg);
+      color: var(--geo-text);
+      border: 1px solid var(--geo-border);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 12px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    .az-geo-top {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid var(--geo-border);
+      padding-bottom: 8px;
+    }
+
+    .az-geo-title {
+      font-size: 0.84rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--geo-gold);
+    }
+
+    .az-geo-status {
+      font-size: 0.74rem;
+      color: var(--geo-muted);
+    }
+
+    .az-geo-cities {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .az-geo-chip {
+      background: var(--geo-panel);
+      color: var(--geo-text);
+      border: 1px solid var(--geo-border);
+      padding: 6px 9px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+    }
+
+    .az-geo-chip:hover,
+    .az-geo-chip.active {
+      border-color: var(--geo-gold);
+      color: var(--geo-gold);
+      background: var(--geo-gold-soft);
+    }
+
+    .az-geo-stage {
+      position: relative;
+      width: 100%;
+      height: 460px;
+      min-height: 340px;
+      border: 1px solid var(--geo-border);
+      background: #111;
+      overflow: hidden;
+    }
+
+    #azGeoMap {
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    /* Barra de busca flutuante sobre o mapa (padrao do video) */
+    .az-geo-search-overlay {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 24px);
+      max-width: 560px;
+      z-index: 500;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .az-geo-search-bar {
+      display: flex;
+      gap: 6px;
+      background: rgba(13, 13, 13, 0.92);
+      border: 1px solid var(--geo-gold);
+      padding: 6px;
+    }
+
+    .az-geo-input {
+      flex: 1;
+      min-width: 0;
+      background: var(--geo-panel);
+      color: var(--geo-text);
+      border: 1px solid var(--geo-border);
+      padding: 8px 10px;
+      font-size: 0.84rem;
+      outline: none;
+    }
+
+    .az-geo-input:focus {
+      border-color: var(--geo-gold);
+    }
+
+    .az-geo-btn {
+      background: var(--geo-panel);
+      color: var(--geo-gold);
+      border: 1px solid var(--geo-gold);
+      padding: 8px 11px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .az-geo-btn:hover,
+    .az-geo-btn.active {
+      background: var(--geo-gold);
+      color: var(--geo-bg);
+    }
+
+    .az-geo-btn.subtle {
+      border-color: var(--geo-border);
+      color: var(--geo-text);
+    }
+
+    .az-geo-btn.subtle:hover {
+      border-color: var(--geo-gold);
+      color: var(--geo-gold);
+      background: var(--geo-panel);
+    }
+
+    .az-geo-results {
+      display: none;
+      flex-direction: column;
+      gap: 4px;
+      background: rgba(13, 13, 13, 0.96);
+      border: 1px solid var(--geo-border);
+      padding: 6px;
+      max-height: 180px;
+      overflow-y: auto;
+    }
+
+    .az-geo-results.open {
+      display: flex;
+    }
+
+    .az-geo-result-btn {
+      width: 100%;
+      text-align: left;
+      background: var(--geo-panel);
+      color: var(--geo-text);
+      border: 1px solid var(--geo-border);
+      padding: 7px 9px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .az-geo-result-btn:hover {
+      border-color: var(--geo-gold);
+      background: var(--geo-gold-soft);
+    }
+
+    .az-geo-result-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .az-geo-result-sub {
+      font-size: 0.7rem;
+      color: var(--geo-muted);
+    }
+
+    .az-geo-badge {
+      font-size: 0.65rem;
+      border: 1px solid var(--geo-gold);
+      color: var(--geo-gold);
+      padding: 2px 5px;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+
+    .az-geo-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .az-geo-telemetry {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 8px;
+    }
+
+    .az-geo-box {
+      background: var(--geo-panel);
+      border: 1px solid var(--geo-border);
+      padding: 8px 10px;
+    }
+
+    .az-geo-box-label {
+      display: block;
+      font-size: 0.66rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--geo-muted);
+      margin-bottom: 2px;
+    }
+
+    .az-geo-box-value {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--geo-text);
+      word-break: break-word;
+    }
+
+    /* Bolinha de GPS em tempo real */
+    .az-gps-dot {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--geo-gold);
+      border: 3px solid #0D0D0D;
+      box-shadow: 0 0 0 2px var(--geo-gold);
+    }
+
+    /* Tema escuro nos controles do Leaflet */
+    .az-geo-module .leaflet-control-layers,
+    .az-geo-module .leaflet-bar a {
+      background: #161616 !important;
+      color: #F2EFE9 !important;
+      border-color: #2B271F !important;
+    }
+
+    .az-geo-module .leaflet-bar a:hover {
+      background: #C5A869 !important;
+      color: #0D0D0D !important;
+    }
+
+    .az-geo-module .leaflet-popup-content-wrapper,
+    .az-geo-module .leaflet-popup-tip {
+      background: #161616 !important;
+      color: #F2EFE9 !important;
+      border: 1px solid #C5A869;
+    }
+
+    .az-geo-popup-links {
+      margin-top: 6px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .az-geo-popup-links a {
+      color: #C5A869;
+      font-size: 0.74rem;
+      font-weight: 700;
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+  </style>
+
+  <div class="az-geo-top">
+    <span class="az-geo-title">Geolocalizacao — RMBH</span>
+    <span class="az-geo-status" id="azGeoStatus">Aguardando GPS...</span>
+  </div>
+
+  <!-- Atalhos rapidos para os 7 municipios -->
+  <div class="az-geo-cities" id="azGeoCities"></div>
+
+  <!-- Area do mapa com busca flutuante -->
+  <div class="az-geo-stage">
+    <div class="az-geo-search-overlay">
+      <div class="az-geo-search-bar">
+        <input
+          type="text"
+          id="azGeoSearchInput"
+          class="az-geo-input"
+          placeholder="Buscar rua, bairro, ponto ou referencia na RMBH..."
+          autocomplete="off"
+        />
+        <button type="button" id="azGeoSearchBtn" class="az-geo-btn">Buscar</button>
+      </div>
+      <div id="azGeoResults" class="az-geo-results"></div>
+    </div>
+
+    <div id="azGeoMap"></div>
+  </div>
+
+  <!-- Controles de navegacao e GPS -->
+  <div class="az-geo-actions">
+    <button type="button" id="azGeoCenterBtn" class="az-geo-btn">Minha Posicao</button>
+    <button type="button" id="azGeoFollowBtn" class="az-geo-btn subtle">Seguir: Off</button>
+    <button type="button" id="azGeoClearBtn" class="az-geo-btn subtle">Limpar Busca</button>
+    <button type="button" id="azGeoCopyBtn" class="az-geo-btn subtle">Copiar Coordenadas</button>
+  </div>
+
+  <!-- Telemetria -->
+  <div class="az-geo-telemetry">
+    <div class="az-geo-box">
+      <span class="az-geo-box-label">Coordenadas Atuais</span>
+      <span class="az-geo-box-value" id="azGeoCoords">--</span>
+    </div>
+    <div class="az-geo-box">
+      <span class="az-geo-box-label">Precisao GPS</span>
+      <span class="az-geo-box-value" id="azGeoAcc">--</span>
+    </div>
+    <div class="az-geo-box">
+      <span class="az-geo-box-label">Ultimo Alvo / Busca</span>
+      <span class="az-geo-box-value" id="azGeoTarget">Nenhum</span>
+    </div>
+  </div>
+</div>
             <!-- CONTORNO DO MAPA DE MINAS GERAIS AO FUNDO -->
             <div class="pointer-events-none select-none absolute inset-0 flex items-center justify-center z-0 overflow-hidden" aria-hidden="true">
                 <svg viewBox="0 0 800 650" class="w-full max-w-4xl h-auto opacity-[0.13]">
@@ -13751,7 +14087,7 @@
         function showView(viewId) {
             if (viewId === 'unidades') viewId = 'regioes';
             azimuteCurrentViewId = viewId;
-
+if (viewId === 'gps' && window.azimuteGeoInvalidate) window.azimuteGeoInvalidate();
             // No Modo GRID (e geral), exibe os blocos superiores de Telemetria, Orientação e Copiar QTH (#gridModeTacticalCockpit) SOMENTE na Tela Início ('home')
             syncGridCockpitVisibility(viewId);
 
@@ -15743,6 +16079,342 @@ window.buscarUnidadePorBairro = function (termo) {
 
 carregarUnidades1RPM();
     </script>
+<script>
+  (function initAzimuteGeo() {
+    if (typeof L === "undefined" || !document.getElementById("azGeoMap")) return;
 
+    const RMBH_CITIES = [
+      { id: "bh", nome: "Belo Horizonte", lat: -19.9227, lng: -43.9388, zoom: 12 },
+      { id: "contagem", nome: "Contagem", lat: -19.9321, lng: -44.0539, zoom: 13 },
+      { id: "betim", nome: "Betim", lat: -19.9678, lng: -44.1981, zoom: 13 },
+      { id: "ibirite", nome: "Ibirite", lat: -20.0219, lng: -44.0589, zoom: 13 },
+      { id: "sabara", nome: "Sabara", lat: -19.8861, lng: -43.8069, zoom: 13 },
+      { id: "novalima", nome: "Nova Lima", lat: -19.9858, lng: -43.8467, zoom: 13 },
+      { id: "neves", nome: "Ribeirao das Neves", lat: -19.7669, lng: -44.0867, zoom: 13 }
+    ];
+
+    // Limites aproximados englobando os 7 municipios
+    const RMBH_BOUNDS = L.latLngBounds([-20.28, -44.48], [-19.52, -43.62]);
+
+    // Array local: alimente com seus JSONs (hospitais, unidades, base_qth_bh, postes)
+    let localPoints = RMBH_CITIES.map((c) => ({
+      nome: "Centro — " + c.nome,
+      municipio: c.nome,
+      categoria: "Municipio",
+      lat: c.lat,
+      lng: c.lng,
+      detalhe: "Referencia central do municipio"
+    }));
+
+    const statusEl = document.getElementById("azGeoStatus");
+    const coordsEl = document.getElementById("azGeoCoords");
+    const accEl = document.getElementById("azGeoAcc");
+    const targetEl = document.getElementById("azGeoTarget");
+    const citiesEl = document.getElementById("azGeoCities");
+    const searchInput = document.getElementById("azGeoSearchInput");
+    const searchBtn = document.getElementById("azGeoSearchBtn");
+    const resultsEl = document.getElementById("azGeoResults");
+    const centerBtn = document.getElementById("azGeoCenterBtn");
+    const followBtn = document.getElementById("azGeoFollowBtn");
+    const clearBtn = document.getElementById("azGeoClearBtn");
+    const copyBtn = document.getElementById("azGeoCopyBtn");
+
+    const map = L.map("azGeoMap", {
+      center: [-19.9227, -43.9388],
+      zoom: 11,
+      zoomControl: true,
+      maxBounds: RMBH_BOUNDS.pad(0.25)
+    });
+
+    const osmTiles = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution: "&copy; OpenStreetMap"
+    }).addTo(map);
+
+    const localLayer = L.layerGroup().addTo(map);
+    const gpsLayer = L.layerGroup().addTo(map);
+
+    L.control.layers(
+      { "Mapa Base (OSM)": osmTiles },
+      { "Camada Local": localLayer, "Posicao GPS": gpsLayer },
+      { position: "bottomright" }
+    ).addTo(map);
+
+    let searchMarker = null;
+    let gpsMarker = null;
+    let gpsCircle = null;
+    let lastPos = null;
+    let followGps = false;
+
+    const gpsIcon = L.divIcon({
+      className: "",
+      html: '<div class="az-gps-dot"></div>',
+      iconSize: [18, 18],
+      iconAnchor: [9, 9]
+    });
+
+    function normalize(text) {
+      return (text || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .trim();
+    }
+
+    function buildPopupHtml(title, subtitle, lat, lng) {
+      const gmaps = `https://www.google.com/maps?q=${lat},${lng}`;
+      const waze = `https://waze.com/ul?ll=${lat},${lng}&navigate=yes`;
+      return `
+        <strong>${title}</strong>
+        ${subtitle ? `<br/><span>${subtitle}</span>` : ""}
+        <div class="az-geo-popup-links">
+          <a href="${gmaps}" target="_blank" rel="noopener">Maps</a>
+          <a href="${waze}" target="_blank" rel="noopener">Waze</a>
+        </div>
+      `;
+    }
+
+    function renderLocalLayer(points) {
+      localLayer.clearLayers();
+      (points || []).forEach((pt) => {
+        if (typeof pt.lat !== "number" || typeof pt.lng !== "number") return;
+        L.circleMarker([pt.lat, pt.lng], {
+          radius: 7,
+          color: "#C5A869",
+          weight: 2,
+          fillColor: "#161616",
+          fillOpacity: 0.9
+        })
+          .bindPopup(buildPopupHtml(pt.nome, `${pt.municipio || ""} ${pt.detalhe ? "— " + pt.detalhe : ""}`, pt.lat, pt.lng))
+          .addTo(localLayer);
+      });
+    }
+
+    renderLocalLayer(localPoints);
+
+    // Botoes de atalho dos 7 municipios
+    RMBH_CITIES.forEach((city) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "az-geo-chip";
+      btn.textContent = city.nome;
+      btn.addEventListener("click", () => {
+        citiesEl.querySelectorAll(".az-geo-chip").forEach((el) => el.classList.remove("active"));
+        btn.classList.add("active");
+        map.setView([city.lat, city.lng], city.zoom);
+        statusEl.textContent = "Visualizando: " + city.nome;
+      });
+      citiesEl.appendChild(btn);
+    });
+
+    function clearSearchMarker() {
+      if (searchMarker) {
+        map.removeLayer(searchMarker);
+        searchMarker = null;
+      }
+    }
+
+    function setSearchMarker(lat, lng, title, subtitle) {
+      clearSearchMarker();
+      searchMarker = L.marker([lat, lng])
+        .addTo(map)
+        .bindPopup(buildPopupHtml(title, subtitle, lat, lng))
+        .openPopup();
+      map.setView([lat, lng], 15);
+      targetEl.textContent = title;
+    }
+
+    function showResults(items) {
+      resultsEl.innerHTML = "";
+      if (!items.length) {
+        resultsEl.classList.remove("open");
+        return;
+      }
+      items.forEach((item) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "az-geo-result-btn";
+        btn.innerHTML = `
+          <div>
+            <div class="az-geo-result-title">${item.title}</div>
+            <div class="az-geo-result-sub">${item.subtitle || ""}</div>
+          </div>
+          <span class="az-geo-badge">${item.source}</span>
+        `;
+        btn.addEventListener("click", () => {
+          setSearchMarker(item.lat, item.lng, item.title, item.subtitle);
+          resultsEl.classList.remove("open");
+        });
+        resultsEl.appendChild(btn);
+      });
+      resultsEl.classList.add("open");
+    }
+
+    function searchLocalData(query) {
+      const q = normalize(query);
+      if (!q) return [];
+      return localPoints
+        .filter((p) => normalize(`${p.nome} ${p.municipio} ${p.categoria} ${p.detalhe}`).includes(q))
+        .slice(0, 8)
+        .map((p) => ({
+          lat: p.lat,
+          lng: p.lng,
+          title: p.nome,
+          subtitle: `${p.municipio || ""}${p.detalhe ? " — " + p.detalhe : ""}`,
+          source: "LOCAL"
+        }));
+    }
+
+    async function searchNominatim(query) {
+      const viewbox = "-44.48,-19.52,-43.62,-20.28";
+      const fullQuery = `${query}, Minas Gerais, Brasil`;
+      const url =
+        `https://nominatim.openstreetmap.org/search?format=json&limit=6&countrycodes=br` +
+        `&viewbox=${encodeURIComponent(viewbox)}&bounded=0&q=${encodeURIComponent(fullQuery)}`;
+
+      const res = await fetch(url, { headers: { Accept: "application/json" } });
+      if (!res.ok) throw new Error("Erro na busca externa");
+      const data = await res.json();
+
+      return (data || []).map((row) => ({
+        lat: parseFloat(row.lat),
+        lng: parseFloat(row.lon),
+        title: (row.display_name || query).split(",")[0],
+        subtitle: row.display_name || "",
+        source: "OSM"
+      }));
+    }
+
+    async function runSearch() {
+      const term = searchInput.value.trim();
+      if (!term) return;
+
+      statusEl.textContent = "Buscando...";
+      const localMatches = searchLocalData(term);
+
+      if (localMatches.length > 0) {
+        showResults(localMatches);
+        const first = localMatches[0];
+        setSearchMarker(first.lat, first.lng, first.title, first.subtitle);
+        statusEl.textContent = `${localMatches.length} resultado(s) na base local`;
+        return;
+      }
+
+      try {
+        const osmMatches = await searchNominatim(term);
+        if (osmMatches.length > 0) {
+          showResults(osmMatches);
+          const first = osmMatches[0];
+          setSearchMarker(first.lat, first.lng, first.title, first.subtitle);
+          statusEl.textContent = `${osmMatches.length} resultado(s) via OpenStreetMap`;
+        } else {
+          showResults([]);
+          statusEl.textContent = "Nenhum local encontrado";
+        }
+      } catch (err) {
+        statusEl.textContent = "Falha na busca externa (verifique conexao)";
+      }
+    }
+
+    searchBtn.addEventListener("click", runSearch);
+    searchInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        runSearch();
+      }
+    });
+
+    clearBtn.addEventListener("click", () => {
+      searchInput.value = "";
+      clearSearchMarker();
+      showResults([]);
+      targetEl.textContent = "Nenhum";
+      statusEl.textContent = "Busca limpa";
+    });
+
+    centerBtn.addEventListener("click", () => {
+      if (lastPos) {
+        map.setView(lastPos, 16);
+      } else {
+        statusEl.textContent = "GPS ainda sem leitura";
+      }
+    });
+
+    followBtn.addEventListener("click", () => {
+      followGps = !followGps;
+      followBtn.textContent = followGps ? "Seguir: On" : "Seguir: Off";
+      followBtn.classList.toggle("active", followGps);
+      if (followGps && lastPos) map.panTo(lastPos);
+    });
+
+    copyBtn.addEventListener("click", async () => {
+      if (!lastPos) {
+        statusEl.textContent = "Sem coordenadas para copiar";
+        return;
+      }
+      const text = `${lastPos[0].toFixed(6)}, ${lastPos[1].toFixed(6)}`;
+      try {
+        await navigator.clipboard.writeText(text);
+        statusEl.textContent = "Coordenadas copiadas: " + text;
+      } catch {
+        statusEl.textContent = "Coordenadas: " + text;
+      }
+    });
+
+    // Rastreamento GPS em tempo real
+    if ("geolocation" in navigator) {
+      navigator.geolocation.watchPosition(
+        (pos) => {
+          const { latitude, longitude, accuracy } = pos.coords;
+          lastPos = [latitude, longitude];
+          coordsEl.textContent = `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+          accEl.textContent = accuracy ? `±${Math.round(accuracy)} m` : "--";
+          statusEl.textContent = "GPS ativo em tempo real";
+
+          if (!gpsMarker) {
+            gpsMarker = L.marker(lastPos, { icon: gpsIcon, zIndexOffset: 1000 })
+              .addTo(gpsLayer)
+              .bindPopup(buildPopupHtml("Sua Posicao Atual", "Leitura GPS em tempo real", latitude, longitude));
+          } else {
+            gpsMarker.setLatLng(lastPos);
+          }
+
+          if (!gpsCircle && accuracy) {
+            gpsCircle = L.circle(lastPos, {
+              radius: accuracy,
+              color: "#C5A869",
+              weight: 1,
+              fillColor: "#C5A869",
+              fillOpacity: 0.12
+            }).addTo(gpsLayer);
+          } else if (gpsCircle && accuracy) {
+            gpsCircle.setLatLng(lastPos).setRadius(accuracy);
+          }
+
+          if (followGps) map.panTo(lastPos);
+        },
+        (err) => {
+          statusEl.textContent = "GPS indisponivel (" + (err.message || "permissao negada") + ")";
+        },
+        { enableHighAccuracy: true, maximumAge: 2000, timeout: 15000 }
+      );
+    } else {
+      statusEl.textContent = "Navegador sem suporte a GPS";
+    }
+
+    // Chame esta funcao sempre que abrir a aba Geolocalizacao ou mudar App/GRID/PC
+  window.azimuteGeoInvalidate = function () {
+  requestAnimationFrame(() => {
+    map.invalidateSize();
+  });
+};
+
+    // Chame esta funcao para plugar seus JSONs (hospitais, unidades, postes, base_qth_bh)
+    window.azimuteGeoSetPoints = function (pointsArray) {
+      localPoints = Array.isArray(pointsArray) ? pointsArray : [];
+      renderLocalLayer(localPoints);
+    };
+  })();
+</script>
 </body>
 </html>
