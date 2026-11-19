@@ -1288,10 +1288,38 @@
   </style>
 
   <!-- Botao da gaveta (inicia fechada) -->
-  <button type="button" id="azGeoDrawerToggle" class="az-geo-drawer-btn" aria-expanded="false">
+<button type="button" id="azGeoDrawerToggle" class="az-geo-drawer-btn" aria-expanded="false" onclick="window.azimuteToggleGeoDrawer()">
     <span>MAPA INTERATIVO RMBH</span>
     <span id="azGeoDrawerArrow">ABRIR +</span>
   </button>
+  <script>
+    window.azimuteToggleGeoDrawer = function () {
+      const body = document.getElementById("azGeoDrawerBody");
+      const btn = document.getElementById("azGeoDrawerToggle");
+      const arrow = document.getElementById("azGeoDrawerArrow");
+      if (!body) return;
+      const open = body.classList.toggle("is-open");
+      if (btn) btn.setAttribute("aria-expanded", open ? "true" : "false");
+      if (arrow) arrow.textContent = open ? "FECHAR -" : "ABRIR +";
+      if (open && window.azimuteGeoInvalidate) {
+        window.azimuteGeoInvalidate();
+      }
+    };
+  </script>
+  <script>
+    window.azimuteToggleGeoDrawer = function () {
+      const body = document.getElementById("azGeoDrawerBody");
+      const btn = document.getElementById("azGeoDrawerToggle");
+      const arrow = document.getElementById("azGeoDrawerArrow");
+      if (!body) return;
+      const open = body.classList.toggle("is-open");
+      if (btn) btn.setAttribute("aria-expanded", open ? "true" : "false");
+      if (arrow) arrow.textContent = open ? "FECHAR -" : "ABRIR +";
+      if (open && window.azimuteGeoInvalidate) {
+        window.azimuteGeoInvalidate();
+      }
+    };
+  </script>
 
   <!-- Conteudo da gaveta -->
   <div id="azGeoDrawerBody" class="az-geo-drawer-body">
@@ -15982,11 +16010,12 @@ window.buscarUnidadePorBairro = function (termo) {
 };
 
 carregarUnidades1RPM();
-   <script>
-(function () {
-  const mapEl = document.getElementById("azGeoMap");
-  if (!mapEl || typeof L === "undefined") return;
+</script>
 
+<script>
+function initAzimuteGeo() {
+const mapEl = document.getElementById("azGeoMap");
+  if (!mapEl || typeof L === "undefined") return;
   const drawerToggle = document.getElementById("azGeoDrawerToggle");
   const drawerBody = document.getElementById("azGeoDrawerBody");
   const drawerArrow = document.getElementById("azGeoDrawerArrow");
@@ -16082,16 +16111,7 @@ carregarUnidades1RPM();
   }
 
   // Gaveta abre/fecha
-  if (drawerToggle && drawerBody) {
-    drawerToggle.addEventListener("click", () => {
-      const open = drawerBody.classList.toggle("is-open");
-      drawerToggle.setAttribute("aria-expanded", open ? "true" : "false");
-      drawerArrow.textContent = open ? "FECHAR -" : "ABRIR +";
-      if (open && window.azimuteGeoInvalidate) {
-        window.azimuteGeoInvalidate();
-      }
-    });
-  }
+
 
   // Rolagem lateral das cidades
   if (citiesLeft && citiesWrap) {
@@ -16285,7 +16305,16 @@ carregarUnidades1RPM();
     localPoints = Array.isArray(pointsArray) ? pointsArray : [];
     renderLocalLayer(localPoints);
   };
-})();
+if (document.getElementById("azGeoDrawerBody")?.classList.contains("is-open")) {
+    map.invalidateSize();
+  }
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initAzimuteGeo);
+} else {
+  initAzimuteGeo();
+}
 </script>
 </body>
 </html>
