@@ -20909,6 +20909,492 @@ if (document.readyState === "loading") {
   initAzimuteGeo();
 }
 </script>
-</body>
+<!-- ================= ETAPA 1 (BLOCO B): ORBE 16 PONTOS, SONAR, CENTRALIZAR E ESPECTRO ANIMADO ================= -->
+<style>
+  /* 1. BOTÃO SONAR ANIMADO NO ORBE (100% SILENCIOSO) */
+  .az-orbe-sonar-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #161616;
+    color: #C5A869;
+    border: 1px solid #C5A869;
+    border-radius: 999px;
+    padding: 3px 10px;
+    font-size: 9.5px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    z-index: 5;
+  }
+  .az-orbe-sonar-pulse {
+    position: relative;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #C5A869;
+    display: inline-block;
+  }
+  .az-orbe-sonar-btn.is-offcenter {
+    border-color: #F59E0B;
+    color: #FDE68A;
+    background: #1f1910;
+  }
+  .az-orbe-sonar-btn.is-offcenter .az-orbe-sonar-pulse {
+    background: #F59E0B;
+  }
+  .az-orbe-sonar-btn.is-offcenter .az-orbe-sonar-pulse::before,
+  .az-orbe-sonar-btn.is-offcenter .az-orbe-sonar-pulse::after,
+  .az-orbe-sonar-btn.is-pinging .az-orbe-sonar-pulse::before,
+  .az-orbe-sonar-btn.is-pinging .az-orbe-sonar-pulse::after {
+    content: "";
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 1.5px solid currentColor;
+    animation: azSonarRipple 1.6s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+    pointer-events: none;
+  }
+  .az-orbe-sonar-btn.is-offcenter .az-orbe-sonar-pulse::after,
+  .az-orbe-sonar-btn.is-pinging .az-orbe-sonar-pulse::after {
+    animation-delay: 0.8s;
+  }
+
+  /* ONDA SONAR NO BOTÃO CENTRALIZAR DO MAPA QUANDO DESCENTRALIZADO */
+  .az-geo-locate-fab.is-offcenter {
+    border-color: #F59E0B !important;
+    color: #FDE68A !important;
+  }
+  .az-geo-locate-fab.is-offcenter::before,
+  .az-geo-locate-fab.is-offcenter::after {
+    content: "";
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 2px solid #C5A869;
+    animation: azSonarRipple 1.8s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+    pointer-events: none;
+  }
+  .az-geo-locate-fab.is-offcenter::after {
+    animation-delay: 0.9s;
+  }
+
+  @keyframes azSonarRipple {
+    0% { transform: scale(0.85); opacity: 0.95; }
+    100% { transform: scale(2.45); opacity: 0; }
+  }
+
+  /* 2. ALÇA VERTICAL DEDICADA QUANDO O CELULAR ESTÁ EM MODO HORIZONTAL */
+  #azVerticalGripLandscape {
+    display: none;
+  }
+  @media (orientation: landscape) and (max-height: 620px) {
+    #azVerticalGripLandscape {
+      display: flex;
+      position: fixed;
+      top: 14%;
+      bottom: 14%;
+      right: 4px;
+      width: 18px;
+      z-index: 850;
+      background: rgba(22, 22, 22, 0.88);
+      border: 1px solid rgba(197, 168, 105, 0.45);
+      border-radius: 999px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      touch-action: none;
+      user-select: none;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.75);
+    }
+    #azVerticalGripLandscape span {
+      width: 3px;
+      height: 18px;
+      border-radius: 2px;
+      background: rgba(197, 168, 105, 0.65);
+    }
+  }
+</style>
+
+<!-- Alça vertical ergonômica para empunhadura no modo horizontal -->
+<div id="azVerticalGripLandscape" aria-hidden="true" title="Alça vertical de apoio (Modo Horizontal)">
+  <span></span><span></span><span></span>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  const state = {
+    isOffCenter: false,
+    sonarWaveR: 0,
+    sonarActive: false,
+    spectrumPhase: 0,
+    lastCenterCheck: 0
+  };
+
+  /* 1. INJETA O BOTÃO SONAR NO CABEÇALHO DO ORBE */
+  function ensureOrbeSonarButton() {
+    const head = document.querySelector(".az-quad-inline-head");
+    if (!head || document.getElementById("azOrbeSonarTriggerBtn")) return;
+
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.id = "azOrbeSonarTriggerBtn";
+    btn.className = "az-orbe-sonar-btn";
+    btn.title = "Emitir pulso sonar e recentralizar ORBE (Silencioso)";
+    btn.innerHTML = '<span class="az-orbe-sonar-pulse"></span><span id="azOrbeSonarLabel">SONAR</span>';
+
+    btn.addEventListener("click", function (ev) {
+      ev.stopPropagation();
+      triggerSilentSonarPulse(true);
+      recenterMapAndOrbe();
+    });
+
+    head.appendChild(btn);
+  }
+
+  /* 2. PULSO SONAR VISUAL (100% SILENCIOSO) */
+  function triggerSilentSonarPulse(recenterAfter) {
+    state.sonarWaveR = 8;
+    state.sonarActive = true;
+
+    const sonarBtn = document.getElementById("azOrbeSonarTriggerBtn");
+    const centerFab = document.getElementById("azGeoCenterFab");
+    if (sonarBtn) {
+      sonarBtn.classList.add("is-pinging");
+      setTimeout(() => sonarBtn.classList.remove("is-pinging"), 1400);
+    }
+    if (centerFab) {
+      centerFab.classList.add("is-pulse");
+      setTimeout(() => centerFab.classList.remove("is-pulse"), 600);
+    }
+    if (recenterAfter) {
+      state.isOffCenter = false;
+      updateOffCenterVisuals();
+    }
+  }
+
+  function updateOffCenterVisuals() {
+    const sonarBtn = document.getElementById("azOrbeSonarTriggerBtn");
+    const sonarLbl = document.getElementById("azOrbeSonarLabel");
+    const centerFab = document.getElementById("azGeoCenterFab");
+
+    if (sonarBtn) {
+      sonarBtn.classList.toggle("is-offcenter", state.isOffCenter);
+      if (sonarLbl) sonarLbl.textContent = state.isOffCenter ? "DESVIO • SONAR" : "SONAR OK";
+    }
+    if (centerFab) {
+      centerFab.classList.toggle("is-offcenter", state.isOffCenter);
+    }
+  }
+
+  /* 3. CENTRALIZAÇÃO OTIMIZADA DO MAPA E DO ORBE */
+  function recenterMapAndOrbe() {
+    try {
+      const mapObj = window.azGeoMapInstance || window.map || window._azMap;
+      const pos = window.lastPos || window.azLastPos;
+
+      if (mapObj && Array.isArray(pos) && pos.length >= 2) {
+        const targetZoom = Math.max(mapObj.getZoom ? mapObj.getZoom() : 16, 16.2);
+        if (typeof mapObj.easeTo === "function") {
+          mapObj.easeTo({
+            center: [pos[1], pos[0]],
+            zoom: targetZoom,
+            duration: 450,
+            essential: true
+          });
+        } else if (typeof mapObj.setCenter === "function") {
+          mapObj.setCenter([pos[1], pos[0]]);
+        }
+      }
+
+      if (typeof window.drawOrbeVectorAndRing === "function") {
+        window.drawOrbeVectorAndRing();
+      }
+      drawEnhancedOrbe16Points();
+    } catch (e) {}
+  }
+
+  function bindOptimizedCenterButton() {
+    const centerFab = document.getElementById("azGeoCenterFab");
+    if (!centerFab || centerFab.dataset.azStage1Bound === "1") return;
+    centerFab.dataset.azStage1Bound = "1";
+
+    centerFab.addEventListener("click", function () {
+      triggerSilentSonarPulse(true);
+      recenterMapAndOrbe();
+    }, true);
+  }
+
+  /* 4. ORBE AMPLIADO PARA 16 PONTOS RADIAIS + ONDA DE SONAR NO CANVAS */
+  function drawEnhancedOrbe16Points() {
+    const canvas = document.getElementById("azQuadRingCanvas");
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const dpr = window.devicePixelRatio || 1;
+    const w = canvas.width / dpr;
+    const h = canvas.height / dpr;
+    if (!w || !h) return;
+
+    const cx = w / 2;
+    const cy = h / 2;
+    const outerR = Math.min(w * 0.25, h * 0.34, 78);
+
+    ctx.save();
+    ctx.scale(dpr, dpr);
+
+    // Anel concêntrico intermediário de precisão (75% do raio)
+    ctx.strokeStyle = "rgba(197, 168, 105, 0.16)";
+    ctx.lineWidth = 1;
+    ctx.setLineDash([2, 3]);
+    ctx.beginPath();
+    ctx.arc(cx, cy, outerR * 0.75, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // 16 Pontos de Referência Radial (a cada 22.5°)
+    const labels16 = [
+      "N", "22°", "NE", "67°",
+      "L", "112°", "SE", "157°",
+      "S", "202°", "SO", "247°",
+      "O", "292°", "NO", "337°"
+    ];
+
+    for (let i = 0; i < 16; i++) {
+      const deg = i * 22.5;
+      const rad = ((deg - 90) * Math.PI) / 180;
+      const isMajor = i % 4 === 0;
+      const isMid = i % 2 === 0 && !isMajor;
+
+      const rInner = outerR - (isMajor ? 7 : isMid ? 5 : 3);
+      const rOuter = outerR + (isMajor ? 4 : isMid ? 2.5 : 1.5);
+
+      ctx.strokeStyle = isMajor
+        ? "rgba(197, 168, 105, 0.85)"
+        : isMid
+        ? "rgba(197, 168, 105, 0.45)"
+        : "rgba(158, 154, 143, 0.35)";
+      ctx.lineWidth = isMajor ? 1.8 : 1.1;
+
+      ctx.beginPath();
+      ctx.moveTo(cx + Math.cos(rad) * rInner, cy + Math.sin(rad) * rInner);
+      ctx.lineTo(cx + Math.cos(rad) * rOuter, cy + Math.sin(rad) * rOuter);
+      ctx.stroke();
+
+      // Pontos intermediários (setores ímpares dos 16 pontos)
+      if (!isMajor && !isMid) {
+        const px = cx + Math.cos(rad) * (outerR + 6);
+        const py = cy + Math.sin(rad) * (outerR + 6);
+        ctx.fillStyle = "#C5A869";
+        ctx.beginPath();
+        ctx.arc(px, py, 1.6, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    // Onda circular de Sonar ativa no ORBE
+    if (state.sonarActive && state.sonarWaveR > 0) {
+      const maxR = outerR + 18;
+      const alpha = Math.max(0, 1 - state.sonarWaveR / maxR);
+      ctx.strokeStyle = state.isOffCenter
+        ? `rgba(245, 158, 11, ${alpha.toFixed(2)})`
+        : `rgba(74, 222, 128, ${alpha.toFixed(2)})`;
+      ctx.lineWidth = 2.2;
+      ctx.beginPath();
+      ctx.arc(cx, cy, state.sonarWaveR, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+
+    ctx.restore();
+  }
+
+  /* 5. ESPECTRO ANIMADO DE VARIAÇÃO DO TERRENO (3D + PERFIL + INCURSÃO) */
+  function renderAnimatedTerrainSpectrum(canvasId, mode) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas || canvas.offsetParent === null) return;
+
+    const rect = canvas.getBoundingClientRect();
+    if (rect.width < 20 || rect.height < 20) return;
+
+    const dpr = window.devicePixelRatio || 1;
+    if (canvas.width !== Math.round(rect.width * dpr) || canvas.height !== Math.round(rect.height * dpr)) {
+      canvas.width = Math.round(rect.width * dpr);
+      canvas.height = Math.round(rect.height * dpr);
+    }
+
+    const ctx = canvas.getContext("2d");
+    const w = rect.width;
+    const h = rect.height;
+    const t = state.spectrumPhase;
+
+    ctx.save();
+    ctx.scale(dpr, dpr);
+    ctx.clearRect(0, 0, w, h);
+
+    // Grade tática de fundo
+    ctx.strokeStyle = "rgba(197, 168, 105, 0.10)";
+    ctx.lineWidth = 1;
+    const stepY = h / 4;
+    for (let gy = stepY; gy < h; gy += stepY) {
+      ctx.beginPath();
+      ctx.moveTo(0, gy);
+      ctx.lineTo(w, gy);
+      ctx.stroke();
+    }
+
+    // Amostras altimétricas (usa dados reais do setor se disponíveis ou perfil contínuo)
+    const sectors = Array.isArray(window.cached8Sectors) ? window.cached8Sectors : [];
+    const rows = mode === "side" ? 1 : 7;
+
+    for (let r = 0; r < rows; r++) {
+      const rowNorm = rows === 1 ? 0.5 : r / (rows - 1);
+      const baseY = mode === "side" ? h * 0.62 : h * (0.28 + rowNorm * 0.54);
+      const amp = mode === "side" ? h * 0.26 : h * 0.13;
+
+      ctx.beginPath();
+      const cols = 32;
+      for (let c = 0; c <= cols; c++) {
+        const u = c / cols;
+        const x = u * w;
+
+        const secIdx = Math.min(7, Math.floor(u * 8));
+        const realDelta = sectors[secIdx] && typeof sectors[secIdx].deltaElev === "number"
+          ? Math.max(-15, Math.min(15, sectors[secIdx].deltaElev)) / 15
+          : 0;
+
+        const wave =
+          Math.sin(u * Math.PI * 3 + t + r * 0.55) * 0.45 +
+          Math.cos(u * Math.PI * 5 - t * 0.7 + r) * 0.25 +
+          realDelta * 0.65;
+
+        const y = baseY - wave * amp;
+        if (c === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+
+      if (mode === "side") {
+        ctx.strokeStyle = "#C5A869";
+        ctx.lineWidth = 2.2;
+        ctx.stroke();
+
+        // Preenchimento translúcido sob a curva do perfil longitudinal
+        ctx.lineTo(w, h);
+        ctx.lineTo(0, h);
+        ctx.closePath();
+        const grad = ctx.createLinearGradient(0, h * 0.2, 0, h);
+        grad.addColorStop(0, "rgba(197, 168, 105, 0.28)");
+        grad.addColorStop(1, "rgba(13, 13, 13, 0.02)");
+        ctx.fillStyle = grad;
+        ctx.fill();
+      } else {
+        const alpha = 0.25 + rowNorm * 0.65;
+        ctx.strokeStyle = r === Math.floor(rows / 2)
+          ? "#4ADE80"
+          : `rgba(197, 168, 105, ${alpha.toFixed(2)})`;
+        ctx.lineWidth = r === Math.floor(rows / 2) ? 1.8 : 1.1;
+        ctx.stroke();
+      }
+    }
+
+    // Linha de varredura (scanner altimétrico animado)
+    const scanX = ((t * 28) % (w + 40)) - 20;
+    const scanGrad = ctx.createLinearGradient(scanX - 18, 0, scanX + 4, 0);
+    scanGrad.addColorStop(0, "rgba(74, 222, 128, 0)");
+    scanGrad.addColorStop(1, "rgba(74, 222, 128, 0.45)");
+    ctx.fillStyle = scanGrad;
+    ctx.fillRect(scanX - 18, 0, 22, h);
+
+    // Marcador central do operador no Espectro
+    ctx.fillStyle = "#C5A869";
+    ctx.beginPath();
+    ctx.arc(w / 2, h * 0.56, 3.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.restore();
+  }
+
+  /* 6. MONITORAMENTO DE DESVIO DE CENTRALIZAÇÃO E LOOP DE ANIMAÇÃO */
+  function checkMapCenterDrift(now) {
+    if (now - state.lastCenterCheck < 1200) return;
+    state.lastCenterCheck = now;
+
+    const mapObj = window.azGeoMapInstance || window.map || window._azMap;
+    const pos = window.lastPos || window.azLastPos;
+
+    if (mapObj && typeof mapObj.getCenter === "function" && Array.isArray(pos) && pos.length >= 2) {
+      const c = mapObj.getCenter();
+      const dLat = Math.abs(c.lat - pos[0]);
+      const dLng = Math.abs(c.lng - pos[1]);
+      // ~25 metros de desvio dispara o alerta visual de sonar automaticamente
+      const drifted = dLat > 0.00023 || dLng > 0.00023;
+      if (drifted !== state.isOffCenter) {
+        state.isOffCenter = drifted;
+        updateOffCenterVisuals();
+        if (drifted) triggerSilentSonarPulse(false);
+      } else if (drifted && !state.sonarActive) {
+        triggerSilentSonarPulse(false);
+      }
+    }
+  }
+
+  // Envolve drawOrbeVectorAndRing original sem quebrar nada
+  function hookOriginalOrbeDraw() {
+    if (typeof window.drawOrbeVectorAndRing === "function" && !window.drawOrbeVectorAndRing._stage1Hooked) {
+      const orig = window.drawOrbeVectorAndRing;
+      window.drawOrbeVectorAndRing = function () {
+        orig.apply(this, arguments);
+        drawEnhancedOrbe16Points();
+      };
+      window.drawOrbeVectorAndRing._stage1Hooked = true;
+    }
+  }
+
+  function mainAnimationLoop(now) {
+    ensureOrbeSonarButton();
+    bindOptimizedCenterButton();
+    hookOriginalOrbeDraw();
+    checkMapCenterDrift(now);
+
+    if (state.sonarActive) {
+      state.sonarWaveR += 1.45;
+      if (state.sonarWaveR > 96) {
+        state.sonarWaveR = 0;
+        state.sonarActive = false;
+      }
+      if (typeof window.drawOrbeVectorAndRing === "function") {
+        window.drawOrbeVectorAndRing();
+      } else {
+        drawEnhancedOrbe16Points();
+      }
+    }
+
+    state.spectrumPhase += 0.035;
+    renderAnimatedTerrainSpectrum("azTerrain3dCanvas", "mesh");
+    renderAnimatedTerrainSpectrum("azTerrainSideCanvas", "side");
+    renderAnimatedTerrainSpectrum("azIncReliefCanvas", "mesh");
+
+    requestAnimationFrame(mainAnimationLoop);
+  }
+
+  // Detecta arraste manual no mapa para sinalizar desvio imediatamente
+  document.addEventListener("pointermove", function (ev) {
+    if (ev.buttons > 0 && ev.target && ev.target.closest && ev.target.closest("#azGeoMap")) {
+      if (!state.isOffCenter) {
+        state.isOffCenter = true;
+        updateOffCenterVisuals();
+        triggerSilentSonarPulse(false);
+      }
+    }
+  }, { passive: true });
+
+  requestAnimationFrame(mainAnimationLoop);
+})();
+</script></body>
 </html>
         
