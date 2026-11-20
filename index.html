@@ -20909,7 +20909,7 @@ if (document.readyState === "loading") {
   initAzimuteGeo();
 }
 </script>
-<!-- ================= ETAPA 1 (BLOCO B - CORRIGIDO): ORBE 16 PONTOS, SONAR, CENTRALIZAR E ESPECTRO ================= -->
+<!-- ================= ETAPA 1 (BLOCO B - ALINHADO): ORBE 16 PONTOS, SONAR, CENTRALIZAR E ESPECTRO ================= -->
 <style>
   .az-orbe-sonar-btn {
     position: relative;
@@ -21027,75 +21027,77 @@ if (document.readyState === "loading") {
     scheduledOverlay: false
   };
 
-  /* 1. DESENHA OS 16 PONTOS + ANEL INTERNO + ONDA SONAR NO CANVAS DO ORBE */
+  /* 1. DESENHA OS 16 PONTOS + ANEL INTERNO + ONDA SONAR NO CENTRO EXATO DO ORBE */
   function drawOrbe16Overlay(canvas) {
     if (!canvas) canvas = document.getElementById("azQuadRingCanvas");
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const dpr = window.devicePixelRatio || 1;
-    const w = canvas.width / dpr;
-    const h = canvas.height / dpr;
+    const rect = canvas.getBoundingClientRect();
+    const w = rect.width || canvas.clientWidth;
+    const h = rect.height || canvas.clientHeight;
     if (!w || !h) return;
 
+    const dpr = canvas.width / w || window.devicePixelRatio || 1;
     const cx = w / 2;
     const cy = h / 2;
     const outerR = Math.min(w * 0.25, h * 0.34, 78);
 
     ctx.save();
-    ctx.scale(dpr, dpr);
+    // Reseta a matriz para evitar dupla multiplicação de escala (DPR)
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-    // Anel interno de precisão (75% do raio)
+    // Anel interno de precisão concêntrico (72% do raio)
     ctx.strokeStyle = "rgba(197, 168, 105, 0.22)";
     ctx.lineWidth = 1;
     ctx.setLineDash([2, 3]);
     ctx.beginPath();
-    ctx.arc(cx, cy, outerR * 0.75, 0, Math.PI * 2);
+    ctx.arc(cx, cy, outerR * 0.72, 0, Math.PI * 2);
     ctx.stroke();
     ctx.setLineDash([]);
 
-    // 16 Pontos de Referência Radial (a cada 22.5°)
+    // 16 Pontos de Referência Radial (a cada 22.5°) alinhados ao anel original
     for (let i = 0; i < 16; i++) {
       const deg = i * 22.5;
       const rad = ((deg - 90) * Math.PI) / 180;
       const isMajor = i % 4 === 0;
       const isMid = i % 2 === 0 && !isMajor;
 
-      const rInner = outerR - (isMajor ? 8 : isMid ? 5.5 : 3.5);
-      const rOuter = outerR + (isMajor ? 4.5 : isMid ? 3 : 2);
+      const rInner = outerR - (isMajor ? 6 : isMid ? 4.5 : 3);
+      const rOuter = outerR + (isMajor ? 4 : isMid ? 2.5 : 1.5);
 
       ctx.strokeStyle = isMajor
-        ? "rgba(197, 168, 105, 0.92)"
+        ? "rgba(197, 168, 105, 0.9)"
         : isMid
-        ? "rgba(197, 168, 105, 0.55)"
-        : "rgba(242, 240, 234, 0.42)";
-      ctx.lineWidth = isMajor ? 2 : 1.2;
+        ? "rgba(197, 168, 105, 0.5)"
+        : "rgba(242, 240, 234, 0.4)";
+      ctx.lineWidth = isMajor ? 1.8 : 1.1;
 
       ctx.beginPath();
       ctx.moveTo(cx + Math.cos(rad) * rInner, cy + Math.sin(rad) * rInner);
       ctx.lineTo(cx + Math.cos(rad) * rOuter, cy + Math.sin(rad) * rOuter);
       ctx.stroke();
 
-      // Pontos externos nos 8 setores intermediários (completando os 16 pontos visíveis)
+      // Pontos externos nos 8 setores intermediários (completando os 16 pontos)
       if (i % 2 === 1) {
         const px = cx + Math.cos(rad) * (outerR + 8);
         const py = cy + Math.sin(rad) * (outerR + 8);
         ctx.fillStyle = "#C5A869";
         ctx.beginPath();
-        ctx.arc(px, py, 2.2, 0, Math.PI * 2);
+        ctx.arc(px, py, 2, 0, Math.PI * 2);
         ctx.fill();
       }
     }
 
-    // Onda circular de Sonar no ORBE
+    // Onda circular de Sonar centrada no ORBE
     if (state.sonarActive && state.sonarWaveR > 0) {
       const maxR = outerR + 18;
       const alpha = Math.max(0, 1 - state.sonarWaveR / maxR);
       ctx.strokeStyle = state.isOffCenter
         ? `rgba(245, 158, 11, ${alpha.toFixed(2)})`
         : `rgba(74, 222, 128, ${alpha.toFixed(2)})`;
-      ctx.lineWidth = 2.4;
+      ctx.lineWidth = 2.2;
       ctx.beginPath();
       ctx.arc(cx, cy, state.sonarWaveR, 0, Math.PI * 2);
       ctx.stroke();
@@ -21190,7 +21192,7 @@ if (document.readyState === "loading") {
     const t = state.spectrumPhase;
 
     ctx.save();
-    ctx.scale(dpr, dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, w, h);
 
     ctx.strokeStyle = "rgba(197, 168, 105, 0.12)";
