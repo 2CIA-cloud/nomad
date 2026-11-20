@@ -1284,7 +1284,7 @@
       position: relative;
       width: 100%;
       height: 325px;
-      min-height: 260px;
+      min-height: 220px;
       border: 1px solid var(--geo-border);
       border-radius: 8px;
       background: #121519;
@@ -1293,6 +1293,12 @@
       touch-action: none;
       overscroll-behavior: contain;
       transition: none !important;
+    }
+
+    @media (orientation: landscape) and (max-height: 520px) {
+      .az-geo-stage {
+        height: 230px;
+      }
     }
 
     #azGeoMap {
@@ -1338,28 +1344,30 @@
       border-bottom: 0;
     }
 
+    /* BOTÃO CENTRALIZAR BLINDADO PARA VERTICAL E HORIZONTAL */
     .az-geo-locate-fab {
-      position: absolute;
-      right: 12px;
-      bottom: 14px;
-      z-index: 600;
+      position: absolute !important;
+      right: 12px !important;
+      bottom: 14px !important;
+      left: auto !important;
+      top: auto !important;
+      z-index: 750 !important;
       width: 44px;
       height: 44px;
       border-radius: 50%;
-      background: rgba(13, 13, 13, 0.84);
-      border: 1.5px solid rgba(197, 168, 105, 0.9);
+      background: rgba(13, 13, 13, 0.88);
+      border: 1.5px solid rgba(197, 168, 105, 0.95);
       color: #C5A869;
-      display: flex;
+      display: flex !important;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       backdrop-filter: blur(4px);
-      touch-action: none;
-      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.72);
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.78);
     }
 
     .az-geo-locate-fab.is-heading-up {
-      background: rgba(37, 99, 235, 0.9);
+      background: rgba(37, 99, 235, 0.92);
       border-color: #93C5FD;
       color: #FFFFFF;
     }
@@ -1387,6 +1395,32 @@
       justify-content: center;
       cursor: pointer;
       backdrop-filter: blur(4px);
+    }
+
+    .az-geo-tilt-badge {
+      position: absolute;
+      right: 12px;
+      top: 54px;
+      z-index: 600;
+      width: 34px;
+      height: 30px;
+      border-radius: 8px;
+      background: rgba(13, 13, 13, 0.85);
+      border: 1px solid var(--geo-border);
+      color: var(--geo-gold);
+      font-size: 10px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      backdrop-filter: blur(4px);
+    }
+
+    .az-geo-tilt-badge.is-3d {
+      background: rgba(197, 168, 105, 0.92);
+      border-color: #FFFFFF;
+      color: #0D0D0D;
     }
 
     .az-geo-lock-badge {
@@ -1761,7 +1795,7 @@
       color: #F2F0EA;
     }
 
-    /* QUADRANTE CIRCULAR DE 8 FAIXAS + ALERTA DE ESQUINA */
+    /* ORBE • PERCEPÇÃO ESPACIAL RADIAL 360° (VETORIAL + SONAR PULSE) */
     .az-quad-inline-card {
       margin-top: 10px;
       margin-bottom: 10px;
@@ -1782,7 +1816,7 @@
       justify-content: space-between;
       gap: 6px;
       border-bottom: 1px solid #28271F;
-      padding-bottom: 5px;
+      padding-bottom: 6px;
       margin-bottom: 6px;
     }
 
@@ -1800,6 +1834,61 @@
       display: inline-flex;
       align-items: center;
       gap: 5px;
+    }
+
+    /* BOTÃO SONAR ANIMADO COM ONDAS CIRCULARES NO ORBE */
+    .az-orbe-sonar-btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      background: #161616;
+      color: #C5A869;
+      border: 1px solid #C5A869;
+      border-radius: 14px;
+      padding: 3px 9px;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      cursor: pointer;
+      overflow: visible;
+    }
+
+    .az-orbe-sonar-dot {
+      position: relative;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #C5A869;
+      display: inline-block;
+    }
+
+    .az-orbe-sonar-dot::before,
+    .az-orbe-sonar-dot::after {
+      content: "";
+      position: absolute;
+      inset: -3px;
+      border-radius: 50%;
+      border: 1.5px solid #C5A869;
+      animation: azOrbeSonarWave 2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+      pointer-events: none;
+    }
+
+    .az-orbe-sonar-dot::after {
+      animation-delay: 1s;
+    }
+
+    .az-orbe-sonar-btn.is-pinging .az-orbe-sonar-dot::before,
+    .az-orbe-sonar-btn.is-pinging .az-orbe-sonar-dot::after {
+      border-color: #4ADE80;
+      animation-duration: 0.65s;
+    }
+
+    @keyframes azOrbeSonarWave {
+      0% { transform: scale(0.7); opacity: 0.95; }
+      100% { transform: scale(2.6); opacity: 0; }
     }
 
     .az-quad-corner-banner {
@@ -1829,8 +1918,8 @@
 
     #azQuadRingCanvas {
       width: 100%;
-      max-width: 340px;
-      height: auto;
+      max-width: 360px;
+      height: 260px;
       display: block;
     }
 
@@ -1878,11 +1967,20 @@
       display: inline-block;
     }
 
-    /* MODO INCURSAO */
+    /* MODO INCURSAO (100% VIEWPORT SEM BARRA INFERIOR) */
+    body.az-incursion-fullscreen nav,
+    body.az-incursion-fullscreen footer,
+    body.az-incursion-fullscreen #bottomNav,
+    body.az-incursion-fullscreen .bottom-nav {
+      display: none !important;
+    }
+
     .az-inc-overlay {
       position: fixed;
       inset: 0;
-      z-index: 9998;
+      width: 100vw;
+      height: 100dvh;
+      z-index: 99999;
       background: #0A0A0A;
       color: #F2F0EA;
       display: none;
@@ -1905,7 +2003,7 @@
       background: #141414;
       border: 1px solid #28271F;
       border-radius: 8px;
-      padding: 5px 10px;
+      padding: 4px 10px;
       flex-shrink: 0;
     }
 
@@ -1930,21 +2028,21 @@
       flex: 1;
       min-height: 0;
       display: grid;
-      grid-template-columns: 1.85fr 1fr;
+      grid-template-columns: 2.15fr 1fr;
       gap: 6px;
     }
 
     @media (orientation: portrait) {
       .az-inc-body {
         grid-template-columns: 1fr;
-        grid-template-rows: 1.45fr 1fr;
+        grid-template-rows: 1.55fr 1fr;
       }
     }
 
     .az-inc-quad-frame {
       display: grid;
-      grid-template-rows: 28px 1fr 28px;
-      grid-template-columns: 28px 1fr 28px;
+      grid-template-rows: 26px 1fr 26px;
+      grid-template-columns: 26px 1fr 26px;
       background: #111111;
       border: 1.5px solid #C5A869;
       border-radius: 10px;
@@ -2059,7 +2157,7 @@
 
     .az-inc-sidebar {
       display: grid;
-      grid-template-rows: 1.05fr 1fr;
+      grid-template-rows: 1.15fr 1fr;
       gap: 6px;
       min-height: 0;
       min-width: 0;
@@ -2076,7 +2174,7 @@
       background: #141414;
       border: 1px solid #28271F;
       border-radius: 10px;
-      padding: 7px 8px;
+      padding: 6px 8px;
       display: flex;
       flex-direction: column;
       min-height: 0;
@@ -2095,17 +2193,26 @@
       text-transform: uppercase;
       border-bottom: 1px solid #28271F;
       padding-bottom: 4px;
-      margin-bottom: 5px;
+      margin-bottom: 4px;
       flex-shrink: 0;
     }
 
-    #azIncReliefCanvas {
-      width: 100%;
+    .az-inc-canvas-box {
+      position: relative;
       flex: 1;
+      width: 100%;
       min-height: 0;
-      display: block;
       border-radius: 6px;
       background: #0A0A0A;
+      overflow: hidden;
+    }
+
+    #azIncReliefCanvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
     }
 
     .az-inc-pins-list {
@@ -2149,11 +2256,12 @@
       flex-shrink: 0;
     }
 
+    /* ESPECTRO • INTERPRETAÇÃO ALTIMÉTRICA 3D ANIMADA */
     .az-terrain-modal {
       position: fixed;
       inset: 0;
       z-index: 9995;
-      background: rgba(0, 0, 0, 0.82);
+      background: rgba(0, 0, 0, 0.85);
       display: none;
       align-items: center;
       justify-content: center;
@@ -2174,7 +2282,7 @@
       border-radius: 14px;
       padding: 12px;
       color: #F2F0EA;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.9);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.92);
     }
 
     .az-terrain-top {
@@ -2213,9 +2321,17 @@
       justify-content: space-between;
     }
 
-    #azTerrain3dCanvas,
+    #azTerrain3dCanvas {
+      width: 100%;
+      height: 220px;
+      display: block;
+      border-radius: 6px;
+      background: #0A0A0A;
+    }
+
     #azTerrainSideCanvas {
       width: 100%;
+      height: 145px;
       display: block;
       border-radius: 6px;
       background: #0A0A0A;
@@ -2328,10 +2444,11 @@
         <button type="button" id="azGeoZoomInBtn" aria-label="Aproximar">+</button>
         <button type="button" id="azGeoZoomOutBtn" aria-label="Afastar">−</button>
       </div>
-      <button type="button" id="azGeoLockBadge" class="az-geo-lock-badge" title="Travar rumo do mapa e quadrante ao manusear o celular">
+      <button type="button" id="azGeoLockBadge" class="az-geo-lock-badge" title="Travar rumo do mapa e do Orbe ao manusear o celular">
         <span>RUMO LIVRE</span>
       </button>
       <button type="button" id="azGeoNorthBadge" class="az-geo-compass-badge" title="Alinhar Norte para cima">N</button>
+      <button type="button" id="azGeoTiltBadge" class="az-geo-tilt-badge" title="Alternar perspectiva 2D / 3D (ou use dois dedos no mapa)">2D</button>
       <button type="button" id="azGeoCenterFab" class="az-geo-locate-fab is-heading-up" aria-label="Centralizar na Minha Posicao" title="Centralizar e Alinhar">
         <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="7"></circle>
@@ -2423,7 +2540,7 @@
     <div id="azGeoCfgBox" class="az-geo-collapsible">
       <div class="az-geo-cal-box">
         <div class="az-geo-cal-head">
-          <span class="az-geo-label" style="color:#C5A869;">Calibrador de Bússola / Quadrante</span>
+          <span class="az-geo-label" style="color:#C5A869;">Calibrador de Bússola / ORBE</span>
           <span id="azCalScreenBadge" class="az-geo-cal-mode-pill">Modo: Vertical</span>
         </div>
         <div class="az-geo-cal-readout">
@@ -2449,8 +2566,9 @@
       <div class="az-geo-cfg-row">
         <span class="az-geo-label">Visual do Mapa:</span>
         <div class="az-geo-group" id="azGeoMapThemes">
-          <button type="button" class="az-geo-btn active" data-theme="dark">Escuro Contraste</button>
-          <button type="button" class="az-geo-btn subtle" data-theme="light">Claro (Sol)</button>
+          <button type="button" class="az-geo-btn active" data-theme="dark">Escuro</button>
+          <button type="button" class="az-geo-btn subtle" data-theme="light">Claro</button>
+          <button type="button" class="az-geo-btn subtle" data-theme="satellite">Satélite</button>
         </div>
       </div>
       <div class="az-geo-cfg-row">
@@ -2472,8 +2590,16 @@
         <button type="button" id="azGeoFollowBtn" class="az-geo-btn active">Ativado</button>
       </div>
       <div class="az-geo-cfg-row">
-        <span class="az-geo-label">Relevo / Altitude no Quadrante:</span>
+        <span class="az-geo-label">ESPECTRO (Altimetria no ORBE):</span>
         <button type="button" id="azGeoElevToggleBtn" class="az-geo-btn active">Ativado</button>
+      </div>
+      <div class="az-geo-cfg-row">
+        <span class="az-geo-label">Pacote de Alfinetes:</span>
+        <div class="az-geo-group">
+          <button type="button" id="azGeoExportPinsBtn" class="az-geo-btn subtle mini">Exportar JSON</button>
+          <button type="button" id="azGeoImportPinsBtn" class="az-geo-btn subtle mini">Importar JSON</button>
+          <input type="file" id="azGeoImportPinsInput" accept=".json,application/json" style="display:none;" />
+        </div>
       </div>
     </div>
 
@@ -2501,10 +2627,10 @@
   </div>
 </div>
 
-<!-- OVERLAY MODO INCURSAO (TELA CHEIA HORIZONTAL INTEGRADA) -->
+<!-- OVERLAY MODO INCURSAO (100% TELA CHEIA HORIZONTAL INTEGRADA) -->
 <div id="azIncursionOverlay" class="az-inc-overlay" role="dialog" aria-label="Modo Incursao">
   <div class="az-inc-topbar">
-    <span class="az-inc-title">MODO INCURSÃO • QUADRANTE INTEGRADO</span>
+    <span class="az-inc-title">MODO INCURSÃO • ORBE INTEGRADO</span>
     <span class="az-inc-telemetry" id="azIncTelemetry">000° • GPS ---</span>
     <button type="button" id="azIncCloseBtn" class="az-geo-btn subtle mini">Sair</button>
   </div>
@@ -2541,10 +2667,12 @@
     <div class="az-inc-sidebar">
       <div class="az-inc-card">
         <div class="az-inc-card-head">
-          <span>Relevo 3D • Perímetro</span>
+          <span>ESPECTRO • Malha 3D</span>
           <span id="azIncAltLabel" style="color:#F2F0EA; font-family:monospace;">Cota: ---</span>
         </div>
-        <canvas id="azIncReliefCanvas" width="320" height="170"></canvas>
+        <div class="az-inc-canvas-box">
+          <canvas id="azIncReliefCanvas"></canvas>
+        </div>
       </div>
 
       <div class="az-inc-card">
@@ -2559,34 +2687,35 @@
   </div>
 </div>
 
+<!-- MODAL ESPECTRO (INTERPRETAÇÃO ALTIMÉTRICA 3D ANIMADA) -->
 <div id="azTerrainModal" class="az-terrain-modal" onclick="if(event.target===this) window.azimuteToggleTerrainModal(false)">
-  <div class="az-terrain-sheet" role="dialog" aria-label="Reconstrucao do Terreno e Relevo">
+  <div class="az-terrain-sheet" role="dialog" aria-label="ESPECTRO - Relacao Altimetrica das Vias">
     <div class="az-terrain-top">
-      <span class="az-terrain-title" id="azTerrainHeaderInfo">RELEVO E ENTORNO • 000°</span>
+      <span class="az-terrain-title" id="azTerrainHeaderInfo">ESPECTRO • ALTIMETRIA 000°</span>
       <button type="button" class="az-geo-btn subtle" style="padding:4px 9px;" onclick="window.azimuteToggleTerrainModal(false)">Fechar</button>
     </div>
 
     <div class="az-terrain-canvas-wrap">
       <div class="az-terrain-sublabel">
-        <span>MALHA VIÁRIA 2.5D EM PERSPECTIVA</span>
+        <span>ESPECTRO • MALHA TOPOGRÁFICA 3D (130M)</span>
         <span id="azTerrainCenterAlt">Cota: ---</span>
       </div>
-      <canvas id="azTerrain3dCanvas" width="380" height="210"></canvas>
+      <canvas id="azTerrain3dCanvas"></canvas>
     </div>
 
     <div class="az-terrain-canvas-wrap" style="margin-bottom:0;">
       <div class="az-terrain-sublabel">
-        <span>VISÃO LATERAL • ACLIVE / DECLIVE</span>
+        <span>PERFIL LONGITUDINAL • DESNÍVEL EM METROS</span>
         <span>RETAGUARDA ◄ ► FRENTE</span>
       </div>
-      <canvas id="azTerrainSideCanvas" width="380" height="145"></canvas>
+      <canvas id="azTerrainSideCanvas"></canvas>
     </div>
   </div>
 </div>
 
 <div id="azRadarHud" class="az-radar-hud">
   <div class="az-radar-hud-head">
-    <span>RADAR • ROTA ATIVA</span>
+    <span>ROTA ATIVA</span>
     <button type="button" id="azRadarExpandBtn" title="Abrir Mapa">ABRIR</button>
   </div>
   <div id="azRadarMiniMap"></div>
@@ -17204,7 +17333,8 @@ function initAzimuteGeo() {
 
   const STYLE_URLS = {
     dark: "https://tiles.openfreemap.org/styles/dark",
-    light: "https://tiles.openfreemap.org/styles/liberty"
+    light: "https://tiles.openfreemap.org/styles/liberty",
+    satellite: "https://tiles.openfreemap.org/styles/dark"
   };
 
   const OVERPASS_MIRRORS = [
@@ -17227,6 +17357,7 @@ function initAzimuteGeo() {
   const searchResultsEl = document.getElementById("azGeoSearchResults");
   const centerFab = document.getElementById("azGeoCenterFab");
   const northBadge = document.getElementById("azGeoNorthBadge");
+  const tiltBadge = document.getElementById("azGeoTiltBadge");
   const lockBadge = document.getElementById("azGeoLockBadge");
   const zoomInBtn = document.getElementById("azGeoZoomInBtn");
   const zoomOutBtn = document.getElementById("azGeoZoomOutBtn");
@@ -17257,6 +17388,9 @@ function initAzimuteGeo() {
   const pinColorSelect = document.getElementById("azGeoPinColor");
   const savePinBtn = document.getElementById("azGeoSavePinBtn");
   const cancelPinBtn = document.getElementById("azGeoCancelPinBtn");
+  const exportPinsBtn = document.getElementById("azGeoExportPinsBtn");
+  const importPinsBtn = document.getElementById("azGeoImportPinsBtn");
+  const importPinsInput = document.getElementById("azGeoImportPinsInput");
   const routeNowBtn = document.getElementById("azGeoRouteNowBtn");
   const startNavBtn = document.getElementById("azGeoStartNavBtn");
   const statusEl = document.getElementById("azGeoStatus");
@@ -17304,8 +17438,28 @@ function initAzimuteGeo() {
     zoom: 13,
     bearing: 0,
     pitch: 0,
+    maxPitch: 65,
+    touchPitch: true,
+    pitchWithRotate: true,
     attributionControl: false
   });
+
+  function syncTiltBadgeUi() {
+    if (!tiltBadge) return;
+    const is3d = map.getPitch() >= 20;
+    tiltBadge.textContent = is3d ? "3D" : "2D";
+    tiltBadge.classList.toggle("is-3d", is3d);
+  }
+
+  if (tiltBadge) {
+    tiltBadge.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const nextPitch = map.getPitch() >= 20 ? 0 : 56;
+      map.easeTo({ pitch: nextPitch, duration: 350 });
+    });
+  }
+  map.on("pitch", syncTiltBadgeUi);
+  map.on("pitchend", syncTiltBadgeUi);
 
   function instantResizeMap() {
     requestAnimationFrame(() => {
@@ -17430,20 +17584,46 @@ function initAzimuteGeo() {
   let retryStreetsTimer = null;
   let cachedCurrentStreet = "Via atual";
   let cachedNearbyStreets = [];
+  let cachedVectorSegments = [];
   let cachedSectors = { front: null, right: null, rear: null, left: null };
   let cached8Sectors = [null, null, null, null, null, null, null, null];
+
+  let elevationGrid5x5 = null;
+  let espectroAnimRunning = false;
+  let espectroAnimPhase = 0;
+
+  function prepareHiDpiCanvas(canvas) {
+    if (!canvas) return null;
+    const rect = canvas.getBoundingClientRect();
+    const cssW = Math.max(10, Math.round(rect.width || canvas.clientWidth || 340));
+    const cssH = Math.max(10, Math.round(rect.height || canvas.clientHeight || 220));
+    const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+    const targetW = Math.round(cssW * dpr);
+    const targetH = Math.round(cssH * dpr);
+    if (canvas.width !== targetW || canvas.height !== targetH) {
+      canvas.width = targetW;
+      canvas.height = targetH;
+    }
+    const ctx = canvas.getContext("2d");
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { ctx, w: cssW, h: cssH };
+  }
 
   window.azimuteToggleIncursionMode = function (forceOpen) {
     if (!incOverlay || !incMapSlot || !stageEl) return;
     const willOpen = typeof forceOpen === "boolean" ? forceOpen : !incOverlay.classList.contains("is-open");
 
     if (willOpen) {
+      document.body.classList.add("az-incursion-fullscreen");
       incOverlay.classList.add("is-open");
       if (mapEl.parentElement !== incMapSlot) {
         incMapSlot.insertBefore(mapEl, incMapSlot.firstChild);
       }
       if (northBadge && northBadge.parentElement !== incMapSlot) {
         incMapSlot.appendChild(northBadge);
+      }
+      if (tiltBadge && tiltBadge.parentElement !== incMapSlot) {
+        incMapSlot.appendChild(tiltBadge);
       }
       if (lockBadge && lockBadge.parentElement !== incMapSlot) {
         incMapSlot.appendChild(lockBadge);
@@ -17455,13 +17635,18 @@ function initAzimuteGeo() {
       requestAnimationFrame(() => map.resize());
       recomputeQuadranteSectors(true);
       renderIncursionPinsList();
+      startEspectro3dLoop();
     } else {
+      document.body.classList.remove("az-incursion-fullscreen");
       incOverlay.classList.remove("is-open");
       if (mapEl.parentElement !== stageEl) {
         stageEl.insertBefore(mapEl, stageEl.firstChild);
       }
       if (northBadge && northBadge.parentElement !== stageEl) {
         stageEl.appendChild(northBadge);
+      }
+      if (tiltBadge && tiltBadge.parentElement !== stageEl) {
+        stageEl.appendChild(tiltBadge);
       }
       if (lockBadge && lockBadge.parentElement !== stageEl) {
         stageEl.appendChild(lockBadge);
@@ -17935,15 +18120,85 @@ function initAzimuteGeo() {
 
     if (terrainHeaderInfo) {
       const srcTag = isMovingCourseActive() ? "GPS RUMO" : hasAbsoluteCompass ? "BÚSSOLA" : "MAPA";
-      terrainHeaderInfo.textContent = `RELEVO E ENTORNO • ${String(Math.round(refDeg)).padStart(3, "0")}° (${srcTag})`;
+      terrainHeaderInfo.textContent = `ESPECTRO • ALTIMETRIA ${String(Math.round(refDeg)).padStart(3, "0")}° (${srcTag})`;
     }
 
     recomputeQuadranteSectors(!!forceQuad);
   }
 
-  function enhanceMapReadability(targetMap, isDark) {
+  function ensureSatelliteAnd3dLayers(targetMap, isSat) {
+    if (!targetMap || !targetMap.isStyleLoaded()) return;
     const style = targetMap.getStyle();
     if (!style || !Array.isArray(style.layers)) return;
+
+    const firstSymbol = style.layers.find((l) => l.type === "symbol");
+    const beforeId = firstSymbol ? firstSymbol.id : undefined;
+
+    if (isSat) {
+      try {
+        if (!targetMap.getSource("az-sat-src")) {
+          targetMap.addSource("az-sat-src", {
+            type: "raster",
+            tiles: [
+              "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+            ],
+            tileSize: 256
+          });
+        }
+        if (!targetMap.getLayer("az-sat-layer")) {
+          targetMap.addLayer(
+            {
+              id: "az-sat-layer",
+              type: "raster",
+              source: "az-sat-src",
+              paint: { "raster-opacity": 1 }
+            },
+            beforeId
+          );
+        }
+        style.layers.forEach((l) => {
+          if (l.id !== "az-sat-layer" && (l.type === "fill" || l.type === "background")) {
+            try { targetMap.setLayoutProperty(l.id, "visibility", "none"); } catch (e) {}
+          }
+        });
+      } catch (e) {}
+    }
+
+    // Extrusao 3D volumetrica para edificacoes ao inclinar com dois dedos ou botao 3D
+    try {
+      const bldLayer = style.layers.find(
+        (l) => (l["source-layer"] || "").toLowerCase().includes("building") && l.source
+      );
+      if (bldLayer && !targetMap.getLayer("az-3d-buildings")) {
+        targetMap.addLayer(
+          {
+            id: "az-3d-buildings",
+            source: bldLayer.source,
+            "source-layer": bldLayer["source-layer"],
+            type: "fill-extrusion",
+            minzoom: 14.5,
+            paint: {
+              "fill-extrusion-color": isSat ? "#C5A869" : "#262B36",
+              "fill-extrusion-height": ["coalesce", ["get", "render_height"], ["get", "height"], 10],
+              "fill-extrusion-base": ["coalesce", ["get", "render_min_height"], 0],
+              "fill-extrusion-opacity": isSat ? 0.35 : 0.72
+            }
+          },
+          beforeId
+        );
+      }
+    } catch (e) {}
+  }
+
+  function enhanceMapReadability(targetMap, themeMode) {
+    const style = targetMap.getStyle();
+    if (!style || !Array.isArray(style.layers)) return;
+    const isDark = themeMode === "dark";
+    const isSat = themeMode === "satellite";
+
+    if (isSat) {
+      ensureSatelliteAnd3dLayers(targetMap, true);
+    }
 
     style.layers.forEach((layer) => {
       const id = (layer.id || "").toLowerCase();
@@ -17994,8 +18249,7 @@ function initAzimuteGeo() {
           }
         }
       }
-
-      if (layer.type === "symbol") {
+        if (layer.type === "symbol") {
         const isRoadText =
           srcLayer.includes("transportation_name") ||
           id.includes("highway") ||
@@ -18010,10 +18264,10 @@ function initAzimuteGeo() {
           id.includes("major");
 
         try {
-          if (isDark) {
+          if (isDark || isSat) {
             targetMap.setPaintProperty(layer.id, "text-color", isMajor ? "#F8DE94" : "#FFFFFF");
             targetMap.setPaintProperty(layer.id, "text-halo-color", "#000000");
-            targetMap.setPaintProperty(layer.id, "text-halo-width", 2.6);
+            targetMap.setPaintProperty(layer.id, "text-halo-width", 2.8);
             targetMap.setPaintProperty(layer.id, "text-halo-blur", 0.4);
             targetMap.setPaintProperty(layer.id, "text-opacity", 1);
           } else {
@@ -18036,6 +18290,10 @@ function initAzimuteGeo() {
         } catch (e) {}
       }
     });
+
+    if (!isSat) {
+      ensureSatelliteAnd3dLayers(targetMap, false);
+    }
   }
 
   function ensureRouteLayers(targetMap, srcId, outlineId, lineId, lineWidth) {
@@ -18054,7 +18312,7 @@ function initAzimuteGeo() {
           source: srcId,
           layout: { "line-join": "round", "line-cap": "round" },
           paint: {
-            "line-color": mapTheme === "dark" ? "#0B1120" : "#1E3A8A",
+            "line-color": mapTheme === "light" ? "#1E3A8A" : "#0B1120",
             "line-width": lineWidth + 4.5,
             "line-opacity": 0.95
           }
@@ -18067,7 +18325,7 @@ function initAzimuteGeo() {
           source: srcId,
           layout: { "line-join": "round", "line-cap": "round" },
           paint: {
-            "line-color": mapTheme === "dark" ? "#38BDF8" : "#2563EB",
+            "line-color": mapTheme === "light" ? "#2563EB" : "#38BDF8",
             "line-width": lineWidth,
             "line-opacity": 1
           }
@@ -18094,7 +18352,7 @@ function initAzimuteGeo() {
           type: "circle",
           source: "az-local-src",
           paint: {
-            "circle-radius": ["interpolate", ["linear"], ["zoom"], 11, 5, 16, 8],
+            "circle-radius": ["interpolate", ["linear"], ["zoom"], 11, 5.5, 16, 8.5],
             "circle-color": ["get", "color"],
             "circle-stroke-color": "#0D0D0D",
             "circle-stroke-width": 2
@@ -18114,9 +18372,9 @@ function initAzimuteGeo() {
             "text-max-width": 12
           },
           paint: {
-            "text-color": mapTheme === "dark" ? "#F2F0EA" : "#0D0D0D",
-            "text-halo-color": mapTheme === "dark" ? "#0D0D0D" : "#FFFFFF",
-            "text-halo-width": 2
+            "text-color": mapTheme === "light" ? "#0D0D0D" : "#F2F0EA",
+            "text-halo-color": mapTheme === "light" ? "#FFFFFF" : "#0D0D0D",
+            "text-halo-width": 2.2
           }
         });
 
@@ -18176,7 +18434,7 @@ function initAzimuteGeo() {
   }
 
   function setupCustomMapLayers() {
-    enhanceMapReadability(map, mapTheme === "dark");
+    enhanceMapReadability(map, mapTheme);
     ensureLocalLayers();
     ensureRouteLayers(map, "az-route-src", "az-route-outline", "az-route-line", 6);
     if (activeRouteCoords.length) updateRouteSources();
@@ -18187,7 +18445,7 @@ function initAzimuteGeo() {
   map.on("idle", () => {
     if (lastPos && (lastQuadStreetSource === "" || lastQuadStreetSource === "photon")) {
       const fromTiles = extractStreetsFromMapLibre(lastPos[0], lastPos[1]);
-      if (fromTiles.length >= 2) {
+      if (fromTiles.list.length >= 2) {
         applyStreetsListToQuadrante(lastPos[0], lastPos[1], fromTiles, "vector");
       }
     }
@@ -18196,7 +18454,7 @@ function initAzimuteGeo() {
 
   if (radarMap) {
     radarMap.on("style.load", () => {
-      enhanceMapReadability(radarMap, mapTheme === "dark");
+      enhanceMapReadability(radarMap, mapTheme);
       ensureRouteLayers(radarMap, "az-radar-route-src", null, "az-radar-route-line", 4.5);
       if (activeRouteCoords.length) updateRouteSources();
     });
@@ -18228,16 +18486,75 @@ function initAzimuteGeo() {
     });
   }
 
-  function flattenJsonRecords(raw) {
-    const out = [];
+  function classifyRecordCategory(rawObj, fallbackCat) {
+    const props = rawObj.properties || rawObj;
+    const blob = [
+      props.categoria,
+      props.tipo,
+      props.type,
+      props.grupo,
+      props.nome,
+      props.name,
+      props.unidade,
+      props.titulo
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+
+    if (
+      blob.includes("hospital") ||
+      blob.includes("upa") ||
+      blob.includes("pronto socorro") ||
+      blob.includes("pronto-socorro") ||
+      blob.includes("policlinica") ||
+      blob.includes("policlínica") ||
+      blob.includes("maternidade") ||
+      blob.includes("saude") ||
+      blob.includes("saúde") ||
+      blob.includes("hps")
+    ) {
+      return "hospitais";
+    }
+    if (blob.includes("bsc") || blob.includes("base comunit") || blob.includes("base de segur")) {
+      return "bscs";
+    }
+    if (
+      blob.includes("deplan") ||
+      blob.includes("delegacia") ||
+      blob.includes("ceflan") ||
+      blob.includes("policia civil") ||
+      blob.includes("polícia civil")
+    ) {
+      return "deplans";
+    }
+    if (
+      blob.includes("bpm") ||
+      blob.includes("cia") ||
+      blob.includes("batalhao") ||
+      blob.includes("batalhão") ||
+      blob.includes("pelotao") ||
+      blob.includes("pelotão") ||
+      blob.includes("rpm") ||
+      blob.includes("rotam") ||
+      blob.includes("bope") ||
+      blob.includes("gepar")
+    ) {
+      return "unidades";
+    }
+    return fallbackCat || "unidades";
+  }
+
+  function extractClassifiedRecords(raw, defaultCat) {
+    const buckets = { unidades: [], hospitais: [], bscs: [], deplans: [] };
     const seen = new Set();
 
-    function walk(node) {
+    function walk(node, hintCat) {
       if (!node || typeof node !== "object" || seen.has(node)) return;
       seen.add(node);
 
       if (Array.isArray(node)) {
-        node.forEach(walk);
+        node.forEach((item) => walk(item, hintCat));
         return;
       }
 
@@ -18258,15 +18575,26 @@ function initAzimuteGeo() {
         const sub = [addr, phone].filter(Boolean).join(" • ");
 
         if (name) {
-          out.push({ name, subtitle: sub, lat, lng });
+          const cat = classifyRecordCategory(node, hintCat);
+          if (buckets[cat]) {
+            buckets[cat].push({ name, subtitle: sub, lat, lng });
+          }
         }
       }
 
-      Object.values(node).forEach(walk);
+      Object.entries(node).forEach(([k, v]) => {
+        const kl = k.toLowerCase();
+        let nextHint = hintCat;
+        if (kl.includes("hosp") || kl.includes("upa") || kl.includes("saude")) nextHint = "hospitais";
+        else if (kl.includes("bsc")) nextHint = "bscs";
+        else if (kl.includes("deplan") || kl.includes("deleg")) nextHint = "deplans";
+        else if (kl.includes("unid") || kl.includes("bpm")) nextHint = "unidades";
+        walk(v, nextHint);
+      });
     }
 
-    walk(raw);
-    return out;
+    walk(raw, defaultCat);
+    return buckets;
   }
 
   function dedupeLayerPoints(arr) {
@@ -18310,13 +18638,15 @@ function initAzimuteGeo() {
 
     localPoints.forEach((p) => {
       if (typeof p.lat === "number" && typeof p.lng === "number") {
+        const cat = classifyRecordCategory(p, p.category || "extra");
+        const meta = LAYER_META[cat] || LAYER_META.extra;
         merged.push({
           name: p.name || "Ponto",
           subtitle: p.subtitle || "",
           lat: p.lat,
           lng: p.lng,
-          category: p.category || "extra",
-          color: p.color || LAYER_META.extra.color
+          category: cat,
+          color: p.color || meta.color
         });
       }
     });
@@ -18336,14 +18666,27 @@ function initAzimuteGeo() {
     map.getSource("az-local-src").setData({ type: "FeatureCollection", features });
   }
 
+  function mergeBucketsIntoDatasets(buckets) {
+    ["unidades", "hospitais", "bscs", "deplans"].forEach((cat) => {
+      if (buckets[cat] && buckets[cat].length) {
+        datasetPoints[cat] = dedupeLayerPoints([...datasetPoints[cat], ...buckets[cat]]);
+      }
+    });
+  }
+
   async function loadRepositoryGeoDatasets() {
     const sources = [
+      { file: "dados.json", cat: "unidades" },
       { file: "unidades_1bpm.json", cat: "unidades" },
       { file: "batalhao_22.json", cat: "unidades" },
-      { file: "dados.json", cat: "unidades" },
+      { file: "hospitais.json", cat: "hospitais" },
       { file: "hospitais_1bpm.json", cat: "hospitais" },
+      { file: "saude.json", cat: "hospitais" },
+      { file: "bsc.json", cat: "bscs" },
       { file: "bsc_1bpm.json", cat: "bscs" },
-      { file: "deplan_1bpm.json", cat: "deplans" }
+      { file: "deplan.json", cat: "deplans" },
+      { file: "deplan_1bpm.json", cat: "deplans" },
+      { file: "apoio.json", cat: "deplans" }
     ];
 
     await Promise.all(
@@ -18352,13 +18695,22 @@ function initAzimuteGeo() {
           const res = await fetch(file);
           if (!res.ok) return;
           const json = await res.json();
-          const extracted = flattenJsonRecords(json);
-          if (extracted.length) {
-            datasetPoints[cat] = dedupeLayerPoints([...datasetPoints[cat], ...extracted]);
-          }
+          const buckets = extractClassifiedRecords(json, cat);
+          mergeBucketsIntoDatasets(buckets);
         } catch (e) {}
       })
     );
+
+    try {
+      Object.keys(window).forEach((k) => {
+        if (!/hospital|unidade|bpm|bsc|deplan|saude|dados|apoio/i.test(k)) return;
+        const val = window[k];
+        if (val && typeof val === "object" && (Array.isArray(val) || Object.keys(val).length)) {
+          const buckets = extractClassifiedRecords(val, "unidades");
+          mergeBucketsIntoDatasets(buckets);
+        }
+      });
+    } catch (e) {}
 
     updateLayerCountersUi();
     refreshAllMapMarkersLayer();
@@ -18391,13 +18743,13 @@ function initAzimuteGeo() {
     if (!badge) return;
     if (state === "searching") {
       badge.className = "az-quad-inline-hint az-quad-searching";
-      badge.innerHTML = `<span class="az-quad-pulse-dot"></span><span>${text || "Buscando vias..."}</span>`;
+      badge.innerHTML = `<span class="az-quad-pulse-dot"></span><span>${text || "Buscando..."}</span>`;
     } else if (state === "error") {
       badge.className = "az-quad-inline-hint az-quad-searching";
       badge.innerHTML = `<span class="az-quad-pulse-dot" style="background:#F87171;"></span><span>${text || "Reconectando..."}</span>`;
     } else {
       badge.className = "az-quad-inline-hint";
-      badge.textContent = text || "Toque p/ Relevo 2.5D";
+      badge.textContent = text || "ESPECTRO";
     }
   }
 
@@ -18407,26 +18759,33 @@ function initAzimuteGeo() {
     const card = document.createElement("div");
     card.id = "azQuadInlineCard";
     card.className = "az-quad-inline-card";
-    card.title = "Toque para abrir a reconstrucao do terreno e visao lateral";
+    card.title = "Toque para abrir ESPECTRO (malha altimetrica 3D das vias)";
     card.innerHTML = `
       <div class="az-quad-inline-head">
-        <span class="az-quad-inline-title">ANEL 360° • 8 FAIXAS DE ENTORNO</span>
-        <span class="az-quad-inline-hint az-quad-searching" id="azQuadFetchBadge">
-          <span class="az-quad-pulse-dot"></span><span>Buscando vias...</span>
-        </span>
+        <span class="az-quad-inline-title">ORBE • 360° (130M)</span>
+        <div style="display:flex; align-items:center; gap:6px;">
+          <button type="button" id="azOrbeRecenterBtn" class="az-orbe-sonar-btn" title="Emitir pulso e recentralizar ORBE">
+            <span class="az-orbe-sonar-dot"></span>
+            <span>PULSO</span>
+          </button>
+          <span class="az-quad-inline-hint az-quad-searching" id="azQuadFetchBadge">
+            <span class="az-quad-pulse-dot"></span><span>Buscando...</span>
+          </span>
+        </div>
       </div>
       <div id="azQuadCornerBanner" class="az-quad-corner-banner"></div>
       <div class="az-quad-ring-wrap">
-        <canvas id="azQuadRingCanvas" width="340" height="248"></canvas>
+        <canvas id="azQuadRingCanvas"></canvas>
         <div class="az-quad-ring-legend">
-          <span><i style="background:#4ADE80;"></i> Subida</span>
-          <span><i style="background:#C5A869;"></i> Plano</span>
-          <span><i style="background:#F87171;"></i> Descida</span>
+          <span><i style="background:#4ADE80;"></i> Aclive</span>
+          <span><i style="background:#C5A869;"></i> Nível</span>
+          <span><i style="background:#F87171;"></i> Declive</span>
         </div>
       </div>
     `;
 
-    card.addEventListener("click", () => {
+    card.addEventListener("click", (e) => {
+      if (e.target && e.target.closest("#azOrbeRecenterBtn")) return;
       window.azimuteToggleTerrainModal(true);
     });
 
@@ -18440,7 +18799,8 @@ function initAzimuteGeo() {
         } else {
           innerCard.appendChild(card);
         }
-        drawCircular8SectorRing();
+        bindOrbeRecenterButton();
+        drawOrbeVectorAndRing();
         return;
       }
     }
@@ -18449,7 +18809,49 @@ function initAzimuteGeo() {
     if (geoModule && geoModule.parentElement) {
       geoModule.parentElement.insertBefore(card, geoModule);
     }
-    drawCircular8SectorRing();
+    bindOrbeRecenterButton();
+    drawOrbeVectorAndRing();
+  }
+
+  let orbePingWaveRadius = 0;
+  let orbePingAnimId = null;
+
+  function triggerOrbeSonarAnimation() {
+    orbePingWaveRadius = 8;
+    if (orbePingAnimId) cancelAnimationFrame(orbePingAnimId);
+    function step() {
+      orbePingWaveRadius += 3.2;
+      drawOrbeVectorAndRing();
+      if (orbePingWaveRadius < 110) {
+        orbePingAnimId = requestAnimationFrame(step);
+      } else {
+        orbePingWaveRadius = 0;
+        drawOrbeVectorAndRing();
+      }
+    }
+    orbePingAnimId = requestAnimationFrame(step);
+  }
+
+  function bindOrbeRecenterButton() {
+    const recBtn = document.getElementById("azOrbeRecenterBtn");
+    if (!recBtn || recBtn.dataset.bound === "1") return;
+    recBtn.dataset.bound = "1";
+    recBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      recBtn.classList.add("is-pinging");
+      setTimeout(() => recBtn.classList.remove("is-pinging"), 1400);
+      triggerOrbeSonarAnimation();
+
+      compassSamples = [];
+      handlingFreezeUntil = 0;
+      setHeadingLockState(false);
+      refreshStabilizedHeading(true);
+      syncFromMainAzimuteGps(true);
+      if (lastPos) {
+        fetchNearbyStreets(lastPos[0], lastPos[1], true);
+      }
+      if (navigator.vibrate) navigator.vibrate([30, 40, 30]);
+    });
   }
   ensureQuadranteCardMounted();
 
@@ -18662,6 +19064,7 @@ function initAzimuteGeo() {
     }
 
     destMarker.togglePopup();
+    drawOrbeVectorAndRing();
   }
 
   if (northBadge) {
@@ -18693,79 +19096,12 @@ function initAzimuteGeo() {
   });
 
   if (centerFab) {
-    let draggingFab = false;
-    let fabMoved = false;
-    let startX = 0;
-    let startY = 0;
-    let origLeft = 0;
-    let origTop = 0;
-
-    function onFabDown(clientX, clientY) {
-      draggingFab = true;
-      fabMoved = false;
-      startX = clientX;
-      startY = clientY;
-      const parentContainer = centerFab.parentElement || stageEl;
-      if (!parentContainer) return;
-      const rect = centerFab.getBoundingClientRect();
-      const parentRect = parentContainer.getBoundingClientRect();
-      origLeft = rect.left - parentRect.left;
-      origTop = rect.top - parentRect.top;
-    }
-
-    function onFabMove(clientX, clientY) {
-      if (!draggingFab) return;
-      const parentContainer = centerFab.parentElement || stageEl;
-      if (!parentContainer) return;
-      const dx = clientX - startX;
-      const dy = clientY - startY;
-      if (Math.abs(dx) > 14 || Math.abs(dy) > 14) {
-        fabMoved = true;
-      }
-      if (!fabMoved) return;
-      const maxX = parentContainer.clientWidth - centerFab.offsetWidth - 6;
-      const maxY = parentContainer.clientHeight - centerFab.offsetHeight - 6;
-      const nextLeft = Math.max(6, Math.min(maxX, origLeft + dx));
-      const nextTop = Math.max(6, Math.min(maxY, origTop + dy));
-      centerFab.style.right = "auto";
-      centerFab.style.bottom = "auto";
-      centerFab.style.left = nextLeft + "px";
-      centerFab.style.top = nextTop + "px";
-    }
-
-    function onFabUp() {
-      if (!draggingFab) return;
-      draggingFab = false;
-      if (!fabMoved) {
-        centerFab.classList.add("is-pulse");
-        setTimeout(() => centerFab.classList.remove("is-pulse"), 180);
-        triggerCenterOnMyPosition();
-      }
-    }
-
-    centerFab.addEventListener("touchstart", (e) => {
+    centerFab.addEventListener("click", (e) => {
       e.stopPropagation();
-      const t = e.touches[0];
-      onFabDown(t.clientX, t.clientY);
-    }, { passive: true });
-
-    centerFab.addEventListener("touchmove", (e) => {
-      e.stopPropagation();
-      const t = e.touches[0];
-      onFabMove(t.clientX, t.clientY);
-    }, { passive: true });
-
-    centerFab.addEventListener("touchend", (e) => {
-      e.stopPropagation();
-      onFabUp();
+      centerFab.classList.add("is-pulse");
+      setTimeout(() => centerFab.classList.remove("is-pulse"), 180);
+      triggerCenterOnMyPosition();
     });
-
-    centerFab.addEventListener("mousedown", (e) => {
-      e.stopPropagation();
-      onFabDown(e.clientX, e.clientY);
-    });
-    window.addEventListener("mousemove", (e) => onFabMove(e.clientX, e.clientY));
-    window.addEventListener("mouseup", onFabUp);
   }
 
   function triggerCenterOnMyPosition() {
@@ -18786,7 +19122,7 @@ function initAzimuteGeo() {
         center: [lastPos[1], lastPos[0]],
         zoom: isNavigationStarted ? 18 : 17.5,
         bearing: stableHeading,
-        pitch: isNavigationStarted ? 52 : 0,
+        pitch: isNavigationStarted ? 52 : map.getPitch(),
         duration: 400
       });
       statusEl.textContent = "Centralizado na sua posicao";
@@ -19021,6 +19357,7 @@ function initAzimuteGeo() {
       if (startNavBtn) startNavBtn.style.display = "none";
       window.azimuteUpdateRadarHudVisibility();
       statusEl.textContent = "Rota encerrada";
+      drawOrbeVectorAndRing();
     });
   }
 
@@ -19076,6 +19413,7 @@ function initAzimuteGeo() {
     activeRouteCoords = route.geometry.coordinates.map(([lng, lat]) => [lat, lng]);
     activeRouteSteps = (route.legs && route.legs[0] && route.legs[0].steps) || [];
     updateRouteSources();
+    drawOrbeVectorAndRing();
 
     if (destMarker && destMarker.getPopup()?.isOpen()) {
       destMarker.togglePopup();
@@ -19193,8 +19531,67 @@ function initAzimuteGeo() {
     });
 
     renderIncursionPinsList();
+    drawOrbeVectorAndRing();
   }
   renderSavedPins();
+
+  if (exportPinsBtn) {
+    exportPinsBtn.addEventListener("click", () => {
+      const payload = {
+        app: "AZIMUTE",
+        exportedAt: new Date().toISOString(),
+        pins: savedPins
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `azimute_pacote_${new Date().toISOString().slice(0, 10)}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      if (statusEl) statusEl.textContent = `Pacote exportado (${savedPins.length} alfinetes)`;
+    });
+  }
+
+  if (importPinsBtn && importPinsInput) {
+    importPinsBtn.addEventListener("click", () => {
+      importPinsInput.click();
+    });
+    importPinsInput.addEventListener("change", (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const parsed = JSON.parse(String(reader.result || "{}"));
+          const incoming = Array.isArray(parsed) ? parsed : Array.isArray(parsed.pins) ? parsed.pins : [];
+          let added = 0;
+          incoming.forEach((item) => {
+            if (typeof item.lat === "number" && typeof item.lng === "number") {
+              savedPins.push({
+                id: "pin_" + Date.now() + "_" + added,
+                title: String(item.title || "Ponto Importado"),
+                note: String(item.note || ""),
+                color: String(item.color || "#C5A869"),
+                lat: item.lat,
+                lng: item.lng
+              });
+              added++;
+            }
+          });
+          persistPins();
+          renderSavedPins();
+          if (statusEl) statusEl.textContent = `${added} alfinetes importados ao mapa`;
+        } catch (err) {
+          if (statusEl) statusEl.textContent = "Arquivo JSON inválido";
+        }
+        importPinsInput.value = "";
+      };
+      reader.readAsText(file);
+    });
+  }
 
   window.azimuteOpenPinForm = function (lat, lng, defaultTitle) {
     pendingPinCoords = { lat, lng };
@@ -19322,6 +19719,7 @@ function initAzimuteGeo() {
     window.azimuteUpdateRadarHudVisibility();
     targetEl.innerHTML = "Destino: <strong>Nenhum</strong>";
     statusEl.textContent = lastPos ? "GPS ativo" : "Aguardando GPS...";
+    drawOrbeVectorAndRing();
   });
 
   function formatNominatimItem(item, fallbackQuery) {
@@ -19546,10 +19944,11 @@ function initAzimuteGeo() {
   startCompassListeners();
 
   function extractStreetsFromMapLibre(lat, lng) {
-    if (!map || !map.isStyleLoaded()) return [];
+    if (!map || !map.isStyleLoaded()) return { list: [], segments: [] };
     try {
       const features = map.queryRenderedFeatures();
       const byName = new Map();
+      const segments = [];
 
       for (let i = 0; i < features.length; i++) {
         const f = features[i];
@@ -19570,29 +19969,47 @@ function initAzimuteGeo() {
 
         let bestDist = Infinity;
         let bestPt = { lat: coords[0][1], lng: coords[0][0] };
+        const clipped = [];
 
         for (let j = 0; j < coords.length - 1; j++) {
-          const seg = pointToSegmentClosest(lat, lng, coords[j][1], coords[j][0], coords[j + 1][1], coords[j + 1][0]);
+          const aLat = coords[j][1];
+          const aLng = coords[j][0];
+          const bLat = coords[j + 1][1];
+          const bLng = coords[j + 1][0];
+          const seg = pointToSegmentClosest(lat, lng, aLat, aLng, bLat, bLng);
+          if (seg.distKm <= 0.145) {
+            clipped.push([
+              [aLat, aLng],
+              [bLat, bLng]
+            ]);
+          }
           if (seg.distKm < bestDist) {
             bestDist = seg.distKm;
             bestPt = { lat: seg.lat, lng: seg.lng };
           }
         }
 
-        if (bestDist > 0.35) continue;
+        if (clipped.length) {
+          segments.push({ name, lines: clipped });
+        }
+
+        if (bestDist > 0.13) continue;
         const prev = byName.get(name);
         if (!prev || bestDist < prev.distKm) {
           byName.set(name, { name, distKm: bestDist, lat: bestPt.lat, lng: bestPt.lng, elevation: null, deltaElev: null });
         }
       }
-      return Array.from(byName.values()).sort((a, b) => a.distKm - b.distKm);
+      return {
+        list: Array.from(byName.values()).sort((a, b) => a.distKm - b.distKm),
+        segments
+      };
     } catch (e) {
-      return [];
+      return { list: [], segments: [] };
     }
   }
 
   async function queryOverpassGet(lat, lng) {
-    const query = `[out:json][timeout:6];way(around:180,${lat.toFixed(6)},${lng.toFixed(6)})["highway"]["name"];out geom;`;
+    const query = `[out:json][timeout:6];way(around:130,${lat.toFixed(6)},${lng.toFixed(6)})["highway"]["name"];out geom;`;
     const encoded = encodeURIComponent(query);
 
     for (const mirror of OVERPASS_MIRRORS) {
@@ -19607,6 +20024,8 @@ function initAzimuteGeo() {
         if (!elements.length) continue;
 
         const byName = new Map();
+        const segments = [];
+
         elements.forEach((el) => {
           const name = el.tags && el.tags.name;
           const geom = el.geometry;
@@ -19614,31 +20033,50 @@ function initAzimuteGeo() {
 
           let bestDist = Infinity;
           let bestPt = { lat: geom[0].lat, lng: geom[0].lon };
+          const clipped = [];
 
           for (let i = 0; i < geom.length - 1; i++) {
-            const seg = pointToSegmentClosest(lat, lng, geom[i].lat, geom[i].lon, geom[i + 1].lat, geom[i + 1].lon);
+            const aLat = geom[i].lat;
+            const aLng = geom[i].lon;
+            const bLat = geom[i + 1].lat;
+            const bLng = geom[i + 1].lon;
+            const seg = pointToSegmentClosest(lat, lng, aLat, aLng, bLat, bLng);
+            if (seg.distKm <= 0.145) {
+              clipped.push([
+                [aLat, aLng],
+                [bLat, bLng]
+              ]);
+            }
             if (seg.distKm < bestDist) {
               bestDist = seg.distKm;
               bestPt = { lat: seg.lat, lng: seg.lng };
             }
           }
 
+          if (clipped.length) {
+            segments.push({ name, lines: clipped });
+          }
+
+          if (bestDist > 0.13) return;
           const prev = byName.get(name);
           if (!prev || bestDist < prev.distKm) {
             byName.set(name, { name, distKm: bestDist, lat: bestPt.lat, lng: bestPt.lng, elevation: null, deltaElev: null });
           }
         });
-        return Array.from(byName.values()).sort((a, b) => a.distKm - b.distKm);
+        return {
+          list: Array.from(byName.values()).sort((a, b) => a.distKm - b.distKm),
+          segments
+        };
       } catch (e) {}
     }
-    return [];
+    return { list: [], segments: [] };
   }
 
   async function queryPhotonNearbyStreets(lat, lng) {
     try {
       const ctrl = new AbortController();
       const timer = setTimeout(() => ctrl.abort(), 4500);
-      const url = `https://photon.komoot.io/reverse?lat=${lat.toFixed(6)}&lon=${lng.toFixed(6)}&limit=15&radius=0.35`;
+      const url = `https://photon.komoot.io/reverse?lat=${lat.toFixed(6)}&lon=${lng.toFixed(6)}&limit=15&radius=0.13`;
       const res = await fetch(url, { signal: ctrl.signal });
       clearTimeout(timer);
       if (!res.ok) return [];
@@ -19654,7 +20092,7 @@ function initAzimuteGeo() {
         const pLat = coords[1];
         const pLng = coords[0];
         const distKm = calcDistanceKm(lat, lng, pLat, pLng);
-        if (distKm > 0.35) return;
+        if (distKm > 0.13) return;
 
         const prev = byName.get(name);
         if (!prev || distKm < prev.distKm) {
@@ -19667,36 +20105,98 @@ function initAzimuteGeo() {
     }
   }
 
-  async function enrichStreetsWithElevation(centerLat, centerLng, streetsList) {
-    if (!streetsList.length) return;
-    const sample = streetsList.slice(0, 10);
-    const lats = [centerLat, ...sample.map((s) => s.lat)].map((v) => v.toFixed(5)).join(",");
-    const lngs = [centerLng, ...sample.map((s) => s.lng)].map((v) => v.toFixed(5)).join(",");
+  async function enrichStreetsAndGridElevation(centerLat, centerLng, streetsList) {
+    const sample = streetsList.slice(0, 8);
+    const cosLat = Math.cos((centerLat * Math.PI) / 180);
+    const stepDegLat = 0.065 / 111.32;
+    const stepDegLng = 0.065 / (111.32 * cosLat);
+
+    const gridCoords = [];
+    for (let r = -2; r <= 2; r++) {
+      for (let c = -2; c <= 2; c++) {
+        gridCoords.push({
+          lat: centerLat - r * stepDegLat,
+          lng: centerLng + c * stepDegLng
+        });
+      }
+    }
+
+    const allPts = [
+      { lat: centerLat, lng: centerLng },
+      ...sample.map((s) => ({ lat: s.lat, lng: s.lng })),
+      ...gridCoords
+    ];
+
+    const lats = allPts.map((p) => p.lat.toFixed(5)).join(",");
+    const lngs = allPts.map((p) => p.lng.toFixed(5)).join(",");
+
+    let elevations = null;
 
     try {
-      const res = await fetch(`https://api.open-meteo.com/v1/elevation?latitude=${lats}&longitude=${lngs}`);
-      const data = await res.json();
-      if (Array.isArray(data.elevation) && data.elevation.length > 1) {
-        const centerElev = data.elevation[0];
-        if (typeof centerElev === "number" && !Number.isNaN(centerElev)) {
-          lastAltitude = centerElev;
+      const locs = allPts.map((p) => `${p.lat.toFixed(5)},${p.lng.toFixed(5)}`).join("|");
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 5000);
+      const res = await fetch(`https://api.opentopodata.org/v1/srtm30m?locations=${locs}`, { signal: ctrl.signal });
+      clearTimeout(timer);
+      if (res.ok) {
+        const d = await res.json();
+        if (d && Array.isArray(d.results) && d.results.length === allPts.length) {
+          elevations = d.results.map((item) => item.elevation);
         }
-        sample.forEach((st, idx) => {
-          const elVal = data.elevation[idx + 1];
-          if (typeof elVal === "number" && !Number.isNaN(elVal)) {
-            st.elevation = elVal;
-            st.deltaElev = Math.round(elVal - centerElev);
-          }
-        });
-        recomputeQuadranteSectors(true);
       }
     } catch (e) {}
+
+    if (!elevations) {
+      try {
+        const res = await fetch(`https://api.open-meteo.com/v1/elevation?latitude=${lats}&longitude=${lngs}`);
+        const data = await res.json();
+        if (Array.isArray(data.elevation) && data.elevation.length === allPts.length) {
+          elevations = data.elevation;
+        }
+      } catch (e) {}
+    }
+
+    if (!elevations || !elevations.length) return;
+
+    const centerElev = elevations[0];
+    if (typeof centerElev === "number" && !Number.isNaN(centerElev)) {
+      lastAltitude = centerElev;
+    }
+
+    sample.forEach((st, idx) => {
+      const elVal = elevations[idx + 1];
+      if (typeof elVal === "number" && !Number.isNaN(elVal)) {
+        st.elevation = elVal;
+        st.deltaElev = Math.round((elVal - centerElev) * 10) / 10;
+      }
+    });
+
+    const gridStart = 1 + sample.length;
+    const matrix = [];
+    for (let r = 0; r < 5; r++) {
+      const row = [];
+      for (let c = 0; c < 5; c++) {
+        const val = elevations[gridStart + r * 5 + c];
+        row.push(typeof val === "number" && !Number.isNaN(val) ? val - centerElev : 0);
+      }
+      matrix.push(row);
+    }
+    elevationGrid5x5 = matrix;
+
+    recomputeQuadranteSectors(true);
   }
 
-  function applyStreetsListToQuadrante(lat, lng, list, sourceTag) {
+  function applyStreetsListToQuadrante(lat, lng, payload, sourceTag) {
+    const list = Array.isArray(payload) ? payload : payload.list || [];
+    const segments = Array.isArray(payload) ? [] : payload.segments || [];
     if (!list.length) return;
+
     lastStreetsFetchPos = [lat, lng];
     lastQuadStreetSource = sourceTag || "overpass";
+    if (segments.length) {
+      cachedVectorSegments = segments;
+    }
+
     const syncedLocStreet = readSyncedStreetFromLocationCard();
     if (syncedLocStreet) {
       cachedCurrentStreet = syncedLocStreet;
@@ -19706,9 +20206,9 @@ function initAzimuteGeo() {
       cachedCurrentStreet = list[0].name;
       cachedNearbyStreets = list.slice(1);
     }
-    setQuadFetchIndicator("idle", "Toque p/ Relevo 2.5D");
+    setQuadFetchIndicator("idle", "ESPECTRO");
     recomputeQuadranteSectors(true);
-    enrichStreetsWithElevation(lat, lng, cachedNearbyStreets);
+    enrichStreetsAndGridElevation(lat, lng, cachedNearbyStreets);
   }
 
   async function fetchNearbyStreets(lat, lng, force) {
@@ -19723,21 +20223,21 @@ function initAzimuteGeo() {
       clearTimeout(retryStreetsTimer);
       retryStreetsTimer = null;
     }
-    setQuadFetchIndicator("searching", "Buscando vias...");
+    setQuadFetchIndicator("searching", "Buscando...");
 
     try {
-      const mapList = extractStreetsFromMapLibre(lat, lng);
-      if (mapList.length >= 2) {
-        applyStreetsListToQuadrante(lat, lng, mapList, "vector");
+      const mapData = extractStreetsFromMapLibre(lat, lng);
+      if (mapData.list.length >= 2) {
+        applyStreetsListToQuadrante(lat, lng, mapData, "vector");
       }
 
-      const overpassList = await queryOverpassGet(lat, lng);
-      if (overpassList.length >= 2) {
-        applyStreetsListToQuadrante(lat, lng, overpassList, "overpass");
+      const overpassData = await queryOverpassGet(lat, lng);
+      if (overpassData.list.length >= 2) {
+        applyStreetsListToQuadrante(lat, lng, overpassData, "overpass");
       } else if (!cachedNearbyStreets.length) {
         const photonList = await queryPhotonNearbyStreets(lat, lng);
         if (photonList.length >= 2) {
-          applyStreetsListToQuadrante(lat, lng, photonList, "photon");
+          applyStreetsListToQuadrante(lat, lng, { list: photonList, segments: [] }, "photon");
         } else {
           setQuadFetchIndicator("error", "Tentando novamente...");
           retryStreetsTimer = setTimeout(() => {
@@ -19747,7 +20247,7 @@ function initAzimuteGeo() {
       }
     } catch (err) {
       if (!cachedNearbyStreets.length) {
-        setQuadFetchIndicator("error", "Reconectando vias...");
+        setQuadFetchIndicator("error", "Reconectando...");
         retryStreetsTimer = setTimeout(() => {
           if (lastPos) fetchNearbyStreets(lastPos[0], lastPos[1], true);
         }, 6000);
@@ -19776,8 +20276,9 @@ function initAzimuteGeo() {
       const m = Math.max(5, Math.round(st.distKm * 1000));
       let elevTag = "";
       if (typeof st.deltaElev === "number") {
-        if (st.deltaElev >= 2) elevTag = ` ▲+${st.deltaElev}m`;
-        else if (st.deltaElev <= -2) elevTag = ` ▼${st.deltaElev}m`;
+        const dRound = Math.round(st.deltaElev);
+        if (dRound >= 2) elevTag = ` ▲+${dRound}m`;
+        else if (dRound <= -2) elevTag = ` ▼${dRound}m`;
       }
       if (txtEl) txtEl.textContent = `${st.name} • ${m}m${elevTag}`;
       if (dotEl) {
@@ -19786,34 +20287,82 @@ function initAzimuteGeo() {
     });
   }
 
-  // DESENHA O ANEL CIRCULAR DE 8 FAIXAS (45° CADA) + DETECCAO DE ESQUINA FRONTAL
-  function drawCircular8SectorRing() {
+  function drawOrbeVectorAndRing() {
     const canvas = document.getElementById("azQuadRingCanvas");
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    const w = canvas.width;
-    const h = canvas.height;
+    const prep = prepareHiDpiCanvas(canvas);
+    if (!prep) return;
+    const { ctx, w, h } = prep;
     ctx.clearRect(0, 0, w, h);
 
     const cx = w / 2;
     const cy = h / 2;
-    const outerR = 72;
-    const innerR = 46;
+    const outerR = Math.min(w * 0.25, h * 0.34, 78);
+    const refHeading = getQuadranteReferenceHeading();
+    const refRad = (refHeading * Math.PI) / 180;
 
-    // 0: Frente (-22.5 a +22.5), 1: F-Dir, 2: Dir, 3: R-Dir, 4: Retaguarda, 5: R-Esq, 6: Esq, 7: F-Esq
+    ctx.strokeStyle = "#1E1D17";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(cx, cy, outerR * 0.5, 0, Math.PI * 2);
+    ctx.stroke();
+
+    if (lastPos && cachedVectorSegments.length) {
+      const cosLat = Math.cos((lastPos[0] * Math.PI) / 180);
+      const scalePxPerKm = outerR / 0.13;
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(cx, cy, outerR - 3, 0, Math.PI * 2);
+      ctx.clip();
+
+      cachedVectorSegments.forEach((segGroup) => {
+        const isCurrent = segGroup.name.toLowerCase() === (cachedCurrentStreet || "").toLowerCase();
+        ctx.strokeStyle = isCurrent ? "rgba(197, 168, 105, 0.72)" : "rgba(158, 154, 143, 0.38)";
+        ctx.lineWidth = isCurrent ? 3.2 : 2;
+        ctx.lineCap = "round";
+
+        segGroup.lines.forEach(([ptA, ptB]) => {
+          const dxA = (ptA[1] - lastPos[1]) * 111.32 * cosLat;
+          const dyA = (ptA[0] - lastPos[0]) * 111.32;
+          const dxB = (ptB[1] - lastPos[1]) * 111.32 * cosLat;
+          const dyB = (ptB[0] - lastPos[0]) * 111.32;
+
+          const rxA = dxA * Math.cos(refRad) - dyA * Math.sin(refRad);
+          const ryA = dxA * Math.sin(refRad) + dyA * Math.cos(refRad);
+          const rxB = dxB * Math.cos(refRad) - dyB * Math.sin(refRad);
+          const ryB = dxB * Math.sin(refRad) + dyB * Math.cos(refRad);
+
+          ctx.beginPath();
+          ctx.moveTo(cx + rxA * scalePxPerKm, cy - ryA * scalePxPerKm);
+          ctx.lineTo(cx + rxB * scalePxPerKm, cy - ryB * scalePxPerKm);
+          ctx.stroke();
+        });
+      });
+
+      ctx.restore();
+    }
+
+    if (orbePingWaveRadius > 0) {
+      const alpha = Math.max(0, 1 - orbePingWaveRadius / 110);
+      ctx.strokeStyle = `rgba(74, 222, 128, ${alpha.toFixed(2)})`;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(cx, cy, Math.min(outerR + 8, orbePingWaveRadius), 0, Math.PI * 2);
+      ctx.stroke();
+    }
+
     const sectorTags = ["FRENTE", "F-DIR", "DIREITA", "R-DIR", "RETAG.", "R-ESQ", "ESQUERDA", "F-ESQ"];
 
     for (let i = 0; i < 8; i++) {
       const st = cached8Sectors[i];
       const centerDeg = i * 45;
-      // Converte angulo navegacao (0 = topo, sentido horario) para canvas radianos (-PI/2 = topo)
       const startRad = ((centerDeg - 20.5 - 90) * Math.PI) / 180;
       const endRad = ((centerDeg + 20.5 - 90) * Math.PI) / 180;
 
       let arcColor = "#24231C";
-      let arcWidth = 5;
+      let arcWidth = 4.5;
       if (st) {
-        arcWidth = 8;
+        arcWidth = 7.5;
         if (showElevation && typeof st.deltaElev === "number") {
           if (st.deltaElev >= 2) arcColor = "#4ADE80";
           else if (st.deltaElev <= -2) arcColor = "#F87171";
@@ -19830,7 +20379,6 @@ function initAzimuteGeo() {
       ctx.lineCap = "round";
       ctx.stroke();
 
-      // Marca discreta da faixa quando vazia ou rotulo da rua quando ocupada
       const radMid = ((centerDeg - 90) * Math.PI) / 180;
       if (st) {
         const labelR = outerR + 14;
@@ -19846,23 +20394,24 @@ function initAzimuteGeo() {
 
         const meters = Math.max(5, Math.round(st.distKm * 1000));
         let elevTxt = "";
-        if (showElevation && typeof st.deltaElev === "number" && Math.abs(st.deltaElev) >= 2) {
-          elevTxt = st.deltaElev > 0 ? ` ▲+${st.deltaElev}m` : ` ▼${st.deltaElev}m`;
+        if (showElevation && typeof st.deltaElev === "number" && Math.abs(Math.round(st.deltaElev)) >= 2) {
+          const dR = Math.round(st.deltaElev);
+          elevTxt = dR > 0 ? ` ▲+${dR}m` : ` ▼${dR}m`;
         }
 
         const shortVia = st.name.length > 17 ? st.name.slice(0, 16) + "…" : st.name;
         const yOffset = i === 0 ? -12 : i === 4 ? 12 : -5;
 
-        ctx.font = "bold 9px sans-serif";
+        ctx.font = "bold 10px sans-serif";
         ctx.fillStyle = "#F2F0EA";
         ctx.fillText(shortVia, lx, ly + yOffset);
 
-        ctx.font = "bold 8px monospace";
+        ctx.font = "bold 8.5px monospace";
         ctx.fillStyle = arcColor;
-        ctx.fillText(`${sectorTags[i]} • ${meters}m${elevTxt}`, lx, ly + yOffset + 10);
+        ctx.fillText(`${sectorTags[i]} • ${meters}m${elevTxt}`, lx, ly + yOffset + 11);
       } else {
-        const dotX = cx + Math.cos(radMid) * (outerR + 9);
-        const dotY = cy + Math.sin(radMid) * (outerR + 9);
+        const dotX = cx + Math.cos(radMid) * (outerR + 8);
+        const dotY = cy + Math.sin(radMid) * (outerR + 8);
         ctx.fillStyle = "#3A382E";
         ctx.beginPath();
         ctx.arc(dotX, dotY, 1.8, 0, Math.PI * 2);
@@ -19870,21 +20419,35 @@ function initAzimuteGeo() {
       }
     }
 
-    // Anel interno sutil
-    ctx.beginPath();
-    ctx.arc(cx, cy, innerR, 0, Math.PI * 2);
-    ctx.strokeStyle = "#28271F";
-    ctx.lineWidth = 1;
-    ctx.stroke();
+    const activeTarget = activeRouteDest || currentDestination;
+    if (lastPos && activeTarget) {
+      const targetBearing = calcBearingDeg(lastPos[0], lastPos[1], activeTarget.lat, activeTarget.lng);
+      const relTargetRad = ((normalizeAngle(targetBearing - refHeading) - 90) * Math.PI) / 180;
+      const bx = cx + Math.cos(relTargetRad) * (outerR - 6);
+      const by = cy + Math.sin(relTargetRad) * (outerR - 6);
 
-    // Seta direcional central apontando para o topo (frente do operador)
+      ctx.strokeStyle = "#38BDF8";
+      ctx.lineWidth = 1.8;
+      ctx.setLineDash([3, 3]);
+      ctx.beginPath();
+      ctx.moveTo(cx, cy - 6);
+      ctx.lineTo(bx, by);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      ctx.fillStyle = "#38BDF8";
+      ctx.beginPath();
+      ctx.arc(bx, by, 4, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
     ctx.save();
-    ctx.translate(cx, cy - 8);
+    ctx.translate(cx, cy - 7);
     ctx.beginPath();
-    ctx.moveTo(0, -14);
-    ctx.lineTo(10, 10);
-    ctx.lineTo(0, 5);
-    ctx.lineTo(-10, 10);
+    ctx.moveTo(0, -13);
+    ctx.lineTo(9, 9);
+    ctx.lineTo(0, 4.5);
+    ctx.lineTo(-9, 9);
     ctx.closePath();
     ctx.fillStyle = arrowColor;
     ctx.fill();
@@ -19893,12 +20456,11 @@ function initAzimuteGeo() {
     ctx.stroke();
     ctx.restore();
 
-    // Nome da via atual no miolo do anel
-    const viaAtual = (cachedCurrentStreet || "Via atual");
+    const viaAtual = cachedCurrentStreet || "Via atual";
     const viaShort = viaAtual.length > 18 ? viaAtual.slice(0, 17) + "…" : viaAtual;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.font = "bold 9px sans-serif";
+    ctx.font = "bold 9.5px sans-serif";
     ctx.fillStyle = "#C5A869";
     ctx.fillText(viaShort, cx, cy + 16);
   }
@@ -19907,7 +20469,6 @@ function initAzimuteGeo() {
     const banner = document.getElementById("azQuadCornerBanner");
     if (!banner) return;
 
-    // Verifica se ha 2 ruas distintas no cone frontal (F-Esq [7], Frente [0], F-Dir [1])
     const frontCandidates = [cached8Sectors[7], cached8Sectors[0], cached8Sectors[1]].filter(Boolean);
     const uniqueByName = [];
     const seen = new Set();
@@ -19937,7 +20498,7 @@ function initAzimuteGeo() {
     if (syncedLocStreet) cachedCurrentStreet = syncedLocStreet;
 
     if (!lastPos || !cachedNearbyStreets.length) {
-      drawCircular8SectorRing();
+      drawOrbeVectorAndRing();
       return;
     }
 
@@ -19950,7 +20511,7 @@ function initAzimuteGeo() {
 
     if (!forceUpdate && lastQuadHeading !== null) {
       const angDiff = Math.abs(shortestAngleDiff(lastQuadHeading, refHeading));
-      if (angDiff < 20 || now - lastQuadUpdateTime < 1400) {
+      if (angDiff < 18 || now - lastQuadUpdateTime < 1300) {
         return;
       }
     }
@@ -19958,7 +20519,6 @@ function initAzimuteGeo() {
     lastQuadHeading = refHeading;
     lastQuadUpdateTime = now;
 
-    // 1. Calcula as 8 faixas circulares de 45 graus cada
     const octants = [null, null, null, null, null, null, null, null];
     cachedNearbyStreets.forEach((st) => {
       const absBearing = calcBearingDeg(lastPos[0], lastPos[1], st.lat, st.lng);
@@ -19970,7 +20530,6 @@ function initAzimuteGeo() {
     });
     cached8Sectors = octants;
 
-    // 2. Mantem tambem os 4 setores cardeais para o Modo Incursao e Relevo 3D
     const sectors = { front: null, right: null, rear: null, left: null };
     cachedNearbyStreets.forEach((st) => {
       const absBearing = calcBearingDeg(lastPos[0], lastPos[1], st.lat, st.lng);
@@ -19988,121 +20547,136 @@ function initAzimuteGeo() {
     cachedSectors = sectors;
 
     updateCornerBannerDetection();
-    drawCircular8SectorRing();
+    drawOrbeVectorAndRing();
     syncIncursionEdgesUi(sectors);
-
-    if (terrainModal && terrainModal.classList.contains("is-open")) {
-      drawTerrainReconstruction();
-    }
-    if (incOverlay && incOverlay.classList.contains("is-open")) {
-      drawPerspectiveTerrainOnCanvas(incReliefCanvas, incAltLabelEl);
-    }
   }
 
-  function drawPerspectiveTerrainOnCanvas(targetCanvas, cotaLabelEl) {
-    if (!targetCanvas) return;
+  function renderAnimatedEspectroMesh(targetCanvas, cotaLabelEl, phase) {
+    const prep = prepareHiDpiCanvas(targetCanvas);
+    if (!prep) return;
+    const { ctx, w, h } = prep;
+    ctx.clearRect(0, 0, w, h);
+
     const cotaBase = typeof lastAltitude === "number" ? Math.round(lastAltitude) : null;
     if (cotaLabelEl) {
       cotaLabelEl.textContent = cotaBase !== null ? `Cota: ${cotaBase} m` : "Cota: ---";
     }
 
-    const ctx = targetCanvas.getContext("2d");
-    const w = targetCanvas.width;
-    const h = targetCanvas.height;
-    ctx.clearRect(0, 0, w, h);
-
-    ctx.strokeStyle = "#1E1E1A";
-    ctx.lineWidth = 1;
-    for (let gx = 24; gx < w; gx += 32) {
-      ctx.beginPath();
-      ctx.moveTo(gx, 12);
-      ctx.lineTo(gx - 22, h - 12);
-      ctx.stroke();
-    }
-    for (let gy = 22; gy < h; gy += 24) {
-      ctx.beginPath();
-      ctx.moveTo(10, gy);
-      ctx.lineTo(w - 10, gy);
-      ctx.stroke();
-    }
-
     const cx = w / 2;
-    const cy = h / 2 + 4;
+    const cy = h * 0.56;
+    const refDeg = getQuadranteReferenceHeading();
+    const yawRad = ((refDeg + Math.sin(phase) * 14) * Math.PI) / 180;
+    const tilt = 0.52;
+    const scaleX = Math.min(w * 0.16, 44);
+    const scaleY = scaleX * tilt;
+    const elevScale = Math.min(h * 0.018, 3.2);
 
-    ctx.strokeStyle = "#C5A869";
-    ctx.lineWidth = 2.5;
-    ctx.beginPath();
-    ctx.moveTo(cx - 65, cy + 12);
-    ctx.lineTo(cx + 65, cy - 12);
-    ctx.stroke();
-
-    ctx.fillStyle = arrowColor;
-    ctx.beginPath();
-    ctx.arc(cx, cy, 5, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.fillStyle = "#C5A869";
-    ctx.font = "bold 10px sans-serif";
-    ctx.textAlign = "center";
-    ctx.fillText((cachedCurrentStreet || "Via atual").slice(0, 22), cx, cy + 21);
-
-    const nodes = [
-      { key: "front", px: cx + 22, py: cy - 46 },
-      { key: "rear", px: cx - 22, py: cy + 50 },
-      { key: "left", px: cx - 92, py: cy - 10 },
-      { key: "right", px: cx + 92, py: cy + 10 }
+    const grid = elevationGrid5x5 || [
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0]
     ];
 
-    nodes.forEach((n) => {
-      const st = cachedSectors[n.key];
-      if (!st) return;
+    function projectNode(r, c) {
+      const gx = c - 2;
+      const gy = r - 2;
+      const z = grid[r][c];
+      const rx = gx * Math.cos(yawRad) - gy * Math.sin(yawRad);
+      const ry = gx * Math.sin(yawRad) + gy * Math.cos(yawRad);
+      return {
+        x: cx + rx * scaleX,
+        y: cy + ry * scaleY - z * elevScale,
+        z
+      };
+    }
 
-      const delta = typeof st.deltaElev === "number" ? st.deltaElev : 0;
-      const zShift = Math.max(-22, Math.min(22, delta * 0.9));
-      const pyElev = n.py - zShift;
-      const lineColor = delta >= 2 ? "#4ADE80" : delta <= -2 ? "#F87171" : "#60A5FA";
-
-      ctx.strokeStyle = lineColor;
-      ctx.lineWidth = 1.8;
-      ctx.setLineDash([4, 3]);
-      ctx.beginPath();
-      ctx.moveTo(cx, cy);
-      ctx.lineTo(n.px, pyElev);
-      ctx.stroke();
-      ctx.setLineDash([]);
-
-      if (Math.abs(zShift) >= 3) {
-        ctx.strokeStyle = "rgba(197, 168, 105, 0.45)";
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.moveTo(n.px, n.py);
-        ctx.lineTo(n.px, pyElev);
-        ctx.stroke();
+    const proj = [];
+    for (let r = 0; r < 5; r++) {
+      const row = [];
+      for (let c = 0; c < 5; c++) {
+        row.push(projectNode(r, c));
       }
+      proj.push(row);
+    }
 
-      ctx.fillStyle = lineColor;
-      ctx.beginPath();
-      ctx.arc(n.px, pyElev, 4, 0, Math.PI * 2);
-      ctx.fill();
+    for (let r = 0; r < 5; r++) {
+      for (let c = 0; c < 5; c++) {
+        const p = proj[r][c];
+        const avgZ = p.z;
+        const strokeCol =
+          avgZ >= 1.8 ? "rgba(74, 222, 128, 0.78)" : avgZ <= -1.8 ? "rgba(248, 113, 113, 0.78)" : "rgba(197, 168, 105, 0.52)";
 
-      const distM = Math.max(5, Math.round(st.distKm * 1000));
-      const elevStr = typeof st.deltaElev === "number" ? ` (${st.deltaElev >= 0 ? "+" : ""}${st.deltaElev}m)` : "";
+        if (c < 4) {
+          const pRight = proj[r][c + 1];
+          ctx.strokeStyle = strokeCol;
+          ctx.lineWidth = r === 2 ? 1.8 : 1.1;
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(pRight.x, pRight.y);
+          ctx.stroke();
+        }
+        if (r < 4) {
+          const pDown = proj[r + 1][c];
+          ctx.strokeStyle = strokeCol;
+          ctx.lineWidth = c === 2 ? 1.8 : 1.1;
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(pDown.x, pDown.y);
+          ctx.stroke();
+        }
+      }
+    }
+
+    const scanNorm = (Math.sin(phase * 1.4) + 1) / 2;
+    const scanY = h * 0.22 + scanNorm * (h * 0.62);
+    const grad = ctx.createLinearGradient(0, scanY - 12, 0, scanY + 12);
+    grad.addColorStop(0, "rgba(197, 168, 105, 0)");
+    grad.addColorStop(0.5, "rgba(197, 168, 105, 0.22)");
+    grad.addColorStop(1, "rgba(197, 168, 105, 0)");
+    ctx.fillStyle = grad;
+    ctx.fillRect(8, scanY - 12, w - 16, 24);
+
+    const centerPt = proj[2][2];
+    ctx.fillStyle = arrowColor;
+    ctx.beginPath();
+    ctx.arc(centerPt.x, centerPt.y, 4.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = "#0D0D0D";
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    const callouts = [
+      { st: cachedSectors.front, dx: 0, dy: -h * 0.34 },
+      { st: cachedSectors.rear, dx: 0, dy: h * 0.32 },
+      { st: cachedSectors.left, dx: -w * 0.31, dy: -4 },
+      { st: cachedSectors.right, dx: w * 0.31, dy: 4 }
+    ];
+
+    callouts.forEach(({ st, dx, dy }) => {
+      if (!st) return;
+      const dVal = typeof st.deltaElev === "number" ? Math.round(st.deltaElev) : 0;
+      const col = dVal >= 2 ? "#4ADE80" : dVal <= -2 ? "#F87171" : "#C5A869";
+      const tx = cx + dx;
+      const ty = cy + dy;
+
+      ctx.textAlign = "center";
+      ctx.font = "bold 9.5px sans-serif";
       ctx.fillStyle = "#F2F0EA";
-      ctx.font = "bold 9px sans-serif";
-      ctx.fillText(st.name.slice(0, 18), n.px, pyElev - 8);
-      ctx.fillStyle = lineColor;
-      ctx.font = "9px sans-serif";
-      ctx.fillText(`${distM}m${elevStr}`, n.px, pyElev + 11);
+      ctx.fillText(st.name.slice(0, 18), tx, ty);
+
+      ctx.font = "bold 9px monospace";
+      ctx.fillStyle = col;
+      const sign = dVal > 0 ? "+" : "";
+      ctx.fillText(`${Math.round(st.distKm * 1000)}m (${sign}${dVal}m)`, tx, ty + 11);
     });
   }
 
-  function drawTerrainReconstruction() {
-    drawPerspectiveTerrainOnCanvas(canvas3d, terrainCenterAlt);
-    if (!canvasSide) return;
-
-    const sctx = canvasSide.getContext("2d");
-    const sw = canvasSide.width;
-    const sh = canvasSide.height;
+  function drawTerrainSideProfile() {
+    const prep = prepareHiDpiCanvas(canvasSide);
+    if (!prep) return;
+    const { ctx: sctx, w: sw, h: sh } = prep;
     sctx.clearRect(0, 0, sw, sh);
 
     const baseLineY = sh * 0.56;
@@ -20119,14 +20693,14 @@ function initAzimuteGeo() {
     const rearDelta = rearSt && typeof rearSt.deltaElev === "number" ? rearSt.deltaElev : 0;
     const frontDelta = frontSt && typeof frontSt.deltaElev === "number" ? frontSt.deltaElev : 0;
 
-    const rearY = Math.max(24, Math.min(sh - 26, baseLineY - rearDelta * 1.4));
-    const frontY = Math.max(24, Math.min(sh - 26, baseLineY - frontDelta * 1.4));
+    const rearY = Math.max(24, Math.min(sh - 26, baseLineY - rearDelta * 1.6));
+    const frontY = Math.max(24, Math.min(sh - 26, baseLineY - frontDelta * 1.6));
 
     const pLeft = { x: 54, y: rearY };
     const pMid = { x: sw / 2, y: baseLineY };
     const pRight = { x: sw - 54, y: frontY };
 
-    sctx.fillStyle = "rgba(197, 168, 105, 0.12)";
+    sctx.fillStyle = "rgba(197, 168, 105, 0.14)";
     sctx.beginPath();
     sctx.moveTo(pLeft.x, sh - 12);
     sctx.lineTo(pLeft.x, pLeft.y);
@@ -20164,12 +20738,39 @@ function initAzimuteGeo() {
         sctx.font = "bold 10px sans-serif";
         sctx.fillText(item.st.name.slice(0, 20), item.pt.x, sh - 18);
         if (item.tag !== "VOCÊ" && typeof item.st.deltaElev === "number") {
-          const d = item.st.deltaElev;
+          const d = Math.round(item.st.deltaElev);
           sctx.fillStyle = d >= 2 ? "#4ADE80" : d <= -2 ? "#F87171" : "#9E9A8F";
           sctx.fillText(`${d >= 0 ? "+" : ""}${d}m`, item.pt.x, sh - 6);
         }
       }
     });
+  }
+
+  function startEspectro3dLoop() {
+    if (espectroAnimRunning) return;
+    espectroAnimRunning = true;
+
+    function frame() {
+      const modalOpen = terrainModal && terrainModal.classList.contains("is-open");
+      const incOpen = incOverlay && incOverlay.classList.contains("is-open");
+
+      if (!modalOpen && !incOpen) {
+        espectroAnimRunning = false;
+        return;
+      }
+
+      espectroAnimPhase += 0.035;
+      if (modalOpen) {
+        renderAnimatedEspectroMesh(canvas3d, terrainCenterAlt, espectroAnimPhase);
+      }
+      if (incOpen) {
+        renderAnimatedEspectroMesh(incReliefCanvas, incAltLabelEl, espectroAnimPhase);
+      }
+
+      requestAnimationFrame(frame);
+    }
+
+    requestAnimationFrame(frame);
   }
 
   window.azimuteToggleTerrainModal = function (forceState) {
@@ -20182,7 +20783,8 @@ function initAzimuteGeo() {
       if (lastPos) {
         fetchNearbyStreets(lastPos[0], lastPos[1], false);
       }
-      drawTerrainReconstruction();
+      drawTerrainSideProfile();
+      startEspectro3dLoop();
     }
   };
 
@@ -20250,7 +20852,7 @@ function initAzimuteGeo() {
     } else if (followGps && Date.now() >= userTouchPauseUntil) {
       map.easeTo({
         center: [longitude, latitude],
-        pitch: isNavigationStarted ? 52 : 0,
+        pitch: isNavigationStarted ? 52 : map.getPitch(),
         duration: 680,
         easing: (t) => 1 - Math.pow(1 - t, 2)
       });
@@ -20309,3 +20911,4 @@ if (document.readyState === "loading") {
 </script>
 </body>
 </html>
+        
