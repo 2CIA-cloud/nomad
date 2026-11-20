@@ -20909,8 +20909,9 @@ if (document.readyState === "loading") {
   initAzimuteGeo();
 }
 </script>
-<!-- ================= ETAPA 1 UNIFICADA: ORBE 16 PONTOS, SONAR, ESPECTRO E GAVETA LATERAL ================= -->
+<!-- ================= ETAPA 1 REFINADA: ZERO LAG, SONAR REAL, TOPO ATAK E GAVETA ================= -->
 <style>
+  /* 1. BOTÃO SONAR NO ORBE (100% SILENCIOSO) */
   .az-orbe-sonar-btn {
     position: relative;
     display: inline-flex;
@@ -20943,58 +20944,150 @@ if (document.readyState === "loading") {
   .az-orbe-sonar-btn.is-offcenter .az-orbe-sonar-pulse {
     background: #F59E0B;
   }
+  .az-orbe-sonar-btn.is-syncing {
+    border-color: #4ADE80 !important;
+    color: #BBF7D0 !important;
+  }
+  .az-orbe-sonar-btn.is-syncing .az-orbe-sonar-pulse {
+    background: #4ADE80;
+  }
   .az-orbe-sonar-btn.is-offcenter .az-orbe-sonar-pulse::before,
-  .az-orbe-sonar-btn.is-offcenter .az-orbe-sonar-pulse::after,
-  .az-orbe-sonar-btn.is-pinging .az-orbe-sonar-pulse::before,
-  .az-orbe-sonar-btn.is-pinging .az-orbe-sonar-pulse::after {
+  .az-orbe-sonar-btn.is-syncing .az-orbe-sonar-pulse::before {
     content: "";
     position: absolute;
     inset: -4px;
     border-radius: 50%;
     border: 1.5px solid currentColor;
-    animation: azSonarRipple 1.5s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+    animation: azSonarRipple 1.2s ease-out infinite;
     pointer-events: none;
-  }
-  .az-orbe-sonar-btn.is-offcenter .az-orbe-sonar-pulse::after,
-  .az-orbe-sonar-btn.is-pinging .az-orbe-sonar-pulse::after {
-    animation-delay: 0.75s;
   }
 
   .az-geo-locate-fab.is-offcenter {
     border-color: #F59E0B !important;
     color: #FDE68A !important;
   }
-  .az-geo-locate-fab.is-offcenter::before,
-  .az-geo-locate-fab.is-offcenter::after {
-    content: "";
-    position: absolute;
-    inset: -4px;
-    border-radius: 50%;
-    border: 2px solid #C5A869;
-    animation: azSonarRipple 1.6s cubic-bezier(0.16, 1, 0.3, 1) infinite;
-    pointer-events: none;
-  }
-  .az-geo-locate-fab.is-offcenter::after {
-    animation-delay: 0.8s;
-  }
 
   @keyframes azSonarRipple {
-    0% { transform: scale(0.85); opacity: 0.95; }
-    100% { transform: scale(2.45); opacity: 0; }
+    0% { transform: scale(0.9); opacity: 0.9; }
+    100% { transform: scale(2.3); opacity: 0; }
   }
 
-  /* Modo Incursão enquadrado sem cortar topo nem base */
+  /* 2. MODO INCURSÃO — MÁXIMO ESPAÇO VERTICAL + BARRA TOPO ATAK */
   #azIncursionOverlay.is-open {
     overflow: hidden !important;
-    padding: 6px 34px 6px 6px !important;
+    padding: 34px 32px 4px 4px !important;
     background: #0A0A0A !important;
   }
+  #azIncursionOverlay.is-open .az-inc-body {
+    height: calc(100vh - 40px) !important;
+    max-height: calc(100vh - 40px) !important;
+    gap: 4px !important;
+  }
 
-  /* Gaveta inferior que sobe/desce por baixo do mapa parado */
+  #azIncAtakTopBar {
+    position: fixed;
+    top: 3px;
+    left: 4px;
+    right: 32px;
+    height: 28px;
+    z-index: 100015;
+    background: rgba(13, 13, 13, 0.96);
+    border: 1px solid #28271F;
+    border-radius: 6px;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 6px;
+    gap: 6px;
+    font-size: 10px;
+    color: #F2F0EA;
+  }
+  #azIncursionOverlay.is-open ~ #azIncAtakTopBar,
+  body.az-inc-active #azIncAtakTopBar {
+    display: flex;
+  }
+
+  .az-atak-med-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 5px;
+    background: #1A1111;
+    border: 1px solid #EF4444;
+    color: #EF4444;
+    font-weight: 900;
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .az-atak-hud-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #161616;
+    border: 1px solid #28271F;
+    border-radius: 4px;
+    padding: 2px 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .az-atak-hud-street {
+    flex: 1 1 auto;
+    min-width: 90px;
+    font-weight: 700;
+    color: #F2F0EA;
+  }
+  .az-atak-hud-net {
+    flex: 0 1 auto;
+    max-width: 145px;
+    font-weight: 800;
+    color: #C5A869;
+  }
+  .az-atak-hud-clock {
+    flex-shrink: 0;
+    font-family: monospace;
+    font-weight: 700;
+    color: #9E9A8F;
+  }
+
+  /* Alternador 1-toque SONAR / ESPECTRO no painel lateral do Modo Incursão */
+  #azIncModeSwitchBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px;
+    margin-bottom: 4px;
+    background: #121212;
+    border: 1px solid #28271F;
+    border-radius: 6px;
+    padding: 2px;
+  }
+  .az-inc-tab-btn {
+    flex: 1;
+    background: transparent;
+    color: #9E9A8F;
+    border: none;
+    border-radius: 4px;
+    padding: 3px 6px;
+    font-size: 9.5px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+  }
+  .az-inc-tab-btn.is-active {
+    background: #C5A869;
+    color: #0D0D0D;
+  }
+
+  /* 3. GAVETA INFERIOR E BOTÃO DESLIZANTE VERTICAL (MAPA FIXO) */
   #azUnderMapDrawer {
     position: fixed !important;
-    left: 6px !important;
-    right: 34px !important;
+    left: 4px !important;
+    right: 32px !important;
     bottom: 0 !important;
     max-height: 78vh !important;
     overflow-y: auto !important;
@@ -21002,15 +21095,12 @@ if (document.readyState === "loading") {
     border-top: 2px solid #C5A869 !important;
     border-left: 1px solid #28271F !important;
     border-right: 1px solid #28271F !important;
-    border-radius: 14px 14px 0 0 !important;
-    padding: 10px !important;
+    border-radius: 12px 12px 0 0 !important;
+    padding: 8px !important;
     z-index: 100005 !important;
-    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.92) !important;
     transform: translateY(100%);
-    transition: transform 0.08s linear;
   }
 
-  /* Botão deslizante lateral (eixo vertical) em modo horizontal */
   #azVerticalGripLandscape {
     display: none !important;
   }
@@ -21018,10 +21108,10 @@ if (document.readyState === "loading") {
     #azVerticalGripLandscape {
       display: flex !important;
       position: fixed !important;
-      top: 12% !important;
-      bottom: 12% !important;
-      right: 5px !important;
-      width: 24px !important;
+      top: 10% !important;
+      bottom: 10% !important;
+      right: 4px !important;
+      width: 22px !important;
       z-index: 100020 !important;
       background: rgba(13, 13, 13, 0.95) !important;
       border: 1.5px solid #C5A869 !important;
@@ -21033,25 +21123,25 @@ if (document.readyState === "loading") {
       touch-action: none !important;
       user-select: none !important;
       cursor: grab !important;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.9) !important;
-    }
-    #azVerticalGripLandscape:active {
-      cursor: grabbing !important;
-      background: #161616 !important;
     }
     #azVerticalGripThumb {
       display: block !important;
-      width: 14px !important;
-      height: 46px !important;
+      width: 12px !important;
+      height: 44px !important;
       border-radius: 999px !important;
       background: #C5A869 !important;
-      border: 1px solid #0D0D0D !important;
-      box-shadow: 0 0 8px rgba(197, 168, 105, 0.7) !important;
       pointer-events: none !important;
       transform: translateY(0px);
     }
   }
 </style>
+
+<div id="azIncAtakTopBar" aria-label="Barra Tática Modo Incursão">
+  <button type="button" class="az-atak-med-btn" id="azAtakRedCrossBtn" title="APH / Emergência Médica">+</button>
+  <div class="az-atak-hud-pill az-atak-hud-street" id="azAtakStreetText">QTH: Localizando via...</div>
+  <div class="az-atak-hud-pill az-atak-hud-net" id="azAtakNetText">REDE: PMMG / RMBH</div>
+  <div class="az-atak-hud-pill az-atak-hud-clock" id="azAtakClockText">--/-- --:--</div>
+</div>
 
 <script>
 (function () {
@@ -21059,18 +21149,19 @@ if (document.readyState === "loading") {
 
   const state = {
     isOffCenter: false,
+    isSyncing: false,
     sonarWaveR: 0,
-    sonarActive: false,
-    spectrumPhase: 0,
+    sonarAnimId: null,
     scheduledOverlay: false,
     lastW: 360,
     lastH: 260,
     lastMatrix: null,
     openRatio: 0,
-    dragging: false
+    dragging: false,
+    incSideMode: "ESPECTRO" // "SONAR" ou "ESPECTRO"
   };
 
-  /* 1. ORBE DE 16 PONTOS + ANEL INTERNO + ONDA SONAR */
+  /* 1. ORBE 16 PONTOS + ONDA SONAR APENAS ENQUANTO SINCRONIZA */
   function drawOrbe16Overlay(canvas) {
     if (!canvas) canvas = document.getElementById("azQuadRingCanvas");
     if (!canvas) return;
@@ -21088,6 +21179,7 @@ if (document.readyState === "loading") {
       ctx.setTransform(state.lastMatrix);
     }
 
+    // Anel interno de precisão (72%)
     ctx.strokeStyle = "rgba(197, 168, 105, 0.22)";
     ctx.lineWidth = 1;
     ctx.setLineDash([2, 3]);
@@ -21096,6 +21188,7 @@ if (document.readyState === "loading") {
     ctx.stroke();
     ctx.setLineDash([]);
 
+    // 16 Pontos radiais (22.5°)
     for (let i = 0; i < 16; i++) {
       const deg = i * 22.5;
       const rad = ((deg - 90) * Math.PI) / 180;
@@ -21127,13 +21220,12 @@ if (document.readyState === "loading") {
       }
     }
 
-    if (state.sonarActive && state.sonarWaveR > 0) {
-      const maxR = outerR + 18;
+    // Desenha ondas de sonar SOMENTE durante a sincronização (para e limpa ao concluir)
+    if (state.isSyncing && state.sonarWaveR > 0) {
+      const maxR = outerR + 16;
       const alpha = Math.max(0, 1 - state.sonarWaveR / maxR);
-      ctx.strokeStyle = state.isOffCenter
-        ? `rgba(245, 158, 11, ${alpha.toFixed(2)})`
-        : `rgba(74, 222, 128, ${alpha.toFixed(2)})`;
-      ctx.lineWidth = 2.2;
+      ctx.strokeStyle = `rgba(197, 168, 105, ${alpha.toFixed(2)})`;
+      ctx.lineWidth = 2;
       ctx.beginPath();
       ctx.arc(cx, cy, state.sonarWaveR, 0, Math.PI * 2);
       ctx.stroke();
@@ -21164,7 +21256,76 @@ if (document.readyState === "loading") {
     }
   };
 
-  /* 2. BOTÃO SONAR SILENCIOSO */
+  /* 2. SINCRONIZAÇÃO DO SONAR (EMITE ONDAS ATÉ CENTRALIZAR E PARA LIMPO) */
+  function startSonarSyncCycle() {
+    if (state.sonarAnimId) {
+      cancelAnimationFrame(state.sonarAnimId);
+      state.sonarAnimId = null;
+    }
+
+    state.isSyncing = true;
+    state.sonarWaveR = 6;
+    syncSonarButtonUI();
+
+    const centerFab = document.getElementById("azGeoCenterFab");
+    if (centerFab) centerFab.click();
+
+    const startedAt = performance.now();
+    const syncDurationMs = 1500; // Emite 2 ondas completas enquanto centraliza e encerra
+
+    function step(now) {
+      const elapsed = now - startedAt;
+      if (elapsed >= syncDurationMs) {
+        state.isSyncing = false;
+        state.isOffCenter = false;
+        state.sonarWaveR = 0;
+        state.sonarAnimId = null;
+        syncSonarButtonUI();
+        if (typeof window.drawOrbeVectorAndRing === "function") {
+          window.drawOrbeVectorAndRing();
+        } else {
+          drawOrbe16Overlay();
+        }
+        return;
+      }
+
+      state.sonarWaveR += 1.6;
+      if (state.sonarWaveR > 88) {
+        state.sonarWaveR = 6;
+      }
+
+      if (typeof window.drawOrbeVectorAndRing === "function") {
+        window.drawOrbeVectorAndRing();
+      } else {
+        drawOrbe16Overlay();
+      }
+
+      state.sonarAnimId = requestAnimationFrame(step);
+    }
+
+    state.sonarAnimId = requestAnimationFrame(step);
+  }
+
+  function syncSonarButtonUI() {
+    const btn = document.getElementById("azOrbeSonarTriggerBtn");
+    const lbl = document.getElementById("azOrbeSonarLabel");
+    const fab = document.getElementById("azGeoCenterFab");
+    if (btn) {
+      btn.classList.toggle("is-offcenter", state.isOffCenter && !state.isSyncing);
+      btn.classList.toggle("is-syncing", state.isSyncing);
+      if (lbl) {
+        lbl.textContent = state.isSyncing
+          ? "SINCRONIZANDO..."
+          : state.isOffCenter
+          ? "DESVIO • SONAR"
+          : "SONAR";
+      }
+    }
+    if (fab) {
+      fab.classList.toggle("is-offcenter", state.isOffCenter && !state.isSyncing);
+    }
+  }
+
   function upgradePulsoToSonarButton() {
     document.querySelectorAll("button").forEach(function (btn) {
       if (btn.dataset.azSonarUpgraded === "1") return;
@@ -21174,127 +21335,145 @@ if (document.readyState === "loading") {
         btn.id = "azOrbeSonarTriggerBtn";
         btn.classList.add("az-orbe-sonar-btn");
         btn.innerHTML = '<span class="az-orbe-sonar-pulse"></span><span id="azOrbeSonarLabel">SONAR</span>';
-        btn.addEventListener("click", function () {
-          triggerSilentSonar(true);
-          const centerFab = document.getElementById("azGeoCenterFab");
-          if (centerFab) centerFab.click();
+        btn.addEventListener("click", function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          startSonarSyncCycle();
         });
       }
     });
   }
 
-  function triggerSilentSonar(recenter) {
-    state.sonarWaveR = 8;
-    state.sonarActive = true;
-    const btn = document.getElementById("azOrbeSonarTriggerBtn");
-    const fab = document.getElementById("azGeoCenterFab");
-    if (btn) {
-      btn.classList.add("is-pinging");
-      setTimeout(function () { btn.classList.remove("is-pinging"); }, 1400);
-    }
-    if (fab) {
-      fab.classList.add("is-pulse");
-      setTimeout(function () { fab.classList.remove("is-pulse"); }, 600);
-    }
-    if (recenter) {
-      state.isOffCenter = false;
-      syncOffCenterState();
-    }
-  }
+  /* 3. MODO INCURSÃO: REMOVE "MAPA INTERATIVO", ATUALIZA TOPO ATAK E TROCA SONAR/ESPECTRO */
+  function enhanceIncursionMode() {
+    const inc = document.getElementById("azIncursionOverlay");
+    const isOpen = Boolean(inc && inc.classList.contains("is-open"));
+    document.body.classList.toggle("az-inc-active", isOpen);
 
-  function syncOffCenterState() {
-    const btn = document.getElementById("azOrbeSonarTriggerBtn");
-    const lbl = document.getElementById("azOrbeSonarLabel");
-    const fab = document.getElementById("azGeoCenterFab");
-    if (btn) {
-      btn.classList.toggle("is-offcenter", state.isOffCenter);
-      if (lbl) lbl.textContent = state.isOffCenter ? "DESVIO • SONAR" : "SONAR";
-    }
-    if (fab) {
-      fab.classList.toggle("is-offcenter", state.isOffCenter);
-    }
-  }
+    if (!isOpen) return;
 
-  /* 3. ESPECTRO ANIMADO DO TERRENO */
-  function renderAnimatedSpectrum(canvasId, isSide) {
-    const canvas = document.getElementById(canvasId);
-    if (!canvas || canvas.offsetParent === null) return;
-
-    const rect = canvas.getBoundingClientRect();
-    if (rect.width < 20 || rect.height < 20) return;
-
-    const dpr = window.devicePixelRatio || 1;
-    if (canvas.width !== Math.round(rect.width * dpr) || canvas.height !== Math.round(rect.height * dpr)) {
-      canvas.width = Math.round(rect.width * dpr);
-      canvas.height = Math.round(rect.height * dpr);
-    }
-
-    const ctx = canvas.getContext("2d");
-    const w = rect.width;
-    const h = rect.height;
-    const t = state.spectrumPhase;
-
-    ctx.save();
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.clearRect(0, 0, w, h);
-
-    ctx.strokeStyle = "rgba(197, 168, 105, 0.12)";
-    ctx.lineWidth = 1;
-    for (let gy = h / 4; gy < h; gy += h / 4) {
-      ctx.beginPath();
-      ctx.moveTo(0, gy);
-      ctx.lineTo(w, gy);
-      ctx.stroke();
-    }
-
-    const rows = isSide ? 1 : 7;
-    for (let r = 0; r < rows; r++) {
-      const rowNorm = rows === 1 ? 0.5 : r / (rows - 1);
-      const baseY = isSide ? h * 0.62 : h * (0.28 + rowNorm * 0.54);
-      const amp = isSide ? h * 0.25 : h * 0.13;
-
-      ctx.beginPath();
-      for (let c = 0; c <= 32; c++) {
-        const u = c / 32;
-        const x = u * w;
-        const wave =
-          Math.sin(u * Math.PI * 3 + t + r * 0.55) * 0.5 +
-          Math.cos(u * Math.PI * 5 - t * 0.7 + r) * 0.3;
-        const y = baseY - wave * amp;
-        if (c === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
+    // Remove qualquer texto "MAPA INTERATIVO" que rouba altura no Modo Incursão
+    inc.querySelectorAll("div, span, p, small, label").forEach(function (el) {
+      if (el.children.length === 0 && /mapa\s+interativo/i.test(el.textContent || "")) {
+        el.style.display = "none";
       }
+    });
 
-      if (isSide) {
-        ctx.strokeStyle = "#C5A869";
-        ctx.lineWidth = 2.2;
-        ctx.stroke();
-        ctx.lineTo(w, h);
-        ctx.lineTo(0, h);
-        ctx.closePath();
-        const grad = ctx.createLinearGradient(0, h * 0.2, 0, h);
-        grad.addColorStop(0, "rgba(197, 168, 105, 0.3)");
-        grad.addColorStop(1, "rgba(13, 13, 13, 0.02)");
-        ctx.fillStyle = grad;
-        ctx.fill();
-      } else {
-        ctx.strokeStyle = r === 3 ? "#4ADE80" : `rgba(197, 168, 105, ${(0.28 + rowNorm * 0.62).toFixed(2)})`;
-        ctx.lineWidth = r === 3 ? 1.8 : 1.1;
-        ctx.stroke();
+    // Atualiza Data/Hora no topo ATAK
+    const now = new Date();
+    const dd = String(now.getDate()).padStart(2, "0");
+    const mm = String(now.getMonth() + 1).padStart(2, "0");
+    const hh = String(now.getHours()).padStart(2, "0");
+    const min = String(now.getMinutes()).padStart(2, "0");
+    const clockEl = document.getElementById("azAtakClockText");
+    if (clockEl) clockEl.textContent = `${dd}/${mm} ${hh}:${min}`;
+
+    // Atualiza Rua Atual a partir do QTH ativo na tela
+    const streetEl = document.getElementById("azAtakStreetText");
+    if (streetEl) {
+      const qthCandidates = document.querySelectorAll("#azGeoQthStreet, #azHomeQthStreet, .az-qth-street, [data-qth-street]");
+      let foundStreet = "";
+      qthCandidates.forEach(function (c) {
+        const t = (c.textContent || "").trim();
+        if (t && t.length > 3 && !/localizando/i.test(t) && !foundStreet) {
+          foundStreet = t;
+        }
+      });
+      if (!foundStreet && typeof window.cachedCurrentStreet === "string" && window.cachedCurrentStreet.trim()) {
+        foundStreet = window.cachedCurrentStreet.trim();
+      }
+      if (foundStreet) {
+        streetEl.textContent = foundStreet;
       }
     }
 
-    const scanX = ((t * 28) % (w + 40)) - 20;
-    const scanGrad = ctx.createLinearGradient(scanX - 18, 0, scanX + 4, 0);
-    scanGrad.addColorStop(0, "rgba(74, 222, 128, 0)");
-    scanGrad.addColorStop(1, "rgba(74, 222, 128, 0.45)");
-    ctx.fillStyle = scanGrad;
-    ctx.fillRect(scanX - 18, 0, 22, h);
+    // Atualiza Rede do Batalhão ativo
+    const netEl = document.getElementById("azAtakNetText");
+    if (netEl) {
+      const unitCandidates = document.querySelectorAll("#azGeoNearestUnit, #azHomeNearestUnit, .az-nearest-unit");
+      let foundUnit = "";
+      unitCandidates.forEach(function (u) {
+        const t = (u.textContent || "").trim();
+        if (t && /\d+º\s*BPM|RPM|CIA/i.test(t) && !foundUnit) {
+          foundUnit = t.split("•")[0].trim();
+        }
+      });
+      if (foundUnit) {
+        netEl.textContent = "REDE: " + foundUnit;
+      }
+    }
 
-    ctx.restore();
+    // Injeta alternador de 1 toque (SONAR / ESPECTRO) no painel lateral do Modo Incursão
+    const reliefCanvas = document.getElementById("azIncReliefCanvas");
+    if (reliefCanvas && reliefCanvas.parentElement && !document.getElementById("azIncModeSwitchBar")) {
+      const holder = reliefCanvas.parentElement;
+      const bar = document.createElement("div");
+      bar.id = "azIncModeSwitchBar";
+      bar.innerHTML =
+        '<button type="button" class="az-inc-tab-btn" data-inc-tab="SONAR">SONAR (ORBE)</button>' +
+        '<button type="button" class="az-inc-tab-btn is-active" data-inc-tab="ESPECTRO">ESPECTRO</button>';
+      holder.insertBefore(bar, holder.firstChild);
+
+      bar.querySelectorAll("[data-inc-tab]").forEach(function (tabBtn) {
+        tabBtn.addEventListener("click", function () {
+          const mode = tabBtn.getAttribute("data-inc-tab");
+          state.incSideMode = mode;
+          bar.querySelectorAll(".az-inc-tab-btn").forEach(function (b) {
+            b.classList.toggle("is-active", b === tabBtn);
+          });
+          applyIncursionSideMode(holder, reliefCanvas);
+        });
+      });
+    }
   }
 
-  /* 4. GAVETA INFERIOR E BOTÃO DESLIZANTE VERTICAL (MAPA FIXO) */
+  function applyIncursionSideMode(holder, reliefCanvas) {
+    let orbeMirror = document.getElementById("azIncOrbeMirrorCanvas");
+    if (state.incSideMode === "SONAR") {
+      reliefCanvas.style.display = "none";
+      if (!orbeMirror) {
+        orbeMirror = document.createElement("canvas");
+        orbeMirror.id = "azIncOrbeMirrorCanvas";
+        orbeMirror.style.width = "100%";
+        orbeMirror.style.height = "130px";
+        orbeMirror.style.display = "block";
+        orbeMirror.style.cursor = "pointer";
+        orbeMirror.title = "Toque para emitir pulso Sonar";
+        orbeMirror.addEventListener("click", startSonarSyncCycle);
+        holder.appendChild(orbeMirror);
+      }
+      orbeMirror.style.display = "block";
+      const src = document.getElementById("azQuadRingCanvas");
+      if (src) {
+        orbeMirror.width = src.width || 320;
+        orbeMirror.height = src.height || 220;
+        const mctx = orbeMirror.getContext("2d");
+        mctx.clearRect(0, 0, orbeMirror.width, orbeMirror.height);
+        mctx.drawImage(src, 0, 0, orbeMirror.width, orbeMirror.height);
+      }
+    } else {
+      if (orbeMirror) orbeMirror.style.display = "none";
+      reliefCanvas.style.display = "block";
+    }
+  }
+
+  /* 4. BOTÃO CRUZ VERMELHA NO TOPO DO MODO INCURSÃO */
+  function bindAtakTopButtons() {
+    const medBtn = document.getElementById("azAtakRedCrossBtn");
+    if (medBtn && medBtn.dataset.azBound !== "1") {
+      medBtn.dataset.azBound = "1";
+      medBtn.addEventListener("click", function () {
+        const incExit = document.getElementById("azIncExitBtn");
+        if (incExit) incExit.click();
+        setTimeout(function () {
+          const aphTab = document.querySelector('[data-tab="aph"], [data-page="aph"], #tabAph');
+          if (aphTab) aphTab.click();
+        }, 120);
+      });
+    }
+  }
+
+  /* 5. GAVETA INFERIOR E BOTÃO DESLIZANTE VERTICAL (MAPA FIXO) */
   function ensureUnderMapDrawer() {
     let drawer = document.getElementById("azUnderMapDrawer");
     if (!drawer) {
@@ -21393,7 +21572,7 @@ if (document.readyState === "loading") {
     function handlePointerY(clientY) {
       const rect = track.getBoundingClientRect();
       const thumb = document.getElementById("azVerticalGripThumb");
-      const thumbH = thumb ? thumb.offsetHeight : 46;
+      const thumbH = thumb ? thumb.offsetHeight : 44;
       const usableH = Math.max(1, rect.height - thumbH - 8);
       const pos = Math.min(usableH, Math.max(0, clientY - rect.top - thumbH / 2));
       setDrawerRatio(pos / usableH);
@@ -21427,69 +21606,29 @@ if (document.readyState === "loading") {
 
     track.addEventListener("pointerup", endDrag);
     track.addEventListener("pointercancel", endDrag);
-
-    window.addEventListener("scroll", function () {
-      if (state.dragging) return;
-      const inc = document.getElementById("azIncursionOverlay");
-      if (inc && inc.classList.contains("is-open")) return;
-      const maxScroll = Math.max(
-        0,
-        document.documentElement.scrollHeight - window.innerHeight,
-        document.body.scrollHeight - window.innerHeight
-      );
-      if (maxScroll > 0) {
-        state.openRatio = Math.min(1, Math.max(0, window.scrollY / maxScroll));
-        const thumb = document.getElementById("azVerticalGripThumb");
-        if (thumb && track) {
-          const usableH = Math.max(1, track.clientHeight - thumb.offsetHeight - 8);
-          thumb.style.transform = `translateY(${Math.round(state.openRatio * usableH)}px)`;
-        }
-      }
-    }, { passive: true });
   }
 
-  /* 5. LOOP PRINCIPAL */
-  function tick() {
-    upgradePulsoToSonarButton();
-    initVerticalGripDrawer();
-    ensureUnderMapDrawer();
-
-    const fab = document.getElementById("azGeoCenterFab");
-    if (fab && fab.dataset.azCenterHooked !== "1") {
-      fab.dataset.azCenterHooked = "1";
-      fab.addEventListener("click", function () {
-        triggerSilentSonar(true);
-      });
-    }
-
-    if (state.sonarActive) {
-      state.sonarWaveR += 1.5;
-      if (state.sonarWaveR > 96) {
-        state.sonarWaveR = 0;
-        state.sonarActive = false;
-      }
-      drawOrbe16Overlay();
-    }
-
-    state.spectrumPhase += 0.035;
-    renderAnimatedSpectrum("azTerrain3dCanvas", false);
-    renderAnimatedSpectrum("azTerrainSideCanvas", true);
-    renderAnimatedSpectrum("azIncReliefCanvas", false);
-
-    requestAnimationFrame(tick);
-  }
-
+  // Detecta arraste no mapa para sinalizar desvio (sem loop pesado)
   document.addEventListener("pointermove", function (ev) {
     if (ev.buttons > 0 && ev.target && ev.target.closest && ev.target.closest("#azGeoMap")) {
-      if (!state.isOffCenter) {
+      if (!state.isOffCenter && !state.isSyncing) {
         state.isOffCenter = true;
-        syncOffCenterState();
-        triggerSilentSonar(false);
+        syncSonarButtonUI();
       }
     }
   }, { passive: true });
 
-  requestAnimationFrame(tick);
+  // Atualização leve a cada 1 segundo (zero lag)
+  function lightHeartbeat() {
+    upgradePulsoToSonarButton();
+    initVerticalGripDrawer();
+    ensureUnderMapDrawer();
+    enhanceIncursionMode();
+    bindAtakTopButtons();
+  }
+
+  lightHeartbeat();
+  setInterval(lightHeartbeat, 1000);
 })();
 </script></body>
 </html>
