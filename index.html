@@ -1429,6 +1429,46 @@
       font-weight: 800;
     }
 
+    .az-geo-layer-chip {
+      background: var(--geo-bg);
+      color: var(--geo-muted);
+      border: 1px solid var(--geo-border);
+      border-radius: 8px;
+      padding: 6px 9px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .az-geo-layer-chip .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+      opacity: 0.45;
+    }
+
+    .az-geo-layer-chip.is-on {
+      color: #F2F0EA;
+      border-color: #C5A869;
+      background: #1C1B16;
+    }
+
+    .az-geo-layer-chip.is-on .dot {
+      opacity: 1;
+      box-shadow: 0 0 6px currentColor;
+    }
+
+    .az-geo-layer-count {
+      font-size: 10px;
+      color: var(--geo-muted);
+      font-family: monospace;
+    }
+
     .az-geo-actions {
       display: flex;
       flex-wrap: wrap;
@@ -1577,6 +1617,19 @@
     .az-geo-popup-card {
       min-width: 195px;
       color: #F2F0EA;
+    }
+
+    .az-geo-popup-badge {
+      display: inline-block;
+      font-size: 9px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-bottom: 4px;
+      background: #0D0D0D;
+      border: 1px solid currentColor;
     }
 
     .az-geo-popup-actions {
@@ -1942,7 +1995,7 @@
   <div id="azGeoDrawerBody" class="az-geo-drawer-body">
     <div class="az-geo-topbar">
       <div class="az-geo-search-wrap">
-        <input id="azGeoSearchInput" class="az-geo-input" type="text" placeholder="Buscar rua, numero, bairro (ex: Arauto ou Rua Perimetral 204)" />
+        <input id="azGeoSearchInput" class="az-geo-input" type="text" placeholder="Buscar rua, unidade, hospital, BSC, Deplan..." />
         <button type="button" id="azGeoSearchBtn" class="az-geo-btn">Buscar</button>
       </div>
     </div>
@@ -1995,6 +2048,7 @@
     </div>
 
     <div class="az-geo-actions">
+      <button type="button" id="azGeoLayersToggleBtn" class="az-geo-btn active">Camadas</button>
       <button type="button" id="azGeoAddPinBtn" class="az-geo-btn subtle">+ Alfinete</button>
       <button type="button" id="azGeoClearBtn" class="az-geo-btn subtle">Limpar</button>
       <button type="button" id="azGeoMunToggleBtn" class="az-geo-btn subtle">Municípios</button>
@@ -2005,6 +2059,33 @@
         </svg>
         <span>Configurações</span>
       </button>
+    </div>
+
+    <div id="azGeoLayersBox" class="az-geo-collapsible is-open">
+      <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:6px;">
+        <div class="az-geo-group" id="azGeoLayerChips">
+          <button type="button" class="az-geo-layer-chip is-on" data-layer="unidades">
+            <span class="dot" style="background:#C5A869; color:#C5A869;"></span>
+            <span>Unidades</span>
+            <span class="az-geo-layer-count" id="azCntUnidades">0</span>
+          </button>
+          <button type="button" class="az-geo-layer-chip is-on" data-layer="hospitais">
+            <span class="dot" style="background:#EF4444; color:#EF4444;"></span>
+            <span>Hospitais</span>
+            <span class="az-geo-layer-count" id="azCntHospitais">0</span>
+          </button>
+          <button type="button" class="az-geo-layer-chip is-on" data-layer="bscs">
+            <span class="dot" style="background:#38BDF8; color:#38BDF8;"></span>
+            <span>BSCs</span>
+            <span class="az-geo-layer-count" id="azCntBscs">0</span>
+          </button>
+          <button type="button" class="az-geo-layer-chip is-on" data-layer="deplans">
+            <span class="dot" style="background:#4ADE80; color:#4ADE80;"></span>
+            <span>Deplans</span>
+            <span class="az-geo-layer-count" id="azCntDeplans">0</span>
+          </button>
+        </div>
+      </div>
     </div>
 
     <div id="azGeoMunBox" class="az-geo-collapsible">
@@ -16833,6 +16914,14 @@ function initAzimuteGeo() {
     "https://overpass.kumi.systems/api/interpreter"
   ];
 
+  const LAYER_META = {
+    unidades: { label: "Unidade", color: "#C5A869" },
+    hospitais: { label: "Hospital", color: "#EF4444" },
+    bscs: { label: "BSC", color: "#38BDF8" },
+    deplans: { label: "Deplan", color: "#4ADE80" },
+    extra: { label: "Ponto", color: "#F2F0EA" }
+  };
+
   let mapTheme = localStorage.getItem("az_geo_map_theme") || "dark";
 
   const searchInput = document.getElementById("azGeoSearchInput");
@@ -16848,6 +16937,9 @@ function initAzimuteGeo() {
   const elevToggleBtn = document.getElementById("azGeoElevToggleBtn");
   const clearBtn = document.getElementById("azGeoClearBtn");
   const addPinBtn = document.getElementById("azGeoAddPinBtn");
+  const layersToggleBtn = document.getElementById("azGeoLayersToggleBtn");
+  const layersBox = document.getElementById("azGeoLayersBox");
+  const layerChipsWrap = document.getElementById("azGeoLayerChips");
   const munToggleBtn = document.getElementById("azGeoMunToggleBtn");
   const cfgToggleBtn = document.getElementById("azGeoCfgToggleBtn");
   const munBox = document.getElementById("azGeoMunBox");
@@ -16937,10 +17029,9 @@ function initAzimuteGeo() {
   let userTouchPauseUntil = 0;
   let lastMapBearingApplied = 0;
 
-  // Trava exclusiva do Quadrante (25 graus + 1.5s) para impedir que torca sozinho
   let lastQuadHeading = null;
   let lastQuadUpdateTime = 0;
-  let lastQuadStreetSource = ""; // "vector" | "overpass" | "photon"
+  let lastQuadStreetSource = "";
 
   let animCurrentPos = null;
   let animStartPos = null;
@@ -16961,6 +17052,20 @@ function initAzimuteGeo() {
   let headingUpMode = true;
   let firstGpsFix = true;
   let localPoints = [];
+
+  // Estado das camadas JSON (Unidades, Hospitais, BSCs, Deplans)
+  let datasetPoints = {
+    unidades: [],
+    hospitais: [],
+    bscs: [],
+    deplans: []
+  };
+  let activeLayers = {
+    unidades: localStorage.getItem("az_layer_unidades") !== "0",
+    hospitais: localStorage.getItem("az_layer_hospitais") !== "0",
+    bscs: localStorage.getItem("az_layer_bscs") !== "0",
+    deplans: localStorage.getItem("az_layer_deplans") !== "0"
+  };
 
   let currentTravelMode = "carro";
   let currentDestination = null;
@@ -17002,7 +17107,6 @@ function initAzimuteGeo() {
     return diff;
   }
 
-  // Compensacao nativa exclusiva de rotacao da tela (0° em pe, +90° girado p/ esquerda, 270°/-90° p/ direita)
   function getNativeScreenAngle() {
     if (window.screen && window.screen.orientation && typeof window.screen.orientation.angle === "number") {
       return normalizeAngle(window.screen.orientation.angle);
@@ -17030,7 +17134,6 @@ function initAzimuteGeo() {
     return normalizeAngle(map.getBearing());
   }
 
-  // Referencia unificada para o Quadrante: usa o topo do mapa quando aberto para sempre bater 100% com a tela
   function getQuadranteReferenceHeading() {
     const drawerOpen = document.getElementById("azGeoDrawerBody")?.classList.contains("is-open");
     if (drawerOpen && map) {
@@ -17097,7 +17200,6 @@ function initAzimuteGeo() {
     }
   }
 
-  // Reajusta imediatamente quando o usuario gira o celular entre vertical e horizontal
   function handleScreenOrientationChange() {
     compassSamples = [];
     userTouchPauseUntil = 0;
@@ -17404,11 +17506,37 @@ function initAzimuteGeo() {
           type: "circle",
           source: "az-local-src",
           paint: {
-            "circle-radius": 5,
-            "circle-color": "#161616",
-            "circle-stroke-color": "#C5A869",
-            "circle-stroke-width": 1.5
+            "circle-radius": ["interpolate", ["linear"], ["zoom"], 11, 5, 16, 8],
+            "circle-color": ["get", "color"],
+            "circle-stroke-color": "#0D0D0D",
+            "circle-stroke-width": 2
           }
+        });
+
+        map.addLayer({
+          id: "az-local-labels",
+          type: "symbol",
+          source: "az-local-src",
+          minzoom: 13.5,
+          layout: {
+            "text-field": ["get", "shortName"],
+            "text-size": 11,
+            "text-offset": [0, 1.35],
+            "text-anchor": "top",
+            "text-max-width": 12
+          },
+          paint: {
+            "text-color": mapTheme === "dark" ? "#F2F0EA" : "#0D0D0D",
+            "text-halo-color": mapTheme === "dark" ? "#0D0D0D" : "#FFFFFF",
+            "text-halo-width": 2
+          }
+        });
+
+        map.on("mouseenter", "az-local-circles", () => {
+          map.getCanvas().style.cursor = "pointer";
+        });
+        map.on("mouseleave", "az-local-circles", () => {
+          map.getCanvas().style.cursor = "";
         });
 
         map.on("click", "az-local-circles", (e) => {
@@ -17416,9 +17544,9 @@ function initAzimuteGeo() {
           const f = e.features[0];
           const [lng, lat] = f.geometry.coordinates;
           const props = f.properties || {};
-          new maplibregl.Popup({ offset: 12 })
+          new maplibregl.Popup({ offset: 14 })
             .setLngLat([lng, lat])
-            .setHTML(buildPopupHtml(props.name || "Ponto", props.subtitle || "", lat, lng, null))
+            .setHTML(buildPopupHtml(props.name || "Ponto", props.subtitle || "", lat, lng, null, props.category || "extra"))
             .addTo(map);
         });
       }
@@ -17464,7 +17592,7 @@ function initAzimuteGeo() {
     ensureLocalLayers();
     ensureRouteLayers(map, "az-route-src", "az-route-outline", "az-route-line", 6);
     if (activeRouteCoords.length) updateRouteSources();
-    if (localPoints.length) renderLocalLayer(localPoints);
+    refreshAllMapMarkersLayer();
   }
 
   map.on("style.load", setupCustomMapLayers);
@@ -17508,6 +17636,165 @@ function initAzimuteGeo() {
         if (radarMap) {
           radarMap.setStyle(STYLE_URLS[mapTheme] || STYLE_URLS.dark);
         }
+      });
+    });
+  }
+
+  // Extrator flexivel para ler unidades_1bpm.json, hospitais_1bpm.json, bsc_1bpm.json, deplan_1bpm.json e batalhao_22.json
+  function flattenJsonRecords(raw) {
+    const out = [];
+    const seen = new Set();
+
+    function walk(node) {
+      if (!node || typeof node !== "object" || seen.has(node)) return;
+      seen.add(node);
+
+      if (Array.isArray(node)) {
+        node.forEach(walk);
+        return;
+      }
+
+      const lat = parseFloat(
+        node.lat ?? node.latitude ?? node.y ?? node.coordenadas?.lat ?? node.coordenadas?.latitude ?? node.geometry?.coordinates?.[1]
+      );
+      const lng = parseFloat(
+        node.lng ?? node.lon ?? node.longitude ?? node.x ?? node.coordenadas?.lng ?? node.coordenadas?.lon ?? node.coordenadas?.longitude ?? node.geometry?.coordinates?.[0]
+      );
+
+      if (!Number.isNaN(lat) && !Number.isNaN(lng) && Math.abs(lat) > 1 && Math.abs(lng) > 1) {
+        const props = node.properties || node;
+        const name = String(
+          props.nome || props.name || props.unidade || props.titulo || props.hospital || props.bsc || props.deplan || props.cia || ""
+        ).trim();
+        const addr = String(props.endereco || props.address || props.logradouro || props.bairro || props.municipio || "").trim();
+        const phone = String(props.telefone || props.tel || props.fone || props.contato || "").trim();
+        const sub = [addr, phone].filter(Boolean).join(" • ");
+
+        if (name) {
+          out.push({ name, subtitle: sub, lat, lng });
+        }
+      }
+
+      Object.values(node).forEach(walk);
+    }
+
+    walk(raw);
+    return out;
+  }
+
+  function dedupeLayerPoints(arr) {
+    const mapUnique = new Map();
+    arr.forEach((p) => {
+      const key = `${p.name.toLowerCase()}_${p.lat.toFixed(4)}_${p.lng.toFixed(4)}`;
+      if (!mapUnique.has(key)) mapUnique.set(key, p);
+    });
+    return Array.from(mapUnique.values());
+  }
+
+  function updateLayerCountersUi() {
+    const cUni = document.getElementById("azCntUnidades");
+    const cHosp = document.getElementById("azCntHospitais");
+    const cBsc = document.getElementById("azCntBscs");
+    const cDep = document.getElementById("azCntDeplans");
+    if (cUni) cUni.textContent = String(datasetPoints.unidades.length);
+    if (cHosp) cHosp.textContent = String(datasetPoints.hospitais.length);
+    if (cBsc) cBsc.textContent = String(datasetPoints.bscs.length);
+    if (cDep) cDep.textContent = String(datasetPoints.deplans.length);
+  }
+
+  function refreshAllMapMarkersLayer() {
+    if (!ensureLocalLayers()) {
+      map.once("idle", refreshAllMapMarkersLayer);
+      return;
+    }
+
+    const merged = [];
+    ["unidades", "hospitais", "bscs", "deplans"].forEach((cat) => {
+      if (!activeLayers[cat]) return;
+      const meta = LAYER_META[cat];
+      datasetPoints[cat].forEach((p) => {
+        merged.push({
+          ...p,
+          category: cat,
+          color: meta.color
+        });
+      });
+    });
+
+    localPoints.forEach((p) => {
+      if (typeof p.lat === "number" && typeof p.lng === "number") {
+        merged.push({
+          name: p.name || "Ponto",
+          subtitle: p.subtitle || "",
+          lat: p.lat,
+          lng: p.lng,
+          category: p.category || "extra",
+          color: p.color || LAYER_META.extra.color
+        });
+      }
+    });
+
+    const features = merged.map((p) => ({
+      type: "Feature",
+      geometry: { type: "Point", coordinates: [p.lng, p.lat] },
+      properties: {
+        name: p.name,
+        shortName: p.name.length > 26 ? p.name.slice(0, 24) + "…" : p.name,
+        subtitle: p.subtitle || "",
+        category: p.category,
+        color: p.color
+      }
+    }));
+
+    map.getSource("az-local-src").setData({ type: "FeatureCollection", features });
+  }
+
+  async function loadRepositoryGeoDatasets() {
+    const sources = [
+      { file: "unidades_1bpm.json", cat: "unidades" },
+      { file: "batalhao_22.json", cat: "unidades" },
+      { file: "dados.json", cat: "unidades" },
+      { file: "hospitais_1bpm.json", cat: "hospitais" },
+      { file: "bsc_1bpm.json", cat: "bscs" },
+      { file: "deplan_1bpm.json", cat: "deplans" }
+    ];
+
+    await Promise.all(
+      sources.map(async ({ file, cat }) => {
+        try {
+          const res = await fetch(file);
+          if (!res.ok) return;
+          const json = await res.json();
+          const extracted = flattenJsonRecords(json);
+          if (extracted.length) {
+            datasetPoints[cat] = dedupeLayerPoints([...datasetPoints[cat], ...extracted]);
+          }
+        } catch (e) {}
+      })
+    );
+
+    updateLayerCountersUi();
+    refreshAllMapMarkersLayer();
+  }
+  loadRepositoryGeoDatasets();
+
+  if (layersToggleBtn && layersBox) {
+    layersToggleBtn.addEventListener("click", () => {
+      const open = layersBox.classList.toggle("is-open");
+      layersToggleBtn.classList.toggle("active", open);
+      layersToggleBtn.classList.toggle("subtle", !open);
+    });
+  }
+
+  if (layerChipsWrap) {
+    layerChipsWrap.querySelectorAll("button[data-layer]").forEach((chip) => {
+      const cat = chip.getAttribute("data-layer");
+      chip.classList.toggle("is-on", !!activeLayers[cat]);
+      chip.addEventListener("click", () => {
+        activeLayers[cat] = !activeLayers[cat];
+        localStorage.setItem(`az_layer_${cat}`, activeLayers[cat] ? "1" : "0");
+        chip.classList.toggle("is-on", activeLayers[cat]);
+        refreshAllMapMarkersLayer();
       });
     });
   }
@@ -17738,10 +18025,14 @@ function initAzimuteGeo() {
     return normalizeAngle((Math.atan2(y, x) * 180) / Math.PI);
   }
 
-  function buildPopupHtml(title, subtitle, lat, lng, pinId) {
+  function buildPopupHtml(title, subtitle, lat, lng, pinId, category) {
     const gmaps = `https://www.google.com/maps?q=${lat},${lng}`;
     const waze = `https://waze.com/ul?ll=${lat},${lng}&navigate=yes`;
     const safeTitle = (title || "Destino").replace(/'/g, "");
+    const meta = category && LAYER_META[category] ? LAYER_META[category] : null;
+    const badgeHtml = meta
+      ? `<span class="az-geo-popup-badge" style="color:${meta.color};">${meta.label}</span><br/>`
+      : "";
     const saveBtnHtml = !pinId
       ? `<button type="button" style="grid-column: span 2;" onclick="window.azimuteOpenPinForm(${lat}, ${lng}, '${safeTitle}')">Salvar Alfinete</button>`
       : "";
@@ -17750,6 +18041,7 @@ function initAzimuteGeo() {
       : "";
     return `
       <div class="az-geo-popup-card">
+        ${badgeHtml}
         <strong>${title}</strong>
         ${subtitle ? `<div style="font-size:11px; color:#9E9A8F; margin-top:2px;">${subtitle}</div>` : ""}
         <div class="az-geo-popup-actions">
@@ -17778,7 +18070,7 @@ function initAzimuteGeo() {
 
     if (destMarker) destMarker.remove();
     const popup = new maplibregl.Popup({ offset: 25 }).setHTML(
-      buildPopupHtml(title, subtitle, lat, lng, null)
+      buildPopupHtml(title, subtitle, lat, lng, null, null)
     );
     destMarker = new maplibregl.Marker({ color: "#C5A869" })
       .setLngLat([lng, lat])
@@ -17828,7 +18120,6 @@ function initAzimuteGeo() {
     }
   });
 
-  // Sincroniza o Quadrante com o topo do mapa ao terminar de girar
   map.on("rotateend", () => {
     recomputeQuadranteSectors(false);
   });
@@ -18313,7 +18604,7 @@ function initAzimuteGeo() {
       el.style.cursor = "pointer";
 
       const popup = new maplibregl.Popup({ offset: 25 }).setHTML(
-        buildPopupHtml(pin.title, pin.note || "", pin.lat, pin.lng, pin.id)
+        buildPopupHtml(pin.title, pin.note || "", pin.lat, pin.lng, pin.id, null)
       );
 
       const m = new maplibregl.Marker({ element: el, anchor: "bottom" })
@@ -18553,6 +18844,24 @@ function initAzimuteGeo() {
     const qNorm = q.toLowerCase();
     const options = [];
 
+    // Busca em todas as camadas carregadas (Unidades, Hospitais, BSCs, Deplans e extras)
+    ["unidades", "hospitais", "bscs", "deplans"].forEach((cat) => {
+      const tag = LAYER_META[cat].label;
+      datasetPoints[cat].forEach((p) => {
+        if (
+          (p.name && p.name.toLowerCase().includes(qNorm)) ||
+          (p.subtitle && p.subtitle.toLowerCase().includes(qNorm))
+        ) {
+          options.push({
+            title: p.name,
+            subtitle: `[${tag}] ${p.subtitle || ""}`.trim(),
+            lat: p.lat,
+            lng: p.lng
+          });
+        }
+      });
+    });
+
     localPoints.forEach((p) => {
       if (
         (p.name && p.name.toLowerCase().includes(qNorm)) ||
@@ -18616,7 +18925,6 @@ function initAzimuteGeo() {
     }
   });
 
-  // Leitura magnetica absoluta (sem deriva de giroscopio relativo)
   let compassListening = false;
   function handleOrientationEvent(e, isAbsolute) {
     if (typeof e.webkitCompassHeading === "number" && !Number.isNaN(e.webkitCompassHeading)) {
@@ -18658,7 +18966,6 @@ function initAzimuteGeo() {
   }
   startCompassListeners();
 
-  // Fonte 1 (prioritaria, 0ms): geometria vetorial real das ruas ja carregadas no MapLibre
   function extractStreetsFromMapLibre(lat, lng) {
     if (!map || !map.isStyleLoaded()) return [];
     try {
@@ -18678,7 +18985,7 @@ function initAzimuteGeo() {
         } else if (f.geometry && f.geometry.type === "MultiLineString") {
           coords = f.geometry.coordinates.flat();
         } else {
-          continue; // Ignora pontos soltos para manter precisao angular das linhas reais
+          continue;
         }
         if (coords.length < 2) continue;
 
@@ -18705,7 +19012,6 @@ function initAzimuteGeo() {
     }
   }
 
-  // Fonte 2 (prioritaria, geometria real das linhas): Overpass API via GET
   async function queryOverpassGet(lat, lng) {
     const query = `[out:json][timeout:6];way(around:180,${lat.toFixed(6)},${lng.toFixed(6)})["highway"]["name"];out geom;`;
     const encoded = encodeURIComponent(query);
@@ -18749,7 +19055,6 @@ function initAzimuteGeo() {
     return [];
   }
 
-  // Fonte 3 (ultimo recurso caso mapa fechado e Overpass indisponivel): Photon Reverse
   async function queryPhotonNearbyStreets(lat, lng) {
     try {
       const ctrl = new AbortController();
@@ -18842,18 +19147,15 @@ function initAzimuteGeo() {
     setQuadFetchIndicator("searching", "Buscando vias...");
 
     try {
-      // 1) Prioridade maxima: geometria das linhas do proprio mapa vetorial
       const mapList = extractStreetsFromMapLibre(lat, lng);
       if (mapList.length >= 2) {
         applyStreetsListToQuadrante(lat, lng, mapList, "vector");
       }
 
-      // 2) Geometria precisa da Overpass via GET
       const overpassList = await queryOverpassGet(lat, lng);
       if (overpassList.length >= 2) {
         applyStreetsListToQuadrante(lat, lng, overpassList, "overpass");
       } else if (!cachedNearbyStreets.length) {
-        // 3) Ultimo recurso: Photon Reverse (apenas se nenhuma geometria carregou)
         const photonList = await queryPhotonNearbyStreets(lat, lng);
         if (photonList.length >= 2) {
           applyStreetsListToQuadrante(lat, lng, photonList, "photon");
@@ -18920,7 +19222,6 @@ function initAzimuteGeo() {
     const refHeading = getQuadranteReferenceHeading();
     const now = Date.now();
 
-    // Trava de estabilidade de 25 graus + intervalo minimo de 1.5s para o Quadrante nao torcer sozinho
     if (!forceUpdate && lastQuadHeading !== null) {
       const angDiff = Math.abs(shortestAngleDiff(lastQuadHeading, refHeading));
       if (angDiff < 25 || now - lastQuadUpdateTime < 1500) {
@@ -19227,21 +19528,6 @@ function initAzimuteGeo() {
     );
   }
 
-  function renderLocalLayer(points) {
-    if (!ensureLocalLayers()) {
-      map.once("idle", () => renderLocalLayer(points));
-      return;
-    }
-    const features = points
-      .filter((p) => typeof p.lat === "number" && typeof p.lng === "number")
-      .map((p) => ({
-        type: "Feature",
-        geometry: { type: "Point", coordinates: [p.lng, p.lat] },
-        properties: { name: p.name || "Ponto", subtitle: p.subtitle || "" }
-      }));
-    map.getSource("az-local-src").setData({ type: "FeatureCollection", features });
-  }
-
   window.azimuteGeoInvalidate = function () {
     requestAnimationFrame(() => {
       map.resize();
@@ -19251,7 +19537,7 @@ function initAzimuteGeo() {
 
   window.azimuteGeoSetPoints = function (pointsArray) {
     localPoints = Array.isArray(pointsArray) ? pointsArray : [];
-    renderLocalLayer(localPoints);
+    refreshAllMapMarkersLayer();
   };
 
   const locObserver = new MutationObserver(() => {
