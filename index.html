@@ -1095,7 +1095,8 @@
             <div class="relative z-10 flex items-center justify-between px-1">
                 <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki">Geolocalização</span>
             </div>
- <div id="az-geo-module" class="az-geo-module relative z-10">
+<div id="az-geo-module" class="az-geo-module relative z-10">
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" />
   <style>
     .az-geo-module {
       --geo-bg: #0D0D0D;
@@ -1259,11 +1260,11 @@
     .az-geo-stage {
       position: relative;
       width: 100%;
-      height: 310px;
+      height: 315px;
       min-height: 260px;
       border: 1px solid var(--geo-border);
       border-radius: 8px;
-      background: #111;
+      background: #0D0D0D;
       overflow: hidden;
       margin-bottom: 8px;
       touch-action: none;
@@ -1277,6 +1278,41 @@
       touch-action: none;
     }
 
+    .maplibregl-ctrl-bottom-left,
+    .maplibregl-ctrl-bottom-right {
+      display: none !important;
+    }
+
+    .az-geo-zoom-stack {
+      position: absolute;
+      left: 10px;
+      top: 10px;
+      z-index: 600;
+      display: flex;
+      flex-direction: column;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--geo-border);
+      background: rgba(13, 13, 13, 0.82);
+      backdrop-filter: blur(4px);
+    }
+
+    .az-geo-zoom-stack button {
+      width: 32px;
+      height: 32px;
+      background: transparent;
+      color: var(--geo-gold);
+      border: 0;
+      border-bottom: 1px solid var(--geo-border);
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .az-geo-zoom-stack button:last-child {
+      border-bottom: 0;
+    }
+
     .az-geo-locate-fab {
       position: absolute;
       right: 12px;
@@ -1285,7 +1321,7 @@
       width: 40px;
       height: 40px;
       border-radius: 50%;
-      background: rgba(13, 13, 13, 0.76);
+      background: rgba(13, 13, 13, 0.78);
       border: 1.5px solid rgba(197, 168, 105, 0.85);
       color: #C5A869;
       display: flex;
@@ -1298,7 +1334,7 @@
     }
 
     .az-geo-locate-fab.is-heading-up {
-      background: rgba(37, 99, 235, 0.86);
+      background: rgba(37, 99, 235, 0.88);
       border-color: #93C5FD;
       color: #FFFFFF;
     }
@@ -1315,7 +1351,7 @@
       width: 34px;
       height: 34px;
       border-radius: 50%;
-      background: rgba(13, 13, 13, 0.78);
+      background: rgba(13, 13, 13, 0.82);
       border: 1px solid #C5A869;
       color: #F2F0EA;
       font-size: 11px;
@@ -1489,9 +1525,26 @@
       color: var(--geo-gold);
     }
 
+    .maplibregl-popup-content {
+      background: #161616 !important;
+      color: #F2F0EA !important;
+      border: 1px solid #C5A869 !important;
+      border-radius: 8px !important;
+      padding: 10px !important;
+    }
+
+    .maplibregl-popup-tip {
+      border-top-color: #C5A869 !important;
+    }
+
+    .maplibregl-popup-close-button {
+      color: #C5A869 !important;
+      font-size: 16px !important;
+    }
+
     .az-geo-popup-card {
       min-width: 190px;
-      color: #111111;
+      color: #F2F0EA;
     }
 
     .az-geo-popup-actions {
@@ -1788,7 +1841,7 @@
     #azRadarMiniMap {
       width: 100%;
       height: 112px;
-      background: #111;
+      background: #0D0D0D;
     }
 
     .az-radar-hud-foot {
@@ -1848,6 +1901,10 @@
 
     <div class="az-geo-stage" id="azGeoStage">
       <div id="azGeoMap"></div>
+      <div class="az-geo-zoom-stack">
+        <button type="button" id="azGeoZoomInBtn" aria-label="Aproximar">+</button>
+        <button type="button" id="azGeoZoomOutBtn" aria-label="Afastar">−</button>
+      </div>
       <button type="button" id="azGeoNorthBadge" class="az-geo-compass-badge" title="Alinhar Norte para cima">N</button>
       <button type="button" id="azGeoCenterFab" class="az-geo-locate-fab is-heading-up" aria-label="Minha Posicao e Girar Camera" title="Minha Posicao / Girar com Bussola">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -1880,7 +1937,7 @@
       <button type="button" id="azGeoCfgToggleBtn" class="az-geo-btn subtle" aria-label="Configuracoes">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="3"></circle>
-          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l-.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
         </svg>
         <span>Configurações</span>
       </button>
@@ -1994,7 +2051,7 @@
     <strong id="azRadarNextStep">Em rota...</strong>
     <span id="azRadarCurrentVia">Via atual</span>
   </div>
-</div> 
+</div>
             <!-- CONTORNO DO MAPA DE MINAS GERAIS AO FUNDO -->
             <div class="pointer-events-none select-none absolute inset-0 flex items-center justify-center z-0 overflow-hidden" aria-hidden="true">
                 <svg viewBox="0 0 800 650" class="w-full max-w-4xl h-auto opacity-[0.13]">
@@ -16646,23 +16703,27 @@ window.buscarUnidadePorBairro = function (termo) {
 carregarUnidades1RPM();
 </script>
 
-<script src="https://unpkg.com/leaflet-rotate@0.2.8/dist/leaflet-rotate-src.js"></script>
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 <script>
 function initAzimuteGeo() {
   const mapEl = document.getElementById("azGeoMap");
   if (!mapEl) return;
-  if (typeof L === "undefined") {
+  if (typeof maplibregl === "undefined") {
     window.addEventListener("load", initAzimuteGeo, { once: true });
     return;
   }
   if (mapEl.dataset.azReady === "1") return;
   mapEl.dataset.azReady = "1";
 
+  const OPENFREEMAP_DARK_STYLE = "https://tiles.openfreemap.org/styles/dark";
+
   const searchInput = document.getElementById("azGeoSearchInput");
   const searchBtn = document.getElementById("azGeoSearchBtn");
   const searchResultsEl = document.getElementById("azGeoSearchResults");
   const centerFab = document.getElementById("azGeoCenterFab");
   const northBadge = document.getElementById("azGeoNorthBadge");
+  const zoomInBtn = document.getElementById("azGeoZoomInBtn");
+  const zoomOutBtn = document.getElementById("azGeoZoomOutBtn");
   const stageEl = document.getElementById("azGeoStage");
   const followBtn = document.getElementById("azGeoFollowBtn");
   const headingUpBtn = document.getElementById("azGeoHeadingUpBtn");
@@ -16707,50 +16768,38 @@ function initAzimuteGeo() {
   const radarNextStepEl = document.getElementById("azRadarNextStep");
   const radarCurrentViaEl = document.getElementById("azRadarCurrentVia");
 
-  // Mapa com rotacao habilitada (giro com 2 dedos + orientacao dinamica)
-  const map = L.map("azGeoMap", {
-    center: [-19.9191, -43.9386],
+  // Mapa Vetorial MapLibre GL JS + OpenFreeMap Dark (nomes das ruas sempre na horizontal)
+  const map = new maplibregl.Map({
+    container: "azGeoMap",
+    style: OPENFREEMAP_DARK_STYLE,
+    center: [-43.9386, -19.9191],
     zoom: 13,
-    zoomControl: true,
-    rotate: true,
-    touchRotate: true,
-    rotateControl: false,
-    bearing: 0
+    bearing: 0,
+    pitch: 0,
+    attributionControl: false
   });
 
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    maxZoom: 19,
-    attribution: "&copy; OpenStreetMap"
-  }).addTo(map);
+  if (zoomInBtn) zoomInBtn.addEventListener("click", () => map.zoomIn());
+  if (zoomOutBtn) zoomOutBtn.addEventListener("click", () => map.zoomOut());
 
   let radarMap = null;
   let radarGpsMarker = null;
-  let radarRouteLine = null;
   if (document.getElementById("azRadarMiniMap")) {
-    radarMap = L.map("azRadarMiniMap", {
-      center: [-19.9191, -43.9386],
+    radarMap = new maplibregl.Map({
+      container: "azRadarMiniMap",
+      style: OPENFREEMAP_DARK_STYLE,
+      center: [-43.9386, -19.9191],
       zoom: 16,
-      zoomControl: false,
-      attributionControl: false,
-      dragging: false,
-      scrollWheelZoom: false,
-      doubleClickZoom: false,
-      touchZoom: false,
-      rotate: true,
-      bearing: 0
+      bearing: 0,
+      interactive: false,
+      attributionControl: false
     });
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 19
-    }).addTo(radarMap);
   }
 
-  const gpsLayer = L.layerGroup().addTo(map);
-  const routeLayer = L.layerGroup().addTo(map);
-  const searchLayer = L.layerGroup().addTo(map);
-  const pinsLayer = L.layerGroup().addTo(map);
-  const localLayer = L.layerGroup().addTo(map);
+  let mapLoaded = false;
+  let radarLoaded = false;
 
-  let lastPos = null;
+  let lastPos = null; // [lat, lng]
   let prevTrackPos = null;
   let lastAltitude = null;
   let lastSpeed = 0;
@@ -16762,7 +16811,9 @@ function initAzimuteGeo() {
   let hasAbsoluteCompass = false;
 
   let gpsMarker = null;
-  let gpsCircle = null;
+  let gpsArrowEl = null;
+  let destMarker = null;
+  let pinMarkers = [];
   let followGps = true;
   let headingUpMode = true;
   let firstGpsFix = true;
@@ -16772,7 +16823,7 @@ function initAzimuteGeo() {
   let currentDestination = null;
   let activeRouteDest = null;
   let activeRouteSteps = [];
-  let activeRouteCoords = [];
+  let activeRouteCoords = []; // [[lat, lng], ...]
   let arrowColor = localStorage.getItem("az_geo_arrow_color") || "#C5A869";
   let orientationMode = localStorage.getItem("az_geo_orientation") || "app";
   let showElevation = localStorage.getItem("az_geo_elev_enabled") !== "0";
@@ -16803,17 +16854,13 @@ function initAzimuteGeo() {
   }
 
   function getMapBearing() {
-    if (typeof map.getBearing === "function") {
-      return normalizeAngle(map.getBearing());
-    }
-    return 0;
+    return normalizeAngle(map.getBearing());
   }
 
-  function applyMapBearing(deg) {
-    const clean = normalizeAngle(deg);
-    if (typeof map.setBearing === "function") {
-      map.setBearing(clean);
-    }
+  // No MapLibre, bearing usa sentido horario (0 = Norte, 90 = Leste, 180 = Sul)
+  function applyMapHeadingUp(headingDeg) {
+    const clean = normalizeAngle(headingDeg);
+    map.easeTo({ bearing: clean, duration: 180 });
     if (northBadge) {
       northBadge.style.transform = `rotate(${-clean}deg)`;
     }
@@ -16862,7 +16909,7 @@ function initAzimuteGeo() {
       const factor = forceSnap || moving ? 0.85 : 0.7;
       stableHeading = normalizeAngle(stableHeading + diff * factor);
       if (headingUpMode) {
-        applyMapBearing(stableHeading);
+        applyMapHeadingUp(stableHeading);
       }
       updateDirectionalIcons();
     }
@@ -16870,7 +16917,7 @@ function initAzimuteGeo() {
 
   function buildArrowSvg(color, deg, size) {
     return `
-      <svg width="${size}" height="${size}" viewBox="0 0 32 32" style="transform: rotate(${deg}deg); display:block; filter: drop-shadow(0 1px 3px rgba(0,0,0,0.9));">
+      <svg width="${size}" height="${size}" viewBox="0 0 32 32" style="transform: rotate(${deg}deg); display:block; filter: drop-shadow(0 1px 4px rgba(0,0,0,0.95));">
         <polygon points="16,2 27,28 16,22 5,28" fill="${color}" stroke="#0D0D0D" stroke-width="2" stroke-linejoin="round"/>
       </svg>
     `;
@@ -16887,30 +16934,18 @@ function initAzimuteGeo() {
 
   function updateDirectionalIcons() {
     const deg = stableHeading;
-    // Compensa a rotacao atual do mapa para a seta apontar sempre na direcao geografica exata
     const visualArrowDeg = normalizeAngle(deg - getMapBearing());
 
-    if (gpsMarker) {
-      const icon = L.divIcon({
-        className: "az-geo-arrow-icon",
-        html: buildArrowSvg(arrowColor, visualArrowDeg, 30),
-        iconSize: [30, 30],
-        iconAnchor: [15, 15]
-      });
-      gpsMarker.setIcon(icon);
+    if (gpsArrowEl) {
+      gpsArrowEl.innerHTML = buildArrowSvg(arrowColor, visualArrowDeg, 30);
     }
 
+    if (radarMap && radarLoaded) {
+      radarMap.setBearing(deg);
+    }
     if (radarGpsMarker) {
-      if (typeof radarMap?.setBearing === "function") {
-        radarMap.setBearing(deg);
-      }
-      const rIcon = L.divIcon({
-        className: "az-geo-arrow-icon",
-        html: buildArrowSvg(arrowColor, 0, 24),
-        iconSize: [24, 24],
-        iconAnchor: [12, 12]
-      });
-      radarGpsMarker.setIcon(rIcon);
+      const rEl = radarGpsMarker.getElement();
+      if (rEl) rEl.innerHTML = buildArrowSvg(arrowColor, 0, 24);
     }
 
     const qAxisMarker = document.getElementById("azQuadAxisMarker");
@@ -17069,9 +17104,9 @@ function initAzimuteGeo() {
       centerFab.classList.toggle("is-heading-up", headingUpMode);
     }
     if (headingUpMode) {
-      applyMapBearing(stableHeading);
+      applyMapHeadingUp(stableHeading);
     } else {
-      applyMapBearing(0);
+      applyMapHeadingUp(0);
     }
     updateDirectionalIcons();
   }
@@ -17145,7 +17180,7 @@ function initAzimuteGeo() {
     return `
       <div class="az-geo-popup-card">
         <strong>${title}</strong>
-        ${subtitle ? `<div style="font-size:11px; color:#444; margin-top:2px;">${subtitle}</div>` : ""}
+        ${subtitle ? `<div style="font-size:11px; color:#9E9A8F; margin-top:2px;">${subtitle}</div>` : ""}
         <div class="az-geo-popup-actions">
           <button type="button" class="primary-route" onclick="window.azimuteGeoRouteTo(${lat}, ${lng}, '${safeTitle}')">Traçar Rota</button>
           ${saveBtnHtml}
@@ -17155,6 +17190,101 @@ function initAzimuteGeo() {
         </div>
       </div>
     `;
+  }
+
+  // Inicializa fontes GeoJSON no MapLibre assim que o estilo Dark carregar
+  map.on("load", () => {
+    mapLoaded = true;
+
+    map.addSource("az-route-src", {
+      type: "geojson",
+      data: { type: "FeatureCollection", features: [] }
+    });
+    map.addLayer({
+      id: "az-route-outline",
+      type: "line",
+      source: "az-route-src",
+      layout: { "line-join": "round", "line-cap": "round" },
+      paint: { "line-color": "#1E3A8A", "line-width": 9, "line-opacity": 0.85 }
+    });
+    map.addLayer({
+      id: "az-route-line",
+      type: "line",
+      source: "az-route-src",
+      layout: { "line-join": "round", "line-cap": "round" },
+      paint: { "line-color": "#3B82F6", "line-width": 5, "line-opacity": 1 }
+    });
+
+    map.addSource("az-local-src", {
+      type: "geojson",
+      data: { type: "FeatureCollection", features: [] }
+    });
+    map.addLayer({
+      id: "az-local-circles",
+      type: "circle",
+      source: "az-local-src",
+      paint: {
+        "circle-radius": 5,
+        "circle-color": "#161616",
+        "circle-stroke-color": "#C5A869",
+        "circle-stroke-width": 1.5
+      }
+    });
+
+    map.on("click", "az-local-circles", (e) => {
+      if (!e.features || !e.features.length) return;
+      const f = e.features[0];
+      const [lng, lat] = f.geometry.coordinates;
+      const props = f.properties || {};
+      new maplibregl.Popup({ offset: 12 })
+        .setLngLat([lng, lat])
+        .setHTML(buildPopupHtml(props.name || "Ponto", props.subtitle || "", lat, lng, null))
+        .addTo(map);
+    });
+
+    if (activeRouteCoords.length) updateRouteSources();
+    if (localPoints.length) renderLocalLayer(localPoints);
+  });
+
+  if (radarMap) {
+    radarMap.on("load", () => {
+      radarLoaded = true;
+      radarMap.addSource("az-radar-route-src", {
+        type: "geojson",
+        data: { type: "FeatureCollection", features: [] }
+      });
+      radarMap.addLayer({
+        id: "az-radar-route-line",
+        type: "line",
+        source: "az-radar-route-src",
+        layout: { "line-join": "round", "line-cap": "round" },
+        paint: { "line-color": "#3B82F6", "line-width": 4.5, "line-opacity": 0.95 }
+      });
+      if (activeRouteCoords.length) updateRouteSources();
+    });
+  }
+
+  function updateRouteSources() {
+    const geojson = {
+      type: "FeatureCollection",
+      features: activeRouteCoords.length
+        ? [
+            {
+              type: "Feature",
+              geometry: {
+                type: "LineString",
+                coordinates: activeRouteCoords.map(([lat, lng]) => [lng, lat])
+              }
+            }
+          ]
+        : []
+    };
+    if (mapLoaded && map.getSource("az-route-src")) {
+      map.getSource("az-route-src").setData(geojson);
+    }
+    if (radarLoaded && radarMap && radarMap.getSource("az-radar-route-src")) {
+      radarMap.getSource("az-radar-route-src").setData(geojson);
+    }
   }
 
   function showDestinationOnMap(title, subtitle, lat, lng) {
@@ -17167,29 +17297,34 @@ function initAzimuteGeo() {
     currentDestination = { title, subtitle, lat, lng };
     if (routeBox) routeBox.classList.add("is-open");
 
-    searchLayer.clearLayers();
-    const marker = L.marker([lat, lng])
-      .bindPopup(buildPopupHtml(title, subtitle, lat, lng, null))
-      .addTo(searchLayer);
+    if (destMarker) destMarker.remove();
+    const popup = new maplibregl.Popup({ offset: 25 }).setHTML(
+      buildPopupHtml(title, subtitle, lat, lng, null)
+    );
+    destMarker = new maplibregl.Marker({ color: "#C5A869" })
+      .setLngLat([lng, lat])
+      .setPopup(popup)
+      .addTo(map);
 
-    map.invalidateSize();
+    map.resize();
 
     if (lastPos) {
       const km = calcDistanceKm(lastPos[0], lastPos[1], lat, lng).toFixed(1);
-      const bounds = L.latLngBounds([lastPos, [lat, lng]]);
-      map.fitBounds(bounds, { padding: [45, 45], maxZoom: 16 });
+      const bounds = new maplibregl.LngLatBounds();
+      bounds.extend([lastPos[1], lastPos[0]]);
+      bounds.extend([lng, lat]);
+      map.fitBounds(bounds, { padding: 50, maxZoom: 16 });
       targetEl.innerHTML = `Destino: <strong>${title} (${km} km)</strong>`;
       statusEl.textContent = "Origem e destino enquadrados";
     } else {
-      map.setView([lat, lng], 16);
+      map.flyTo({ center: [lng, lat], zoom: 16 });
       targetEl.innerHTML = `Destino: <strong>${title}</strong>`;
       statusEl.textContent = "Destino localizado";
     }
 
-    marker.openPopup();
+    destMarker.togglePopup();
   }
 
-  // Botao Norte no canto superior direito do mapa
   if (northBadge) {
     northBadge.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -17198,27 +17333,17 @@ function initAzimuteGeo() {
     });
   }
 
-  // Atualiza icone se o usuario girar manualmente com 2 dedos
   map.on("rotate", () => {
     const b = getMapBearing();
     if (northBadge) {
       northBadge.style.transform = `rotate(${-b}deg)`;
     }
-    const deg = stableHeading;
-    const visualArrowDeg = normalizeAngle(deg - b);
-    if (gpsMarker) {
-      gpsMarker.setIcon(
-        L.divIcon({
-          className: "az-geo-arrow-icon",
-          html: buildArrowSvg(arrowColor, visualArrowDeg, 30),
-          iconSize: [30, 30],
-          iconAnchor: [15, 15]
-        })
-      );
+    const visualArrowDeg = normalizeAngle(stableHeading - b);
+    if (gpsArrowEl) {
+      gpsArrowEl.innerHTML = buildArrowSvg(arrowColor, visualArrowDeg, 30);
     }
   });
 
-  // Botao Minha Posicao translucido e arrastavel dentro do mapa (calibra e gira a tela ao tocar)
   if (centerFab && stageEl) {
     let draggingFab = false;
     let fabMoved = false;
@@ -17292,8 +17417,8 @@ function initAzimuteGeo() {
     clearCityHighlight();
     requestCompassPermissionIfNeeded();
     if (lastPos) {
-      map.invalidateSize();
-      map.setView(lastPos, 17);
+      map.resize();
+      map.flyTo({ center: [lastPos[1], lastPos[0]], zoom: 17 });
       setFollowState(true);
       setHeadingUpState(true);
       refreshStabilizedHeading(true);
@@ -17307,8 +17432,8 @@ function initAzimuteGeo() {
           prevTrackPos = [latitude, longitude];
           if (typeof altitude === "number" && !Number.isNaN(altitude)) lastAltitude = altitude;
           firstGpsFix = false;
-          map.invalidateSize();
-          map.setView(lastPos, 17);
+          map.resize();
+          map.flyTo({ center: [longitude, latitude], zoom: 17 });
           setFollowState(true);
           setHeadingUpState(true);
           refreshStabilizedHeading(true);
@@ -17418,8 +17543,8 @@ function initAzimuteGeo() {
     radarHud.classList.toggle("is-visible", shouldShow);
     if (shouldShow && radarMap) {
       setTimeout(() => {
-        radarMap.invalidateSize();
-        if (lastPos) radarMap.setView(lastPos, 16);
+        radarMap.resize();
+        if (lastPos) radarMap.setCenter([lastPos[1], lastPos[0]]);
       }, 80);
     }
   };
@@ -17439,11 +17564,7 @@ function initAzimuteGeo() {
       activeRouteDest = null;
       activeRouteSteps = [];
       activeRouteCoords = [];
-      routeLayer.clearLayers();
-      if (radarRouteLine && radarMap) {
-        radarMap.removeLayer(radarRouteLine);
-        radarRouteLine = null;
-      }
+      updateRouteSources();
       if (tbtBar) tbtBar.classList.remove("is-active");
       window.azimuteUpdateRadarHudVisibility();
       statusEl.textContent = "Rota encerrada";
@@ -17459,7 +17580,6 @@ function initAzimuteGeo() {
     activeRouteDest = { lat: destLat, lng: destLng, name: destName };
     if (routeBox) routeBox.classList.add("is-open");
     statusEl.textContent = "Calculando rota (" + currentTravelMode + ")...";
-    routeLayer.clearLayers();
 
     const [origLat, origLng] = lastPos;
     const isWalking = currentTravelMode === "pe";
@@ -17481,31 +17601,13 @@ function initAzimuteGeo() {
       const route = data.routes[0];
       activeRouteCoords = route.geometry.coordinates.map(([lng, lat]) => [lat, lng]);
       activeRouteSteps = (route.legs && route.legs[0] && route.legs[0].steps) || [];
+      updateRouteSources();
 
-      L.polyline(activeRouteCoords, {
-        color: "#1E3A8A",
-        weight: isWalking ? 6 : 8,
-        opacity: 0.75
-      }).addTo(routeLayer);
-
-      L.polyline(activeRouteCoords, {
-        color: "#3B82F6",
-        weight: isWalking ? 4 : 5,
-        opacity: 0.98,
-        dashArray: isWalking ? "8, 8" : null
-      }).addTo(routeLayer);
-
-      if (radarMap) {
-        if (radarRouteLine) radarMap.removeLayer(radarRouteLine);
-        radarRouteLine = L.polyline(activeRouteCoords, {
-          color: "#3B82F6",
-          weight: 4,
-          opacity: 0.95
-        }).addTo(radarMap);
+      if (destMarker && destMarker.getPopup()?.isOpen()) {
+        destMarker.togglePopup();
       }
 
-      map.closePopup();
-      map.setView(lastPos, 17);
+      map.flyTo({ center: [lastPos[1], lastPos[0]], zoom: 17 });
       setFollowState(true);
       setHeadingUpState(true);
       refreshStabilizedHeading(true);
@@ -17583,8 +17685,8 @@ function initAzimuteGeo() {
       setFollowState(!followGps);
       if (followGps && lastPos) {
         clearCityHighlight();
-        map.invalidateSize();
-        map.setView(lastPos, 17);
+        map.resize();
+        map.flyTo({ center: [lastPos[1], lastPos[0]], zoom: 17 });
       }
     });
   }
@@ -17611,18 +17713,23 @@ function initAzimuteGeo() {
   }
 
   function renderSavedPins() {
-    pinsLayer.clearLayers();
+    pinMarkers.forEach((m) => m.remove());
+    pinMarkers = [];
+
     savedPins.forEach((pin) => {
-      const icon = L.divIcon({
-        className: "az-geo-pin-icon",
-        html: buildPinSvg(pin.color || "#C5A869"),
-        iconSize: [26, 32],
-        iconAnchor: [13, 32],
-        popupAnchor: [0, -30]
-      });
-      L.marker([pin.lat, pin.lng], { icon })
-        .bindPopup(buildPopupHtml(pin.title, pin.note || "", pin.lat, pin.lng, pin.id))
-        .addTo(pinsLayer);
+      const el = document.createElement("div");
+      el.innerHTML = buildPinSvg(pin.color || "#C5A869");
+      el.style.cursor = "pointer";
+
+      const popup = new maplibregl.Popup({ offset: 25 }).setHTML(
+        buildPopupHtml(pin.title, pin.note || "", pin.lat, pin.lng, pin.id)
+      );
+
+      const m = new maplibregl.Marker({ element: el, anchor: "bottom" })
+        .setLngLat([pin.lng, pin.lat])
+        .setPopup(popup)
+        .addTo(map);
+      pinMarkers.push(m);
     });
   }
   renderSavedPins();
@@ -17662,7 +17769,7 @@ function initAzimuteGeo() {
       addPinBtn.classList.remove("active");
       addPinBtn.classList.add("subtle");
     }
-    window.azimuteOpenPinForm(e.latlng.lat, e.latlng.lng, "");
+    window.azimuteOpenPinForm(e.lngLat.lat, e.lngLat.lng, "");
   });
 
   if (savePinBtn) {
@@ -17721,8 +17828,8 @@ function initAzimuteGeo() {
         const lng = parseFloat(btn.getAttribute("data-lng"));
         const zoom = parseInt(btn.getAttribute("data-zoom"), 10) || 13;
 
-        map.invalidateSize();
-        map.setView([lat, lng], zoom);
+        map.resize();
+        map.flyTo({ center: [lng, lat], zoom });
         statusEl.textContent = "Visualizando " + btn.textContent.trim();
       });
     });
@@ -17733,14 +17840,17 @@ function initAzimuteGeo() {
   });
 
   clearBtn.addEventListener("click", () => {
-    searchLayer.clearLayers();
-    routeLayer.clearLayers();
+    if (destMarker) {
+      destMarker.remove();
+      destMarker = null;
+    }
     hideSearchResults();
     searchInput.value = "";
     currentDestination = null;
     activeRouteDest = null;
     activeRouteSteps = [];
     activeRouteCoords = [];
+    updateRouteSources();
     if (routeBox) routeBox.classList.remove("is-open");
     if (tbtBar) tbtBar.classList.remove("is-active");
     window.azimuteUpdateRadarHudVisibility();
@@ -17850,33 +17960,7 @@ function initAzimuteGeo() {
     }
   });
 
-  // Matriz W3C de orientacao 3D (calcula o rumo real da camera traseira/topo do celular mesmo em pe na mao)
   let compassListening = false;
-  function computeW3CCompassHeading(alpha, beta, gamma) {
-    const degToRad = Math.PI / 180;
-    const _x = (typeof beta === "number" ? beta : 0) * degToRad;
-    const _y = (typeof gamma === "number" ? gamma : 0) * degToRad;
-    const _z = alpha * degToRad;
-
-    const cX = Math.cos(_x);
-    const cY = Math.cos(_y);
-    const cZ = Math.cos(_z);
-    const sX = Math.sin(_x);
-    const sY = Math.sin(_y);
-    const sZ = Math.sin(_z);
-
-    const Vx = -cZ * sY - sZ * sX * cY;
-    const Vy = -sZ * sY + cZ * sX * cY;
-
-    let compassHeading = Math.atan(Vx / Vy);
-    if (Vy < 0) {
-      compassHeading += Math.PI;
-    } else if (Vx < 0) {
-      compassHeading += 2 * Math.PI;
-    }
-    return normalizeAngle(compassHeading * (180 / Math.PI));
-  }
-
   function handleOrientationEvent(e, isAbsolute) {
     if (isAbsolute) hasAbsoluteCompass = true;
     if (!isAbsolute && hasAbsoluteCompass) return;
@@ -17885,7 +17969,7 @@ function initAzimuteGeo() {
     if (typeof e.webkitCompassHeading === "number" && !Number.isNaN(e.webkitCompassHeading)) {
       heading = e.webkitCompassHeading;
     } else if (typeof e.alpha === "number" && !Number.isNaN(e.alpha)) {
-      heading = computeW3CCompassHeading(e.alpha, e.beta, e.gamma);
+      heading = normalizeAngle(360 - e.alpha);
     }
     if (heading !== null) {
       rawCompassHeading = heading;
@@ -18294,7 +18378,6 @@ function initAzimuteGeo() {
           lastGpsHeading = heading;
         }
 
-        // Exige deslocamento real >= 12 metros para assumir vetor GPS (ignora oscilacao parado na calcada)
         if (!accuracy || accuracy <= 25) {
           if (!prevTrackPos) {
             prevTrackPos = [latitude, longitude];
@@ -18311,44 +18394,32 @@ function initAzimuteGeo() {
         const visualArrowDeg = normalizeAngle(stableHeading - getMapBearing());
 
         if (!gpsMarker) {
-          const initIcon = L.divIcon({
-            className: "az-geo-arrow-icon",
-            html: buildArrowSvg(arrowColor, visualArrowDeg, 30),
-            iconSize: [30, 30],
-            iconAnchor: [15, 15]
-          });
-          gpsMarker = L.marker(lastPos, { icon: initIcon, zIndexOffset: 1000 }).addTo(gpsLayer);
+          gpsArrowEl = document.createElement("div");
+          gpsArrowEl.style.width = "30px";
+          gpsArrowEl.style.height = "30px";
+          gpsArrowEl.innerHTML = buildArrowSvg(arrowColor, visualArrowDeg, 30);
+          gpsMarker = new maplibregl.Marker({ element: gpsArrowEl, anchor: "center" })
+            .setLngLat([longitude, latitude])
+            .addTo(map);
         } else {
-          gpsMarker.setLatLng(lastPos);
+          gpsMarker.setLngLat([longitude, latitude]);
         }
 
         if (radarMap) {
           if (!radarGpsMarker) {
-            const rIcon = L.divIcon({
-              className: "az-geo-arrow-icon",
-              html: buildArrowSvg(arrowColor, 0, 24),
-              iconSize: [24, 24],
-              iconAnchor: [12, 12]
-            });
-            radarGpsMarker = L.marker(lastPos, { icon: rIcon }).addTo(radarMap);
+            const rEl = document.createElement("div");
+            rEl.style.width = "24px";
+            rEl.style.height = "24px";
+            rEl.innerHTML = buildArrowSvg(arrowColor, 0, 24);
+            radarGpsMarker = new maplibregl.Marker({ element: rEl, anchor: "center" })
+              .setLngLat([longitude, latitude])
+              .addTo(radarMap);
           } else {
-            radarGpsMarker.setLatLng(lastPos);
+            radarGpsMarker.setLngLat([longitude, latitude]);
           }
           if (activeRouteDest) {
-            radarMap.setView(lastPos, 16);
+            radarMap.setCenter([longitude, latitude]);
           }
-        }
-
-        if (!gpsCircle && accuracy) {
-          gpsCircle = L.circle(lastPos, {
-            radius: accuracy,
-            color: "#C5A869",
-            weight: 1,
-            fillColor: "#C5A869",
-            fillOpacity: 0.12
-          }).addTo(gpsLayer);
-        } else if (gpsCircle && accuracy) {
-          gpsCircle.setLatLng(lastPos).setRadius(accuracy);
         }
 
         const modeTag = isMovingCourseActive() ? "Rumo GPS" : "Bússola";
@@ -18364,11 +18435,11 @@ function initAzimuteGeo() {
 
         if (firstGpsFix) {
           firstGpsFix = false;
-          map.invalidateSize();
-          map.setView(lastPos, 17);
-          if (headingUpMode) applyMapBearing(stableHeading);
+          map.resize();
+          map.jumpTo({ center: [longitude, latitude], zoom: 17 });
+          if (headingUpMode) applyMapHeadingUp(stableHeading);
         } else if (followGps) {
-          map.panTo(lastPos);
+          map.easeTo({ center: [longitude, latitude], duration: 300 });
         }
       },
       (err) => {
@@ -18381,24 +18452,20 @@ function initAzimuteGeo() {
   }
 
   function renderLocalLayer(points) {
-    localLayer.clearLayers();
-    points.forEach((p) => {
-      if (typeof p.lat !== "number" || typeof p.lng !== "number") return;
-      L.circleMarker([p.lat, p.lng], {
-        radius: 5,
-        color: "#C5A869",
-        weight: 1,
-        fillColor: "#161616",
-        fillOpacity: 0.9
-      })
-        .bindPopup(buildPopupHtml(p.name || "Ponto", p.subtitle || "", p.lat, p.lng, null))
-        .addTo(localLayer);
-    });
+    if (!mapLoaded || !map.getSource("az-local-src")) return;
+    const features = points
+      .filter((p) => typeof p.lat === "number" && typeof p.lng === "number")
+      .map((p) => ({
+        type: "Feature",
+        geometry: { type: "Point", coordinates: [p.lng, p.lat] },
+        properties: { name: p.name || "Ponto", subtitle: p.subtitle || "" }
+      }));
+    map.getSource("az-local-src").setData({ type: "FeatureCollection", features });
   }
 
   window.azimuteGeoInvalidate = function () {
     requestAnimationFrame(() => {
-      map.invalidateSize();
+      map.resize();
     });
   };
 
@@ -18418,7 +18485,7 @@ function initAzimuteGeo() {
   locObserver.observe(document.body, { childList: true, subtree: true, characterData: true });
 
   if (document.getElementById("azGeoDrawerBody")?.classList.contains("is-open")) {
-    map.invalidateSize();
+    map.resize();
   }
 }
 
