@@ -16786,7 +16786,6 @@ function initAzimuteGeo() {
   if (mapEl.dataset.azReady === "1") return;
   mapEl.dataset.azReady = "1";
 
-  // Injeta estilos leves para o icone fluido (anel de pulso e aceleracao GPU)
   if (!document.getElementById("azGeoSmoothStyle")) {
     const st = document.createElement("style");
     st.id = "azGeoSmoothStyle";
@@ -16890,9 +16889,9 @@ function initAzimuteGeo() {
   const radarNextStepEl = document.getElementById("azRadarNextStep");
   const radarCurrentViaEl = document.getElementById("azRadarCurrentVia");
 
-  // Controle de compensacao da bussola no modo APP (padrao +90° copiado do modo GRID)
-  let appCompassOffset = parseInt(localStorage.getItem("az_geo_app_offset") || "90", 10);
-  if (![0, 90, -90, 180].includes(appCompassOffset)) appCompassOffset = 90;
+  // Padrao -90° validado no modo APP (nova chave para limpar o +90° antigo)
+  let appCompassOffset = parseInt(localStorage.getItem("az_geo_app_offset_v2") || "-90", 10);
+  if (![0, 90, -90, 180].includes(appCompassOffset)) appCompassOffset = -90;
 
   if (cfgBox && !document.getElementById("azGeoAppOffsetRow")) {
     const offsetRow = document.createElement("div");
@@ -16902,8 +16901,8 @@ function initAzimuteGeo() {
       <span class="az-geo-label">Compensação APP:</span>
       <div class="az-geo-group" id="azGeoAppOffsets">
         <button type="button" class="az-geo-btn subtle" data-offset="0">0°</button>
-        <button type="button" class="az-geo-btn active" data-offset="90">+90°</button>
-        <button type="button" class="az-geo-btn subtle" data-offset="-90">-90°</button>
+        <button type="button" class="az-geo-btn subtle" data-offset="90">+90°</button>
+        <button type="button" class="az-geo-btn active" data-offset="-90">-90°</button>
         <button type="button" class="az-geo-btn subtle" data-offset="180">180°</button>
       </div>
     `;
@@ -16959,7 +16958,6 @@ function initAzimuteGeo() {
   let userTouchPauseUntil = 0;
   let lastMapBearingApplied = 0;
 
-  // Estado de interpolacao 60fps para movimentacao fluida do icone
   let animCurrentPos = null;
   let animStartPos = null;
   let animTargetPos = null;
@@ -17005,7 +17003,6 @@ function initAzimuteGeo() {
 
   let lastStreetsFetchPos = null;
   let fetchingStreets = false;
-  let retryStreetsTimer = null;
   let cachedCurrentStreet = "Via atual";
   let cachedNearbyStreets = [];
   let cachedSectors = { front: null, right: null, rear: null, left: null };
@@ -17024,7 +17021,7 @@ function initAzimuteGeo() {
 
   function pushSmoothedCompass(newDeg) {
     compassSamples.push(newDeg);
-    if (compassSamples.length > 6) compassSamples.shift();
+    if (compassSamples.length > 8) compassSamples.shift();
     let sinSum = 0;
     let cosSum = 0;
     compassSamples.forEach((d) => {
@@ -17043,7 +17040,7 @@ function initAzimuteGeo() {
     if (!forceInstant && Date.now() < userTouchPauseUntil) return;
     const clean = normalizeAngle(headingDeg);
     const diffFromLast = Math.abs(shortestAngleDiff(lastMapBearingApplied, clean));
-    if (!forceInstant && diffFromLast < 6) return;
+    if (!forceInstant && diffFromLast < 10) return;
 
     lastMapBearingApplied = clean;
     if (forceInstant) {
@@ -17069,7 +17066,6 @@ function initAzimuteGeo() {
     return recentlyMoved || hasSpeed;
   }
 
-  // Mesma compensacao de +90° do modo GRID aplicada tambem ao modo APP (sem dobrar quando gira a tela)
   function getAzimuteHeadingCompensation() {
     let screenAngle = 0;
     if (window.screen && window.screen.orientation && typeof window.screen.orientation.angle === "number") {
@@ -17085,10 +17081,9 @@ function initAzimuteGeo() {
     if (orientationMode === "grid-canhoto") {
       return -90;
     }
-    if (orientationMode === "grid-destro" || document.body.classList.contains("mode-grid")) {
+    if (orientationMode === "grid-destro" || (document.body.classList.contains("mode-grid") && window.innerWidth > window.innerHeight)) {
       return 90;
     }
-    // Modo APP (tela normal em pe): aplica a compensacao configurada (padrao +90°)
     return appCompassOffset;
   }
 
@@ -17108,10 +17103,11 @@ function initAzimuteGeo() {
     const moving = isMovingCourseActive();
     const target = getTargetHeading();
     const diff = shortestAngleDiff(stableHeading, target);
-    const deadzone = moving ? 2 : 5;
+    // Zona morta de 15° parado para nao girar os nomes das ruas sozinho por ruido magnetico
+    const deadzone = moving ? 3 : 15;
 
     if (forceSnap || Math.abs(diff) >= deadzone) {
-      const factor = forceSnap ? 1 : moving ? 0.55 : 0.32;
+      const factor = forceSnap ? 1 : moving ? 0.55 : 0.35;
       stableHeading = normalizeAngle(stableHeading + diff * factor);
       if (headingUpMode) {
         applyMapHeadingUp(stableHeading, !!forceSnap);
@@ -17163,7 +17159,7 @@ function initAzimuteGeo() {
       if (gpsMarker && animCurrentPos && animTargetPos) {
         const elapsed = now - animPosStartTime;
         const t = Math.min(1, Math.max(0, elapsed / animPosDuration));
-        const eased = 1 - Math.pow(1 - t, 3); // easeOutCubic
+        const eased = 1 - Math.pow(1 - t, 3);
 
         const curLat = animStartPos[0] + (animTargetPos[0] - animStartPos[0]) * eased;
         const curLng = animStartPos[1] + (animTargetPos[1] - animStartPos[1]) * eased;
@@ -17199,7 +17195,6 @@ function initAzimuteGeo() {
       animPosStartTime = now;
     } else {
       const distKm = calcDistanceKm(animCurrentPos[0], animCurrentPos[1], lat, lng);
-      // Se o salto for muito grande (> 250m, ex: primeiro fix real), vai direto sem arrastar pela cidade
       if (distKm > 0.25) {
         animCurrentPos = [lat, lng];
         animStartPos = [lat, lng];
@@ -17518,6 +17513,16 @@ function initAzimuteGeo() {
     });
   }
 
+  function syncOrientationButtons() {
+    if (!orientWrap) return;
+    orientWrap.querySelectorAll("button[data-orient]").forEach((b) => {
+      const match = b.getAttribute("data-orient") === orientationMode;
+      b.classList.toggle("active", match);
+      b.classList.toggle("subtle", !match);
+    });
+  }
+  syncOrientationButtons();
+
   const appOffsetsWrap = document.getElementById("azGeoAppOffsets");
   function syncAppOffsetButtons() {
     if (!appOffsetsWrap) return;
@@ -17533,8 +17538,13 @@ function initAzimuteGeo() {
     appOffsetsWrap.querySelectorAll("button[data-offset]").forEach((btn) => {
       btn.addEventListener("click", () => {
         appCompassOffset = parseInt(btn.getAttribute("data-offset"), 10) || 0;
-        localStorage.setItem("az_geo_app_offset", String(appCompassOffset));
+        localStorage.setItem("az_geo_app_offset_v2", String(appCompassOffset));
+        // Garante que o modo APP esteja ativo para que o ajuste surta efeito imediato na tela
+        orientationMode = "app";
+        localStorage.setItem("az_geo_orientation", "app");
+        syncOrientationButtons();
         syncAppOffsetButtons();
+        userTouchPauseUntil = 0;
         refreshStabilizedHeading(true);
       });
     });
@@ -17638,7 +17648,6 @@ function initAzimuteGeo() {
     return txt;
   }
 
-  // Le as coordenadas diretamente do motor de GPS principal do AZIMUTE (que alimenta o card Localizacao)
   function readMainAzimuteGpsCoords() {
     if (window.azimuteCurrentGps && typeof window.azimuteCurrentGps.lat === "number" && typeof window.azimuteCurrentGps.lng === "number") {
       return {
@@ -17662,7 +17671,6 @@ function initAzimuteGeo() {
       const lat = parseFloat(m[1]);
       const lng = parseFloat(m[2]);
       if (Number.isNaN(lat) || Number.isNaN(lng)) continue;
-      // Ignora a coordenada fixa inicial de placeholder (sede 18 BPM) se o GPS real ainda nao atualizou
       if (Math.abs(lat - -19.9162) < 0.00005 && Math.abs(lng - -44.0809) < 0.00005) {
         continue;
       }
@@ -18269,16 +18277,6 @@ function initAzimuteGeo() {
     }
   };
 
-  function syncOrientationButtons() {
-    if (!orientWrap) return;
-    orientWrap.querySelectorAll("button[data-orient]").forEach((b) => {
-      const match = b.getAttribute("data-orient") === orientationMode;
-      b.classList.toggle("active", match);
-      b.classList.toggle("subtle", !match);
-    });
-  }
-  syncOrientationButtons();
-
   if (orientWrap) {
     orientWrap.querySelectorAll("button[data-orient]").forEach((btn) => {
       btn.addEventListener("click", () => {
@@ -18286,6 +18284,7 @@ function initAzimuteGeo() {
         localStorage.setItem("az_geo_orientation", orientationMode);
         syncOrientationButtons();
         requestCompassPermissionIfNeeded();
+        userTouchPauseUntil = 0;
         refreshStabilizedHeading(true);
       });
     });
@@ -18663,7 +18662,6 @@ function initAzimuteGeo() {
     }
   });
 
-  // Leitura limpa identica a bussola nativa (a compensacao +90° e aplicada em getTargetHeading)
   let compassListening = false;
   function handleOrientationEvent(e, isAbsolute) {
     if (isAbsolute) hasAbsoluteCompass = true;
@@ -18705,6 +18703,7 @@ function initAzimuteGeo() {
   }
   startCompassListeners();
 
+  // Leitura instantanea do base_qth_bh.json local (primeiro passo do Quadrante)
   async function loadOfflineQthFallback(lat, lng) {
     try {
       if (!offlineQthCache) {
@@ -18766,13 +18765,13 @@ function initAzimuteGeo() {
   }
 
   async function queryOverpassMirrors(lat, lng) {
-    const query = `[out:json][timeout:10];way(around:180,${lat},${lng})["highway"]["name"];out geom;`;
+    const query = `[out:json][timeout:8];way(around:180,${lat},${lng})["highway"]["name"];out geom;`;
     const bodyForm = "data=" + encodeURIComponent(query);
 
     for (const mirror of OVERPASS_MIRRORS) {
       try {
         const ctrl = new AbortController();
-        const timer = setTimeout(() => ctrl.abort(), 9500);
+        const timer = setTimeout(() => ctrl.abort(), 7000);
         const res = await fetch(mirror, {
           method: "POST",
           headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
@@ -18790,6 +18789,23 @@ function initAzimuteGeo() {
     return null;
   }
 
+  function applyStreetsListToQuadrante(lat, lng, list) {
+    if (!list.length) return;
+    lastStreetsFetchPos = [lat, lng];
+    const syncedLocStreet = readSyncedStreetFromLocationCard();
+    if (syncedLocStreet) {
+      cachedCurrentStreet = syncedLocStreet;
+      const normSynced = syncedLocStreet.toLowerCase();
+      cachedNearbyStreets = list.filter((st) => st.name.toLowerCase() !== normSynced);
+    } else {
+      cachedCurrentStreet = list[0].name;
+      cachedNearbyStreets = list.slice(1);
+    }
+    setQuadFetchIndicator("idle", "Toque p/ Relevo 2.5D");
+    recomputeQuadranteSectors();
+    enrichStreetsWithElevation(lat, lng, cachedNearbyStreets);
+  }
+
   async function fetchNearbyStreets(lat, lng, force) {
     if (fetchingStreets) return;
     if (!force && lastStreetsFetchPos && cachedNearbyStreets.length > 0) {
@@ -18798,16 +18814,17 @@ function initAzimuteGeo() {
     }
 
     fetchingStreets = true;
-    if (retryStreetsTimer) {
-      clearTimeout(retryStreetsTimer);
-      retryStreetsTimer = null;
-    }
     setQuadFetchIndicator("searching", "Buscando vias...");
 
     try {
-      let list = [];
-      const elements = await queryOverpassMirrors(lat, lng);
+      // 1) Carregamento instantaneo pelo arquivo local base_qth_bh.json
+      const localList = await loadOfflineQthFallback(lat, lng);
+      if (localList.length) {
+        applyStreetsListToQuadrante(lat, lng, localList);
+      }
 
+      // 2) Refinamento em segundo plano pela Overpass API (geometria exata)
+      const elements = await queryOverpassMirrors(lat, lng);
       if (elements && elements.length) {
         const byName = new Map();
         elements.forEach((el) => {
@@ -18845,38 +18862,17 @@ function initAzimuteGeo() {
             });
           }
         });
-        list = Array.from(byName.values()).sort((a, b) => a.distKm - b.distKm);
-      }
-
-      if (!list.length) {
-        list = await loadOfflineQthFallback(lat, lng);
-      }
-
-      if (list.length) {
-        lastStreetsFetchPos = [lat, lng];
-        const syncedLocStreet = readSyncedStreetFromLocationCard();
-        if (syncedLocStreet) {
-          cachedCurrentStreet = syncedLocStreet;
-          const normSynced = syncedLocStreet.toLowerCase();
-          cachedNearbyStreets = list.filter((st) => st.name.toLowerCase() !== normSynced);
-        } else {
-          cachedCurrentStreet = list[0].name;
-          cachedNearbyStreets = list.slice(1);
+        const onlineList = Array.from(byName.values()).sort((a, b) => a.distKm - b.distKm);
+        if (onlineList.length) {
+          applyStreetsListToQuadrante(lat, lng, onlineList);
         }
-        setQuadFetchIndicator("idle", "Toque p/ Relevo 2.5D");
-        recomputeQuadranteSectors();
-        enrichStreetsWithElevation(lat, lng, cachedNearbyStreets);
-      } else {
-        setQuadFetchIndicator("error", "Buscando vias...");
-        retryStreetsTimer = setTimeout(() => {
-          if (lastPos) fetchNearbyStreets(lastPos[0], lastPos[1], true);
-        }, 5000);
+      } else if (!localList.length) {
+        setQuadFetchIndicator("error", "Sem resposta de vias");
       }
     } catch (err) {
-      setQuadFetchIndicator("error", "Reconectando vias...");
-      retryStreetsTimer = setTimeout(() => {
-        if (lastPos) fetchNearbyStreets(lastPos[0], lastPos[1], true);
-      }, 5000);
+      if (!cachedNearbyStreets.length) {
+        setQuadFetchIndicator("error", "Reconectando vias...");
+      }
     } finally {
       fetchingStreets = false;
     }
@@ -19168,7 +19164,6 @@ function initAzimuteGeo() {
       }
     }
 
-    // Atualiza alvo da animacao fluida a 60fps
     setFluidMarkerTarget(latitude, longitude);
 
     if (radarMap && (isNavigationStarted || activeRouteDest)) {
@@ -19185,7 +19180,6 @@ function initAzimuteGeo() {
     updateTurnByTurnProgress();
     checkOffRouteAndRecalculate();
 
-    // Dispara busca de vias para o Quadrante (priorizando GPS principal do AZIMUTE)
     if (fromMainEngine || !accuracy || accuracy <= 150) {
       fetchNearbyStreets(latitude, longitude, false);
     } else {
@@ -19207,18 +19201,15 @@ function initAzimuteGeo() {
     }
   }
 
-  // 1) Fonte primaria do Quadrante e sincronia inicial: GPS principal do AZIMUTE
   syncFromMainAzimuteGps(true);
   setInterval(() => syncFromMainAzimuteGps(false), 1500);
 
-  // 2) Acompanhamento rapido do icone no mapa com tolerancia maior para nao dar timeout no 4G
   if ("geolocation" in navigator) {
     navigator.geolocation.watchPosition(
       (pos) => {
         handleIncomingGpsCoords(pos.coords, false);
       },
       () => {
-        // Se watchPosition oscilar, continua alimentado pelo GPS principal do AZIMUTE
         syncFromMainAzimuteGps(false);
       },
       { enableHighAccuracy: true, maximumAge: 2000, timeout: 20000 }
