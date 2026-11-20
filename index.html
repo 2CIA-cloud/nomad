@@ -17039,11 +17039,11 @@ function initAzimuteGeo() {
   let userTouchPauseUntil = 0;
   let lastMapBearingApplied = 0;
 
-  // Calibrador separado por orientacao (Vertical vs Horizontal/GRID) + Trava Anti-Giro no Manuseio
   let calOffsetPortrait = parseInt(localStorage.getItem("az_cal_offset_portrait") || "0", 10) || 0;
   let calOffsetLandscape = parseInt(localStorage.getItem("az_cal_offset_landscape") || "0", 10) || 0;
   let isHeadingManuallyLocked = false;
   let handlingFreezeUntil = 0;
+  let calToastTimer = null;
 
   let lastQuadHeading = null;
   let lastQuadUpdateTime = 0;
@@ -17155,6 +17155,24 @@ function initAzimuteGeo() {
     refreshStabilizedHeading(true);
   }
 
+  function notifyCalibratorSaved(customLabel) {
+    const off = getActiveCalibrationOffset();
+    const offTxt = `${off >= 0 ? "+" : ""}${off}°`;
+    if (calAlignFrontBtn) {
+      calAlignFrontBtn.classList.remove("subtle");
+      calAlignFrontBtn.classList.add("green");
+      calAlignFrontBtn.textContent = customLabel || `✓ Salvo (${offTxt})`;
+      clearTimeout(calToastTimer);
+      calToastTimer = setTimeout(() => {
+        calAlignFrontBtn.classList.remove("green");
+        calAlignFrontBtn.classList.add("subtle");
+        calAlignFrontBtn.textContent = "Gravar Frente Atual";
+      }, 1800);
+    }
+    if (navigator.vibrate) navigator.vibrate(35);
+    if (statusEl) statusEl.textContent = `Calibração salva (${offTxt})`;
+  }
+
   function updateCalibratorReadout() {
     const landscape = isLandscapeMode();
     const off = getActiveCalibrationOffset();
@@ -17197,7 +17215,6 @@ function initAzimuteGeo() {
     });
   }
 
-  // Trava automatica enquanto o usuario digita na busca para nao girar ao segurar na vertical
   if (searchInput) {
     searchInput.addEventListener("focus", () => {
       handlingFreezeUntil = Date.now() + 8000;
@@ -17209,21 +17226,23 @@ function initAzimuteGeo() {
       btn.addEventListener("click", () => {
         if (btn.hasAttribute("data-cal-reset")) {
           setActiveCalibrationOffset(0);
+          notifyCalibratorSaved("✓ Zerado (0°)");
           return;
         }
         const delta = parseInt(btn.getAttribute("data-cal-delta") || "0", 10);
         setActiveCalibrationOffset(getActiveCalibrationOffset() + delta);
+        notifyCalibratorSaved();
       });
     });
   }
 
   if (calAlignFrontBtn) {
+    calAlignFrontBtn.classList.add("subtle");
     calAlignFrontBtn.addEventListener("click", () => {
-      // Grava o rumo atual da bussola pura + tela como frente (offset 0 em relacao ao sensor atual)
       const baseSensor = normalizeAngle(rawCompassHeading + getNativeScreenAngle());
       const diffToCurrentMap = Math.round(shortestAngleDiff(baseSensor, getMapBearing()));
       setActiveCalibrationOffset(diffToCurrentMap);
-      statusEl.textContent = "Frente atual gravada no calibrador";
+      notifyCalibratorSaved();
     });
   }
 
@@ -17318,7 +17337,6 @@ function initAzimuteGeo() {
     updateCalibratorReadout();
   }
 
-  // Carencia de 1.8s ao tirar o celular do peito (horizontal -> vertical) para nao torcer as ruas no movimento
   function handleScreenOrientationChange() {
     compassSamples = [];
     handlingFreezeUntil = Date.now() + 1800;
@@ -19343,7 +19361,6 @@ function initAzimuteGeo() {
       return;
     }
 
-    // Congela o Quadrante durante o movimento de tirar o celular do peito ou se o rumo estiver travado
     if (!forceUpdate && (isHeadingManuallyLocked || Date.now() < handlingFreezeUntil)) {
       return;
     }
