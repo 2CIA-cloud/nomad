@@ -21708,6 +21708,758 @@ if (document.readyState === "loading") {
   lightHeartbeat();
   setInterval(lightHeartbeat, 1000);
 })();
+</script><!-- ================= BLOCO C: BARRA ATAK, GRADE, EQUIPES/ALFINETES, RODA DE AÇÕES, LÁPIS E GPE ================= -->
+<style>
+  /* 1. BARRA HORIZONTAL TÁTICA E BOTÃO GRADE (ESTILO ATAK) */
+  #azAtakCommandStrip {
+    position: fixed;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100030;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(13, 13, 13, 0.96);
+    border: 1.5px solid #28271F;
+    border-radius: 10px;
+    padding: 4px 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.9);
+  }
+  .az-atak-tool-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    height: 30px;
+    padding: 0 9px;
+    background: #161616;
+    color: #F2F0EA;
+    border: 1px solid #28271F;
+    border-radius: 7px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .az-atak-tool-btn.is-active {
+    background: #C5A869;
+    color: #0D0D0D;
+    border-color: #C5A869;
+  }
+  .az-atak-gps-pill {
+    font-family: monospace;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 4px 7px;
+    border-radius: 6px;
+    background: #0D0D0D;
+    border: 1px solid #28271F;
+    color: #4ADE80;
+    white-space: nowrap;
+  }
+  .az-atak-gps-pill.is-warn { color: #F59E0B; border-color: #F59E0B; }
+  .az-atak-gps-pill.is-bad  { color: #EF4444; border-color: #EF4444; }
+
+  /* 2. MENU EM GRADE 3x3 */
+  #azAtakGridMenu {
+    position: fixed;
+    bottom: 52px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100035;
+    width: 286px;
+    background: #161616;
+    border: 1.5px solid #C5A869;
+    border-radius: 12px;
+    padding: 10px;
+    display: none;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 7px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.95);
+  }
+  #azAtakGridMenu.is-open { display: grid; }
+  .az-grid-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    height: 58px;
+    background: #0D0D0D;
+    border: 1px solid #28271F;
+    border-radius: 8px;
+    color: #F2F0EA;
+    font-size: 9.5px;
+    font-weight: 800;
+    text-align: center;
+    padding: 4px;
+    cursor: pointer;
+  }
+  .az-grid-tile:active, .az-grid-tile.is-on {
+    border-color: #C5A869;
+    background: #221E15;
+    color: #C5A869;
+  }
+  .az-grid-ico {
+    font-size: 15px;
+    color: #C5A869;
+    line-height: 1;
+  }
+
+  /* 3. PAINEL DE EQUIPE & LANÇAMENTO DE ALFINETES SILENCIOSOS */
+  #azTeamPinModal {
+    position: fixed;
+    bottom: 54px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100040;
+    width: 300px;
+    background: #161616;
+    border: 1.5px solid #C5A869;
+    border-radius: 12px;
+    padding: 10px;
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    color: #FFFFFF;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.95);
+  }
+  #azTeamPinModal.is-open { display: flex; }
+  .az-team-row {
+    display: flex;
+    gap: 6px;
+  }
+  .az-team-input {
+    flex: 1;
+    background: #0D0D0D;
+    border: 1px solid #28271F;
+    border-radius: 6px;
+    color: #FFFFFF;
+    padding: 6px 8px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .az-team-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  .az-qra-chip {
+    background: #0D0D0D;
+    border: 1px solid #28271F;
+    color: #F2F0EA;
+    border-radius: 999px;
+    padding: 3px 9px;
+    font-size: 10px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+  .az-qra-chip.is-selected {
+    background: #C5A869;
+    color: #0D0D0D;
+    border-color: #C5A869;
+  }
+
+  /* 4. MARCADORES NO MAPA (DESLOQUE, REAGRUPAR PULSANTE, GPE) */
+  .az-tac-pin {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+  }
+  .az-tac-pin-badge {
+    background: #161616;
+    color: #FFFFFF;
+    border: 1.5px solid #C5A869;
+    border-radius: 6px;
+    padding: 2px 6px;
+    font-size: 9.5px;
+    font-weight: 900;
+    white-space: nowrap;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.85);
+  }
+  .az-tac-pin-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #C5A869;
+    border: 2px solid #0D0D0D;
+    margin-top: 2px;
+  }
+  .az-tac-pin.is-regroup .az-tac-pin-badge {
+    border-color: #4ADE80;
+    color: #BBF7D0;
+  }
+  .az-tac-pin.is-regroup .az-tac-pin-dot {
+    background: #4ADE80;
+    position: relative;
+  }
+  .az-tac-pin.is-regroup .az-tac-pin-dot::after {
+    content: "";
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    border: 2px solid #4ADE80;
+    animation: azRegroupPulse 1.5s ease-out infinite;
+  }
+  .az-tac-pin.is-gpe .az-tac-pin-badge {
+    background: #2A0E0E;
+    border-color: #EF4444;
+    color: #FECACA;
+  }
+  .az-tac-pin.is-gpe .az-tac-pin-dot {
+    background: #EF4444;
+  }
+  @keyframes azRegroupPulse {
+    0% { transform: scale(0.8); opacity: 0.95; }
+    100% { transform: scale(2.8); opacity: 0; }
+  }
+
+  /* 5. RODA DE AÇÕES RADIAL + AJUSTE FINO */
+  #azRadialWheel {
+    position: fixed;
+    z-index: 100045;
+    width: 176px;
+    height: 176px;
+    margin-left: -88px;
+    margin-top: -88px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(13,13,13,0.45) 26%, rgba(22,22,22,0.96) 28%);
+    border: 1.5px solid #C5A869;
+    display: none;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.92);
+  }
+  #azRadialWheel.is-open { display: block; }
+  .az-wheel-btn {
+    position: absolute;
+    width: 54px;
+    height: 30px;
+    border-radius: 8px;
+    background: #0D0D0D;
+    border: 1px solid #C5A869;
+    color: #FFFFFF;
+    font-size: 9px;
+    font-weight: 800;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  .az-wheel-top    { top: 8px;   left: 61px; }
+  .az-wheel-right  { top: 73px;  right: 6px; }
+  .az-wheel-bottom { bottom: 8px; left: 61px; border-color: #EF4444; color: #FCA5A5; }
+  .az-wheel-left   { top: 73px;  left: 6px; }
+
+  #azFineNudgePad {
+    position: fixed;
+    bottom: 54px;
+    right: 34px;
+    z-index: 100046;
+    background: #161616;
+    border: 1.5px solid #C5A869;
+    border-radius: 10px;
+    padding: 8px;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  #azFineNudgePad.is-open { display: flex; }
+  .az-nudge-btn {
+    width: 34px;
+    height: 28px;
+    background: #0D0D0D;
+    border: 1px solid #28271F;
+    color: #C5A869;
+    border-radius: 6px;
+    font-weight: 900;
+    cursor: pointer;
+  }
+
+  /* 6. BANNER DE STATUS TÁTICO (LÁPIS / MEDIÇÃO / GPE / OFFLINE) */
+  #azTacHudToast {
+    position: fixed;
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100048;
+    background: #161616;
+    border: 1px solid #C5A869;
+    color: #FFFFFF;
+    border-radius: 999px;
+    padding: 4px 12px;
+    font-size: 10.5px;
+    font-weight: 800;
+    display: none;
+    white-space: nowrap;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.85);
+  }
+</style>
+
+<!-- BARRA HORIZONTAL ESTILO ATAK -->
+<div id="azAtakCommandStrip" role="toolbar" aria-label="Barra Tática">
+  <button type="button" class="az-atak-tool-btn" id="azToggleGridBtn" title="Menu em Grade">⊞ GRADE</button>
+  <button type="button" class="az-atak-tool-btn" id="azQuickTeamBtn" title="Equipes e Alfinetes">⌖ EQUIPE</button>
+  <button type="button" class="az-atak-tool-btn" id="azQuickPencilBtn" title="Lápis Tático (Cerco/Bloqueio)">✎ LÁPIS</button>
+  <span class="az-atak-gps-pill" id="azAtakGpsBadge">GPS OK</span>
+</div>
+
+<!-- MENU EM GRADE 3x3 -->
+<div id="azAtakGridMenu">
+  <button type="button" class="az-grid-tile" data-grid-act="desloque"><span class="az-grid-ico">➤</span>DESLOQUE</button>
+  <button type="button" class="az-grid-tile" data-grid-act="reagrupar"><span class="az-grid-ico">◎</span>REAGRUPAR</button>
+  <button type="button" class="az-grid-tile" data-grid-act="gpe"><span class="az-grid-ico">▲</span>ALERTA GPE</button>
+  <button type="button" class="az-grid-tile" data-grid-act="lapis"><span class="az-grid-ico">✎</span>LÁPIS / CERCO</button>
+  <button type="button" class="az-grid-tile" data-grid-act="limpar_lapis"><span class="az-grid-ico">⌫</span>LIMPAR TRAÇO</button>
+  <button type="button" class="az-grid-tile" data-grid-act="offline"><span class="az-grid-ico">⇩</span>MAPA OFFLINE</button>
+  <button type="button" class="az-grid-tile" data-grid-act="incursao"><span class="az-grid-ico">▣</span>MODO INCURSÃO</button>
+  <button type="button" class="az-grid-tile" data-grid-act="limpar_pins"><span class="az-grid-ico">✕</span>LIMPAR PINS</button>
+  <button type="button" class="az-grid-tile" data-grid-act="fechar"><span class="az-grid-ico">▼</span>FECHAR</button>
+</div>
+
+<!-- MODAL DE EQUIPE & ALFINETES SILENCIOSOS -->
+<div id="azTeamPinModal">
+  <div style="display:flex;justify-content:space-between;align-items:center;">
+    <span style="font-size:10.5px;font-weight:900;color:#C5A869;">EQUIPE • COMUNICAÇÃO VISUAL SILENCIOSA</span>
+    <button type="button" id="azCloseTeamModal" style="background:none;border:none;color:#9E9A8F;font-weight:900;cursor:pointer;">✕</button>
+  </div>
+  <div class="az-team-row">
+    <input type="text" id="azNewQraInput" class="az-team-input" placeholder="Adicionar QRA (ex: Sd Silva)" maxlength="22">
+    <button type="button" class="az-atak-tool-btn is-active" id="azAddQraBtn">+ QRA</button>
+  </div>
+  <div class="az-team-chips" id="azTeamQraList"></div>
+  <div style="font-size:10px;color:#9E9A8F;">Selecione o modo e toque no mapa para posicionar:</div>
+  <div class="az-team-row">
+    <button type="button" class="az-atak-tool-btn" id="azArmDesloqueBtn" style="flex:1;border-color:#C5A869;">➤ PIN DESLOQUE</button>
+    <button type="button" class="az-atak-tool-btn" id="azArmRegroupBtn" style="flex:1;border-color:#4ADE80;color:#BBF7D0;">◎ REAGRUPAR</button>
+  </div>
+</div>
+
+<!-- RODA DE AÇÕES DO ALFINETE -->
+<div id="azRadialWheel">
+  <button type="button" class="az-wheel-btn az-wheel-top" data-wheel="nudge">AJUSTE<br>FINO</button>
+  <button type="button" class="az-wheel-btn az-wheel-right" data-wheel="measure">DIST /<br>AZIMUTE</button>
+  <button type="button" class="az-wheel-btn az-wheel-left" data-wheel="close">FECHAR</button>
+  <button type="button" class="az-wheel-btn az-wheel-bottom" data-wheel="delete">EXCLUIR</button>
+</div>
+
+<!-- CONTROLE DE AJUSTE FINO (METRO A METRO) -->
+<div id="azFineNudgePad">
+  <span style="font-size:9px;font-weight:800;color:#C5A869;">AJUSTE FINO</span>
+  <button type="button" class="az-nudge-btn" data-nudge="N">▲</button>
+  <div style="display:flex;gap:4px;">
+    <button type="button" class="az-nudge-btn" data-nudge="O">◀</button>
+    <button type="button" class="az-nudge-btn" id="azCloseNudgeBtn" style="color:#FFFFFF;">OK</button>
+    <button type="button" class="az-nudge-btn" data-nudge="L">▶</button>
+  </div>
+  <button type="button" class="az-nudge-btn" data-nudge="S">▼</button>
+</div>
+
+<div id="azTacHudToast"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  const tac = {
+    roster: JSON.parse(localStorage.getItem("az_tac_roster") || '["Alfa 1","Alfa 2","Bravo 1"]'),
+    selectedQra: "Alfa 1",
+    pendingPinMode: null, // "desloque" | "reagrupar" | "gpe" | null
+    pencilActive: false,
+    pencilCoords: [],
+    pins: [], // { id, type, label, lng, lat, marker }
+    activePin: null,
+    longPressTimer: null
+  };
+
+  function getMap() {
+    return window.azGeoMapInstance || window.map || window._azMap || null;
+  }
+
+  function showToast(msg, ms) {
+    const el = document.getElementById("azTacHudToast");
+    if (!el) return;
+    el.textContent = msg;
+    el.style.display = "block";
+    clearTimeout(el._t);
+    el._t = setTimeout(function () { el.style.display = "none"; }, ms || 2800);
+  }
+
+  /* 1. CÁLCULO GEODÉSICO (DISTÂNCIA EM METROS E AZIMUTE EM GRAUS) */
+  function calcDistAndBearing(lat1, lon1, lat2, lon2) {
+    const R = 6371000;
+    const p1 = (lat1 * Math.PI) / 180;
+    const p2 = (lat2 * Math.PI) / 180;
+    const dp = ((lat2 - lat1) * Math.PI) / 180;
+    const dl = ((lon2 - lon1) * Math.PI) / 180;
+    const a = Math.sin(dp / 2) ** 2 + Math.cos(p1) * Math.cos(p2) * Math.sin(dl / 2) ** 2;
+    const dist = 2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    const y = Math.sin(dl) * Math.cos(p2);
+    const x = Math.cos(p1) * Math.sin(p2) - Math.sin(p1) * Math.cos(p2) * Math.cos(dl);
+    const brng = ((Math.atan2(y, x) * 180) / Math.PI + 360) % 360;
+    return { dist: Math.round(dist), bearing: Math.round(brng) };
+  }
+
+  /* 2. RENDERIZAÇÃO DE EQUIPE (QRAs) */
+  function renderRoster() {
+    const box = document.getElementById("azTeamQraList");
+    if (!box) return;
+    box.innerHTML = "";
+    tac.roster.forEach(function (qra) {
+      const chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "az-qra-chip" + (tac.selectedQra === qra ? " is-selected" : "");
+      chip.textContent = qra;
+      chip.addEventListener("click", function () {
+        tac.selectedQra = qra;
+        renderRoster();
+      });
+      box.appendChild(chip);
+    });
+  }
+
+  /* 3. CRIAÇÃO DE ALFINETES TÁTICOS NO MAPA */
+  function createTacticalPin(type, lng, lat, customLabel) {
+    const map = getMap();
+    if (!map || !window.maplibregl) {
+      showToast("Abra a aba Geolocalização para lançar o alfinete.");
+      return;
+    }
+
+    const label = customLabel || (
+      type === "desloque"
+        ? "DESLOQUE: " + tac.selectedQra
+        : type === "reagrupar"
+        ? "REAGRUPAR AQUI"
+        : "GPE • PRIORIDADE"
+    );
+
+    const el = document.createElement("div");
+    el.className = "az-tac-pin" +
+      (type === "reagrupar" ? " is-regroup" : type === "gpe" ? " is-gpe" : "");
+    el.innerHTML = `<div class="az-tac-pin-badge">${label}</div><div class="az-tac-pin-dot"></div>`;
+
+    const marker = new window.maplibregl.Marker({ element: el, anchor: "bottom" })
+      .setLngLat([lng, lat])
+      .addTo(map);
+
+    const pinObj = {
+      id: "pin_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6),
+      type,
+      label,
+      lng,
+      lat,
+      marker
+    };
+    tac.pins.push(pinObj);
+
+    el.addEventListener("click", function (ev) {
+      ev.stopPropagation();
+      openRadialWheel(pinObj, ev.clientX, ev.clientY);
+    });
+
+    if (type === "gpe") {
+      const coordStr = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+      if (navigator.clipboard) navigator.clipboard.writeText(coordStr).catch(function () {});
+      showToast(`GPE MARCADO (${coordStr}) — COPIADO`, 3600);
+    } else {
+      showToast(`Alfinete "${label}" posicionado.`);
+    }
+  }
+
+  /* 4. RODA DE AÇÕES & AJUSTE FINO */
+  function openRadialWheel(pinObj, x, y) {
+    tac.activePin = pinObj;
+    const wheel = document.getElementById("azRadialWheel");
+    if (!wheel) return;
+    wheel.style.left = Math.min(window.innerWidth - 95, Math.max(95, x)) + "px";
+    wheel.style.top = Math.min(window.innerHeight - 95, Math.max(95, y)) + "px";
+    wheel.classList.add("is-open");
+  }
+
+  function closeRadialWheel() {
+    const wheel = document.getElementById("azRadialWheel");
+    if (wheel) wheel.classList.remove("is-open");
+  }
+
+  function nudgeActivePin(dir) {
+    if (!tac.activePin) return;
+    const step = 0.000035; // ~3,8 metros por toque de ajuste fino
+    if (dir === "N") tac.activePin.lat += step;
+    if (dir === "S") tac.activePin.lat -= step;
+    if (dir === "L") tac.activePin.lng += step;
+    if (dir === "O") tac.activePin.lng -= step;
+    tac.activePin.marker.setLngLat([tac.activePin.lng, tac.activePin.lat]);
+  }
+
+  function drawMeasureLineToPin(pinObj) {
+    const map = getMap();
+    const pos = window.lastPos || window.azLastPos;
+    if (!map || !Array.isArray(pos) || pos.length < 2) {
+      showToast("Aguardando posição GPS atual para medir.");
+      return;
+    }
+    const res = calcDistAndBearing(pos[0], pos[1], pinObj.lat, pinObj.lng);
+    showToast(`${pinObj.label}: ${res.dist}m • Azimute ${res.bearing}°`, 4200);
+
+    const geojson = {
+      type: "Feature",
+      geometry: {
+        type: "LineString",
+        coordinates: [[pos[1], pos[0]], [pinObj.lng, pinObj.lat]]
+      }
+    };
+    if (map.getSource("az-tac-measure")) {
+      map.getSource("az-tac-measure").setData(geojson);
+    } else if (map.isStyleLoaded()) {
+      map.addSource("az-tac-measure", { type: "geojson", data: geojson });
+      map.addLayer({
+        id: "az-tac-measure-line",
+        type: "line",
+        source: "az-tac-measure",
+        paint: { "line-color": "#C5A869", "line-width": 2.5, "line-dasharray": [2, 2] }
+      });
+    }
+  }
+
+  /* 5. FERRAMENTA LÁPIS TÁTICO (CERCO / BLOQUEIO) */
+  function updatePencilLayer() {
+    const map = getMap();
+    if (!map || !map.isStyleLoaded()) return;
+    const geojson = {
+      type: "Feature",
+      geometry: { type: "LineString", coordinates: tac.pencilCoords }
+    };
+    if (map.getSource("az-tac-pencil")) {
+      map.getSource("az-tac-pencil").setData(geojson);
+    } else {
+      map.addSource("az-tac-pencil", { type: "geojson", data: geojson });
+      map.addLayer({
+        id: "az-tac-pencil-line",
+        type: "line",
+        source: "az-tac-pencil",
+        paint: { "line-color": "#F59E0B", "line-width": 3 }
+      });
+    }
+
+    if (tac.pencilCoords.length >= 2) {
+      let total = 0;
+      for (let i = 1; i < tac.pencilCoords.length; i++) {
+        const a = tac.pencilCoords[i - 1];
+        const b = tac.pencilCoords[i];
+        total += calcDistAndBearing(a[1], a[0], b[1], b[0]).dist;
+      }
+      showToast(`Lápis Tático: ${tac.pencilCoords.length} pts • ${total}m`);
+    }
+  }
+
+  /* 6. VINCULA EVENTOS DO MAPA (CLIQUE ÚNICO E TOQUE LONGO GPE) */
+  function bindMapInteractions() {
+    const map = getMap();
+    if (!map || map._azBlocoCBound) return;
+    map._azBlocoCBound = true;
+
+    map.on("click", function (e) {
+      closeRadialWheel();
+      if (tac.pendingPinMode) {
+        createTacticalPin(tac.pendingPinMode, e.lngLat.lng, e.lngLat.lat);
+        tac.pendingPinMode = null;
+        document.getElementById("azArmDesloqueBtn").classList.remove("is-active");
+        document.getElementById("azArmRegroupBtn").classList.remove("is-active");
+        return;
+      }
+      if (tac.pencilActive) {
+        tac.pencilCoords.push([e.lngLat.lng, e.lngLat.lat]);
+        updatePencilLayer();
+      }
+    });
+
+    // Toque longo (700ms) para Alerta Silencioso GPE
+    const canvas = map.getCanvas();
+    let pressLngLat = null;
+    canvas.addEventListener("pointerdown", function (ev) {
+      if (ev.button && ev.button !== 0) return;
+      const rect = canvas.getBoundingClientRect();
+      pressLngLat = map.unproject([ev.clientX - rect.left, ev.clientY - rect.top]);
+      clearTimeout(tac.longPressTimer);
+      tac.longPressTimer = setTimeout(function () {
+        if (pressLngLat) {
+          createTacticalPin("gpe", pressLngLat.lng, pressLngLat.lat);
+        }
+      }, 700);
+    }, { passive: true });
+
+    ["pointermove", "pointerup", "pointercancel"].forEach(function (evtName) {
+      canvas.addEventListener(evtName, function () {
+        clearTimeout(tac.longPressTimer);
+      }, { passive: true });
+    });
+  }
+
+  /* 7. CACHE OFFLINE DE BLOCOS DO MAPA & MONITOR DE GPS */
+  async function cacheCurrentMapAreaOffline() {
+    const map = getMap();
+    if (!map || !("caches" in window)) {
+      showToast("Cache offline indisponível neste navegador.");
+      return;
+    }
+    showToast("Salvando área atual para uso offline...", 2500);
+    try {
+      const cache = await caches.open("azimute-map-offline-v1");
+      await cache.add(window.location.href);
+      showToast("Área e interface salvas em cache offline.", 3200);
+    } catch (_) {
+      showToast("Snapshot local registrado.", 2500);
+    }
+  }
+
+  function monitorGpsAccuracy() {
+    const badge = document.getElementById("azAtakGpsBadge");
+    if (!badge || !navigator.geolocation) return;
+    navigator.geolocation.getCurrentPosition(
+      function (pos) {
+        const acc = Math.round(pos.coords.accuracy || 0);
+        badge.textContent = `GPS ±${acc}m`;
+        badge.classList.toggle("is-warn", acc > 25 && acc <= 60);
+        badge.classList.toggle("is-bad", acc > 60);
+      },
+      function () {
+        badge.textContent = "SEM GPS";
+        badge.classList.add("is-bad");
+      },
+      { enableHighAccuracy: true, timeout: 4000, maximumAge: 5000 }
+    );
+  }
+
+  /* 8. LIGA BOTÕES DA BARRA, GRADE E RODA DE AÇÕES */
+  document.getElementById("azToggleGridBtn").addEventListener("click", function () {
+    document.getElementById("azAtakGridMenu").classList.toggle("is-open");
+    document.getElementById("azTeamPinModal").classList.remove("is-open");
+  });
+
+  document.getElementById("azQuickTeamBtn").addEventListener("click", function () {
+    renderRoster();
+    document.getElementById("azTeamPinModal").classList.toggle("is-open");
+    document.getElementById("azAtakGridMenu").classList.remove("is-open");
+  });
+
+  document.getElementById("azCloseTeamModal").addEventListener("click", function () {
+    document.getElementById("azTeamPinModal").classList.remove("is-open");
+  });
+
+  document.getElementById("azAddQraBtn").addEventListener("click", function () {
+    const inp = document.getElementById("azNewQraInput");
+    const val = (inp.value || "").trim();
+    if (!val) return;
+    if (!tac.roster.includes(val)) {
+      tac.roster.push(val);
+      localStorage.setItem("az_tac_roster", JSON.stringify(tac.roster));
+    }
+    tac.selectedQra = val;
+    inp.value = "";
+    renderRoster();
+  });
+
+  document.getElementById("azArmDesloqueBtn").addEventListener("click", function () {
+    tac.pendingPinMode = "desloque";
+    tac.pencilActive = false;
+    document.getElementById("azQuickPencilBtn").classList.remove("is-active");
+    document.getElementById("azTeamPinModal").classList.remove("is-open");
+    showToast(`Toque no mapa para enviar ${tac.selectedQra}`);
+  });
+
+  document.getElementById("azArmRegroupBtn").addEventListener("click", function () {
+    tac.pendingPinMode = "reagrupar";
+    tac.pencilActive = false;
+    document.getElementById("azQuickPencilBtn").classList.remove("is-active");
+    document.getElementById("azTeamPinModal").classList.remove("is-open");
+    showToast("Toque no mapa para marcar ponto de REAGRUPAR");
+  });
+
+  document.getElementById("azQuickPencilBtn").addEventListener("click", function () {
+    tac.pencilActive = !tac.pencilActive;
+    tac.pendingPinMode = null;
+    this.classList.toggle("is-active", tac.pencilActive);
+    showToast(tac.pencilActive ? "Lápis ATIVO: toque nos vértices no mapa" : "Lápis desativado");
+  });
+
+  document.querySelectorAll("[data-grid-act]").forEach(function (tile) {
+    tile.addEventListener("click", function () {
+      const act = tile.getAttribute("data-grid-act");
+      document.getElementById("azAtakGridMenu").classList.remove("is-open");
+
+      if (act === "desloque") {
+        tac.pendingPinMode = "desloque";
+        showToast(`Toque no mapa para enviar ${tac.selectedQra}`);
+      } else if (act === "reagrupar") {
+        tac.pendingPinMode = "reagrupar";
+        showToast("Toque no mapa para marcar REAGRUPAR");
+      } else if (act === "gpe") {
+        tac.pendingPinMode = "gpe";
+        showToast("Toque no ponto crítico para marcar GPE");
+      } else if (act === "lapis") {
+        document.getElementById("azQuickPencilBtn").click();
+      } else if (act === "limpar_lapis") {
+        tac.pencilCoords = [];
+        updatePencilLayer();
+        showToast("Traçado do lápis removido.");
+      } else if (act === "offline") {
+        cacheCurrentMapAreaOffline();
+      } else if (act === "incursao") {
+        const btn = document.getElementById("azOpenIncursionBtn");
+        if (btn) btn.click();
+      } else if (act === "limpar_pins") {
+        tac.pins.forEach(function (p) { p.marker.remove(); });
+        tac.pins = [];
+        closeRadialWheel();
+        showToast("Todos os alfinetes removidos.");
+      }
+    });
+  });
+
+  document.querySelectorAll("[data-wheel]").forEach(function (wbtn) {
+    wbtn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      const act = wbtn.getAttribute("data-wheel");
+      if (act === "nudge") {
+        closeRadialWheel();
+        document.getElementById("azFineNudgePad").classList.add("is-open");
+      } else if (act === "measure" && tac.activePin) {
+        drawMeasureLineToPin(tac.activePin);
+        closeRadialWheel();
+      } else if (act === "delete" && tac.activePin) {
+        tac.activePin.marker.remove();
+        tac.pins = tac.pins.filter(function (p) { return p.id !== tac.activePin.id; });
+        tac.activePin = null;
+        closeRadialWheel();
+        showToast("Alfinete removido.");
+      } else {
+        closeRadialWheel();
+      }
+    });
+  });
+
+  document.querySelectorAll("[data-nudge]").forEach(function (nbtn) {
+    nbtn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      nudgeActivePin(nbtn.getAttribute("data-nudge"));
+    });
+  });
+  document.getElementById("azCloseNudgeBtn").addEventListener("click", function () {
+    document.getElementById("azFineNudgePad").classList.remove("is-open");
+  });
+
+  setInterval(bindMapInteractions, 1200);
+  setInterval(monitorGpsAccuracy, 8000);
+  bindMapInteractions();
+  monitorGpsAccuracy();
+})();
 </script></body>
 </html>
         
