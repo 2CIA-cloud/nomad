@@ -1095,7 +1095,7 @@
             <div class="relative z-10 flex items-center justify-between px-1">
                 <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki">Geolocalização</span>
             </div>
-     <div id="az-geo-module" class="az-geo-module relative z-10">
+ <div id="az-geo-module" class="az-geo-module relative z-10">
   <style>
     .az-geo-module {
       --geo-bg: #0D0D0D;
@@ -1285,7 +1285,7 @@
       width: 40px;
       height: 40px;
       border-radius: 50%;
-      background: rgba(13, 13, 13, 0.72);
+      background: rgba(13, 13, 13, 0.76);
       border: 1.5px solid rgba(197, 168, 105, 0.85);
       color: #C5A869;
       display: flex;
@@ -1294,12 +1294,37 @@
       cursor: grab;
       backdrop-filter: blur(4px);
       touch-action: none;
-      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.65);
+    }
+
+    .az-geo-locate-fab.is-heading-up {
+      background: rgba(37, 99, 235, 0.86);
+      border-color: #93C5FD;
+      color: #FFFFFF;
     }
 
     .az-geo-locate-fab:active {
       cursor: grabbing;
-      background: rgba(197, 168, 105, 0.25);
+    }
+
+    .az-geo-compass-badge {
+      position: absolute;
+      right: 12px;
+      top: 12px;
+      z-index: 600;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: rgba(13, 13, 13, 0.78);
+      border: 1px solid #C5A869;
+      color: #F2F0EA;
+      font-size: 11px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      backdrop-filter: blur(4px);
     }
 
     .az-geo-btn {
@@ -1823,7 +1848,8 @@
 
     <div class="az-geo-stage" id="azGeoStage">
       <div id="azGeoMap"></div>
-      <button type="button" id="azGeoCenterFab" class="az-geo-locate-fab" aria-label="Minha Posicao" title="Minha Posicao">
+      <button type="button" id="azGeoNorthBadge" class="az-geo-compass-badge" title="Alinhar Norte para cima">N</button>
+      <button type="button" id="azGeoCenterFab" class="az-geo-locate-fab is-heading-up" aria-label="Minha Posicao e Girar Camera" title="Minha Posicao / Girar com Bussola">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="7"></circle>
           <circle cx="12" cy="12" r="2"></circle>
@@ -1854,7 +1880,7 @@
       <button type="button" id="azGeoCfgToggleBtn" class="az-geo-btn subtle" aria-label="Configuracoes">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="3"></circle>
-          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l-.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
         </svg>
         <span>Configurações</span>
       </button>
@@ -1894,6 +1920,10 @@
           <button type="button" class="az-geo-swatch" data-color="#38BDF8" style="background:#38BDF8;" aria-label="Azul"></button>
           <button type="button" class="az-geo-swatch" data-color="#F87171" style="background:#F87171;" aria-label="Vermelho"></button>
         </div>
+      </div>
+      <div class="az-geo-cfg-row">
+        <span class="az-geo-label">Girar Mapa com Você:</span>
+        <button type="button" id="azGeoHeadingUpBtn" class="az-geo-btn active">Ativado</button>
       </div>
       <div class="az-geo-cfg-row">
         <span class="az-geo-label">Seguir GPS:</span>
@@ -1964,7 +1994,7 @@
     <strong id="azRadarNextStep">Em rota...</strong>
     <span id="azRadarCurrentVia">Via atual</span>
   </div>
-</div>
+</div> 
             <!-- CONTORNO DO MAPA DE MINAS GERAIS AO FUNDO -->
             <div class="pointer-events-none select-none absolute inset-0 flex items-center justify-center z-0 overflow-hidden" aria-hidden="true">
                 <svg viewBox="0 0 800 650" class="w-full max-w-4xl h-auto opacity-[0.13]">
@@ -16616,6 +16646,7 @@ window.buscarUnidadePorBairro = function (termo) {
 carregarUnidades1RPM();
 </script>
 
+<script src="https://unpkg.com/leaflet-rotate@0.2.8/dist/leaflet-rotate-src.js"></script>
 <script>
 function initAzimuteGeo() {
   const mapEl = document.getElementById("azGeoMap");
@@ -16631,8 +16662,10 @@ function initAzimuteGeo() {
   const searchBtn = document.getElementById("azGeoSearchBtn");
   const searchResultsEl = document.getElementById("azGeoSearchResults");
   const centerFab = document.getElementById("azGeoCenterFab");
+  const northBadge = document.getElementById("azGeoNorthBadge");
   const stageEl = document.getElementById("azGeoStage");
   const followBtn = document.getElementById("azGeoFollowBtn");
+  const headingUpBtn = document.getElementById("azGeoHeadingUpBtn");
   const elevToggleBtn = document.getElementById("azGeoElevToggleBtn");
   const clearBtn = document.getElementById("azGeoClearBtn");
   const addPinBtn = document.getElementById("azGeoAddPinBtn");
@@ -16674,10 +16707,15 @@ function initAzimuteGeo() {
   const radarNextStepEl = document.getElementById("azRadarNextStep");
   const radarCurrentViaEl = document.getElementById("azRadarCurrentVia");
 
+  // Mapa com rotacao habilitada (giro com 2 dedos + orientacao dinamica)
   const map = L.map("azGeoMap", {
     center: [-19.9191, -43.9386],
     zoom: 13,
-    zoomControl: true
+    zoomControl: true,
+    rotate: true,
+    touchRotate: true,
+    rotateControl: false,
+    bearing: 0
   });
 
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -16697,7 +16735,9 @@ function initAzimuteGeo() {
       dragging: false,
       scrollWheelZoom: false,
       doubleClickZoom: false,
-      touchZoom: false
+      touchZoom: false,
+      rotate: true,
+      bearing: 0
     });
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 19
@@ -16724,6 +16764,7 @@ function initAzimuteGeo() {
   let gpsMarker = null;
   let gpsCircle = null;
   let followGps = true;
+  let headingUpMode = true;
   let firstGpsFix = true;
   let localPoints = [];
 
@@ -16761,15 +16802,32 @@ function initAzimuteGeo() {
     return ((toDeg - fromDeg + 540) % 360) - 180;
   }
 
+  function getMapBearing() {
+    if (typeof map.getBearing === "function") {
+      return normalizeAngle(map.getBearing());
+    }
+    return 0;
+  }
+
+  function applyMapBearing(deg) {
+    const clean = normalizeAngle(deg);
+    if (typeof map.setBearing === "function") {
+      map.setBearing(clean);
+    }
+    if (northBadge) {
+      northBadge.style.transform = `rotate(${-clean}deg)`;
+    }
+  }
+
   function isMovingCourseActive() {
     const recentlyMoved = Date.now() - lastMoveTimestamp < 7000 && computedGpsCourse !== null;
-    const hasSpeed = lastSpeed >= 0.7 && (computedGpsCourse !== null || (typeof lastGpsHeading === "number" && !Number.isNaN(lastGpsHeading)));
+    const hasSpeed = lastSpeed >= 1.1 && (computedGpsCourse !== null || (typeof lastGpsHeading === "number" && !Number.isNaN(lastGpsHeading)));
     return recentlyMoved || hasSpeed;
   }
 
   function getTargetHeading() {
     if (isMovingCourseActive()) {
-      if (typeof lastGpsHeading === "number" && !Number.isNaN(lastGpsHeading) && lastSpeed >= 1.2) {
+      if (typeof lastGpsHeading === "number" && !Number.isNaN(lastGpsHeading) && lastSpeed >= 1.4) {
         return normalizeAngle(lastGpsHeading);
       }
       if (computedGpsCourse !== null) {
@@ -16798,11 +16856,14 @@ function initAzimuteGeo() {
     const moving = isMovingCourseActive();
     const target = getTargetHeading();
     const diff = shortestAngleDiff(stableHeading, target);
-    const deadzone = moving ? 2 : 6;
+    const deadzone = moving ? 2 : 5;
 
     if (forceSnap || Math.abs(diff) >= deadzone) {
-      const factor = forceSnap || moving ? 0.85 : 0.65;
+      const factor = forceSnap || moving ? 0.85 : 0.7;
       stableHeading = normalizeAngle(stableHeading + diff * factor);
+      if (headingUpMode) {
+        applyMapBearing(stableHeading);
+      }
       updateDirectionalIcons();
     }
   }
@@ -16826,11 +16887,13 @@ function initAzimuteGeo() {
 
   function updateDirectionalIcons() {
     const deg = stableHeading;
+    // Compensa a rotacao atual do mapa para a seta apontar sempre na direcao geografica exata
+    const visualArrowDeg = normalizeAngle(deg - getMapBearing());
 
     if (gpsMarker) {
       const icon = L.divIcon({
         className: "az-geo-arrow-icon",
-        html: buildArrowSvg(arrowColor, deg, 30),
+        html: buildArrowSvg(arrowColor, visualArrowDeg, 30),
         iconSize: [30, 30],
         iconAnchor: [15, 15]
       });
@@ -16838,9 +16901,12 @@ function initAzimuteGeo() {
     }
 
     if (radarGpsMarker) {
+      if (typeof radarMap?.setBearing === "function") {
+        radarMap.setBearing(deg);
+      }
       const rIcon = L.divIcon({
         className: "az-geo-arrow-icon",
-        html: buildArrowSvg(arrowColor, deg, 24),
+        html: buildArrowSvg(arrowColor, 0, 24),
         iconSize: [24, 24],
         iconAnchor: [12, 12]
       });
@@ -16992,6 +17058,24 @@ function initAzimuteGeo() {
     }
   }
 
+  function setHeadingUpState(enabled) {
+    headingUpMode = !!enabled;
+    if (headingUpBtn) {
+      headingUpBtn.textContent = headingUpMode ? "Ativado" : "Desativado";
+      headingUpBtn.classList.toggle("active", headingUpMode);
+      headingUpBtn.classList.toggle("subtle", !headingUpMode);
+    }
+    if (centerFab) {
+      centerFab.classList.toggle("is-heading-up", headingUpMode);
+    }
+    if (headingUpMode) {
+      applyMapBearing(stableHeading);
+    } else {
+      applyMapBearing(0);
+    }
+    updateDirectionalIcons();
+  }
+
   function clearCityHighlight() {
     if (!citiesWrap) return;
     citiesWrap.querySelectorAll("button[data-lat]").forEach((b) => {
@@ -17076,6 +17160,7 @@ function initAzimuteGeo() {
   function showDestinationOnMap(title, subtitle, lat, lng) {
     firstGpsFix = false;
     setFollowState(false);
+    setHeadingUpState(false);
     clearCityHighlight();
     hideSearchResults();
 
@@ -17104,6 +17189,36 @@ function initAzimuteGeo() {
     marker.openPopup();
   }
 
+  // Botao Norte no canto superior direito do mapa
+  if (northBadge) {
+    northBadge.addEventListener("click", (e) => {
+      e.stopPropagation();
+      setHeadingUpState(false);
+      statusEl.textContent = "Mapa alinhado ao Norte";
+    });
+  }
+
+  // Atualiza icone se o usuario girar manualmente com 2 dedos
+  map.on("rotate", () => {
+    const b = getMapBearing();
+    if (northBadge) {
+      northBadge.style.transform = `rotate(${-b}deg)`;
+    }
+    const deg = stableHeading;
+    const visualArrowDeg = normalizeAngle(deg - b);
+    if (gpsMarker) {
+      gpsMarker.setIcon(
+        L.divIcon({
+          className: "az-geo-arrow-icon",
+          html: buildArrowSvg(arrowColor, visualArrowDeg, 30),
+          iconSize: [30, 30],
+          iconAnchor: [15, 15]
+        })
+      );
+    }
+  });
+
+  // Botao Minha Posicao translucido e arrastavel dentro do mapa (calibra e gira a tela ao tocar)
   if (centerFab && stageEl) {
     let draggingFab = false;
     let fabMoved = false;
@@ -17180,7 +17295,9 @@ function initAzimuteGeo() {
       map.invalidateSize();
       map.setView(lastPos, 17);
       setFollowState(true);
-      statusEl.textContent = "Centralizado na sua posicao";
+      setHeadingUpState(true);
+      refreshStabilizedHeading(true);
+      statusEl.textContent = "Centralizado e alinhado para onde voce olha";
     } else if ("geolocation" in navigator) {
       statusEl.textContent = "Buscando sinal GPS...";
       navigator.geolocation.getCurrentPosition(
@@ -17193,7 +17310,9 @@ function initAzimuteGeo() {
           map.invalidateSize();
           map.setView(lastPos, 17);
           setFollowState(true);
-          statusEl.textContent = "GPS localizado";
+          setHeadingUpState(true);
+          refreshStabilizedHeading(true);
+          statusEl.textContent = "GPS localizado e orientado";
           fetchNearbyStreets(latitude, longitude, true);
         },
         (err) => {
@@ -17388,6 +17507,8 @@ function initAzimuteGeo() {
       map.closePopup();
       map.setView(lastPos, 17);
       setFollowState(true);
+      setHeadingUpState(true);
+      refreshStabilizedHeading(true);
 
       const km = (route.distance / 1000).toFixed(1);
       let durationSec = route.duration;
@@ -17447,6 +17568,13 @@ function initAzimuteGeo() {
         syncColorSwatches();
         updateDirectionalIcons();
       });
+    });
+  }
+
+  if (headingUpBtn) {
+    headingUpBtn.addEventListener("click", () => {
+      setHeadingUpState(!headingUpMode);
+      if (headingUpMode) refreshStabilizedHeading(true);
     });
   }
 
@@ -17583,6 +17711,7 @@ function initAzimuteGeo() {
       btn.addEventListener("click", () => {
         firstGpsFix = false;
         setFollowState(false);
+        setHeadingUpState(false);
         hideSearchResults();
         clearCityHighlight();
         btn.classList.add("active");
@@ -17721,23 +17850,31 @@ function initAzimuteGeo() {
     }
   });
 
+  // Matriz W3C de orientacao 3D (calcula o rumo real da camera traseira/topo do celular mesmo em pe na mao)
   let compassListening = false;
-  function computeTiltCompensatedHeading(alpha, beta, gamma) {
-    const rad = Math.PI / 180;
-    const a = alpha * rad;
-    const b = (typeof beta === "number" ? beta : 0) * rad;
-    const g = (typeof gamma === "number" ? gamma : 0) * rad;
+  function computeW3CCompassHeading(alpha, beta, gamma) {
+    const degToRad = Math.PI / 180;
+    const _x = (typeof beta === "number" ? beta : 0) * degToRad;
+    const _y = (typeof gamma === "number" ? gamma : 0) * degToRad;
+    const _z = alpha * degToRad;
 
-    const useBackAxis = typeof beta === "number" && Math.abs(beta) > 50;
-    let vx, vy;
-    if (useBackAxis) {
-      vx = -Math.cos(a) * Math.sin(g) - Math.sin(a) * Math.sin(b) * Math.cos(g);
-      vy = -Math.sin(a) * Math.sin(g) + Math.cos(a) * Math.sin(b) * Math.cos(g);
-    } else {
-      vx = -Math.sin(a) * Math.cos(b);
-      vy = Math.cos(a) * Math.cos(b);
+    const cX = Math.cos(_x);
+    const cY = Math.cos(_y);
+    const cZ = Math.cos(_z);
+    const sX = Math.sin(_x);
+    const sY = Math.sin(_y);
+    const sZ = Math.sin(_z);
+
+    const Vx = -cZ * sY - sZ * sX * cY;
+    const Vy = -sZ * sY + cZ * sX * cY;
+
+    let compassHeading = Math.atan(Vx / Vy);
+    if (Vy < 0) {
+      compassHeading += Math.PI;
+    } else if (Vx < 0) {
+      compassHeading += 2 * Math.PI;
     }
-    return normalizeAngle(Math.atan2(vx, vy) * (180 / Math.PI));
+    return normalizeAngle(compassHeading * (180 / Math.PI));
   }
 
   function handleOrientationEvent(e, isAbsolute) {
@@ -17748,7 +17885,7 @@ function initAzimuteGeo() {
     if (typeof e.webkitCompassHeading === "number" && !Number.isNaN(e.webkitCompassHeading)) {
       heading = e.webkitCompassHeading;
     } else if (typeof e.alpha === "number" && !Number.isNaN(e.alpha)) {
-      heading = computeTiltCompensatedHeading(e.alpha, e.beta, e.gamma);
+      heading = computeW3CCompassHeading(e.alpha, e.beta, e.gamma);
     }
     if (heading !== null) {
       rawCompassHeading = heading;
@@ -18157,12 +18294,13 @@ function initAzimuteGeo() {
           lastGpsHeading = heading;
         }
 
-        if (!accuracy || accuracy <= 35) {
+        // Exige deslocamento real >= 12 metros para assumir vetor GPS (ignora oscilacao parado na calcada)
+        if (!accuracy || accuracy <= 25) {
           if (!prevTrackPos) {
             prevTrackPos = [latitude, longitude];
           } else {
             const movedKm = calcDistanceKm(prevTrackPos[0], prevTrackPos[1], latitude, longitude);
-            if (movedKm >= 0.004) {
+            if (movedKm >= 0.012) {
               computedGpsCourse = calcBearingDeg(prevTrackPos[0], prevTrackPos[1], latitude, longitude);
               prevTrackPos = [latitude, longitude];
               lastMoveTimestamp = Date.now();
@@ -18170,10 +18308,12 @@ function initAzimuteGeo() {
           }
         }
 
+        const visualArrowDeg = normalizeAngle(stableHeading - getMapBearing());
+
         if (!gpsMarker) {
           const initIcon = L.divIcon({
             className: "az-geo-arrow-icon",
-            html: buildArrowSvg(arrowColor, stableHeading, 30),
+            html: buildArrowSvg(arrowColor, visualArrowDeg, 30),
             iconSize: [30, 30],
             iconAnchor: [15, 15]
           });
@@ -18186,7 +18326,7 @@ function initAzimuteGeo() {
           if (!radarGpsMarker) {
             const rIcon = L.divIcon({
               className: "az-geo-arrow-icon",
-              html: buildArrowSvg(arrowColor, stableHeading, 24),
+              html: buildArrowSvg(arrowColor, 0, 24),
               iconSize: [24, 24],
               iconAnchor: [12, 12]
             });
@@ -18225,7 +18365,8 @@ function initAzimuteGeo() {
         if (firstGpsFix) {
           firstGpsFix = false;
           map.invalidateSize();
-          map.setView(lastPos, 16);
+          map.setView(lastPos, 17);
+          if (headingUpMode) applyMapBearing(stableHeading);
         } else if (followGps) {
           map.panTo(lastPos);
         }
