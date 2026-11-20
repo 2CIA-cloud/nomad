@@ -1292,6 +1292,7 @@
       margin-bottom: 8px;
       touch-action: none;
       overscroll-behavior: contain;
+      transition: none !important;
     }
 
     #azGeoMap {
@@ -1299,6 +1300,7 @@
       height: 100%;
       z-index: 1;
       touch-action: none;
+      transition: none !important;
     }
 
     .maplibregl-ctrl-bottom-left,
@@ -1354,7 +1356,6 @@
       backdrop-filter: blur(4px);
       touch-action: none;
       box-shadow: 0 3px 12px rgba(0, 0, 0, 0.72);
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
     }
 
     .az-geo-locate-fab.is-heading-up {
@@ -1455,6 +1456,14 @@
       font-weight: 800;
     }
 
+    .az-geo-btn.incursion {
+      background: #1C1912;
+      color: #C5A869;
+      border: 1.5px solid #C5A869;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+    }
+
     .az-geo-btn.mini {
       padding: 6px 8px;
       font-size: 11px;
@@ -1472,7 +1481,6 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      transition: all 0.15s ease;
     }
 
     .az-geo-layer-chip .dot {
@@ -1761,7 +1769,6 @@
       border-radius: 10px;
       padding: 9px 10px;
       cursor: pointer;
-      transition: border-color 0.15s ease;
     }
 
     .az-quad-inline-card:active {
@@ -1916,6 +1923,277 @@
       justify-content: center;
     }
 
+    /* MODO INCURSAO (TELA CHEIA HORIZONTAL INTEGRADA - ZERO DELAY) */
+    .az-inc-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9998;
+      background: #0A0A0A;
+      color: #F2F0EA;
+      display: none;
+      flex-direction: column;
+      padding: 6px;
+      gap: 6px;
+      overflow: hidden;
+      transition: none !important;
+    }
+
+    .az-inc-overlay.is-open {
+      display: flex;
+    }
+
+    .az-inc-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: #141414;
+      border: 1px solid #28271F;
+      border-radius: 8px;
+      padding: 5px 10px;
+      flex-shrink: 0;
+    }
+
+    .az-inc-title {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      color: #C5A869;
+      text-transform: uppercase;
+    }
+
+    .az-inc-telemetry {
+      font-size: 11px;
+      font-family: monospace;
+      color: #D4D0C5;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .az-inc-body {
+      flex: 1;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 1.85fr 1fr;
+      gap: 6px;
+    }
+
+    @media (orientation: portrait) {
+      .az-inc-body {
+        grid-template-columns: 1fr;
+        grid-template-rows: 1.45fr 1fr;
+      }
+    }
+
+    .az-inc-quad-frame {
+      display: grid;
+      grid-template-rows: 28px 1fr 28px;
+      grid-template-columns: 28px 1fr 28px;
+      background: #111111;
+      border: 1.5px solid #C5A869;
+      border-radius: 10px;
+      overflow: hidden;
+      min-height: 0;
+      min-width: 0;
+    }
+
+    .az-inc-edge-top {
+      grid-column: 1 / 4;
+      grid-row: 1;
+      background: #161616;
+      border-bottom: 1px solid #28271F;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 0 8px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .az-inc-edge-bottom {
+      grid-column: 1 / 4;
+      grid-row: 3;
+      background: #161616;
+      border-top: 1px solid #28271F;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 0 8px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .az-inc-edge-left {
+      grid-column: 1;
+      grid-row: 2;
+      background: #161616;
+      border-right: 1px solid #28271F;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .az-inc-edge-right {
+      grid-column: 3;
+      grid-row: 2;
+      background: #161616;
+      border-left: 1px solid #28271F;
+      writing-mode: vertical-rl;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .az-inc-edge-top:active,
+    .az-inc-edge-bottom:active,
+    .az-inc-edge-left:active,
+    .az-inc-edge-right:active {
+      background: rgba(197, 168, 105, 0.22);
+    }
+
+    .az-inc-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      background: #60A5FA;
+    }
+
+    .az-inc-dot.up { background: #4ADE80; }
+    .az-inc-dot.down { background: #F87171; }
+
+    .az-inc-map-slot {
+      grid-column: 2;
+      grid-row: 2;
+      position: relative;
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      min-width: 0;
+      background: #121519;
+      overflow: hidden;
+      transition: none !important;
+    }
+
+    .az-inc-sidebar {
+      display: grid;
+      grid-template-rows: 1.05fr 1fr;
+      gap: 6px;
+      min-height: 0;
+      min-width: 0;
+    }
+
+    @media (orientation: portrait) {
+      .az-inc-sidebar {
+        grid-template-rows: 1fr;
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .az-inc-card {
+      background: #141414;
+      border: 1px solid #28271F;
+      border-radius: 10px;
+      padding: 7px 8px;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .az-inc-card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+      font-size: 10px;
+      font-weight: 800;
+      color: #C5A869;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border-bottom: 1px solid #28271F;
+      padding-bottom: 4px;
+      margin-bottom: 5px;
+      flex-shrink: 0;
+    }
+
+    #azIncReliefCanvas {
+      width: 100%;
+      flex: 1;
+      min-height: 0;
+      display: block;
+      border-radius: 6px;
+      background: #0A0A0A;
+    }
+
+    .az-inc-pins-list {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 5px;
+    }
+
+    .az-inc-pin-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      background: #0D0D0D;
+      border: 1px solid #28271F;
+      border-radius: 6px;
+      padding: 5px 7px;
+      font-size: 11px;
+      cursor: pointer;
+    }
+
+    .az-inc-pin-row:active {
+      border-color: #C5A869;
+    }
+
+    .az-inc-pin-name {
+      color: #F2F0EA;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .az-inc-pin-dist {
+      color: #C5A869;
+      font-family: monospace;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
     .az-terrain-modal {
       position: fixed;
       inset: 0;
@@ -2067,7 +2345,6 @@
       }
       if (open && window.azimuteGeoInvalidate) {
         window.azimuteGeoInvalidate();
-        setTimeout(window.azimuteGeoInvalidate, 90);
       }
     };
   </script>
@@ -2131,6 +2408,7 @@
     </div>
 
     <div class="az-geo-actions">
+      <button type="button" id="azGeoIncursionBtn" class="az-geo-btn incursion">Incursão</button>
       <button type="button" id="azGeoLayersToggleBtn" class="az-geo-btn active">Camadas</button>
       <button type="button" id="azGeoAddPinBtn" class="az-geo-btn subtle">+ Alfinete</button>
       <button type="button" id="azGeoClearBtn" class="az-geo-btn subtle">Limpar</button>
@@ -2208,7 +2486,7 @@
           <button type="button" class="az-geo-btn subtle mini" data-cal-delta="90">+90°</button>
         </div>
         <div style="display:flex; gap:6px; margin-top:7px;">
-          <button type="button" id="azCalAlignFrontBtn" class="az-geo-btn mini" style="flex:1;">Gravar Frente Atual</button>
+          <button type="button" id="azCalAlignFrontBtn" class="az-geo-btn subtle mini" style="flex:1;">Gravar Frente Atual</button>
           <button type="button" id="azCalLockToggleBtn" class="az-geo-btn subtle mini" style="flex:1;">Travar Rumo ao Digitar</button>
         </div>
       </div>
@@ -2264,6 +2542,64 @@
     <div class="az-geo-status-bar">
       <span id="azGeoTarget">Destino: <strong>Nenhum</strong></span>
       <span id="azGeoStatus">Aguardando GPS...</span>
+    </div>
+  </div>
+</div>
+
+<!-- OVERLAY MODO INCURSAO (TELA CHEIA HORIZONTAL INTEGRADA) -->
+<div id="azIncursionOverlay" class="az-inc-overlay" role="dialog" aria-label="Modo Incursao">
+  <div class="az-inc-topbar">
+    <span class="az-inc-title">MODO INCURSÃO • QUADRANTE INTEGRADO</span>
+    <span class="az-inc-telemetry" id="azIncTelemetry">000° • GPS ---</span>
+    <button type="button" id="azIncCloseBtn" class="az-geo-btn subtle mini">Sair</button>
+  </div>
+
+  <div class="az-inc-body">
+    <div class="az-inc-quad-frame">
+      <div class="az-inc-edge-top" id="azIncEdgeFront" title="Toque para focar via da Frente">
+        <span class="az-inc-dot" id="azIncDotFront"></span>
+        <span style="color:#C5A869;">FRENTE:</span>
+        <span id="azIncTxtFront">---</span>
+      </div>
+
+      <div class="az-inc-edge-left" id="azIncEdgeLeft" title="Toque para focar via da Esquerda">
+        <span class="az-inc-dot" id="azIncDotLeft"></span>
+        <span style="color:#C5A869;">ESQ:</span>
+        <span id="azIncTxtLeft">---</span>
+      </div>
+
+      <div class="az-inc-map-slot" id="azIncMapSlot"></div>
+
+      <div class="az-inc-edge-right" id="azIncEdgeRight" title="Toque para focar via da Direita">
+        <span class="az-inc-dot" id="azIncDotRight"></span>
+        <span style="color:#C5A869;">DIR:</span>
+        <span id="azIncTxtRight">---</span>
+      </div>
+
+      <div class="az-inc-edge-bottom" id="azIncEdgeRear" title="Toque para focar via da Retaguarda">
+        <span class="az-inc-dot" id="azIncDotRear"></span>
+        <span style="color:#C5A869;">RETAGUARDA:</span>
+        <span id="azIncTxtRear">---</span>
+      </div>
+    </div>
+
+    <div class="az-inc-sidebar">
+      <div class="az-inc-card">
+        <div class="az-inc-card-head">
+          <span>Relevo 3D • Perímetro</span>
+          <span id="azIncAltLabel" style="color:#F2F0EA; font-family:monospace;">Cota: ---</span>
+        </div>
+        <canvas id="azIncReliefCanvas" width="320" height="170"></canvas>
+      </div>
+
+      <div class="az-inc-card">
+        <div class="az-inc-card-head">
+          <span>Alfinetes & Distâncias</span>
+          <span id="azIncPinCount" style="color:#9E9A8F;">0</span>
+        </div>
+        <div class="az-inc-pins-list" id="azIncPinsList"></div>
+        <button type="button" id="azIncQuickPinBtn" class="az-geo-btn mini" style="width:100%;">+ Marcar QTH Atual</button>
+      </div>
     </div>
   </div>
 </div>
@@ -16945,6 +17281,7 @@ function initAzimuteGeo() {
   const elevToggleBtn = document.getElementById("azGeoElevToggleBtn");
   const clearBtn = document.getElementById("azGeoClearBtn");
   const addPinBtn = document.getElementById("azGeoAddPinBtn");
+  const incursionBtn = document.getElementById("azGeoIncursionBtn");
   const layersToggleBtn = document.getElementById("azGeoLayersToggleBtn");
   const layersBox = document.getElementById("azGeoLayersBox");
   const layerChipsWrap = document.getElementById("azGeoLayerChips");
@@ -16984,6 +17321,17 @@ function initAzimuteGeo() {
   const calAlignFrontBtn = document.getElementById("azCalAlignFrontBtn");
   const calLockToggleBtn = document.getElementById("azCalLockToggleBtn");
 
+  // Elementos do Modo Incursao
+  const incOverlay = document.getElementById("azIncursionOverlay");
+  const incCloseBtn = document.getElementById("azIncCloseBtn");
+  const incMapSlot = document.getElementById("azIncMapSlot");
+  const incTelemetryEl = document.getElementById("azIncTelemetry");
+  const incAltLabelEl = document.getElementById("azIncAltLabel");
+  const incReliefCanvas = document.getElementById("azIncReliefCanvas");
+  const incPinsListEl = document.getElementById("azIncPinsList");
+  const incPinCountEl = document.getElementById("azIncPinCount");
+  const incQuickPinBtn = document.getElementById("azIncQuickPinBtn");
+
   const terrainModal = document.getElementById("azTerrainModal");
   const terrainHeaderInfo = document.getElementById("azTerrainHeaderInfo");
   const terrainCenterAlt = document.getElementById("azTerrainCenterAlt");
@@ -17004,6 +17352,25 @@ function initAzimuteGeo() {
     pitch: 0,
     attributionControl: false
   });
+
+  // ResizeObserver instantaneo: elimina qualquer delay ao entrar ou sair de tela cheia / girar tela
+  function instantResizeMap() {
+    requestAnimationFrame(() => {
+      map.resize();
+    });
+  }
+
+  if (typeof ResizeObserver !== "undefined") {
+    const ro = new ResizeObserver(() => {
+      map.resize();
+    });
+    if (stageEl) ro.observe(stageEl);
+    if (incMapSlot) ro.observe(incMapSlot);
+    ro.observe(mapEl);
+  }
+  document.addEventListener("fullscreenchange", instantResizeMap);
+  document.addEventListener("webkitfullscreenchange", instantResizeMap);
+  window.addEventListener("resize", instantResizeMap);
 
   if (zoomInBtn) zoomInBtn.addEventListener("click", () => map.zoomIn());
   if (zoomOutBtn) zoomOutBtn.addEventListener("click", () => map.zoomOut());
@@ -17027,6 +17394,7 @@ function initAzimuteGeo() {
   let prevTrackPos = null;
   let lastMainGpsKey = "";
   let lastAltitude = null;
+  let lastAccuracy = null;
   let lastSpeed = 0;
   let lastGpsHeading = null;
   let computedGpsCourse = null;
@@ -17110,6 +17478,133 @@ function initAzimuteGeo() {
   let cachedCurrentStreet = "Via atual";
   let cachedNearbyStreets = [];
   let cachedSectors = { front: null, right: null, rear: null, left: null };
+
+  // Reparentagem instantanea do #azGeoMap entre a caixa normal e o Modo Incursao (sem recriar WebGL)
+  window.azimuteToggleIncursionMode = function (forceOpen) {
+    if (!incOverlay || !incMapSlot || !stageEl) return;
+    const willOpen = typeof forceOpen === "boolean" ? forceOpen : !incOverlay.classList.contains("is-open");
+
+    if (willOpen) {
+      incOverlay.classList.add("is-open");
+      if (mapEl.parentElement !== incMapSlot) {
+        incMapSlot.insertBefore(mapEl, incMapSlot.firstChild);
+      }
+      if (northBadge && northBadge.parentElement !== incMapSlot) {
+        incMapSlot.appendChild(northBadge);
+      }
+      if (lockBadge && lockBadge.parentElement !== incMapSlot) {
+        incMapSlot.appendChild(lockBadge);
+      }
+      if (centerFab && centerFab.parentElement !== incMapSlot) {
+        incMapSlot.appendChild(centerFab);
+      }
+      map.resize();
+      requestAnimationFrame(() => map.resize());
+      recomputeQuadranteSectors(true);
+      renderIncursionPinsList();
+    } else {
+      incOverlay.classList.remove("is-open");
+      if (mapEl.parentElement !== stageEl) {
+        stageEl.insertBefore(mapEl, stageEl.firstChild);
+      }
+      if (northBadge && northBadge.parentElement !== stageEl) {
+        stageEl.appendChild(northBadge);
+      }
+      if (lockBadge && lockBadge.parentElement !== stageEl) {
+        stageEl.appendChild(lockBadge);
+      }
+      if (centerFab && centerFab.parentElement !== stageEl) {
+        stageEl.appendChild(centerFab);
+      }
+      map.resize();
+      requestAnimationFrame(() => map.resize());
+    }
+  };
+
+  if (incursionBtn) {
+    incursionBtn.addEventListener("click", () => {
+      requestCompassPermissionIfNeeded();
+      window.azimuteToggleIncursionMode(true);
+    });
+  }
+  if (incCloseBtn) {
+    incCloseBtn.addEventListener("click", () => {
+      window.azimuteToggleIncursionMode(false);
+    });
+  }
+
+  // Comunicacao bidirecional: tocar nas bordas do Modo Incursao foca/mostra a via no mapa
+  [
+    { id: "azIncEdgeFront", key: "front", label: "Frente" },
+    { id: "azIncEdgeRear", key: "rear", label: "Retaguarda" },
+    { id: "azIncEdgeLeft", key: "left", label: "Esquerda" },
+    { id: "azIncEdgeRight", key: "right", label: "Direita" }
+  ].forEach(({ id, key, label }) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener("click", () => {
+      const st = cachedSectors[key];
+      if (!st) return;
+      userTouchPauseUntil = Date.now() + 3500;
+      map.easeTo({ center: [st.lng, st.lat], zoom: 17.5, duration: 320 });
+      new maplibregl.Popup({ offset: 12 })
+        .setLngLat([st.lng, st.lat])
+        .setHTML(buildPopupHtml(`${label}: ${st.name}`, `${Math.round(st.distKm * 1000)} m de distância`, st.lat, st.lng, null, null))
+        .addTo(map);
+    });
+  });
+
+  if (incQuickPinBtn) {
+    incQuickPinBtn.addEventListener("click", () => {
+      if (!lastPos) return;
+      const idx = savedPins.length + 1;
+      savedPins.push({
+        id: "pin_" + Date.now(),
+        title: `Ponto ${idx} (${cachedCurrentStreet.slice(0, 18)})`,
+        note: "Marcado no Modo Incursão",
+        color: "#C5A869",
+        lat: lastPos[0],
+        lng: lastPos[1]
+      });
+      persistPins();
+      renderSavedPins();
+      renderIncursionPinsList();
+      if (navigator.vibrate) navigator.vibrate(35);
+    });
+  }
+
+  function renderIncursionPinsList() {
+    if (!incPinsListEl) return;
+    if (incPinCountEl) incPinCountEl.textContent = String(savedPins.length);
+
+    if (!savedPins.length) {
+      incPinsListEl.innerHTML = `<div style="font-size:11px; color:#9E9A8F; text-align:center; padding:12px 4px;">Nenhum alfinete marcado</div>`;
+      return;
+    }
+
+    const enriched = savedPins.map((p) => {
+      const distM = lastPos ? Math.round(calcDistanceKm(lastPos[0], lastPos[1], p.lat, p.lng) * 1000) : null;
+      return { ...p, distM };
+    });
+
+    enriched.sort((a, b) => (a.distM ?? 999999) - (b.distM ?? 999999));
+
+    incPinsListEl.innerHTML = "";
+    enriched.forEach((p) => {
+      const row = document.createElement("div");
+      row.className = "az-inc-pin-row";
+      const distStr = p.distM === null ? "---" : p.distM < 1000 ? `${p.distM} m` : `${(p.distM / 1000).toFixed(1)} km`;
+      row.innerHTML = `
+        <span class="az-inc-pin-name"><span style="color:${p.color || "#C5A869"};">●</span> ${p.title}</span>
+        <span class="az-inc-pin-dist">${distStr}</span>
+      `;
+      row.addEventListener("click", () => {
+        userTouchPauseUntil = Date.now() + 4000;
+        map.easeTo({ center: [p.lng, p.lat], zoom: 17.5, duration: 320 });
+      });
+      incPinsListEl.appendChild(row);
+    });
+  }
 
   function normalizeAngle(deg) {
     return ((deg % 360) + 360) % 360;
@@ -17265,7 +17760,8 @@ function initAzimuteGeo() {
 
   function getQuadranteReferenceHeading() {
     const drawerOpen = document.getElementById("azGeoDrawerBody")?.classList.contains("is-open");
-    if (drawerOpen && map) {
+    const incOpen = incOverlay?.classList.contains("is-open");
+    if ((drawerOpen || incOpen) && map) {
       return getMapBearing();
     }
     return stableHeading;
@@ -17341,8 +17837,9 @@ function initAzimuteGeo() {
     compassSamples = [];
     handlingFreezeUntil = Date.now() + 1800;
     updateCalibratorReadout();
+    instantResizeMap();
     setTimeout(() => {
-      map.resize();
+      instantResizeMap();
       if (Date.now() >= handlingFreezeUntil) {
         refreshStabilizedHeading(true);
       }
@@ -17482,6 +17979,11 @@ function initAzimuteGeo() {
     const qAxisMarker = document.getElementById("azQuadAxisMarker");
     if (qAxisMarker) {
       qAxisMarker.innerHTML = buildArrowSvg(arrowColor, 0, 20);
+    }
+
+    if (incTelemetryEl) {
+      const gpsTxt = typeof lastAccuracy === "number" ? `GPS ±${Math.round(lastAccuracy)}m` : "GPS ATIVO";
+      incTelemetryEl.textContent = `${String(Math.round(refDeg)).padStart(3, "0")}° • ${gpsTxt}`;
     }
 
     if (terrainHeaderInfo) {
@@ -18262,7 +18764,7 @@ function initAzimuteGeo() {
     recomputeQuadranteSectors(false);
   });
 
-  if (centerFab && stageEl) {
+  if (centerFab) {
     let draggingFab = false;
     let fabMoved = false;
     let startX = 0;
@@ -18275,22 +18777,26 @@ function initAzimuteGeo() {
       fabMoved = false;
       startX = clientX;
       startY = clientY;
+      const parentContainer = centerFab.parentElement || stageEl;
+      if (!parentContainer) return;
       const rect = centerFab.getBoundingClientRect();
-      const parentRect = stageEl.getBoundingClientRect();
+      const parentRect = parentContainer.getBoundingClientRect();
       origLeft = rect.left - parentRect.left;
       origTop = rect.top - parentRect.top;
     }
 
     function onFabMove(clientX, clientY) {
       if (!draggingFab) return;
+      const parentContainer = centerFab.parentElement || stageEl;
+      if (!parentContainer) return;
       const dx = clientX - startX;
       const dy = clientY - startY;
       if (Math.abs(dx) > 14 || Math.abs(dy) > 14) {
         fabMoved = true;
       }
       if (!fabMoved) return;
-      const maxX = stageEl.clientWidth - centerFab.offsetWidth - 6;
-      const maxY = stageEl.clientHeight - centerFab.offsetHeight - 6;
+      const maxX = parentContainer.clientWidth - centerFab.offsetWidth - 6;
+      const maxY = parentContainer.clientHeight - centerFab.offsetHeight - 6;
       const nextLeft = Math.max(6, Math.min(maxX, origLeft + dx));
       const nextTop = Math.max(6, Math.min(maxY, origTop + dy));
       centerFab.style.right = "auto";
@@ -18554,7 +19060,8 @@ function initAzimuteGeo() {
   window.azimuteUpdateRadarHudVisibility = function () {
     if (!radarHud) return;
     const drawerOpen = document.getElementById("azGeoDrawerBody")?.classList.contains("is-open");
-    const shouldShow = (isNavigationStarted || !!activeRouteDest) && !drawerOpen;
+    const incOpen = incOverlay?.classList.contains("is-open");
+    const shouldShow = (isNavigationStarted || !!activeRouteDest) && !drawerOpen && !incOpen;
     radarHud.classList.toggle("is-visible", shouldShow);
     if (shouldShow && radarMap) {
       setTimeout(() => {
@@ -18756,6 +19263,8 @@ function initAzimuteGeo() {
         .addTo(map);
       pinMarkers.push(m);
     });
+
+    renderIncursionPinsList();
   }
   renderSavedPins();
 
@@ -19336,6 +19845,35 @@ function initAzimuteGeo() {
     return html;
   }
 
+  function syncIncursionEdgesUi(sectors) {
+    const pairs = [
+      { st: sectors.front, txtId: "azIncTxtFront", dotId: "azIncDotFront" },
+      { st: sectors.rear, txtId: "azIncTxtRear", dotId: "azIncDotRear" },
+      { st: sectors.left, txtId: "azIncTxtLeft", dotId: "azIncDotLeft" },
+      { st: sectors.right, txtId: "azIncTxtRight", dotId: "azIncDotRight" }
+    ];
+
+    pairs.forEach(({ st, txtId, dotId }) => {
+      const txtEl = document.getElementById(txtId);
+      const dotEl = document.getElementById(dotId);
+      if (!st) {
+        if (txtEl) txtEl.textContent = "Sem via próxima";
+        if (dotEl) dotEl.className = "az-inc-dot";
+        return;
+      }
+      const m = Math.max(5, Math.round(st.distKm * 1000));
+      let elevTag = "";
+      if (typeof st.deltaElev === "number") {
+        if (st.deltaElev >= 2) elevTag = ` ▲+${st.deltaElev}m`;
+        else if (st.deltaElev <= -2) elevTag = ` ▼${st.deltaElev}m`;
+      }
+      if (txtEl) txtEl.textContent = `${st.name} • ${m}m${elevTag}`;
+      if (dotEl) {
+        dotEl.className = "az-inc-dot" + (st.deltaElev >= 2 ? " up" : st.deltaElev <= -2 ? " down" : "");
+      }
+    });
+  }
+
   function recomputeQuadranteSectors(forceUpdate) {
     ensureQuadranteCardMounted();
     const syncedLocStreet = readSyncedStreetFromLocationCard();
@@ -19406,64 +19944,68 @@ function initAzimuteGeo() {
     if (qRearMeta) qRearMeta.innerHTML = formatSectorMeta(sectors.rear);
     if (qLeftMeta) qLeftMeta.innerHTML = formatSectorMeta(sectors.left);
 
+    syncIncursionEdgesUi(sectors);
+
     if (terrainModal && terrainModal.classList.contains("is-open")) {
       drawTerrainReconstruction();
     }
+    if (incOverlay && incOverlay.classList.contains("is-open")) {
+      drawPerspectiveTerrainOnCanvas(incReliefCanvas, incAltLabelEl);
+    }
   }
 
-  function drawTerrainReconstruction() {
-    if (!canvas3d || !canvasSide) return;
-
+  function drawPerspectiveTerrainOnCanvas(targetCanvas, cotaLabelEl) {
+    if (!targetCanvas) return;
     const cotaBase = typeof lastAltitude === "number" ? Math.round(lastAltitude) : null;
-    if (terrainCenterAlt) {
-      terrainCenterAlt.textContent = cotaBase !== null ? `Cota: ${cotaBase} m` : "Cota: ---";
+    if (cotaLabelEl) {
+      cotaLabelEl.textContent = cotaBase !== null ? `Cota: ${cotaBase} m` : "Cota: ---";
     }
 
-    const ctx = canvas3d.getContext("2d");
-    const w = canvas3d.width;
-    const h = canvas3d.height;
+    const ctx = targetCanvas.getContext("2d");
+    const w = targetCanvas.width;
+    const h = targetCanvas.height;
     ctx.clearRect(0, 0, w, h);
 
     ctx.strokeStyle = "#1E1E1A";
     ctx.lineWidth = 1;
-    for (let gx = 30; gx < w; gx += 35) {
+    for (let gx = 24; gx < w; gx += 32) {
       ctx.beginPath();
-      ctx.moveTo(gx, 16);
-      ctx.lineTo(gx - 28, h - 16);
+      ctx.moveTo(gx, 12);
+      ctx.lineTo(gx - 22, h - 12);
       ctx.stroke();
     }
-    for (let gy = 26; gy < h; gy += 28) {
+    for (let gy = 22; gy < h; gy += 24) {
       ctx.beginPath();
-      ctx.moveTo(14, gy);
-      ctx.lineTo(w - 14, gy);
+      ctx.moveTo(10, gy);
+      ctx.lineTo(w - 10, gy);
       ctx.stroke();
     }
 
     const cx = w / 2;
-    const cy = h / 2 + 6;
+    const cy = h / 2 + 4;
 
     ctx.strokeStyle = "#C5A869";
-    ctx.lineWidth = 3;
+    ctx.lineWidth = 2.5;
     ctx.beginPath();
-    ctx.moveTo(cx - 85, cy + 16);
-    ctx.lineTo(cx + 85, cy - 16);
+    ctx.moveTo(cx - 65, cy + 12);
+    ctx.lineTo(cx + 65, cy - 12);
     ctx.stroke();
 
     ctx.fillStyle = arrowColor;
     ctx.beginPath();
-    ctx.arc(cx, cy, 6, 0, Math.PI * 2);
+    ctx.arc(cx, cy, 5, 0, Math.PI * 2);
     ctx.fill();
 
     ctx.fillStyle = "#C5A869";
-    ctx.font = "bold 11px sans-serif";
+    ctx.font = "bold 10px sans-serif";
     ctx.textAlign = "center";
-    ctx.fillText(cachedCurrentStreet || "Via atual", cx, cy + 26);
+    ctx.fillText((cachedCurrentStreet || "Via atual").slice(0, 22), cx, cy + 21);
 
     const nodes = [
-      { key: "front", label: "FRENTE", px: cx + 28, py: cy - 58 },
-      { key: "rear", label: "RETAGUARDA", px: cx - 28, py: cy + 64 },
-      { key: "left", label: "ESQUERDA", px: cx - 118, py: cy - 12 },
-      { key: "right", label: "DIREITA", px: cx + 118, py: cy + 12 }
+      { key: "front", px: cx + 22, py: cy - 46 },
+      { key: "rear", px: cx - 22, py: cy + 50 },
+      { key: "left", px: cx - 92, py: cy - 10 },
+      { key: "right", px: cx + 92, py: cy + 10 }
     ];
 
     nodes.forEach((n) => {
@@ -19471,12 +20013,12 @@ function initAzimuteGeo() {
       if (!st) return;
 
       const delta = typeof st.deltaElev === "number" ? st.deltaElev : 0;
-      const zShift = Math.max(-28, Math.min(28, delta * 1.1));
+      const zShift = Math.max(-22, Math.min(22, delta * 0.9));
       const pyElev = n.py - zShift;
       const lineColor = delta >= 2 ? "#4ADE80" : delta <= -2 ? "#F87171" : "#60A5FA";
 
       ctx.strokeStyle = lineColor;
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 1.8;
       ctx.setLineDash([4, 3]);
       ctx.beginPath();
       ctx.moveTo(cx, cy);
@@ -19495,18 +20037,23 @@ function initAzimuteGeo() {
 
       ctx.fillStyle = lineColor;
       ctx.beginPath();
-      ctx.arc(n.px, pyElev, 4.5, 0, Math.PI * 2);
+      ctx.arc(n.px, pyElev, 4, 0, Math.PI * 2);
       ctx.fill();
 
       const distM = Math.max(5, Math.round(st.distKm * 1000));
       const elevStr = typeof st.deltaElev === "number" ? ` (${st.deltaElev >= 0 ? "+" : ""}${st.deltaElev}m)` : "";
       ctx.fillStyle = "#F2F0EA";
-      ctx.font = "bold 10px sans-serif";
-      ctx.fillText(st.name.slice(0, 24), n.px, pyElev - 9);
+      ctx.font = "bold 9px sans-serif";
+      ctx.fillText(st.name.slice(0, 18), n.px, pyElev - 8);
       ctx.fillStyle = lineColor;
-      ctx.font = "10px sans-serif";
-      ctx.fillText(`${distM}m${elevStr}`, n.px, pyElev + 13);
+      ctx.font = "9px sans-serif";
+      ctx.fillText(`${distM}m${elevStr}`, n.px, pyElev + 11);
     });
+  }
+
+  function drawTerrainReconstruction() {
+    drawPerspectiveTerrainOnCanvas(canvas3d, terrainCenterAlt);
+    if (!canvasSide) return;
 
     const sctx = canvasSide.getContext("2d");
     const sw = canvasSide.width;
@@ -19599,6 +20146,9 @@ function initAzimuteGeo() {
     const { latitude, longitude, accuracy, altitude, speed, heading } = coords;
 
     lastPos = [latitude, longitude];
+    if (typeof accuracy === "number" && !Number.isNaN(accuracy)) {
+      lastAccuracy = accuracy;
+    }
     if (typeof altitude === "number" && !Number.isNaN(altitude)) {
       lastAltitude = altitude;
     }
@@ -19637,6 +20187,9 @@ function initAzimuteGeo() {
     refreshStabilizedHeading(false);
     updateTurnByTurnProgress();
     checkOffRouteAndRecalculate();
+    if (incOverlay && incOverlay.classList.contains("is-open")) {
+      renderIncursionPinsList();
+    }
 
     if (fromMainEngine || !accuracy || accuracy <= 150) {
       fetchNearbyStreets(latitude, longitude, false);
