@@ -21301,6 +21301,74 @@ if (document.readyState === "loading") {
 
   requestAnimationFrame(tick);
 })();
+</script><script>
+(function () {
+  "use strict";
+
+  function bindHorizontalScrollButtons() {
+    const leftBtn = document.getElementById("azGeoCitiesLeft");
+    const rightBtn = document.getElementById("azGeoCitiesRight");
+    const track = document.getElementById("azGeoCities");
+
+    if (track && leftBtn && leftBtn.dataset.azScrollBound !== "1") {
+      leftBtn.dataset.azScrollBound = "1";
+      leftBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        track.scrollBy({ left: -170, behavior: "smooth" });
+      });
+    }
+
+    if (track && rightBtn && rightBtn.dataset.azScrollBound !== "1") {
+      rightBtn.dataset.azScrollBound = "1";
+      rightBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        track.scrollBy({ left: 170, behavior: "smooth" });
+      });
+    }
+
+    // Permite arrastar a barra lateralmente com o mouse no notebook
+    if (track && track.dataset.azDragBound !== "1") {
+      track.dataset.azDragBound = "1";
+      let isDown = false, startX = 0, scrollStart = 0;
+      track.addEventListener("mousedown", function (e) {
+        isDown = true;
+        startX = e.pageX - track.offsetLeft;
+        scrollStart = track.scrollLeft;
+      });
+      window.addEventListener("mouseup", function () { isDown = false; });
+      track.addEventListener("mousemove", function (e) {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - track.offsetLeft;
+        track.scrollLeft = scrollStart - (x - startX) * 1.4;
+      });
+    }
+
+    // Faz a alça vertical do modo horizontal rolar a página ao deslizar
+    const grip = document.getElementById("azVerticalGripLandscape");
+    if (grip && grip.dataset.azGripBound !== "1") {
+      grip.dataset.azGripBound = "1";
+      let lastY = null;
+      grip.addEventListener("pointerdown", function (e) {
+        lastY = e.clientY;
+        grip.setPointerCapture(e.pointerId);
+      });
+      grip.addEventListener("pointermove", function (e) {
+        if (lastY === null) return;
+        const dy = lastY - e.clientY;
+        lastY = e.clientY;
+        window.scrollBy({ top: dy * 1.6, behavior: "auto" });
+      });
+      grip.addEventListener("pointerup", function () { lastY = null; });
+      grip.addEventListener("pointercancel", function () { lastY = null; });
+    }
+  }
+
+  bindHorizontalScrollButtons();
+  setInterval(bindHorizontalScrollButtons, 1500);
+})();
 </script></body>
 </html>
         
