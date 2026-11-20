@@ -1264,7 +1264,7 @@
       min-height: 260px;
       border: 1px solid var(--geo-border);
       border-radius: 8px;
-      background: #0D0D0D;
+      background: #14171A;
       overflow: hidden;
       margin-bottom: 8px;
       touch-action: none;
@@ -1293,7 +1293,7 @@
       border-radius: 8px;
       overflow: hidden;
       border: 1px solid var(--geo-border);
-      background: rgba(13, 13, 13, 0.82);
+      background: rgba(13, 13, 13, 0.85);
       backdrop-filter: blur(4px);
     }
 
@@ -1321,7 +1321,7 @@
       width: 40px;
       height: 40px;
       border-radius: 50%;
-      background: rgba(13, 13, 13, 0.78);
+      background: rgba(13, 13, 13, 0.8);
       border: 1.5px solid rgba(197, 168, 105, 0.85);
       color: #C5A869;
       display: flex;
@@ -1351,7 +1351,7 @@
       width: 34px;
       height: 34px;
       border-radius: 50%;
-      background: rgba(13, 13, 13, 0.82);
+      background: rgba(13, 13, 13, 0.85);
       border: 1px solid #C5A869;
       color: #F2F0EA;
       font-size: 11px;
@@ -1841,7 +1841,7 @@
     #azRadarMiniMap {
       width: 100%;
       height: 112px;
-      background: #0D0D0D;
+      background: #14171A;
     }
 
     .az-radar-hud-foot {
@@ -1937,7 +1937,7 @@
       <button type="button" id="azGeoCfgToggleBtn" class="az-geo-btn subtle" aria-label="Configuracoes">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="3"></circle>
-          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l-.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
         </svg>
         <span>Configurações</span>
       </button>
@@ -1960,6 +1960,13 @@
     </div>
 
     <div id="azGeoCfgBox" class="az-geo-collapsible">
+      <div class="az-geo-cfg-row">
+        <span class="az-geo-label">Visual do Mapa:</span>
+        <div class="az-geo-group" id="azGeoMapThemes">
+          <button type="button" class="az-geo-btn active" data-theme="dark">Escuro Contraste</button>
+          <button type="button" class="az-geo-btn subtle" data-theme="light">Claro (Sol)</button>
+        </div>
+      </div>
       <div class="az-geo-cfg-row">
         <span class="az-geo-label">Pegada:</span>
         <div class="az-geo-group" id="azGeoOrientations">
@@ -16715,7 +16722,12 @@ function initAzimuteGeo() {
   if (mapEl.dataset.azReady === "1") return;
   mapEl.dataset.azReady = "1";
 
-  const OPENFREEMAP_DARK_STYLE = "https://tiles.openfreemap.org/styles/dark";
+  const STYLE_URLS = {
+    dark: "https://tiles.openfreemap.org/styles/dark",
+    light: "https://tiles.openfreemap.org/styles/liberty"
+  };
+
+  let mapTheme = localStorage.getItem("az_geo_map_theme") || "dark";
 
   const searchInput = document.getElementById("azGeoSearchInput");
   const searchBtn = document.getElementById("azGeoSearchBtn");
@@ -16754,6 +16766,7 @@ function initAzimuteGeo() {
   const citiesLeft = document.getElementById("azGeoCitiesLeft");
   const citiesRight = document.getElementById("azGeoCitiesRight");
   const modesWrap = document.getElementById("azGeoModes");
+  const themesWrap = document.getElementById("azGeoMapThemes");
   const orientWrap = document.getElementById("azGeoOrientations");
   const colorsWrap = document.getElementById("azGeoArrowColors");
 
@@ -16768,10 +16781,9 @@ function initAzimuteGeo() {
   const radarNextStepEl = document.getElementById("azRadarNextStep");
   const radarCurrentViaEl = document.getElementById("azRadarCurrentVia");
 
-  // Mapa Vetorial MapLibre GL JS + OpenFreeMap Dark (nomes das ruas sempre na horizontal)
   const map = new maplibregl.Map({
     container: "azGeoMap",
-    style: OPENFREEMAP_DARK_STYLE,
+    style: STYLE_URLS[mapTheme] || STYLE_URLS.dark,
     center: [-43.9386, -19.9191],
     zoom: 13,
     bearing: 0,
@@ -16787,7 +16799,7 @@ function initAzimuteGeo() {
   if (document.getElementById("azRadarMiniMap")) {
     radarMap = new maplibregl.Map({
       container: "azRadarMiniMap",
-      style: OPENFREEMAP_DARK_STYLE,
+      style: STYLE_URLS[mapTheme] || STYLE_URLS.dark,
       center: [-43.9386, -19.9191],
       zoom: 16,
       bearing: 0,
@@ -16799,16 +16811,21 @@ function initAzimuteGeo() {
   let mapLoaded = false;
   let radarLoaded = false;
 
-  let lastPos = null; // [lat, lng]
+  let lastPos = null;
   let prevTrackPos = null;
   let lastAltitude = null;
   let lastSpeed = 0;
   let lastGpsHeading = null;
   let computedGpsCourse = null;
   let lastMoveTimestamp = 0;
+
+  // Filtro circular para estabilizar bussola sem tremor
+  let compassSamples = [];
   let rawCompassHeading = 0;
   let stableHeading = 0;
   let hasAbsoluteCompass = false;
+  let userTouchPauseUntil = 0;
+  let lastMapBearingApplied = 0;
 
   let gpsMarker = null;
   let gpsArrowEl = null;
@@ -16823,7 +16840,7 @@ function initAzimuteGeo() {
   let currentDestination = null;
   let activeRouteDest = null;
   let activeRouteSteps = [];
-  let activeRouteCoords = []; // [[lat, lng], ...]
+  let activeRouteCoords = [];
   let arrowColor = localStorage.getItem("az_geo_arrow_color") || "#C5A869";
   let orientationMode = localStorage.getItem("az_geo_orientation") || "app";
   let showElevation = localStorage.getItem("az_geo_elev_enabled") !== "0";
@@ -16853,14 +16870,36 @@ function initAzimuteGeo() {
     return ((toDeg - fromDeg + 540) % 360) - 180;
   }
 
+  function pushSmoothedCompass(newDeg) {
+    compassSamples.push(newDeg);
+    if (compassSamples.length > 6) compassSamples.shift();
+    let sinSum = 0;
+    let cosSum = 0;
+    compassSamples.forEach((d) => {
+      const r = (d * Math.PI) / 180;
+      sinSum += Math.sin(r);
+      cosSum += Math.cos(r);
+    });
+    return normalizeAngle((Math.atan2(sinSum, cosSum) * 180) / Math.PI);
+  }
+
   function getMapBearing() {
     return normalizeAngle(map.getBearing());
   }
 
-  // No MapLibre, bearing usa sentido horario (0 = Norte, 90 = Leste, 180 = Sul)
-  function applyMapHeadingUp(headingDeg) {
+  function applyMapHeadingUp(headingDeg, forceInstant) {
+    if (!forceInstant && Date.now() < userTouchPauseUntil) return;
     const clean = normalizeAngle(headingDeg);
-    map.easeTo({ bearing: clean, duration: 180 });
+    const diffFromLast = Math.abs(shortestAngleDiff(lastMapBearingApplied, clean));
+    if (!forceInstant && diffFromLast < 8) return;
+
+    lastMapBearingApplied = clean;
+    map.stop();
+    if (forceInstant) {
+      map.setBearing(clean);
+    } else {
+      map.easeTo({ bearing: clean, duration: 350, easing: (t) => t });
+    }
     if (northBadge) {
       northBadge.style.transform = `rotate(${-clean}deg)`;
     }
@@ -16903,13 +16942,13 @@ function initAzimuteGeo() {
     const moving = isMovingCourseActive();
     const target = getTargetHeading();
     const diff = shortestAngleDiff(stableHeading, target);
-    const deadzone = moving ? 2 : 5;
+    const deadzone = moving ? 3 : 12;
 
     if (forceSnap || Math.abs(diff) >= deadzone) {
-      const factor = forceSnap || moving ? 0.85 : 0.7;
+      const factor = forceSnap || moving ? 0.85 : 0.45;
       stableHeading = normalizeAngle(stableHeading + diff * factor);
       if (headingUpMode) {
-        applyMapHeadingUp(stableHeading);
+        applyMapHeadingUp(stableHeading, !!forceSnap);
       }
       updateDirectionalIcons();
     }
@@ -16965,6 +17004,179 @@ function initAzimuteGeo() {
     }
 
     recomputeQuadranteSectors();
+  }
+
+  // Realca mata, agua, contraste das vias e tamanho dos nomes das ruas no modo escuro
+  function enhanceMapReadability(targetMap, isDark) {
+    const style = targetMap.getStyle();
+    if (!style || !Array.isArray(style.layers)) return;
+
+    style.layers.forEach((layer) => {
+      const id = (layer.id || "").toLowerCase();
+
+      if (isDark) {
+        if (layer.type === "background") {
+          targetMap.setPaintProperty(layer.id, "background-color", "#14171A");
+        } else if (layer.type === "fill") {
+          if (id.includes("water") || id.includes("river") || id.includes("lake")) {
+            targetMap.setPaintProperty(layer.id, "fill-color", "#163B5C");
+          } else if (
+            id.includes("park") ||
+            id.includes("wood") ||
+            id.includes("forest") ||
+            id.includes("grass") ||
+            id.includes("green") ||
+            id.includes("landcover")
+          ) {
+            targetMap.setPaintProperty(layer.id, "fill-color", "#1B3824");
+            targetMap.setPaintProperty(layer.id, "fill-opacity", 0.78);
+          } else if (id.includes("building")) {
+            targetMap.setPaintProperty(layer.id, "fill-color", "#202429");
+          }
+        } else if (layer.type === "line") {
+          if (id.includes("water") || id.includes("river") || id.includes("stream")) {
+            targetMap.setPaintProperty(layer.id, "line-color", "#2563EB");
+          } else if (
+            id.includes("road") ||
+            id.includes("street") ||
+            id.includes("highway") ||
+            id.includes("transportation")
+          ) {
+            if (id.includes("casing")) {
+              targetMap.setPaintProperty(layer.id, "line-color", "#0A0C0E");
+            } else if (id.includes("motorway") || id.includes("trunk") || id.includes("primary")) {
+              targetMap.setPaintProperty(layer.id, "line-color", "#8C7441");
+            } else if (id.includes("secondary") || id.includes("tertiary")) {
+              targetMap.setPaintProperty(layer.id, "line-color", "#525863");
+            } else {
+              targetMap.setPaintProperty(layer.id, "line-color", "#3A404A");
+            }
+          }
+        }
+      }
+
+      if (layer.type === "symbol" && (id.includes("road") || id.includes("street") || id.includes("transportation") || id.includes("place"))) {
+        try {
+          if (isDark) {
+            targetMap.setPaintProperty(layer.id, "text-color", "#F8FAFC");
+            targetMap.setPaintProperty(layer.id, "text-halo-color", "#090B0D");
+            targetMap.setPaintProperty(layer.id, "text-halo-width", 2.2);
+          }
+          if (id.includes("road") || id.includes("street") || id.includes("transportation")) {
+            targetMap.setLayoutProperty(layer.id, "text-size", ["interpolate", ["linear"], ["zoom"], 12, 11, 16, 15]);
+          }
+        } catch (e) {}
+      }
+    });
+  }
+
+  function setupCustomMapLayers() {
+    mapLoaded = true;
+    enhanceMapReadability(map, mapTheme === "dark");
+
+    if (!map.getSource("az-route-src")) {
+      map.addSource("az-route-src", {
+        type: "geojson",
+        data: { type: "FeatureCollection", features: [] }
+      });
+      map.addLayer({
+        id: "az-route-outline",
+        type: "line",
+        source: "az-route-src",
+        layout: { "line-join": "round", "line-cap": "round" },
+        paint: { "line-color": "#1E3A8A", "line-width": 9, "line-opacity": 0.85 }
+      });
+      map.addLayer({
+        id: "az-route-line",
+        type: "line",
+        source: "az-route-src",
+        layout: { "line-join": "round", "line-cap": "round" },
+        paint: { "line-color": "#3B82F6", "line-width": 5, "line-opacity": 1 }
+      });
+    }
+
+    if (!map.getSource("az-local-src")) {
+      map.addSource("az-local-src", {
+        type: "geojson",
+        data: { type: "FeatureCollection", features: [] }
+      });
+      map.addLayer({
+        id: "az-local-circles",
+        type: "circle",
+        source: "az-local-src",
+        paint: {
+          "circle-radius": 5,
+          "circle-color": "#161616",
+          "circle-stroke-color": "#C5A869",
+          "circle-stroke-width": 1.5
+        }
+      });
+
+      map.on("click", "az-local-circles", (e) => {
+        if (!e.features || !e.features.length) return;
+        const f = e.features[0];
+        const [lng, lat] = f.geometry.coordinates;
+        const props = f.properties || {};
+        new maplibregl.Popup({ offset: 12 })
+          .setLngLat([lng, lat])
+          .setHTML(buildPopupHtml(props.name || "Ponto", props.subtitle || "", lat, lng, null))
+          .addTo(map);
+      });
+    }
+
+    if (activeRouteCoords.length) updateRouteSources();
+    if (localPoints.length) renderLocalLayer(localPoints);
+  }
+
+  map.on("style.load", setupCustomMapLayers);
+
+  if (radarMap) {
+    radarMap.on("style.load", () => {
+      radarLoaded = true;
+      enhanceMapReadability(radarMap, mapTheme === "dark");
+      if (!radarMap.getSource("az-radar-route-src")) {
+        radarMap.addSource("az-radar-route-src", {
+          type: "geojson",
+          data: { type: "FeatureCollection", features: [] }
+        });
+        radarMap.addLayer({
+          id: "az-radar-route-line",
+          type: "line",
+          source: "az-radar-route-src",
+          layout: { "line-join": "round", "line-cap": "round" },
+          paint: { "line-color": "#3B82F6", "line-width": 4.5, "line-opacity": 0.95 }
+        });
+      }
+      if (activeRouteCoords.length) updateRouteSources();
+    });
+  }
+
+  function syncThemeButtons() {
+    if (!themesWrap) return;
+    themesWrap.querySelectorAll("button[data-theme]").forEach((b) => {
+      const match = b.getAttribute("data-theme") === mapTheme;
+      b.classList.toggle("active", match);
+      b.classList.toggle("subtle", !match);
+    });
+  }
+  syncThemeButtons();
+
+  if (themesWrap) {
+    themesWrap.querySelectorAll("button[data-theme]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const nextTheme = btn.getAttribute("data-theme") || "dark";
+        if (nextTheme === mapTheme) return;
+        mapTheme = nextTheme;
+        localStorage.setItem("az_geo_map_theme", mapTheme);
+        syncThemeButtons();
+        mapLoaded = false;
+        map.setStyle(STYLE_URLS[mapTheme] || STYLE_URLS.dark);
+        if (radarMap) {
+          radarLoaded = false;
+          radarMap.setStyle(STYLE_URLS[mapTheme] || STYLE_URLS.dark);
+        }
+      });
+    });
   }
 
   function ensureQuadranteCardMounted() {
@@ -17104,9 +17316,9 @@ function initAzimuteGeo() {
       centerFab.classList.toggle("is-heading-up", headingUpMode);
     }
     if (headingUpMode) {
-      applyMapHeadingUp(stableHeading);
+      applyMapHeadingUp(stableHeading, true);
     } else {
-      applyMapHeadingUp(0);
+      applyMapHeadingUp(0, true);
     }
     updateDirectionalIcons();
   }
@@ -17192,78 +17404,6 @@ function initAzimuteGeo() {
     `;
   }
 
-  // Inicializa fontes GeoJSON no MapLibre assim que o estilo Dark carregar
-  map.on("load", () => {
-    mapLoaded = true;
-
-    map.addSource("az-route-src", {
-      type: "geojson",
-      data: { type: "FeatureCollection", features: [] }
-    });
-    map.addLayer({
-      id: "az-route-outline",
-      type: "line",
-      source: "az-route-src",
-      layout: { "line-join": "round", "line-cap": "round" },
-      paint: { "line-color": "#1E3A8A", "line-width": 9, "line-opacity": 0.85 }
-    });
-    map.addLayer({
-      id: "az-route-line",
-      type: "line",
-      source: "az-route-src",
-      layout: { "line-join": "round", "line-cap": "round" },
-      paint: { "line-color": "#3B82F6", "line-width": 5, "line-opacity": 1 }
-    });
-
-    map.addSource("az-local-src", {
-      type: "geojson",
-      data: { type: "FeatureCollection", features: [] }
-    });
-    map.addLayer({
-      id: "az-local-circles",
-      type: "circle",
-      source: "az-local-src",
-      paint: {
-        "circle-radius": 5,
-        "circle-color": "#161616",
-        "circle-stroke-color": "#C5A869",
-        "circle-stroke-width": 1.5
-      }
-    });
-
-    map.on("click", "az-local-circles", (e) => {
-      if (!e.features || !e.features.length) return;
-      const f = e.features[0];
-      const [lng, lat] = f.geometry.coordinates;
-      const props = f.properties || {};
-      new maplibregl.Popup({ offset: 12 })
-        .setLngLat([lng, lat])
-        .setHTML(buildPopupHtml(props.name || "Ponto", props.subtitle || "", lat, lng, null))
-        .addTo(map);
-    });
-
-    if (activeRouteCoords.length) updateRouteSources();
-    if (localPoints.length) renderLocalLayer(localPoints);
-  });
-
-  if (radarMap) {
-    radarMap.on("load", () => {
-      radarLoaded = true;
-      radarMap.addSource("az-radar-route-src", {
-        type: "geojson",
-        data: { type: "FeatureCollection", features: [] }
-      });
-      radarMap.addLayer({
-        id: "az-radar-route-line",
-        type: "line",
-        source: "az-radar-route-src",
-        layout: { "line-join": "round", "line-cap": "round" },
-        paint: { "line-color": "#3B82F6", "line-width": 4.5, "line-opacity": 0.95 }
-      });
-      if (activeRouteCoords.length) updateRouteSources();
-    });
-  }
-
   function updateRouteSources() {
     const geojson = {
       type: "FeatureCollection",
@@ -17332,6 +17472,14 @@ function initAzimuteGeo() {
       statusEl.textContent = "Mapa alinhado ao Norte";
     });
   }
+
+  // Pausa giro automatico por 5s quando usuario toca/arrasta o mapa manualmente
+  map.on("touchstart", () => {
+    userTouchPauseUntil = Date.now() + 5000;
+  });
+  map.on("mousedown", () => {
+    userTouchPauseUntil = Date.now() + 5000;
+  });
 
   map.on("rotate", () => {
     const b = getMapBearing();
@@ -17416,6 +17564,7 @@ function initAzimuteGeo() {
   function triggerCenterOnMyPosition() {
     clearCityHighlight();
     requestCompassPermissionIfNeeded();
+    userTouchPauseUntil = 0;
     if (lastPos) {
       map.resize();
       map.flyTo({ center: [lastPos[1], lastPos[0]], zoom: 17 });
@@ -17607,6 +17756,7 @@ function initAzimuteGeo() {
         destMarker.togglePopup();
       }
 
+      userTouchPauseUntil = 0;
       map.flyTo({ center: [lastPos[1], lastPos[0]], zoom: 17 });
       setFollowState(true);
       setHeadingUpState(true);
@@ -17675,6 +17825,7 @@ function initAzimuteGeo() {
 
   if (headingUpBtn) {
     headingUpBtn.addEventListener("click", () => {
+      userTouchPauseUntil = 0;
       setHeadingUpState(!headingUpMode);
       if (headingUpMode) refreshStabilizedHeading(true);
     });
@@ -17960,19 +18111,44 @@ function initAzimuteGeo() {
     }
   });
 
+  // Leitura hibrida da bussola: funciona tanto deitado (GRID) quanto em pe na mao (APP)
   let compassListening = false;
+  function computeDeviceHeading(e) {
+    if (typeof e.webkitCompassHeading === "number" && !Number.isNaN(e.webkitCompassHeading)) {
+      return normalizeAngle(e.webkitCompassHeading);
+    }
+    if (typeof e.alpha !== "number" || Number.isNaN(e.alpha)) return null;
+
+    const beta = typeof e.beta === "number" ? e.beta : 0;
+    const gamma = typeof e.gamma === "number" ? e.gamma : 0;
+
+    // Celular deitado (plano horizontal - GRID)
+    if (Math.abs(beta) < 45) {
+      return normalizeAngle(360 - e.alpha);
+    }
+
+    // Celular inclinado / em pe na vertical (APP): projeta o eixo superior do aparelho no plano horizontal
+    const rad = Math.PI / 180;
+    const a = e.alpha * rad;
+    const b = beta * rad;
+    const g = gamma * rad;
+
+    const cA = Math.cos(a), sA = Math.sin(a);
+    const cB = Math.cos(b), sB = Math.sin(b);
+    const cG = Math.cos(g), sG = Math.sin(g);
+
+    const r13 = sA * sG + cA * sB * cG;
+    const r23 = -cA * sG + sA * sB * cG;
+    return normalizeAngle(Math.atan2(r13, r23) * (180 / Math.PI));
+  }
+
   function handleOrientationEvent(e, isAbsolute) {
     if (isAbsolute) hasAbsoluteCompass = true;
     if (!isAbsolute && hasAbsoluteCompass) return;
 
-    let heading = null;
-    if (typeof e.webkitCompassHeading === "number" && !Number.isNaN(e.webkitCompassHeading)) {
-      heading = e.webkitCompassHeading;
-    } else if (typeof e.alpha === "number" && !Number.isNaN(e.alpha)) {
-      heading = normalizeAngle(360 - e.alpha);
-    }
+    const heading = computeDeviceHeading(e);
     if (heading !== null) {
-      rawCompassHeading = heading;
+      rawCompassHeading = pushSmoothedCompass(heading);
       refreshStabilizedHeading(false);
     }
   }
@@ -18437,8 +18613,8 @@ function initAzimuteGeo() {
           firstGpsFix = false;
           map.resize();
           map.jumpTo({ center: [longitude, latitude], zoom: 17 });
-          if (headingUpMode) applyMapHeadingUp(stableHeading);
-        } else if (followGps) {
+          if (headingUpMode) applyMapHeadingUp(stableHeading, true);
+        } else if (followGps && Date.now() >= userTouchPauseUntil) {
           map.easeTo({ center: [longitude, latitude], duration: 300 });
         }
       },
