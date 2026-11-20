@@ -1761,6 +1761,7 @@
       color: #F2F0EA;
     }
 
+    /* QUADRANTE CIRCULAR DE 8 FAIXAS + ALERTA DE ESQUINA */
     .az-quad-inline-card {
       margin-top: 10px;
       margin-bottom: 10px;
@@ -1782,7 +1783,7 @@
       gap: 6px;
       border-bottom: 1px solid #28271F;
       padding-bottom: 5px;
-      margin-bottom: 7px;
+      margin-bottom: 6px;
     }
 
     .az-quad-inline-title {
@@ -1799,6 +1800,63 @@
       display: inline-flex;
       align-items: center;
       gap: 5px;
+    }
+
+    .az-quad-corner-banner {
+      display: none;
+      background: rgba(197, 168, 105, 0.16);
+      border: 1px solid #C5A869;
+      border-radius: 6px;
+      padding: 4px 8px;
+      margin-bottom: 6px;
+      font-size: 11px;
+      font-weight: 800;
+      color: #F8DE94;
+      text-align: center;
+    }
+
+    .az-quad-corner-banner.is-visible {
+      display: block;
+    }
+
+    .az-quad-ring-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+
+    #azQuadRingCanvas {
+      width: 100%;
+      max-width: 340px;
+      height: auto;
+      display: block;
+    }
+
+    .az-quad-ring-legend {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 4px;
+      font-size: 9px;
+      color: #9E9A8F;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .az-quad-ring-legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .az-quad-ring-legend i {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      display: inline-block;
     }
 
     @keyframes azQuadPulseAnim {
@@ -1820,110 +1878,7 @@
       display: inline-block;
     }
 
-    .az-quad-cross {
-      display: grid;
-      grid-template-rows: auto auto auto;
-      gap: 6px;
-    }
-
-    .az-quad-cell-center-v {
-      text-align: center;
-      padding: 2px 4px;
-    }
-
-    .az-quad-mid-row {
-      display: grid;
-      grid-template-columns: 1fr minmax(110px, 1.15fr) 1fr;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .az-quad-side-l {
-      text-align: left;
-    }
-
-    .az-quad-side-r {
-      text-align: right;
-    }
-
-    .az-quad-dir {
-      display: block;
-      font-size: 9px;
-      font-weight: 700;
-      letter-spacing: 0.07em;
-      color: #C5A869;
-      text-transform: uppercase;
-    }
-
-    .az-quad-via {
-      display: block;
-      font-size: 11px;
-      font-weight: 700;
-      color: #F2F0EA;
-      line-height: 1.22;
-      white-space: normal;
-      word-break: break-word;
-    }
-
-    .az-quad-meta {
-      display: block;
-      font-size: 10px;
-      color: #9E9A8F;
-      margin-top: 1px;
-    }
-
-    .az-quad-meta .elev-up {
-      color: #4ADE80;
-      font-weight: 700;
-    }
-
-    .az-quad-meta .elev-down {
-      color: #F87171;
-      font-weight: 700;
-    }
-
-    .az-quad-axis-box {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .az-quad-current-pill {
-      font-size: 10px;
-      font-weight: 700;
-      color: #C5A869;
-      background: #161616;
-      border: 1px solid #28271F;
-      border-radius: 6px;
-      padding: 3px 6px;
-      margin-bottom: 8px;
-      text-align: center;
-      white-space: normal;
-      word-break: break-word;
-      line-height: 1.2;
-    }
-
-    .az-quad-axis-track {
-      width: 100%;
-      height: 2px;
-      background: #C5A869;
-      position: relative;
-    }
-
-    .az-quad-axis-marker {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 20px;
-      height: 20px;
-      transform: translate(-50%, -50%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    /* MODO INCURSAO (TELA CHEIA HORIZONTAL INTEGRADA - ZERO DELAY) */
+    /* MODO INCURSAO */
     .az-inc-overlay {
       position: fixed;
       inset: 0;
@@ -17321,7 +17276,6 @@ function initAzimuteGeo() {
   const calAlignFrontBtn = document.getElementById("azCalAlignFrontBtn");
   const calLockToggleBtn = document.getElementById("azCalLockToggleBtn");
 
-  // Elementos do Modo Incursao
   const incOverlay = document.getElementById("azIncursionOverlay");
   const incCloseBtn = document.getElementById("azIncCloseBtn");
   const incMapSlot = document.getElementById("azIncMapSlot");
@@ -17353,7 +17307,6 @@ function initAzimuteGeo() {
     attributionControl: false
   });
 
-  // ResizeObserver instantaneo: elimina qualquer delay ao entrar ou sair de tela cheia / girar tela
   function instantResizeMap() {
     requestAnimationFrame(() => {
       map.resize();
@@ -17478,8 +17431,8 @@ function initAzimuteGeo() {
   let cachedCurrentStreet = "Via atual";
   let cachedNearbyStreets = [];
   let cachedSectors = { front: null, right: null, rear: null, left: null };
+  let cached8Sectors = [null, null, null, null, null, null, null, null];
 
-  // Reparentagem instantanea do #azGeoMap entre a caixa normal e o Modo Incursao (sem recriar WebGL)
   window.azimuteToggleIncursionMode = function (forceOpen) {
     if (!incOverlay || !incMapSlot || !stageEl) return;
     const willOpen = typeof forceOpen === "boolean" ? forceOpen : !incOverlay.classList.contains("is-open");
@@ -17533,7 +17486,6 @@ function initAzimuteGeo() {
     });
   }
 
-  // Comunicacao bidirecional: tocar nas bordas do Modo Incursao foca/mostra a via no mapa
   [
     { id: "azIncEdgeFront", key: "front", label: "Frente" },
     { id: "azIncEdgeRear", key: "rear", label: "Retaguarda" },
@@ -17974,11 +17926,6 @@ function initAzimuteGeo() {
     }
     if (radarMap && radarMap.isStyleLoaded()) {
       radarMap.setBearing(deg);
-    }
-
-    const qAxisMarker = document.getElementById("azQuadAxisMarker");
-    if (qAxisMarker) {
-      qAxisMarker.innerHTML = buildArrowSvg(arrowColor, 0, 20);
     }
 
     if (incTelemetryEl) {
@@ -18463,39 +18410,18 @@ function initAzimuteGeo() {
     card.title = "Toque para abrir a reconstrucao do terreno e visao lateral";
     card.innerHTML = `
       <div class="az-quad-inline-head">
-        <span class="az-quad-inline-title">QUADRANTE • ENTORNO</span>
+        <span class="az-quad-inline-title">ANEL 360° • 8 FAIXAS DE ENTORNO</span>
         <span class="az-quad-inline-hint az-quad-searching" id="azQuadFetchBadge">
           <span class="az-quad-pulse-dot"></span><span>Buscando vias...</span>
         </span>
       </div>
-      <div class="az-quad-cross">
-        <div class="az-quad-cell-center-v">
-          <span class="az-quad-dir">FRENTE</span>
-          <span class="az-quad-via" id="azQuadFront">---</span>
-          <span class="az-quad-meta" id="azQuadFrontMeta"></span>
-        </div>
-        <div class="az-quad-mid-row">
-          <div class="az-quad-side-l">
-            <span class="az-quad-dir">ESQUERDA</span>
-            <span class="az-quad-via" id="azQuadLeft">---</span>
-            <span class="az-quad-meta" id="azQuadLeftMeta"></span>
-          </div>
-          <div class="az-quad-axis-box">
-            <div class="az-quad-current-pill" id="azQuadCurrent">Via atual</div>
-            <div class="az-quad-axis-track">
-              <div class="az-quad-axis-marker" id="azQuadAxisMarker"></div>
-            </div>
-          </div>
-          <div class="az-quad-side-r">
-            <span class="az-quad-dir">DIREITA</span>
-            <span class="az-quad-via" id="azQuadRight">---</span>
-            <span class="az-quad-meta" id="azQuadRightMeta"></span>
-          </div>
-        </div>
-        <div class="az-quad-cell-center-v">
-          <span class="az-quad-dir">RETAGUARDA</span>
-          <span class="az-quad-via" id="azQuadRear">---</span>
-          <span class="az-quad-meta" id="azQuadRearMeta"></span>
+      <div id="azQuadCornerBanner" class="az-quad-corner-banner"></div>
+      <div class="az-quad-ring-wrap">
+        <canvas id="azQuadRingCanvas" width="340" height="248"></canvas>
+        <div class="az-quad-ring-legend">
+          <span><i style="background:#4ADE80;"></i> Subida</span>
+          <span><i style="background:#C5A869;"></i> Plano</span>
+          <span><i style="background:#F87171;"></i> Descida</span>
         </div>
       </div>
     `;
@@ -18514,6 +18440,7 @@ function initAzimuteGeo() {
         } else {
           innerCard.appendChild(card);
         }
+        drawCircular8SectorRing();
         return;
       }
     }
@@ -18522,6 +18449,7 @@ function initAzimuteGeo() {
     if (geoModule && geoModule.parentElement) {
       geoModule.parentElement.insertBefore(card, geoModule);
     }
+    drawCircular8SectorRing();
   }
   ensureQuadranteCardMounted();
 
@@ -19741,7 +19669,7 @@ function initAzimuteGeo() {
 
   async function enrichStreetsWithElevation(centerLat, centerLng, streetsList) {
     if (!streetsList.length) return;
-    const sample = streetsList.slice(0, 8);
+    const sample = streetsList.slice(0, 10);
     const lats = [centerLat, ...sample.map((s) => s.lat)].map((v) => v.toFixed(5)).join(",");
     const lngs = [centerLng, ...sample.map((s) => s.lng)].map((v) => v.toFixed(5)).join(",");
 
@@ -19829,22 +19757,6 @@ function initAzimuteGeo() {
     }
   }
 
-  function formatSectorMeta(st) {
-    if (!st) return "";
-    const meters = Math.max(5, Math.round(st.distKm * 1000));
-    let html = `${meters} m`;
-    if (showElevation && typeof st.deltaElev === "number") {
-      if (st.deltaElev >= 2) {
-        html += ` • <span class="elev-up">▲ +${st.deltaElev} m</span>`;
-      } else if (st.deltaElev <= -2) {
-        html += ` • <span class="elev-down">▼ ${st.deltaElev} m</span>`;
-      } else {
-        html += ` • 0 m`;
-      }
-    }
-    return html;
-  }
-
   function syncIncursionEdgesUi(sectors) {
     const pairs = [
       { st: sectors.front, txtId: "azIncTxtFront", dotId: "azIncDotFront" },
@@ -19874,28 +19786,158 @@ function initAzimuteGeo() {
     });
   }
 
+  // DESENHA O ANEL CIRCULAR DE 8 FAIXAS (45° CADA) + DETECCAO DE ESQUINA FRONTAL
+  function drawCircular8SectorRing() {
+    const canvas = document.getElementById("azQuadRingCanvas");
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    const w = canvas.width;
+    const h = canvas.height;
+    ctx.clearRect(0, 0, w, h);
+
+    const cx = w / 2;
+    const cy = h / 2;
+    const outerR = 72;
+    const innerR = 46;
+
+    // 0: Frente (-22.5 a +22.5), 1: F-Dir, 2: Dir, 3: R-Dir, 4: Retaguarda, 5: R-Esq, 6: Esq, 7: F-Esq
+    const sectorTags = ["FRENTE", "F-DIR", "DIREITA", "R-DIR", "RETAG.", "R-ESQ", "ESQUERDA", "F-ESQ"];
+
+    for (let i = 0; i < 8; i++) {
+      const st = cached8Sectors[i];
+      const centerDeg = i * 45;
+      // Converte angulo navegacao (0 = topo, sentido horario) para canvas radianos (-PI/2 = topo)
+      const startRad = ((centerDeg - 20.5 - 90) * Math.PI) / 180;
+      const endRad = ((centerDeg + 20.5 - 90) * Math.PI) / 180;
+
+      let arcColor = "#24231C";
+      let arcWidth = 5;
+      if (st) {
+        arcWidth = 8;
+        if (showElevation && typeof st.deltaElev === "number") {
+          if (st.deltaElev >= 2) arcColor = "#4ADE80";
+          else if (st.deltaElev <= -2) arcColor = "#F87171";
+          else arcColor = "#C5A869";
+        } else {
+          arcColor = "#C5A869";
+        }
+      }
+
+      ctx.beginPath();
+      ctx.arc(cx, cy, outerR, startRad, endRad);
+      ctx.strokeStyle = arcColor;
+      ctx.lineWidth = arcWidth;
+      ctx.lineCap = "round";
+      ctx.stroke();
+
+      // Marca discreta da faixa quando vazia ou rotulo da rua quando ocupada
+      const radMid = ((centerDeg - 90) * Math.PI) / 180;
+      if (st) {
+        const labelR = outerR + 14;
+        const lx = cx + Math.cos(radMid) * labelR;
+        const ly = cy + Math.sin(radMid) * labelR;
+
+        let align = "center";
+        if (i === 1 || i === 2 || i === 3) align = "left";
+        else if (i === 5 || i === 6 || i === 7) align = "right";
+
+        ctx.textAlign = align;
+        ctx.textBaseline = i === 0 ? "bottom" : i === 4 ? "top" : "middle";
+
+        const meters = Math.max(5, Math.round(st.distKm * 1000));
+        let elevTxt = "";
+        if (showElevation && typeof st.deltaElev === "number" && Math.abs(st.deltaElev) >= 2) {
+          elevTxt = st.deltaElev > 0 ? ` ▲+${st.deltaElev}m` : ` ▼${st.deltaElev}m`;
+        }
+
+        const shortVia = st.name.length > 17 ? st.name.slice(0, 16) + "…" : st.name;
+        const yOffset = i === 0 ? -12 : i === 4 ? 12 : -5;
+
+        ctx.font = "bold 9px sans-serif";
+        ctx.fillStyle = "#F2F0EA";
+        ctx.fillText(shortVia, lx, ly + yOffset);
+
+        ctx.font = "bold 8px monospace";
+        ctx.fillStyle = arcColor;
+        ctx.fillText(`${sectorTags[i]} • ${meters}m${elevTxt}`, lx, ly + yOffset + 10);
+      } else {
+        const dotX = cx + Math.cos(radMid) * (outerR + 9);
+        const dotY = cy + Math.sin(radMid) * (outerR + 9);
+        ctx.fillStyle = "#3A382E";
+        ctx.beginPath();
+        ctx.arc(dotX, dotY, 1.8, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    // Anel interno sutil
+    ctx.beginPath();
+    ctx.arc(cx, cy, innerR, 0, Math.PI * 2);
+    ctx.strokeStyle = "#28271F";
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // Seta direcional central apontando para o topo (frente do operador)
+    ctx.save();
+    ctx.translate(cx, cy - 8);
+    ctx.beginPath();
+    ctx.moveTo(0, -14);
+    ctx.lineTo(10, 10);
+    ctx.lineTo(0, 5);
+    ctx.lineTo(-10, 10);
+    ctx.closePath();
+    ctx.fillStyle = arrowColor;
+    ctx.fill();
+    ctx.strokeStyle = "#0D0D0D";
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.restore();
+
+    // Nome da via atual no miolo do anel
+    const viaAtual = (cachedCurrentStreet || "Via atual");
+    const viaShort = viaAtual.length > 18 ? viaAtual.slice(0, 17) + "…" : viaAtual;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.font = "bold 9px sans-serif";
+    ctx.fillStyle = "#C5A869";
+    ctx.fillText(viaShort, cx, cy + 16);
+  }
+
+  function updateCornerBannerDetection() {
+    const banner = document.getElementById("azQuadCornerBanner");
+    if (!banner) return;
+
+    // Verifica se ha 2 ruas distintas no cone frontal (F-Esq [7], Frente [0], F-Dir [1])
+    const frontCandidates = [cached8Sectors[7], cached8Sectors[0], cached8Sectors[1]].filter(Boolean);
+    const uniqueByName = [];
+    const seen = new Set();
+    frontCandidates.forEach((st) => {
+      const k = st.name.toLowerCase();
+      if (!seen.has(k) && st.distKm <= 0.085) {
+        seen.add(k);
+        uniqueByName.push(st);
+      }
+    });
+
+    if (uniqueByName.length >= 2) {
+      uniqueByName.sort((a, b) => a.distKm - b.distKm);
+      const v1 = uniqueByName[0].name;
+      const v2 = uniqueByName[1].name;
+      const distM = Math.max(5, Math.round(uniqueByName[0].distKm * 1000));
+      banner.textContent = `ESQUINA À FRENTE (${distM}m): ${v1} × ${v2}`;
+      banner.classList.add("is-visible");
+    } else {
+      banner.classList.remove("is-visible");
+    }
+  }
+
   function recomputeQuadranteSectors(forceUpdate) {
     ensureQuadranteCardMounted();
     const syncedLocStreet = readSyncedStreetFromLocationCard();
     if (syncedLocStreet) cachedCurrentStreet = syncedLocStreet;
 
-    const qCurr = document.getElementById("azQuadCurrent");
-    const qFront = document.getElementById("azQuadFront");
-    const qRight = document.getElementById("azQuadRight");
-    const qRear = document.getElementById("azQuadRear");
-    const qLeft = document.getElementById("azQuadLeft");
-    const qFrontMeta = document.getElementById("azQuadFrontMeta");
-    const qRightMeta = document.getElementById("azQuadRightMeta");
-    const qRearMeta = document.getElementById("azQuadRearMeta");
-    const qLeftMeta = document.getElementById("azQuadLeftMeta");
-
-    if (qCurr) qCurr.textContent = cachedCurrentStreet || "Via atual";
-
     if (!lastPos || !cachedNearbyStreets.length) {
-      if (qFront) qFront.textContent = fetchingStreets ? "Buscando..." : "Aguardando GPS";
-      if (qRight) qRight.textContent = "---";
-      if (qRear) qRear.textContent = "---";
-      if (qLeft) qLeft.textContent = "---";
+      drawCircular8SectorRing();
       return;
     }
 
@@ -19908,7 +19950,7 @@ function initAzimuteGeo() {
 
     if (!forceUpdate && lastQuadHeading !== null) {
       const angDiff = Math.abs(shortestAngleDiff(lastQuadHeading, refHeading));
-      if (angDiff < 25 || now - lastQuadUpdateTime < 1500) {
+      if (angDiff < 20 || now - lastQuadUpdateTime < 1400) {
         return;
       }
     }
@@ -19916,8 +19958,20 @@ function initAzimuteGeo() {
     lastQuadHeading = refHeading;
     lastQuadUpdateTime = now;
 
-    const sectors = { front: null, right: null, rear: null, left: null };
+    // 1. Calcula as 8 faixas circulares de 45 graus cada
+    const octants = [null, null, null, null, null, null, null, null];
+    cachedNearbyStreets.forEach((st) => {
+      const absBearing = calcBearingDeg(lastPos[0], lastPos[1], st.lat, st.lng);
+      const rel = normalizeAngle(absBearing - refHeading);
+      const idx = Math.floor(normalizeAngle(rel + 22.5) / 45) % 8;
+      if (!octants[idx] || st.distKm < octants[idx].distKm) {
+        octants[idx] = st;
+      }
+    });
+    cached8Sectors = octants;
 
+    // 2. Mantem tambem os 4 setores cardeais para o Modo Incursao e Relevo 3D
+    const sectors = { front: null, right: null, rear: null, left: null };
     cachedNearbyStreets.forEach((st) => {
       const absBearing = calcBearingDeg(lastPos[0], lastPos[1], st.lat, st.lng);
       const rel = normalizeAngle(absBearing - refHeading);
@@ -19931,19 +19985,10 @@ function initAzimuteGeo() {
         sectors[key] = st;
       }
     });
-
     cachedSectors = sectors;
 
-    if (qFront) qFront.textContent = sectors.front ? sectors.front.name : "Sem via próxima";
-    if (qRight) qRight.textContent = sectors.right ? sectors.right.name : "Sem via próxima";
-    if (qRear) qRear.textContent = sectors.rear ? sectors.rear.name : "Sem via próxima";
-    if (qLeft) qLeft.textContent = sectors.left ? sectors.left.name : "Sem via próxima";
-
-    if (qFrontMeta) qFrontMeta.innerHTML = formatSectorMeta(sectors.front);
-    if (qRightMeta) qRightMeta.innerHTML = formatSectorMeta(sectors.right);
-    if (qRearMeta) qRearMeta.innerHTML = formatSectorMeta(sectors.rear);
-    if (qLeftMeta) qLeftMeta.innerHTML = formatSectorMeta(sectors.left);
-
+    updateCornerBannerDetection();
+    drawCircular8SectorRing();
     syncIncursionEdgesUi(sectors);
 
     if (terrainModal && terrainModal.classList.contains("is-open")) {
