@@ -20909,7 +20909,7 @@ if (document.readyState === "loading") {
   initAzimuteGeo();
 }
 </script>
-<!-- ================= ETAPA 1 (BLOCO B - CENTRO TRAVADO): ORBE 16 PONTOS, SONAR E ESPECTRO ================= -->
+<!-- ================= ETAPA 1 UNIFICADA: ORBE 16 PONTOS, SONAR, ESPECTRO E GAVETA LATERAL ================= -->
 <style>
   .az-orbe-sonar-btn {
     position: relative;
@@ -20983,37 +20983,75 @@ if (document.readyState === "loading") {
     100% { transform: scale(2.45); opacity: 0; }
   }
 
-  /* Alça vertical no modo horizontal */
-  #azVerticalGripLandscape { display: none; }
-  @media (orientation: landscape) and (max-height: 620px) {
+  /* Modo Incursão enquadrado sem cortar topo nem base */
+  #azIncursionOverlay.is-open {
+    overflow: hidden !important;
+    padding: 6px 34px 6px 6px !important;
+    background: #0A0A0A !important;
+  }
+
+  /* Gaveta inferior que sobe/desce por baixo do mapa parado */
+  #azUnderMapDrawer {
+    position: fixed !important;
+    left: 6px !important;
+    right: 34px !important;
+    bottom: 0 !important;
+    max-height: 78vh !important;
+    overflow-y: auto !important;
+    background: rgba(13, 13, 13, 0.97) !important;
+    border-top: 2px solid #C5A869 !important;
+    border-left: 1px solid #28271F !important;
+    border-right: 1px solid #28271F !important;
+    border-radius: 14px 14px 0 0 !important;
+    padding: 10px !important;
+    z-index: 100005 !important;
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.92) !important;
+    transform: translateY(100%);
+    transition: transform 0.08s linear;
+  }
+
+  /* Botão deslizante lateral (eixo vertical) em modo horizontal */
+  #azVerticalGripLandscape {
+    display: none !important;
+  }
+  @media (orientation: landscape) {
     #azVerticalGripLandscape {
-      display: flex;
-      position: fixed;
-      top: 14%;
-      bottom: 14%;
-      right: 4px;
-      width: 18px;
-      z-index: 850;
-      background: rgba(22, 22, 22, 0.88);
-      border: 1px solid rgba(197, 168, 105, 0.45);
-      border-radius: 999px;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-      touch-action: none;
-      user-select: none;
+      display: flex !important;
+      position: fixed !important;
+      top: 12% !important;
+      bottom: 12% !important;
+      right: 5px !important;
+      width: 24px !important;
+      z-index: 100020 !important;
+      background: rgba(13, 13, 13, 0.95) !important;
+      border: 1.5px solid #C5A869 !important;
+      border-radius: 999px !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: flex-start !important;
+      padding: 4px 0 !important;
+      touch-action: none !important;
+      user-select: none !important;
+      cursor: grab !important;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.9) !important;
     }
-    #azVerticalGripLandscape span {
-      width: 3px;
-      height: 18px;
-      border-radius: 2px;
-      background: rgba(197, 168, 105, 0.65);
+    #azVerticalGripLandscape:active {
+      cursor: grabbing !important;
+      background: #161616 !important;
+    }
+    #azVerticalGripThumb {
+      display: block !important;
+      width: 14px !important;
+      height: 46px !important;
+      border-radius: 999px !important;
+      background: #C5A869 !important;
+      border: 1px solid #0D0D0D !important;
+      box-shadow: 0 0 8px rgba(197, 168, 105, 0.7) !important;
+      pointer-events: none !important;
+      transform: translateY(0px);
     }
   }
 </style>
-
-<div id="azVerticalGripLandscape" aria-hidden="true"><span></span><span></span><span></span></div>
 
 <script>
 (function () {
@@ -21027,10 +21065,12 @@ if (document.readyState === "loading") {
     scheduledOverlay: false,
     lastW: 360,
     lastH: 260,
-    lastMatrix: null
+    lastMatrix: null,
+    openRatio: 0,
+    dragging: false
   };
 
-  /* 1. DESENHA OS 16 PONTOS + ANEL INTERNO + ONDA SONAR USANDO A MESMA MATRIZ DO ORBE */
+  /* 1. ORBE DE 16 PONTOS + ANEL INTERNO + ONDA SONAR */
   function drawOrbe16Overlay(canvas) {
     if (!canvas) canvas = document.getElementById("azQuadRingCanvas");
     if (!canvas) return;
@@ -21048,7 +21088,6 @@ if (document.readyState === "loading") {
       ctx.setTransform(state.lastMatrix);
     }
 
-    // Anel interno de precisão concêntrico (72% do raio)
     ctx.strokeStyle = "rgba(197, 168, 105, 0.22)";
     ctx.lineWidth = 1;
     ctx.setLineDash([2, 3]);
@@ -21057,7 +21096,6 @@ if (document.readyState === "loading") {
     ctx.stroke();
     ctx.setLineDash([]);
 
-    // 16 Pontos de Referência Radial (a cada 22.5°) alinhados ao anel original
     for (let i = 0; i < 16; i++) {
       const deg = i * 22.5;
       const rad = ((deg - 90) * Math.PI) / 180;
@@ -21079,7 +21117,6 @@ if (document.readyState === "loading") {
       ctx.lineTo(cx + Math.cos(rad) * rOuter, cy + Math.sin(rad) * rOuter);
       ctx.stroke();
 
-      // Pontos externos nos 8 setores intermediários (completando os 16 pontos)
       if (i % 2 === 1) {
         const px = cx + Math.cos(rad) * (outerR + 8);
         const py = cy + Math.sin(rad) * (outerR + 8);
@@ -21090,7 +21127,6 @@ if (document.readyState === "loading") {
       }
     }
 
-    // Onda circular de Sonar centrada no ORBE
     if (state.sonarActive && state.sonarWaveR > 0) {
       const maxR = outerR + 18;
       const alpha = Math.max(0, 1 - state.sonarWaveR / maxR);
@@ -21106,7 +21142,6 @@ if (document.readyState === "loading") {
     ctx.restore();
   }
 
-  /* 2. CAPTURA A MATRIZ E AS DIMENSÕES EXATAS QUANDO O ORBE LIMPA O CANVAS */
   const origClearRect = CanvasRenderingContext2D.prototype.clearRect;
   CanvasRenderingContext2D.prototype.clearRect = function (x, y, w, h) {
     origClearRect.apply(this, arguments);
@@ -21129,10 +21164,9 @@ if (document.readyState === "loading") {
     }
   };
 
-  /* 3. CONVERTE O BOTÃO "PULSO" EM "SONAR" ANIMADO (100% SILENCIOSO) */
+  /* 2. BOTÃO SONAR SILENCIOSO */
   function upgradePulsoToSonarButton() {
-    const buttons = document.querySelectorAll("button");
-    buttons.forEach(function (btn) {
+    document.querySelectorAll("button").forEach(function (btn) {
       if (btn.dataset.azSonarUpgraded === "1") return;
       const txt = (btn.textContent || "").trim().toUpperCase();
       if (txt === "PULSO" || txt.endsWith("PULSO")) {
@@ -21156,11 +21190,11 @@ if (document.readyState === "loading") {
     const fab = document.getElementById("azGeoCenterFab");
     if (btn) {
       btn.classList.add("is-pinging");
-      setTimeout(() => btn.classList.remove("is-pinging"), 1400);
+      setTimeout(function () { btn.classList.remove("is-pinging"); }, 1400);
     }
     if (fab) {
       fab.classList.add("is-pulse");
-      setTimeout(() => fab.classList.remove("is-pulse"), 600);
+      setTimeout(function () { fab.classList.remove("is-pulse"); }, 600);
     }
     if (recenter) {
       state.isOffCenter = false;
@@ -21181,7 +21215,7 @@ if (document.readyState === "loading") {
     }
   }
 
-  /* 4. ESPECTRO ANIMADO DO TERRENO */
+  /* 3. ESPECTRO ANIMADO DO TERRENO */
   function renderAnimatedSpectrum(canvasId, isSide) {
     const canvas = document.getElementById(canvasId);
     if (!canvas || canvas.offsetParent === null) return;
@@ -21260,9 +21294,165 @@ if (document.readyState === "loading") {
     ctx.restore();
   }
 
-  /* 5. LOOP CONTÍNUO DE ATUALIZAÇÃO */
+  /* 4. GAVETA INFERIOR E BOTÃO DESLIZANTE VERTICAL (MAPA FIXO) */
+  function ensureUnderMapDrawer() {
+    let drawer = document.getElementById("azUnderMapDrawer");
+    if (!drawer) {
+      drawer = document.createElement("div");
+      drawer.id = "azUnderMapDrawer";
+      document.body.appendChild(drawer);
+    }
+
+    const inc = document.getElementById("azIncursionOverlay");
+    const isIncOpen = inc && inc.classList.contains("is-open");
+
+    if (isIncOpen && drawer.dataset.azPopulated !== "1") {
+      const idsToMirror = ["azGeoLayersBox", "azGeoMunBox", "azGeoCfgBox", "azGeoRouteBox"];
+      let html = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;border-bottom:1px solid #28271F;padding-bottom:6px;">' +
+                 '<span style="font-size:10px;font-weight:800;letter-spacing:0.08em;color:#C5A869;text-transform:uppercase;">CONTROLES & CAMADAS (MAPA FIXO)</span>' +
+                 '<button type="button" id="azCloseDrawerQuickBtn" style="background:#161616;color:#C5A869;border:1px solid #C5A869;border-radius:6px;padding:2px 8px;font-size:10px;font-weight:700;">Recolher</button>' +
+                 '</div>';
+
+      idsToMirror.forEach(function (id) {
+        const el = document.getElementById(id);
+        if (el) {
+          html += '<div data-mirror-for="' + id + '" style="margin-bottom:8px;">' + el.innerHTML + '</div>';
+        }
+      });
+
+      drawer.innerHTML = html;
+      drawer.dataset.azPopulated = "1";
+
+      drawer.querySelectorAll("[data-layer]").forEach(function (chip) {
+        chip.addEventListener("click", function () {
+          const layer = chip.getAttribute("data-layer");
+          const orig = document.querySelector('#azGeoLayerChips [data-layer="' + layer + '"]');
+          if (orig) orig.click();
+          chip.classList.toggle("is-on");
+        });
+      });
+
+      drawer.querySelectorAll("[data-theme]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          const theme = btn.getAttribute("data-theme");
+          const orig = document.querySelector('#azGeoMapThemes [data-theme="' + theme + '"]');
+          if (orig) orig.click();
+        });
+      });
+
+      const closeBtn = document.getElementById("azCloseDrawerQuickBtn");
+      if (closeBtn) {
+        closeBtn.addEventListener("click", function () {
+          setDrawerRatio(0);
+        });
+      }
+    }
+
+    drawer.style.display = isIncOpen ? "block" : "none";
+  }
+
+  function setDrawerRatio(ratio) {
+    state.openRatio = Math.min(1, Math.max(0, ratio));
+
+    const track = document.getElementById("azVerticalGripLandscape");
+    const thumb = document.getElementById("azVerticalGripThumb");
+    const drawer = document.getElementById("azUnderMapDrawer");
+    const inc = document.getElementById("azIncursionOverlay");
+    const isIncOpen = inc && inc.classList.contains("is-open");
+
+    if (track && thumb) {
+      const usableH = Math.max(1, track.clientHeight - thumb.offsetHeight - 8);
+      thumb.style.transform = `translateY(${Math.round(state.openRatio * usableH)}px)`;
+    }
+
+    if (isIncOpen && drawer) {
+      const translatePct = Math.round((1 - state.openRatio) * 100);
+      drawer.style.transform = `translateY(${translatePct}%)`;
+    } else {
+      const maxScroll = Math.max(
+        0,
+        document.documentElement.scrollHeight - window.innerHeight,
+        document.body.scrollHeight - window.innerHeight
+      );
+      window.scrollTo({ top: state.openRatio * maxScroll, behavior: "auto" });
+    }
+  }
+
+  function initVerticalGripDrawer() {
+    let track = document.getElementById("azVerticalGripLandscape");
+    if (!track) {
+      track = document.createElement("div");
+      track.id = "azVerticalGripLandscape";
+      document.body.appendChild(track);
+    }
+
+    if (track.dataset.azGripDrawerReady === "1") return;
+    track.dataset.azGripDrawerReady = "1";
+    track.innerHTML = '<div id="azVerticalGripThumb"></div>';
+
+    function handlePointerY(clientY) {
+      const rect = track.getBoundingClientRect();
+      const thumb = document.getElementById("azVerticalGripThumb");
+      const thumbH = thumb ? thumb.offsetHeight : 46;
+      const usableH = Math.max(1, rect.height - thumbH - 8);
+      const pos = Math.min(usableH, Math.max(0, clientY - rect.top - thumbH / 2));
+      setDrawerRatio(pos / usableH);
+    }
+
+    track.addEventListener("pointerdown", function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      state.dragging = true;
+      ensureUnderMapDrawer();
+      if (track.setPointerCapture) {
+        try { track.setPointerCapture(e.pointerId); } catch (_) {}
+      }
+      handlePointerY(e.clientY);
+    });
+
+    track.addEventListener("pointermove", function (e) {
+      if (!state.dragging) return;
+      e.preventDefault();
+      e.stopPropagation();
+      handlePointerY(e.clientY);
+    });
+
+    function endDrag(e) {
+      if (!state.dragging) return;
+      state.dragging = false;
+      if (e && track.releasePointerCapture) {
+        try { track.releasePointerCapture(e.pointerId); } catch (_) {}
+      }
+    }
+
+    track.addEventListener("pointerup", endDrag);
+    track.addEventListener("pointercancel", endDrag);
+
+    window.addEventListener("scroll", function () {
+      if (state.dragging) return;
+      const inc = document.getElementById("azIncursionOverlay");
+      if (inc && inc.classList.contains("is-open")) return;
+      const maxScroll = Math.max(
+        0,
+        document.documentElement.scrollHeight - window.innerHeight,
+        document.body.scrollHeight - window.innerHeight
+      );
+      if (maxScroll > 0) {
+        state.openRatio = Math.min(1, Math.max(0, window.scrollY / maxScroll));
+        const thumb = document.getElementById("azVerticalGripThumb");
+        if (thumb && track) {
+          const usableH = Math.max(1, track.clientHeight - thumb.offsetHeight - 8);
+          thumb.style.transform = `translateY(${Math.round(state.openRatio * usableH)}px)`;
+        }
+      }
+    }, { passive: true });
+  }
+
+  /* 5. LOOP PRINCIPAL */
   function tick() {
     upgradePulsoToSonarButton();
+    initVerticalGripDrawer();
+    ensureUnderMapDrawer();
 
     const fab = document.getElementById("azGeoCenterFab");
     if (fab && fab.dataset.azCenterHooked !== "1") {
@@ -21300,245 +21490,6 @@ if (document.readyState === "loading") {
   }, { passive: true });
 
   requestAnimationFrame(tick);
-})();
-</script><script>
-(function () {
-  "use strict";
-
-  function bindHorizontalScrollButtons() {
-    const leftBtn = document.getElementById("azGeoCitiesLeft");
-    const rightBtn = document.getElementById("azGeoCitiesRight");
-    const track = document.getElementById("azGeoCities");
-
-    if (track && leftBtn && leftBtn.dataset.azScrollBound !== "1") {
-      leftBtn.dataset.azScrollBound = "1";
-      leftBtn.addEventListener("click", function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        track.scrollBy({ left: -170, behavior: "smooth" });
-      });
-    }
-
-    if (track && rightBtn && rightBtn.dataset.azScrollBound !== "1") {
-      rightBtn.dataset.azScrollBound = "1";
-      rightBtn.addEventListener("click", function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        track.scrollBy({ left: 170, behavior: "smooth" });
-      });
-    }
-
-    // Permite arrastar a barra lateralmente com o mouse no notebook
-    if (track && track.dataset.azDragBound !== "1") {
-      track.dataset.azDragBound = "1";
-      let isDown = false, startX = 0, scrollStart = 0;
-      track.addEventListener("mousedown", function (e) {
-        isDown = true;
-        startX = e.pageX - track.offsetLeft;
-        scrollStart = track.scrollLeft;
-      });
-      window.addEventListener("mouseup", function () { isDown = false; });
-      track.addEventListener("mousemove", function (e) {
-        if (!isDown) return;
-        e.preventDefault();
-        const x = e.pageX - track.offsetLeft;
-        track.scrollLeft = scrollStart - (x - startX) * 1.4;
-      });
-    }
-
-    // Faz a alça vertical do modo horizontal rolar a página ao deslizar
-    const grip = document.getElementById("azVerticalGripLandscape");
-    if (grip && grip.dataset.azGripBound !== "1") {
-      grip.dataset.azGripBound = "1";
-      let lastY = null;
-      grip.addEventListener("pointerdown", function (e) {
-        lastY = e.clientY;
-        grip.setPointerCapture(e.pointerId);
-      });
-      grip.addEventListener("pointermove", function (e) {
-        if (lastY === null) return;
-        const dy = lastY - e.clientY;
-        lastY = e.clientY;
-        window.scrollBy({ top: dy * 1.6, behavior: "auto" });
-      });
-      grip.addEventListener("pointerup", function () { lastY = null; });
-      grip.addEventListener("pointercancel", function () { lastY = null; });
-    }
-  }
-
-  bindHorizontalScrollButtons();
-  setInterval(bindHorizontalScrollButtons, 1500);
-})();
-</script><style>
-  /* 1. Libera rolagem no Modo Incursão em modo horizontal e evita corte no topo/base */
-  #azIncursionOverlay.is-open {
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-    -webkit-overflow-scrolling: touch !important;
-    padding: 6px 34px 18px 6px !important;
-    background: #0A0A0A !important;
-  }
-  @media (orientation: landscape) and (max-height: 520px) {
-    #azIncursionOverlay.is-open .az-inc-body {
-      min-height: 310px !important;
-      flex: none !important;
-    }
-  }
-
-  /* 2. BOTÃO DESLIZANTE LATERAL (EIXO VERTICAL) ACIMA DE TUDO */
-  #azVerticalGripLandscape {
-    display: none !important;
-  }
-  @media (orientation: landscape) {
-    #azVerticalGripLandscape {
-      display: flex !important;
-      position: fixed !important;
-      top: 12% !important;
-      bottom: 12% !important;
-      right: 5px !important;
-      width: 24px !important;
-      z-index: 100010 !important;
-      background: rgba(13, 13, 13, 0.94) !important;
-      border: 1.5px solid #C5A869 !important;
-      border-radius: 999px !important;
-      flex-direction: column !important;
-      align-items: center !important;
-      justify-content: flex-start !important;
-      padding: 4px 0 !important;
-      touch-action: none !important;
-      user-select: none !important;
-      cursor: grab !important;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.9) !important;
-    }
-    #azVerticalGripLandscape:active {
-      cursor: grabbing !important;
-      background: #161616 !important;
-    }
-    #azVerticalGripLandscape > span {
-      display: none !important;
-    }
-    #azVerticalGripThumb {
-      display: block !important;
-      width: 14px !important;
-      height: 46px !important;
-      border-radius: 999px !important;
-      background: #C5A869 !important;
-      border: 1px solid #0D0D0D !important;
-      box-shadow: 0 0 8px rgba(197, 168, 105, 0.65) !important;
-      pointer-events: none !important;
-      transform: translateY(0px);
-    }
-  }
-</style>
-
-<script>
-(function () {
-  "use strict";
-
-  function getActiveScrollTarget() {
-    const inc = document.getElementById("azIncursionOverlay");
-    if (inc && inc.classList.contains("is-open")) {
-      return inc;
-    }
-    return window;
-  }
-
-  function getScrollMetrics(target) {
-    if (target === window) {
-      const max = Math.max(
-        0,
-        document.documentElement.scrollHeight - window.innerHeight,
-        document.body.scrollHeight - window.innerHeight
-      );
-      return { current: window.scrollY || window.pageYOffset || 0, max };
-    }
-    return {
-      current: target.scrollTop,
-      max: Math.max(0, target.scrollHeight - target.clientHeight)
-    };
-  }
-
-  function applyScrollTo(target, topPx) {
-    if (target === window) {
-      window.scrollTo({ top: topPx, behavior: "auto" });
-    } else {
-      target.scrollTop = topPx;
-    }
-  }
-
-  function initVerticalSliderV2() {
-    let track = document.getElementById("azVerticalGripLandscape");
-    if (!track) {
-      track = document.createElement("div");
-      track.id = "azVerticalGripLandscape";
-      document.body.appendChild(track);
-    }
-
-    if (track.dataset.azSliderV2 === "1") return;
-    track.dataset.azSliderV2 = "1";
-    track.innerHTML = '<div id="azVerticalGripThumb"></div>';
-
-    const thumb = document.getElementById("azVerticalGripThumb");
-    let dragging = false;
-
-    function syncThumb() {
-      if (!thumb || !track) return;
-      const target = getActiveScrollTarget();
-      const { current, max } = getScrollMetrics(target);
-      const usableH = Math.max(1, track.clientHeight - thumb.offsetHeight - 8);
-      const ratio = max > 0 ? Math.min(1, Math.max(0, current / max)) : 0;
-      thumb.style.transform = `translateY(${Math.round(ratio * usableH)}px)`;
-    }
-
-    function moveFromClientY(clientY) {
-      const rect = track.getBoundingClientRect();
-      const thumbH = thumb ? thumb.offsetHeight : 46;
-      const usableH = Math.max(1, rect.height - thumbH - 8);
-      const pos = Math.min(usableH, Math.max(0, clientY - rect.top - thumbH / 2));
-      const ratio = pos / usableH;
-      const target = getActiveScrollTarget();
-      const { max } = getScrollMetrics(target);
-      applyScrollTo(target, ratio * max);
-      syncThumb();
-    }
-
-    track.addEventListener("pointerdown", function (e) {
-      e.preventDefault();
-      e.stopPropagation();
-      dragging = true;
-      if (track.setPointerCapture) {
-        try { track.setPointerCapture(e.pointerId); } catch (_) {}
-      }
-      moveFromClientY(e.clientY);
-    });
-
-    track.addEventListener("pointermove", function (e) {
-      if (!dragging) return;
-      e.preventDefault();
-      e.stopPropagation();
-      moveFromClientY(e.clientY);
-    });
-
-    function endDrag(e) {
-      if (!dragging) return;
-      dragging = false;
-      if (e && track.releasePointerCapture) {
-        try { track.releasePointerCapture(e.pointerId); } catch (_) {}
-      }
-    }
-
-    track.addEventListener("pointerup", endDrag);
-    track.addEventListener("pointercancel", endDrag);
-
-    window.addEventListener("scroll", syncThumb, { passive: true });
-    window.addEventListener("resize", syncThumb, { passive: true });
-    const inc = document.getElementById("azIncursionOverlay");
-    if (inc) inc.addEventListener("scroll", syncThumb, { passive: true });
-
-    setInterval(syncThumb, 400);
-  }
-
-  initVerticalSliderV2();
 })();
 </script></body>
 </html>
