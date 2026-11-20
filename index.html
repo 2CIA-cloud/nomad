@@ -1105,6 +1105,7 @@
       --geo-gold: #C5A869;
       --geo-gold-soft: rgba(197, 168, 105, 0.16);
       --geo-blue: #2563EB;
+      --geo-green: #16A34A;
       --geo-text: #F2F0EA;
       --geo-muted: #9E9A8F;
       background: var(--geo-bg);
@@ -1224,8 +1225,8 @@
       align-items: center;
       justify-content: space-between;
       gap: 8px;
-      background: rgba(13, 13, 13, 0.94);
-      border: 1px solid var(--geo-blue);
+      background: rgba(13, 13, 13, 0.96);
+      border: 1.5px solid var(--geo-green);
       border-radius: 8px;
       padding: 8px 10px;
       margin-bottom: 8px;
@@ -1244,8 +1245,8 @@
 
     .az-geo-tbt-next {
       font-size: 13px;
-      font-weight: 700;
-      color: #60A5FA;
+      font-weight: 800;
+      color: #4ADE80;
       line-height: 1.25;
       word-break: break-word;
     }
@@ -1260,7 +1261,7 @@
     .az-geo-stage {
       position: relative;
       width: 100%;
-      height: 315px;
+      height: 320px;
       min-height: 260px;
       border: 1px solid var(--geo-border);
       border-radius: 8px;
@@ -1395,6 +1396,13 @@
       background: var(--geo-blue);
       color: #FFFFFF;
       border-color: var(--geo-blue);
+    }
+
+    .az-geo-btn.green {
+      background: var(--geo-green);
+      color: #FFFFFF;
+      border-color: #22C55E;
+      font-weight: 800;
     }
 
     .az-geo-actions {
@@ -1543,7 +1551,7 @@
     }
 
     .az-geo-popup-card {
-      min-width: 190px;
+      min-width: 195px;
       color: #F2F0EA;
     }
 
@@ -1573,8 +1581,12 @@
     }
 
     .az-geo-popup-actions button.primary-route {
-      grid-column: span 2;
       background: #2563EB;
+      color: #FFFFFF;
+    }
+
+    .az-geo-popup-actions button.start-nav {
+      background: #16A34A;
       color: #FFFFFF;
     }
 
@@ -1853,7 +1865,7 @@
     }
 
     .az-radar-hud-foot strong {
-      color: #60A5FA;
+      color: #4ADE80;
       display: block;
     }
   </style>
@@ -1926,7 +1938,13 @@
           <button type="button" class="az-geo-btn subtle" data-mode="moto">Moto</button>
           <button type="button" class="az-geo-btn subtle" data-mode="pe">A pé</button>
         </div>
-        <button type="button" id="azGeoRouteNowBtn" class="az-geo-btn blue">Traçar Rota</button>
+        <div class="az-geo-group">
+          <button type="button" id="azGeoRouteNowBtn" class="az-geo-btn blue">Traçar Rota</button>
+          <button type="button" id="azGeoStartNavBtn" class="az-geo-btn green" style="display:none;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 20,12 5,21"/></svg>
+            <span>Iniciar</span>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -16760,6 +16778,7 @@ function initAzimuteGeo() {
   const savePinBtn = document.getElementById("azGeoSavePinBtn");
   const cancelPinBtn = document.getElementById("azGeoCancelPinBtn");
   const routeNowBtn = document.getElementById("azGeoRouteNowBtn");
+  const startNavBtn = document.getElementById("azGeoStartNavBtn");
   const statusEl = document.getElementById("azGeoStatus");
   const targetEl = document.getElementById("azGeoTarget");
   const citiesWrap = document.getElementById("azGeoCities");
@@ -16819,7 +16838,6 @@ function initAzimuteGeo() {
   let computedGpsCourse = null;
   let lastMoveTimestamp = 0;
 
-  // Filtro circular para estabilizar bussola sem tremor
   let compassSamples = [];
   let rawCompassHeading = 0;
   let stableHeading = 0;
@@ -16841,6 +16859,9 @@ function initAzimuteGeo() {
   let activeRouteDest = null;
   let activeRouteSteps = [];
   let activeRouteCoords = [];
+  let isNavigationStarted = false;
+  let lastRerouteTimestamp = 0;
+
   let arrowColor = localStorage.getItem("az_geo_arrow_color") || "#C5A869";
   let orientationMode = localStorage.getItem("az_geo_orientation") || "app";
   let showElevation = localStorage.getItem("az_geo_elev_enabled") !== "0";
@@ -16898,7 +16919,7 @@ function initAzimuteGeo() {
     if (forceInstant) {
       map.setBearing(clean);
     } else {
-      map.easeTo({ bearing: clean, duration: 350, easing: (t) => t });
+      map.easeTo({ bearing: clean, duration: 320, easing: (t) => t });
     }
     if (northBadge) {
       northBadge.style.transform = `rotate(${-clean}deg)`;
@@ -16942,10 +16963,10 @@ function initAzimuteGeo() {
     const moving = isMovingCourseActive();
     const target = getTargetHeading();
     const diff = shortestAngleDiff(stableHeading, target);
-    const deadzone = moving ? 3 : 12;
+    const deadzone = moving ? 3 : 11;
 
     if (forceSnap || Math.abs(diff) >= deadzone) {
-      const factor = forceSnap || moving ? 0.85 : 0.45;
+      const factor = forceSnap || moving ? 0.85 : 0.48;
       stableHeading = normalizeAngle(stableHeading + diff * factor);
       if (headingUpMode) {
         applyMapHeadingUp(stableHeading, !!forceSnap);
@@ -17006,7 +17027,7 @@ function initAzimuteGeo() {
     recomputeQuadranteSectors();
   }
 
-  // Realca mata, agua, contraste das vias e tamanho dos nomes das ruas no modo escuro
+  // Alto contraste real nos modos Noite (branco/caqui sobre preto) e Dia (preto puro sobre branco)
   function enhanceMapReadability(targetMap, isDark) {
     const style = targetMap.getStyle();
     if (!style || !Array.isArray(style.layers)) return;
@@ -17019,7 +17040,7 @@ function initAzimuteGeo() {
           targetMap.setPaintProperty(layer.id, "background-color", "#14171A");
         } else if (layer.type === "fill") {
           if (id.includes("water") || id.includes("river") || id.includes("lake")) {
-            targetMap.setPaintProperty(layer.id, "fill-color", "#163B5C");
+            targetMap.setPaintProperty(layer.id, "fill-color", "#17436B");
           } else if (
             id.includes("park") ||
             id.includes("wood") ||
@@ -17028,10 +17049,10 @@ function initAzimuteGeo() {
             id.includes("green") ||
             id.includes("landcover")
           ) {
-            targetMap.setPaintProperty(layer.id, "fill-color", "#1B3824");
-            targetMap.setPaintProperty(layer.id, "fill-opacity", 0.78);
+            targetMap.setPaintProperty(layer.id, "fill-color", "#1E4229");
+            targetMap.setPaintProperty(layer.id, "fill-opacity", 0.82);
           } else if (id.includes("building")) {
-            targetMap.setPaintProperty(layer.id, "fill-color", "#202429");
+            targetMap.setPaintProperty(layer.id, "fill-color", "#232830");
           }
         } else if (layer.type === "line") {
           if (id.includes("water") || id.includes("river") || id.includes("stream")) {
@@ -17043,27 +17064,37 @@ function initAzimuteGeo() {
             id.includes("transportation")
           ) {
             if (id.includes("casing")) {
-              targetMap.setPaintProperty(layer.id, "line-color", "#0A0C0E");
+              targetMap.setPaintProperty(layer.id, "line-color", "#08090B");
             } else if (id.includes("motorway") || id.includes("trunk") || id.includes("primary")) {
-              targetMap.setPaintProperty(layer.id, "line-color", "#8C7441");
+              targetMap.setPaintProperty(layer.id, "line-color", "#A88B4E");
             } else if (id.includes("secondary") || id.includes("tertiary")) {
-              targetMap.setPaintProperty(layer.id, "line-color", "#525863");
+              targetMap.setPaintProperty(layer.id, "line-color", "#646D7A");
             } else {
-              targetMap.setPaintProperty(layer.id, "line-color", "#3A404A");
+              targetMap.setPaintProperty(layer.id, "line-color", "#454D59");
             }
           }
         }
       }
 
-      if (layer.type === "symbol" && (id.includes("road") || id.includes("street") || id.includes("transportation") || id.includes("place"))) {
+      if (
+        layer.type === "symbol" &&
+        (id.includes("road") || id.includes("street") || id.includes("transportation") || id.includes("place") || id.includes("label"))
+      ) {
         try {
           if (isDark) {
-            targetMap.setPaintProperty(layer.id, "text-color", "#F8FAFC");
-            targetMap.setPaintProperty(layer.id, "text-halo-color", "#090B0D");
-            targetMap.setPaintProperty(layer.id, "text-halo-width", 2.2);
+            const isMajor = id.includes("motorway") || id.includes("primary") || id.includes("trunk");
+            targetMap.setPaintProperty(layer.id, "text-color", isMajor ? "#F5D98E" : "#FFFFFF");
+            targetMap.setPaintProperty(layer.id, "text-halo-color", "#050608");
+            targetMap.setPaintProperty(layer.id, "text-halo-width", 2.5);
+            targetMap.setPaintProperty(layer.id, "text-opacity", 1);
+          } else {
+            targetMap.setPaintProperty(layer.id, "text-color", "#050505");
+            targetMap.setPaintProperty(layer.id, "text-halo-color", "#FFFFFF");
+            targetMap.setPaintProperty(layer.id, "text-halo-width", 2.6);
+            targetMap.setPaintProperty(layer.id, "text-opacity", 1);
           }
           if (id.includes("road") || id.includes("street") || id.includes("transportation")) {
-            targetMap.setLayoutProperty(layer.id, "text-size", ["interpolate", ["linear"], ["zoom"], 12, 11, 16, 15]);
+            targetMap.setLayoutProperty(layer.id, "text-size", ["interpolate", ["linear"], ["zoom"], 12, 12, 16, 16]);
           }
         } catch (e) {}
       }
@@ -17084,14 +17115,14 @@ function initAzimuteGeo() {
         type: "line",
         source: "az-route-src",
         layout: { "line-join": "round", "line-cap": "round" },
-        paint: { "line-color": "#1E3A8A", "line-width": 9, "line-opacity": 0.85 }
+        paint: { "line-color": "#1E3A8A", "line-width": 10, "line-opacity": 0.9 }
       });
       map.addLayer({
         id: "az-route-line",
         type: "line",
         source: "az-route-src",
         layout: { "line-join": "round", "line-cap": "round" },
-        paint: { "line-color": "#3B82F6", "line-width": 5, "line-opacity": 1 }
+        paint: { "line-color": "#3B82F6", "line-width": 5.5, "line-opacity": 1 }
       });
     }
 
@@ -17227,24 +17258,15 @@ function initAzimuteGeo() {
       window.azimuteToggleTerrainModal(true);
     });
 
-    const allElements = Array.from(document.querySelectorAll("div, section"));
-    const locHeader = allElements.find(
-      (el) => el.children.length === 0 && el.textContent && el.textContent.trim().toUpperCase() === "LOCALIZAÇÃO"
-    );
-
-    if (locHeader) {
-      let container = locHeader.parentElement;
-      while (container && container.parentElement && !container.textContent.includes("Copiar QTH")) {
-        container = container.parentElement;
-      }
-      if (container) {
-        const btnRow = Array.from(container.querySelectorAll("button, a")).find((b) =>
-          (b.textContent || "").includes("Copiar QTH")
-        );
-        if (btnRow && btnRow.parentElement && btnRow.parentElement !== container) {
-          container.insertBefore(card, btnRow.parentElement);
+    const hudStreetEl = document.getElementById("hudCurrentStreet");
+    if (hudStreetEl) {
+      const innerCard = hudStreetEl.closest(".rounded-xl");
+      if (innerCard) {
+        const btnGrid = innerCard.querySelector(".grid");
+        if (btnGrid) {
+          innerCard.insertBefore(card, btnGrid);
         } else {
-          container.appendChild(card);
+          innerCard.appendChild(card);
         }
         return;
       }
@@ -17258,42 +17280,15 @@ function initAzimuteGeo() {
   ensureQuadranteCardMounted();
 
   function readSyncedStreetFromLocationCard() {
-    const allElements = Array.from(document.querySelectorAll("div, span, h1, h2, h3, p"));
-    const locHeader = allElements.find(
-      (el) => el.children.length === 0 && el.textContent && el.textContent.trim().toUpperCase() === "LOCALIZAÇÃO"
-    );
-    if (!locHeader) return null;
-
-    let box = locHeader.parentElement;
-    while (box && box.parentElement && !box.textContent.includes("Copiar QTH")) {
-      box = box.parentElement;
+    const hudStreetEl = document.getElementById("hudCurrentStreet");
+    if (!hudStreetEl) return null;
+    const txt = (hudStreetEl.textContent || "").trim();
+    if (!txt || txt.length < 3) return null;
+    const up = txt.toUpperCase();
+    if (up.includes("SINCRONIZANDO") || up.includes("AGUARDANDO") || up.includes("BUSCANDO")) {
+      return null;
     }
-    if (!box) return null;
-
-    const candidates = Array.from(box.querySelectorAll("h1, h2, h3, div, p, span")).filter((el) => {
-      if (el.closest("#azQuadInlineCard")) return false;
-      if (el.children.length > 0) return false;
-      const txt = (el.textContent || "").trim();
-      if (!txt || txt.length < 4) return false;
-      const up = txt.toUpperCase();
-      if (
-        up === "LOCALIZAÇÃO" ||
-        up.includes("BPM") ||
-        up.includes("CEP:") ||
-        up.includes("COPIAR QTH") ||
-        up.includes("LOCALIZAÇÃO EXATA") ||
-        up.includes("AGUARDANDO") ||
-        up.includes("BUSCANDO")
-      ) {
-        return false;
-      }
-      return true;
-    });
-
-    if (candidates.length) {
-      return candidates[0].textContent.trim();
-    }
-    return null;
+    return txt;
   }
 
   function setFollowState(enabled) {
@@ -17384,7 +17379,7 @@ function initAzimuteGeo() {
     const waze = `https://waze.com/ul?ll=${lat},${lng}&navigate=yes`;
     const safeTitle = (title || "Destino").replace(/'/g, "");
     const saveBtnHtml = !pinId
-      ? `<button type="button" onclick="window.azimuteOpenPinForm(${lat}, ${lng}, '${safeTitle}')">Salvar Alfinete</button>`
+      ? `<button type="button" style="grid-column: span 2;" onclick="window.azimuteOpenPinForm(${lat}, ${lng}, '${safeTitle}')">Salvar Alfinete</button>`
       : "";
     const delBtnHtml = pinId
       ? `<button type="button" class="danger" onclick="window.azimuteDeletePin('${pinId}')">Excluir Alfinete</button>`
@@ -17394,7 +17389,8 @@ function initAzimuteGeo() {
         <strong>${title}</strong>
         ${subtitle ? `<div style="font-size:11px; color:#9E9A8F; margin-top:2px;">${subtitle}</div>` : ""}
         <div class="az-geo-popup-actions">
-          <button type="button" class="primary-route" onclick="window.azimuteGeoRouteTo(${lat}, ${lng}, '${safeTitle}')">Traçar Rota</button>
+          <button type="button" class="primary-route" onclick="window.azimuteGeoRouteTo(${lat}, ${lng}, '${safeTitle}', false)">Traçar Rota</button>
+          <button type="button" class="start-nav" onclick="window.azimuteGeoRouteTo(${lat}, ${lng}, '${safeTitle}', true)">Iniciar</button>
           ${saveBtnHtml}
           <a href="${gmaps}" target="_blank" rel="noopener">Maps</a>
           <a href="${waze}" target="_blank" rel="noopener">Waze</a>
@@ -17429,6 +17425,7 @@ function initAzimuteGeo() {
 
   function showDestinationOnMap(title, subtitle, lat, lng) {
     firstGpsFix = false;
+    isNavigationStarted = false;
     setFollowState(false);
     setHeadingUpState(false);
     clearCityHighlight();
@@ -17436,6 +17433,7 @@ function initAzimuteGeo() {
 
     currentDestination = { title, subtitle, lat, lng };
     if (routeBox) routeBox.classList.add("is-open");
+    if (startNavBtn) startNavBtn.style.display = "none";
 
     if (destMarker) destMarker.remove();
     const popup = new maplibregl.Popup({ offset: 25 }).setHTML(
@@ -17455,7 +17453,7 @@ function initAzimuteGeo() {
       bounds.extend([lng, lat]);
       map.fitBounds(bounds, { padding: 50, maxZoom: 16 });
       targetEl.innerHTML = `Destino: <strong>${title} (${km} km)</strong>`;
-      statusEl.textContent = "Origem e destino enquadrados";
+      statusEl.textContent = "Toque em Traçar Rota ou Iniciar";
     } else {
       map.flyTo({ center: [lng, lat], zoom: 16 });
       targetEl.innerHTML = `Destino: <strong>${title}</strong>`;
@@ -17468,12 +17466,13 @@ function initAzimuteGeo() {
   if (northBadge) {
     northBadge.addEventListener("click", (e) => {
       e.stopPropagation();
+      isNavigationStarted = false;
+      map.easeTo({ pitch: 0, duration: 250 });
       setHeadingUpState(false);
       statusEl.textContent = "Mapa alinhado ao Norte";
     });
   }
 
-  // Pausa giro automatico por 5s quando usuario toca/arrasta o mapa manualmente
   map.on("touchstart", () => {
     userTouchPauseUntil = Date.now() + 5000;
   });
@@ -17567,32 +17566,32 @@ function initAzimuteGeo() {
     userTouchPauseUntil = 0;
     if (lastPos) {
       map.resize();
-      map.flyTo({ center: [lastPos[1], lastPos[0]], zoom: 17 });
+      map.flyTo({
+        center: [lastPos[1], lastPos[0]],
+        zoom: isNavigationStarted ? 18 : 17,
+        pitch: isNavigationStarted ? 52 : 0
+      });
       setFollowState(true);
       setHeadingUpState(true);
       refreshStabilizedHeading(true);
-      statusEl.textContent = "Centralizado e alinhado para onde voce olha";
+      statusEl.textContent = "Centralizado na sua posicao";
     } else if ("geolocation" in navigator) {
       statusEl.textContent = "Buscando sinal GPS...";
       navigator.geolocation.getCurrentPosition(
         (pos) => {
-          const { latitude, longitude, altitude } = pos.coords;
-          lastPos = [latitude, longitude];
-          prevTrackPos = [latitude, longitude];
-          if (typeof altitude === "number" && !Number.isNaN(altitude)) lastAltitude = altitude;
-          firstGpsFix = false;
-          map.resize();
-          map.flyTo({ center: [longitude, latitude], zoom: 17 });
-          setFollowState(true);
-          setHeadingUpState(true);
-          refreshStabilizedHeading(true);
-          statusEl.textContent = "GPS localizado e orientado";
-          fetchNearbyStreets(latitude, longitude, true);
+          handleIncomingGpsCoords(pos.coords);
+          if (lastPos) {
+            map.resize();
+            map.flyTo({ center: [lastPos[1], lastPos[0]], zoom: 17 });
+            setFollowState(true);
+            setHeadingUpState(true);
+            refreshStabilizedHeading(true);
+          }
         },
         (err) => {
           statusEl.textContent = "Permita o GPS (" + (err.message || "bloqueado") + ")";
         },
-        { enableHighAccuracy: true, timeout: 10000, maximumAge: 5000 }
+        { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
       );
     }
   }
@@ -17625,7 +17624,7 @@ function initAzimuteGeo() {
         btn.classList.remove("subtle");
 
         if (activeRouteDest) {
-          window.azimuteGeoRouteTo(activeRouteDest.lat, activeRouteDest.lng, activeRouteDest.name);
+          window.azimuteGeoRouteTo(activeRouteDest.lat, activeRouteDest.lng, activeRouteDest.name, isNavigationStarted);
         }
       });
     });
@@ -17634,8 +17633,52 @@ function initAzimuteGeo() {
   if (routeNowBtn) {
     routeNowBtn.addEventListener("click", () => {
       if (currentDestination) {
-        window.azimuteGeoRouteTo(currentDestination.lat, currentDestination.lng, currentDestination.title);
+        window.azimuteGeoRouteTo(currentDestination.lat, currentDestination.lng, currentDestination.title, false);
       }
+    });
+  }
+
+  // Botao INICIAR (estilo Google Maps: aproxima camera 3D, trava rumo e inicia guia em tempo real)
+  window.azimuteStartActiveNavigation = function () {
+    if (!activeRouteDest && currentDestination) {
+      window.azimuteGeoRouteTo(currentDestination.lat, currentDestination.lng, currentDestination.title, true);
+      return;
+    }
+    if (!activeRouteDest) return;
+
+    isNavigationStarted = true;
+    userTouchPauseUntil = 0;
+    requestCompassPermissionIfNeeded();
+    setFollowState(true);
+    setHeadingUpState(true);
+    refreshStabilizedHeading(true);
+
+    if (destMarker && destMarker.getPopup()?.isOpen()) {
+      destMarker.togglePopup();
+    }
+
+    if (lastPos) {
+      map.flyTo({
+        center: [lastPos[1], lastPos[0]],
+        zoom: 18,
+        pitch: 52,
+        bearing: stableHeading,
+        duration: 600
+      });
+    }
+
+    if (tbtBar) tbtBar.classList.add("is-active");
+    if (startNavBtn) {
+      startNavBtn.innerHTML = `<span>Em Navegação</span>`;
+    }
+    updateTurnByTurnProgress();
+    window.azimuteUpdateRadarHudVisibility();
+    statusEl.textContent = "Navegação ativa em tempo real";
+  };
+
+  if (startNavBtn) {
+    startNavBtn.addEventListener("click", () => {
+      window.azimuteStartActiveNavigation();
     });
   }
 
@@ -17653,8 +17696,41 @@ function initAzimuteGeo() {
     return `Siga em frente${road}`;
   }
 
+  function checkOffRouteAndRecalculate() {
+    if (!isNavigationStarted || !activeRouteDest || !lastPos || activeRouteCoords.length < 2) return;
+    if (Date.now() - lastRerouteTimestamp < 12000) return;
+
+    let minDistKm = Infinity;
+    for (let i = 0; i < activeRouteCoords.length - 1; i++) {
+      const seg = pointToSegmentClosest(
+        lastPos[0],
+        lastPos[1],
+        activeRouteCoords[i][0],
+        activeRouteCoords[i][1],
+        activeRouteCoords[i + 1][0],
+        activeRouteCoords[i + 1][1]
+      );
+      if (seg.distKm < minDistKm) minDistKm = seg.distKm;
+    }
+
+    // Se saiu mais de 45 metros do trajeto azul, recalcula automaticamente
+    if (minDistKm > 0.045) {
+      lastRerouteTimestamp = Date.now();
+      statusEl.textContent = "Recalculando rota...";
+      window.azimuteGeoRouteTo(activeRouteDest.lat, activeRouteDest.lng, activeRouteDest.name, true);
+    }
+  }
+
   function updateTurnByTurnProgress() {
     if (!activeRouteDest || !lastPos || !activeRouteSteps.length) return;
+
+    const distToDestKm = calcDistanceKm(lastPos[0], lastPos[1], activeRouteDest.lat, activeRouteDest.lng);
+    if (distToDestKm <= 0.03) {
+      if (tbtNextEl) tbtNextEl.textContent = "Você chegou ao destino!";
+      if (radarNextStepEl) radarNextStepEl.textContent = "Chegada ao destino";
+      statusEl.textContent = "Destino alcançado";
+      return;
+    }
 
     let bestIdx = 0;
     let bestDist = Infinity;
@@ -17688,7 +17764,7 @@ function initAzimuteGeo() {
   window.azimuteUpdateRadarHudVisibility = function () {
     if (!radarHud) return;
     const drawerOpen = document.getElementById("azGeoDrawerBody")?.classList.contains("is-open");
-    const shouldShow = !!activeRouteDest && !drawerOpen;
+    const shouldShow = (isNavigationStarted || !!activeRouteDest) && !drawerOpen;
     radarHud.classList.toggle("is-visible", shouldShow);
     if (shouldShow && radarMap) {
       setTimeout(() => {
@@ -17713,14 +17789,17 @@ function initAzimuteGeo() {
       activeRouteDest = null;
       activeRouteSteps = [];
       activeRouteCoords = [];
+      isNavigationStarted = false;
       updateRouteSources();
+      map.easeTo({ pitch: 0, zoom: 16, duration: 300 });
       if (tbtBar) tbtBar.classList.remove("is-active");
+      if (startNavBtn) startNavBtn.style.display = "none";
       window.azimuteUpdateRadarHudVisibility();
       statusEl.textContent = "Rota encerrada";
     });
   }
 
-  window.azimuteGeoRouteTo = async function (destLat, destLng, destName) {
+  window.azimuteGeoRouteTo = async function (destLat, destLng, destName, autoStartNav) {
     if (!lastPos) {
       statusEl.textContent = "Aguardando sua posicao GPS para tracar rota...";
       return;
@@ -17756,12 +17835,6 @@ function initAzimuteGeo() {
         destMarker.togglePopup();
       }
 
-      userTouchPauseUntil = 0;
-      map.flyTo({ center: [lastPos[1], lastPos[0]], zoom: 17 });
-      setFollowState(true);
-      setHeadingUpState(true);
-      refreshStabilizedHeading(true);
-
       const km = (route.distance / 1000).toFixed(1);
       let durationSec = route.duration;
       if (currentTravelMode === "moto") {
@@ -17771,12 +17844,28 @@ function initAzimuteGeo() {
       const min = Math.max(1, Math.round(durationSec / 60));
       const modeLabel = currentTravelMode === "pe" ? "A pe" : currentTravelMode === "moto" ? "Moto" : "Carro";
 
-      if (tbtBar) tbtBar.classList.add("is-active");
-      updateTurnByTurnProgress();
-      window.azimuteUpdateRadarHudVisibility();
-
-      statusEl.textContent = `Rota (${modeLabel}): ${km} km (~${min} min)`;
       targetEl.innerHTML = `Destino: <strong>${destName} [${modeLabel}: ${km} km / ${min} min]</strong>`;
+
+      if (startNavBtn) {
+        startNavBtn.style.display = "inline-flex";
+        startNavBtn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 20,12 5,21"/></svg><span>Iniciar</span>`;
+      }
+
+      if (autoStartNav) {
+        window.azimuteStartActiveNavigation();
+      } else {
+        // Pre-visualizacao da rota inteira antes de apertar Iniciar
+        isNavigationStarted = false;
+        setFollowState(false);
+        setHeadingUpState(false);
+        const bounds = new maplibregl.LngLatBounds();
+        activeRouteCoords.forEach(([lat, lng]) => bounds.extend([lng, lat]));
+        map.fitBounds(bounds, { padding: 48, pitch: 0, maxZoom: 16 });
+        if (tbtBar) tbtBar.classList.add("is-active");
+        updateTurnByTurnProgress();
+        window.azimuteUpdateRadarHudVisibility();
+        statusEl.textContent = `Rota pronta (${km} km • ~${min} min). Toque em Iniciar.`;
+      }
     } catch (err) {
       statusEl.textContent = "Erro ao calcular rota (verifique conexao)";
     }
@@ -17968,6 +18057,7 @@ function initAzimuteGeo() {
     citiesWrap.querySelectorAll("button[data-lat]").forEach((btn) => {
       btn.addEventListener("click", () => {
         firstGpsFix = false;
+        isNavigationStarted = false;
         setFollowState(false);
         setHeadingUpState(false);
         hideSearchResults();
@@ -17980,7 +18070,7 @@ function initAzimuteGeo() {
         const zoom = parseInt(btn.getAttribute("data-zoom"), 10) || 13;
 
         map.resize();
-        map.flyTo({ center: [lng, lat], zoom });
+        map.flyTo({ center: [lng, lat], zoom, pitch: 0 });
         statusEl.textContent = "Visualizando " + btn.textContent.trim();
       });
     });
@@ -18001,8 +18091,11 @@ function initAzimuteGeo() {
     activeRouteDest = null;
     activeRouteSteps = [];
     activeRouteCoords = [];
+    isNavigationStarted = false;
     updateRouteSources();
+    map.easeTo({ pitch: 0, duration: 250 });
     if (routeBox) routeBox.classList.remove("is-open");
+    if (startNavBtn) startNavBtn.style.display = "none";
     if (tbtBar) tbtBar.classList.remove("is-active");
     window.azimuteUpdateRadarHudVisibility();
     targetEl.innerHTML = "Destino: <strong>Nenhum</strong>";
@@ -18111,7 +18204,6 @@ function initAzimuteGeo() {
     }
   });
 
-  // Leitura hibrida da bussola: funciona tanto deitado (GRID) quanto em pe na mao (APP)
   let compassListening = false;
   function computeDeviceHeading(e) {
     if (typeof e.webkitCompassHeading === "number" && !Number.isNaN(e.webkitCompassHeading)) {
@@ -18122,12 +18214,10 @@ function initAzimuteGeo() {
     const beta = typeof e.beta === "number" ? e.beta : 0;
     const gamma = typeof e.gamma === "number" ? e.gamma : 0;
 
-    // Celular deitado (plano horizontal - GRID)
     if (Math.abs(beta) < 45) {
       return normalizeAngle(360 - e.alpha);
     }
 
-    // Celular inclinado / em pe na vertical (APP): projeta o eixo superior do aparelho no plano horizontal
     const rad = Math.PI / 180;
     const a = e.alpha * rad;
     const b = beta * rad;
@@ -18206,14 +18296,14 @@ function initAzimuteGeo() {
     if (fetchingStreets) return;
     if (!force && lastStreetsFetchPos) {
       const movedKm = calcDistanceKm(lastStreetsFetchPos[0], lastStreetsFetchPos[1], lat, lng);
-      if (movedKm < 0.03) return;
+      if (movedKm < 0.025) return;
     }
 
     fetchingStreets = true;
     lastStreetsFetchPos = [lat, lng];
 
     try {
-      const query = `[out:json][timeout:10];way(around:180,${lat},${lng})["highway"]["name"];out geom;`;
+      const query = `[out:json][timeout:10];way(around:220,${lat},${lng})["highway"]["name"];out geom;`;
       const res = await fetch("https://overpass-api.de/api/interpreter", {
         method: "POST",
         body: query
@@ -18541,90 +18631,117 @@ function initAzimuteGeo() {
     }
   };
 
+  // Processador unico de coordenadas (recebe tanto do motor principal quanto do watchPosition de alta frequencia)
+  function handleIncomingGpsCoords(coords) {
+    if (!coords || typeof coords.latitude !== "number" || typeof coords.longitude !== "number") return;
+    const { latitude, longitude, accuracy, altitude, speed, heading } = coords;
+
+    lastPos = [latitude, longitude];
+    if (typeof altitude === "number" && !Number.isNaN(altitude)) {
+      lastAltitude = altitude;
+    }
+    lastSpeed = typeof speed === "number" && !Number.isNaN(speed) ? speed : 0;
+    if (typeof heading === "number" && !Number.isNaN(heading)) {
+      lastGpsHeading = heading;
+    }
+
+    if (!accuracy || accuracy <= 30) {
+      if (!prevTrackPos) {
+        prevTrackPos = [latitude, longitude];
+      } else {
+        const movedKm = calcDistanceKm(prevTrackPos[0], prevTrackPos[1], latitude, longitude);
+        if (movedKm >= 0.01) {
+          computedGpsCourse = calcBearingDeg(prevTrackPos[0], prevTrackPos[1], latitude, longitude);
+          prevTrackPos = [latitude, longitude];
+          lastMoveTimestamp = Date.now();
+        }
+      }
+    }
+
+    const visualArrowDeg = normalizeAngle(stableHeading - getMapBearing());
+
+    if (!gpsMarker) {
+      gpsArrowEl = document.createElement("div");
+      gpsArrowEl.style.width = "30px";
+      gpsArrowEl.style.height = "30px";
+      gpsArrowEl.innerHTML = buildArrowSvg(arrowColor, visualArrowDeg, 30);
+      gpsMarker = new maplibregl.Marker({ element: gpsArrowEl, anchor: "center" })
+        .setLngLat([longitude, latitude])
+        .addTo(map);
+    } else {
+      gpsMarker.setLngLat([longitude, latitude]);
+    }
+
+    if (radarMap) {
+      if (!radarGpsMarker) {
+        const rEl = document.createElement("div");
+        rEl.style.width = "24px";
+        rEl.style.height = "24px";
+        rEl.innerHTML = buildArrowSvg(arrowColor, 0, 24);
+        radarGpsMarker = new maplibregl.Marker({ element: rEl, anchor: "center" })
+          .setLngLat([longitude, latitude])
+          .addTo(radarMap);
+      } else {
+        radarGpsMarker.setLngLat([longitude, latitude]);
+      }
+      if (isNavigationStarted || activeRouteDest) {
+        radarMap.setCenter([longitude, latitude]);
+      }
+    }
+
+    const modeTag = isMovingCourseActive() ? "Rumo GPS" : "Bússola";
+    if (statusEl) {
+      statusEl.textContent = `GPS ativo (+/- ${Math.round(accuracy || 0)}m • ${modeTag})`;
+    }
+
+    refreshStabilizedHeading(false);
+    updateTurnByTurnProgress();
+    checkOffRouteAndRecalculate();
+
+    // Aceita precisao ate 150m para o Quadrante nunca travar em "Aguardando vias"
+    if (!accuracy || accuracy <= 150) {
+      fetchNearbyStreets(latitude, longitude, false);
+    } else {
+      recomputeQuadranteSectors();
+    }
+
+    if (firstGpsFix) {
+      firstGpsFix = false;
+      map.resize();
+      map.jumpTo({ center: [longitude, latitude], zoom: 17 });
+      if (headingUpMode) applyMapHeadingUp(stableHeading, true);
+    } else if (followGps && Date.now() >= userTouchPauseUntil) {
+      map.easeTo({
+        center: [longitude, latitude],
+        pitch: isNavigationStarted ? 52 : 0,
+        duration: 280
+      });
+    }
+  }
+
+  // Sincroniza imediatamente caso o motor principal do AZIMUTE ja tenha coordenada salva
+  if (window.azimuteCurrentGps && typeof window.azimuteCurrentGps.lat === "number") {
+    handleIncomingGpsCoords({
+      latitude: window.azimuteCurrentGps.lat,
+      longitude: window.azimuteCurrentGps.lng,
+      accuracy: window.azimuteCurrentGps.accuracy || 15,
+      altitude: window.azimuteCurrentGps.altitude
+    });
+  }
+
+  // Leitura continua sem cache (maximumAge: 0) para resposta em 1 segundo sem delay de 15s
   if ("geolocation" in navigator) {
     navigator.geolocation.watchPosition(
       (pos) => {
-        const { latitude, longitude, accuracy, altitude, speed, heading } = pos.coords;
-        lastPos = [latitude, longitude];
-        if (typeof altitude === "number" && !Number.isNaN(altitude)) {
-          lastAltitude = altitude;
-        }
-        lastSpeed = typeof speed === "number" && !Number.isNaN(speed) ? speed : 0;
-        if (typeof heading === "number" && !Number.isNaN(heading)) {
-          lastGpsHeading = heading;
-        }
-
-        if (!accuracy || accuracy <= 25) {
-          if (!prevTrackPos) {
-            prevTrackPos = [latitude, longitude];
-          } else {
-            const movedKm = calcDistanceKm(prevTrackPos[0], prevTrackPos[1], latitude, longitude);
-            if (movedKm >= 0.012) {
-              computedGpsCourse = calcBearingDeg(prevTrackPos[0], prevTrackPos[1], latitude, longitude);
-              prevTrackPos = [latitude, longitude];
-              lastMoveTimestamp = Date.now();
-            }
-          }
-        }
-
-        const visualArrowDeg = normalizeAngle(stableHeading - getMapBearing());
-
-        if (!gpsMarker) {
-          gpsArrowEl = document.createElement("div");
-          gpsArrowEl.style.width = "30px";
-          gpsArrowEl.style.height = "30px";
-          gpsArrowEl.innerHTML = buildArrowSvg(arrowColor, visualArrowDeg, 30);
-          gpsMarker = new maplibregl.Marker({ element: gpsArrowEl, anchor: "center" })
-            .setLngLat([longitude, latitude])
-            .addTo(map);
-        } else {
-          gpsMarker.setLngLat([longitude, latitude]);
-        }
-
-        if (radarMap) {
-          if (!radarGpsMarker) {
-            const rEl = document.createElement("div");
-            rEl.style.width = "24px";
-            rEl.style.height = "24px";
-            rEl.innerHTML = buildArrowSvg(arrowColor, 0, 24);
-            radarGpsMarker = new maplibregl.Marker({ element: rEl, anchor: "center" })
-              .setLngLat([longitude, latitude])
-              .addTo(radarMap);
-          } else {
-            radarGpsMarker.setLngLat([longitude, latitude]);
-          }
-          if (activeRouteDest) {
-            radarMap.setCenter([longitude, latitude]);
-          }
-        }
-
-        const modeTag = isMovingCourseActive() ? "Rumo GPS" : "Bússola";
-        statusEl.textContent = `GPS ativo (+/- ${Math.round(accuracy || 0)}m • ${modeTag})`;
-        refreshStabilizedHeading(false);
-        updateTurnByTurnProgress();
-
-        if (!accuracy || accuracy <= 35) {
-          fetchNearbyStreets(latitude, longitude, false);
-        } else {
-          recomputeQuadranteSectors();
-        }
-
-        if (firstGpsFix) {
-          firstGpsFix = false;
-          map.resize();
-          map.jumpTo({ center: [longitude, latitude], zoom: 17 });
-          if (headingUpMode) applyMapHeadingUp(stableHeading, true);
-        } else if (followGps && Date.now() >= userTouchPauseUntil) {
-          map.easeTo({ center: [longitude, latitude], duration: 300 });
-        }
+        handleIncomingGpsCoords(pos.coords);
       },
       (err) => {
-        statusEl.textContent = "GPS indisponivel (" + (err.message || "verifique permissao") + ")";
+        if (statusEl) {
+          statusEl.textContent = "GPS indisponivel (" + (err.message || "verifique permissao") + ")";
+        }
       },
-      { enableHighAccuracy: true, maximumAge: 1000, timeout: 15000 }
+      { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 }
     );
-  } else {
-    statusEl.textContent = "Navegador sem suporte a GPS";
   }
 
   function renderLocalLayer(points) {
