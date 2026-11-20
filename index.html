@@ -16830,8 +16830,7 @@ function initAzimuteGeo() {
 
   const OVERPASS_MIRRORS = [
     "https://overpass-api.de/api/interpreter",
-    "https://overpass.kumi.systems/api/interpreter",
-    "https://maps.mail.ru/osm/tools/overpass/api/interpreter"
+    "https://overpass.kumi.systems/api/interpreter"
   ];
 
   let mapTheme = localStorage.getItem("az_geo_map_theme") || "dark";
@@ -16889,29 +16888,10 @@ function initAzimuteGeo() {
   const radarNextStepEl = document.getElementById("azRadarNextStep");
   const radarCurrentViaEl = document.getElementById("azRadarCurrentVia");
 
-  // Padrao -90° validado no modo APP (nova chave para limpar o +90° antigo)
-  let appCompassOffset = parseInt(localStorage.getItem("az_geo_app_offset_v2") || "-90", 10);
-  if (![0, 90, -90, 180].includes(appCompassOffset)) appCompassOffset = -90;
-
-  if (cfgBox && !document.getElementById("azGeoAppOffsetRow")) {
-    const offsetRow = document.createElement("div");
-    offsetRow.id = "azGeoAppOffsetRow";
-    offsetRow.className = "az-geo-cfg-row";
-    offsetRow.innerHTML = `
-      <span class="az-geo-label">Compensação APP:</span>
-      <div class="az-geo-group" id="azGeoAppOffsets">
-        <button type="button" class="az-geo-btn subtle" data-offset="0">0°</button>
-        <button type="button" class="az-geo-btn subtle" data-offset="90">+90°</button>
-        <button type="button" class="az-geo-btn active" data-offset="-90">-90°</button>
-        <button type="button" class="az-geo-btn subtle" data-offset="180">180°</button>
-      </div>
-    `;
-    const firstRow = cfgBox.querySelector(".az-geo-cfg-row");
-    if (firstRow && firstRow.nextSibling) {
-      cfgBox.insertBefore(offsetRow, firstRow.nextSibling);
-    } else {
-      cfgBox.appendChild(offsetRow);
-    }
+  // Oculta a linha de Pegada (APP/GRID) para teste limpo sem compensacoes artificiais
+  if (orientWrap) {
+    const row = orientWrap.closest(".az-geo-cfg-row");
+    if (row) row.style.display = "none";
   }
 
   const map = new maplibregl.Map({
@@ -16987,7 +16967,6 @@ function initAzimuteGeo() {
   let lastRerouteTimestamp = 0;
 
   let arrowColor = localStorage.getItem("az_geo_arrow_color") || "#C5A869";
-  let orientationMode = localStorage.getItem("az_geo_orientation") || "app";
   let showElevation = localStorage.getItem("az_geo_elev_enabled") !== "0";
 
   let savedPins = [];
@@ -17003,10 +16982,10 @@ function initAzimuteGeo() {
 
   let lastStreetsFetchPos = null;
   let fetchingStreets = false;
+  let retryStreetsTimer = null;
   let cachedCurrentStreet = "Via atual";
   let cachedNearbyStreets = [];
   let cachedSectors = { front: null, right: null, rear: null, left: null };
-  let offlineQthCache = null;
 
   function normalizeAngle(deg) {
     return ((deg % 360) + 360) % 360;
@@ -17021,7 +17000,7 @@ function initAzimuteGeo() {
 
   function pushSmoothedCompass(newDeg) {
     compassSamples.push(newDeg);
-    if (compassSamples.length > 8) compassSamples.shift();
+    if (compassSamples.length > 10) compassSamples.shift();
     let sinSum = 0;
     let cosSum = 0;
     compassSamples.forEach((d) => {
@@ -17040,7 +17019,7 @@ function initAzimuteGeo() {
     if (!forceInstant && Date.now() < userTouchPauseUntil) return;
     const clean = normalizeAngle(headingDeg);
     const diffFromLast = Math.abs(shortestAngleDiff(lastMapBearingApplied, clean));
-    if (!forceInstant && diffFromLast < 10) return;
+    if (!forceInstant && diffFromLast < 14) return;
 
     lastMapBearingApplied = clean;
     if (forceInstant) {
@@ -17049,7 +17028,7 @@ function initAzimuteGeo() {
     } else {
       map.easeTo({
         bearing: clean,
-        duration: 420,
+        duration: 450,
         easing: (t) => 1 - Math.pow(1 - t, 3)
       });
     }
@@ -17061,32 +17040,12 @@ function initAzimuteGeo() {
   function isMovingCourseActive() {
     const recentlyMoved = Date.now() - lastMoveTimestamp < 7000 && computedGpsCourse !== null;
     const hasSpeed =
-      lastSpeed >= 1.1 &&
+      lastSpeed >= 1.2 &&
       (computedGpsCourse !== null || (typeof lastGpsHeading === "number" && !Number.isNaN(lastGpsHeading)));
     return recentlyMoved || hasSpeed;
   }
 
-  function getAzimuteHeadingCompensation() {
-    let screenAngle = 0;
-    if (window.screen && window.screen.orientation && typeof window.screen.orientation.angle === "number") {
-      screenAngle = window.screen.orientation.angle;
-    } else if (typeof window.orientation === "number") {
-      screenAngle = window.orientation;
-    }
-
-    if (screenAngle !== 0) {
-      return screenAngle;
-    }
-
-    if (orientationMode === "grid-canhoto") {
-      return -90;
-    }
-    if (orientationMode === "grid-destro" || (document.body.classList.contains("mode-grid") && window.innerWidth > window.innerHeight)) {
-      return 90;
-    }
-    return appCompassOffset;
-  }
-
+  // Sem compensacao artificial: leitura pura do rumo GPS em movimento ou bussola absoluta parado
   function getTargetHeading() {
     if (isMovingCourseActive()) {
       if (typeof lastGpsHeading === "number" && !Number.isNaN(lastGpsHeading) && lastSpeed >= 1.4) {
@@ -17096,18 +17055,18 @@ function initAzimuteGeo() {
         return normalizeAngle(computedGpsCourse);
       }
     }
-    return normalizeAngle(rawCompassHeading + getAzimuteHeadingCompensation());
+    return normalizeAngle(rawCompassHeading);
   }
 
   function refreshStabilizedHeading(forceSnap) {
     const moving = isMovingCourseActive();
     const target = getTargetHeading();
     const diff = shortestAngleDiff(stableHeading, target);
-    // Zona morta de 15° parado para nao girar os nomes das ruas sozinho por ruido magnetico
-    const deadzone = moving ? 3 : 15;
+    // Trava de 18 graus parado para eliminar ruido magnetico e tremor
+    const deadzone = moving ? 3 : 18;
 
     if (forceSnap || Math.abs(diff) >= deadzone) {
-      const factor = forceSnap ? 1 : moving ? 0.55 : 0.35;
+      const factor = forceSnap ? 1 : moving ? 0.55 : 0.4;
       stableHeading = normalizeAngle(stableHeading + diff * factor);
       if (headingUpMode) {
         applyMapHeadingUp(stableHeading, !!forceSnap);
@@ -17174,7 +17133,7 @@ function initAzimuteGeo() {
       if (gpsArrowSvg) {
         const targetVisual = normalizeAngle(stableHeading - getMapBearing());
         const diff = shortestAngleDiff(animVisualAngle, targetVisual);
-        if (Math.abs(diff) > 0.15) {
+        if (Math.abs(diff) > 0.2) {
           animVisualAngle += diff * 0.2;
           gpsArrowSvg.style.transform = `rotate(${animVisualAngle.toFixed(2)}deg)`;
         }
@@ -17247,13 +17206,7 @@ function initAzimuteGeo() {
     }
 
     if (terrainHeaderInfo) {
-      const srcTag = isMovingCourseActive()
-        ? "GPS RUMO"
-        : orientationMode === "grid-destro"
-        ? "GRID D"
-        : orientationMode === "grid-canhoto"
-        ? "GRID C"
-        : `APP ${appCompassOffset >= 0 ? "+" : ""}${appCompassOffset}°`;
+      const srcTag = isMovingCourseActive() ? "GPS RUMO" : hasAbsoluteCompass ? "BÚSSOLA" : "FIXO";
       terrainHeaderInfo.textContent = `RELEVO E ENTORNO • ${String(Math.round(deg)).padStart(3, "0")}° (${srcTag})`;
     }
 
@@ -17477,6 +17430,14 @@ function initAzimuteGeo() {
   }
 
   map.on("style.load", setupCustomMapLayers);
+  map.on("idle", () => {
+    if (lastPos && !cachedNearbyStreets.length) {
+      const fromTiles = extractStreetsFromMapLibre(lastPos[0], lastPos[1]);
+      if (fromTiles.length >= 2) {
+        applyStreetsListToQuadrante(lastPos[0], lastPos[1], fromTiles);
+      }
+    }
+  });
   if (map.isStyleLoaded()) setupCustomMapLayers();
 
   if (radarMap) {
@@ -17509,43 +17470,6 @@ function initAzimuteGeo() {
         if (radarMap) {
           radarMap.setStyle(STYLE_URLS[mapTheme] || STYLE_URLS.dark);
         }
-      });
-    });
-  }
-
-  function syncOrientationButtons() {
-    if (!orientWrap) return;
-    orientWrap.querySelectorAll("button[data-orient]").forEach((b) => {
-      const match = b.getAttribute("data-orient") === orientationMode;
-      b.classList.toggle("active", match);
-      b.classList.toggle("subtle", !match);
-    });
-  }
-  syncOrientationButtons();
-
-  const appOffsetsWrap = document.getElementById("azGeoAppOffsets");
-  function syncAppOffsetButtons() {
-    if (!appOffsetsWrap) return;
-    appOffsetsWrap.querySelectorAll("button[data-offset]").forEach((b) => {
-      const match = parseInt(b.getAttribute("data-offset"), 10) === appCompassOffset;
-      b.classList.toggle("active", match);
-      b.classList.toggle("subtle", !match);
-    });
-  }
-  syncAppOffsetButtons();
-
-  if (appOffsetsWrap) {
-    appOffsetsWrap.querySelectorAll("button[data-offset]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        appCompassOffset = parseInt(btn.getAttribute("data-offset"), 10) || 0;
-        localStorage.setItem("az_geo_app_offset_v2", String(appCompassOffset));
-        // Garante que o modo APP esteja ativo para que o ajuste surta efeito imediato na tela
-        orientationMode = "app";
-        localStorage.setItem("az_geo_orientation", "app");
-        syncOrientationButtons();
-        syncAppOffsetButtons();
-        userTouchPauseUntil = 0;
-        refreshStabilizedHeading(true);
       });
     });
   }
@@ -18277,19 +18201,6 @@ function initAzimuteGeo() {
     }
   };
 
-  if (orientWrap) {
-    orientWrap.querySelectorAll("button[data-orient]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        orientationMode = btn.getAttribute("data-orient") || "app";
-        localStorage.setItem("az_geo_orientation", orientationMode);
-        syncOrientationButtons();
-        requestCompassPermissionIfNeeded();
-        userTouchPauseUntil = 0;
-        refreshStabilizedHeading(true);
-      });
-    });
-  }
-
   function syncColorSwatches() {
     if (!colorsWrap) return;
     colorsWrap.querySelectorAll("button[data-color]").forEach((b) => {
@@ -18662,20 +18573,21 @@ function initAzimuteGeo() {
     }
   });
 
+  // Apenas leitura magnetica absoluta (ignora giroscopio relativo que faz o mapa mexer sozinho)
   let compassListening = false;
   function handleOrientationEvent(e, isAbsolute) {
-    if (isAbsolute) hasAbsoluteCompass = true;
-    if (!isAbsolute && hasAbsoluteCompass) return;
-
-    let heading = null;
     if (typeof e.webkitCompassHeading === "number" && !Number.isNaN(e.webkitCompassHeading)) {
-      heading = normalizeAngle(e.webkitCompassHeading);
-    } else if (typeof e.alpha === "number" && !Number.isNaN(e.alpha)) {
-      heading = normalizeAngle(360 - e.alpha);
+      hasAbsoluteCompass = true;
+      rawCompassHeading = pushSmoothedCompass(normalizeAngle(e.webkitCompassHeading));
+      refreshStabilizedHeading(false);
+      return;
     }
 
-    if (heading !== null) {
-      rawCompassHeading = pushSmoothedCompass(heading);
+    if (!isAbsolute && e.absolute !== true) return;
+
+    if (typeof e.alpha === "number" && !Number.isNaN(e.alpha)) {
+      hasAbsoluteCompass = true;
+      rawCompassHeading = pushSmoothedCompass(normalizeAngle(360 - e.alpha));
       refreshStabilizedHeading(false);
     }
   }
@@ -18703,39 +18615,133 @@ function initAzimuteGeo() {
   }
   startCompassListeners();
 
-  // Leitura instantanea do base_qth_bh.json local (primeiro passo do Quadrante)
-  async function loadOfflineQthFallback(lat, lng) {
+  // Fonte 1 do Quadrante (0ms): le os nomes e geometrias das ruas ja renderizados no MapLibre
+  function extractStreetsFromMapLibre(lat, lng) {
+    if (!map || !map.isStyleLoaded()) return [];
     try {
-      if (!offlineQthCache) {
-        const res = await fetch("base_qth_bh.json");
-        if (!res.ok) return [];
-        const raw = await res.json();
-        offlineQthCache = Array.isArray(raw) ? raw : (raw.features || raw.ruas || raw.dados || []);
-      }
-      if (!Array.isArray(offlineQthCache) || !offlineQthCache.length) return [];
-
+      const features = map.queryRenderedFeatures();
       const byName = new Map();
-      for (let i = 0; i < offlineQthCache.length; i++) {
-        const item = offlineQthCache[i];
-        const pLat = parseFloat(item.lat ?? item.latitude ?? item.y ?? item.geometry?.coordinates?.[1]);
-        const pLng = parseFloat(item.lng ?? item.lon ?? item.longitude ?? item.x ?? item.geometry?.coordinates?.[0]);
-        if (Number.isNaN(pLat) || Number.isNaN(pLng)) continue;
-        if (Math.abs(pLat - lat) > 0.004 || Math.abs(pLng - lng) > 0.004) continue;
 
-        const name = (item.rua || item.logradouro || item.nome || item.name || item.properties?.nome || "").trim();
-        if (!name) continue;
-        const distKm = calcDistanceKm(lat, lng, pLat, pLng);
-        if (distKm > 0.35) continue;
+      for (let i = 0; i < features.length; i++) {
+        const f = features[i];
+        const srcLayer = (f.sourceLayer || "").toLowerCase();
+        if (!srcLayer.includes("transport")) continue;
+        const name = f.properties && (f.properties.name || f.properties["name:pt"]);
+        if (!name || typeof name !== "string" || name.length < 3) continue;
 
+        let coords = [];
+        if (f.geometry && f.geometry.type === "LineString") {
+          coords = f.geometry.coordinates;
+        } else if (f.geometry && f.geometry.type === "MultiLineString") {
+          coords = f.geometry.coordinates.flat();
+        } else if (f.geometry && f.geometry.type === "Point") {
+          coords = [f.geometry.coordinates];
+        }
+        if (!coords.length) continue;
+
+        let bestDist = Infinity;
+        let bestPt = { lat: coords[0][1], lng: coords[0][0] };
+
+        if (coords.length === 1) {
+          bestDist = calcDistanceKm(lat, lng, coords[0][1], coords[0][0]);
+        } else {
+          for (let j = 0; j < coords.length - 1; j++) {
+            const seg = pointToSegmentClosest(lat, lng, coords[j][1], coords[j][0], coords[j + 1][1], coords[j + 1][0]);
+            if (seg.distKm < bestDist) {
+              bestDist = seg.distKm;
+              bestPt = { lat: seg.lat, lng: seg.lng };
+            }
+          }
+        }
+
+        if (bestDist > 0.35) continue;
         const prev = byName.get(name);
-        if (!prev || distKm < prev.distKm) {
-          byName.set(name, { name, distKm, lat: pLat, lng: pLng, elevation: null, deltaElev: null });
+        if (!prev || bestDist < prev.distKm) {
+          byName.set(name, { name, distKm: bestDist, lat: bestPt.lat, lng: bestPt.lng, elevation: null, deltaElev: null });
         }
       }
       return Array.from(byName.values()).sort((a, b) => a.distKm - b.distKm);
     } catch (e) {
       return [];
     }
+  }
+
+  // Fonte 2 do Quadrante (~0.3s, sem bloqueio CORS): Photon Reverse
+  async function queryPhotonNearbyStreets(lat, lng) {
+    try {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 4500);
+      const url = `https://photon.komoot.io/reverse?lat=${lat.toFixed(6)}&lon=${lng.toFixed(6)}&limit=15&radius=0.35`;
+      const res = await fetch(url, { signal: ctrl.signal });
+      clearTimeout(timer);
+      if (!res.ok) return [];
+      const data = await res.json();
+      const feats = Array.isArray(data.features) ? data.features : [];
+      const byName = new Map();
+
+      feats.forEach((f) => {
+        const props = f.properties || {};
+        const name = (props.street || props.name || "").trim();
+        const coords = f.geometry && f.geometry.coordinates;
+        if (!name || !Array.isArray(coords) || coords.length < 2) return;
+        const pLat = coords[1];
+        const pLng = coords[0];
+        const distKm = calcDistanceKm(lat, lng, pLat, pLng);
+        if (distKm > 0.35) return;
+
+        const prev = byName.get(name);
+        if (!prev || distKm < prev.distKm) {
+          byName.set(name, { name, distKm, lat: pLat, lng: pLng, elevation: null, deltaElev: null });
+        }
+      });
+      return Array.from(byName.values()).sort((a, b) => a.distKm - b.distKm);
+    } catch (e) {
+      return [];
+    }
+  }
+
+  // Fonte 3 do Quadrante (GET sem preflight): Overpass API
+  async function queryOverpassGet(lat, lng) {
+    const query = `[out:json][timeout:6];way(around:180,${lat.toFixed(6)},${lng.toFixed(6)})["highway"]["name"];out geom;`;
+    const encoded = encodeURIComponent(query);
+
+    for (const mirror of OVERPASS_MIRRORS) {
+      try {
+        const ctrl = new AbortController();
+        const timer = setTimeout(() => ctrl.abort(), 5500);
+        const res = await fetch(`${mirror}?data=${encoded}`, { signal: ctrl.signal });
+        clearTimeout(timer);
+        if (!res.ok) continue;
+        const data = await res.json();
+        const elements = Array.isArray(data.elements) ? data.elements : [];
+        if (!elements.length) continue;
+
+        const byName = new Map();
+        elements.forEach((el) => {
+          const name = el.tags && el.tags.name;
+          const geom = el.geometry;
+          if (!name || !Array.isArray(geom) || geom.length < 2) return;
+
+          let bestDist = Infinity;
+          let bestPt = { lat: geom[0].lat, lng: geom[0].lon };
+
+          for (let i = 0; i < geom.length - 1; i++) {
+            const seg = pointToSegmentClosest(lat, lng, geom[i].lat, geom[i].lon, geom[i + 1].lat, geom[i + 1].lon);
+            if (seg.distKm < bestDist) {
+              bestDist = seg.distKm;
+              bestPt = { lat: seg.lat, lng: seg.lng };
+            }
+          }
+
+          const prev = byName.get(name);
+          if (!prev || bestDist < prev.distKm) {
+            byName.set(name, { name, distKm: bestDist, lat: bestPt.lat, lng: bestPt.lng, elevation: null, deltaElev: null });
+          }
+        });
+        return Array.from(byName.values()).sort((a, b) => a.distKm - b.distKm);
+      } catch (e) {}
+    }
+    return [];
   }
 
   async function enrichStreetsWithElevation(centerLat, centerLng, streetsList) {
@@ -18764,31 +18770,6 @@ function initAzimuteGeo() {
     } catch (e) {}
   }
 
-  async function queryOverpassMirrors(lat, lng) {
-    const query = `[out:json][timeout:8];way(around:180,${lat},${lng})["highway"]["name"];out geom;`;
-    const bodyForm = "data=" + encodeURIComponent(query);
-
-    for (const mirror of OVERPASS_MIRRORS) {
-      try {
-        const ctrl = new AbortController();
-        const timer = setTimeout(() => ctrl.abort(), 7000);
-        const res = await fetch(mirror, {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-          body: bodyForm,
-          signal: ctrl.signal
-        });
-        clearTimeout(timer);
-        if (!res.ok) continue;
-        const data = await res.json();
-        if (data && Array.isArray(data.elements)) {
-          return data.elements;
-        }
-      } catch (e) {}
-    }
-    return null;
-  }
-
   function applyStreetsListToQuadrante(lat, lng, list) {
     if (!list.length) return;
     lastStreetsFetchPos = [lat, lng];
@@ -18814,64 +18795,41 @@ function initAzimuteGeo() {
     }
 
     fetchingStreets = true;
+    if (retryStreetsTimer) {
+      clearTimeout(retryStreetsTimer);
+      retryStreetsTimer = null;
+    }
     setQuadFetchIndicator("searching", "Buscando vias...");
 
     try {
-      // 1) Carregamento instantaneo pelo arquivo local base_qth_bh.json
-      const localList = await loadOfflineQthFallback(lat, lng);
-      if (localList.length) {
-        applyStreetsListToQuadrante(lat, lng, localList);
+      // 1) Instantaneo pelo mapa vetorial se ja estiver aberto
+      const mapList = extractStreetsFromMapLibre(lat, lng);
+      if (mapList.length >= 2) {
+        applyStreetsListToQuadrante(lat, lng, mapList);
       }
 
-      // 2) Refinamento em segundo plano pela Overpass API (geometria exata)
-      const elements = await queryOverpassMirrors(lat, lng);
-      if (elements && elements.length) {
-        const byName = new Map();
-        elements.forEach((el) => {
-          const name = el.tags && el.tags.name;
-          const geom = el.geometry;
-          if (!name || !Array.isArray(geom) || geom.length < 2) return;
+      // 2) Rapido pela API Photon (~0.3s)
+      const photonList = await queryPhotonNearbyStreets(lat, lng);
+      if (photonList.length >= 2) {
+        applyStreetsListToQuadrante(lat, lng, photonList);
+      }
 
-          let bestDist = Infinity;
-          let bestPt = { lat: geom[0].lat, lng: geom[0].lon };
-
-          for (let i = 0; i < geom.length - 1; i++) {
-            const seg = pointToSegmentClosest(
-              lat,
-              lng,
-              geom[i].lat,
-              geom[i].lon,
-              geom[i + 1].lat,
-              geom[i + 1].lon
-            );
-            if (seg.distKm < bestDist) {
-              bestDist = seg.distKm;
-              bestPt = { lat: seg.lat, lng: seg.lng };
-            }
-          }
-
-          const prev = byName.get(name);
-          if (!prev || bestDist < prev.distKm) {
-            byName.set(name, {
-              name,
-              distKm: bestDist,
-              lat: bestPt.lat,
-              lng: bestPt.lng,
-              elevation: null,
-              deltaElev: null
-            });
-          }
-        });
-        const onlineList = Array.from(byName.values()).sort((a, b) => a.distKm - b.distKm);
-        if (onlineList.length) {
-          applyStreetsListToQuadrante(lat, lng, onlineList);
-        }
-      } else if (!localList.length) {
-        setQuadFetchIndicator("error", "Sem resposta de vias");
+      // 3) Refinamento pela Overpass via GET
+      const overpassList = await queryOverpassGet(lat, lng);
+      if (overpassList.length >= 2) {
+        applyStreetsListToQuadrante(lat, lng, overpassList);
+      } else if (!cachedNearbyStreets.length) {
+        setQuadFetchIndicator("error", "Tentando novamente...");
+        retryStreetsTimer = setTimeout(() => {
+          if (lastPos) fetchNearbyStreets(lastPos[0], lastPos[1], true);
+        }, 6000);
       }
     } catch (err) {
       if (!cachedNearbyStreets.length) {
         setQuadFetchIndicator("error", "Reconectando vias...");
+        retryStreetsTimer = setTimeout(() => {
+          if (lastPos) fetchNearbyStreets(lastPos[0], lastPos[1], true);
+        }, 6000);
       }
     } finally {
       fetchingStreets = false;
@@ -19156,7 +19114,7 @@ function initAzimuteGeo() {
         prevTrackPos = [latitude, longitude];
       } else {
         const movedKm = calcDistanceKm(prevTrackPos[0], prevTrackPos[1], latitude, longitude);
-        if (movedKm >= 0.01) {
+        if (movedKm >= 0.012) {
           computedGpsCourse = calcBearingDeg(prevTrackPos[0], prevTrackPos[1], latitude, longitude);
           prevTrackPos = [latitude, longitude];
           lastMoveTimestamp = Date.now();
