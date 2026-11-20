@@ -20909,97 +20909,100 @@ if (document.readyState === "loading") {
   initAzimuteGeo();
 }
 </script>
-<!-- ================= AZIMUTE UNIFICADO: TOPO ATAK + ECO/ESPECTRO FECHADOS + ALÇA + BLOCO C HÍBRIDO ================= -->
+<!-- ================= AZIMUTE ATAK LATERAL: MAPA AMPLIADO, GRADE ☰, ROTAS, CORRIDA E ALERTAS ================= -->
 <style>
-  /* 1. BOTÃO SONAR / ECO */
-  .az-orbe-sonar-btn {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: #161616;
-    color: #C5A869;
-    border: 1px solid #C5A869;
-    border-radius: 999px;
-    padding: 3px 10px;
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    cursor: pointer;
-  }
-  .az-orbe-sonar-pulse {
-    position: relative;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #C5A869;
-    display: inline-block;
-  }
-  .az-orbe-sonar-btn.is-syncing {
-    border-color: #C5A869 !important;
-    color: #FFFFFF !important;
-    background: #242016 !important;
-  }
-  .az-orbe-sonar-btn.is-syncing .az-orbe-sonar-pulse::before {
-    content: "";
-    position: absolute;
-    inset: -4px;
-    border-radius: 50%;
-    border: 1.5px solid #C5A869;
-    animation: azSonarRipple 0.9s ease-out infinite;
-    pointer-events: none;
-  }
-  @keyframes azSonarRipple {
-    0% { transform: scale(0.9); opacity: 0.95; }
-    100% { transform: scale(2.4); opacity: 0; }
-  }
-
-  /* 2. CAIXAS FECHADAS PARA ECO E ESPECTRO */
-  .az-collapsible-box {
-    background: #161616 !important;
-    border: 1px solid #28271F !important;
-    border-radius: 8px !important;
-    overflow: hidden !important;
-  }
-  .az-collapsible-head {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    gap: 6px !important;
-    padding: 6px 8px !important;
-    background: #161616 !important;
-    cursor: pointer !important;
-    user-select: none !important;
-  }
-  .az-collapsible-title {
-    font-size: 10px !important;
-    font-weight: 800 !important;
-    letter-spacing: 0.06em !important;
-    color: #C5A869 !important;
-    text-transform: uppercase !important;
-  }
-  .az-collapsible-box.is-collapsed .az-collapsible-body {
+  /* 1. OCULTA CAIXAS ANTIGAS DE ECO E ESPECTRO PARA AMPLIAR O MAPA */
+  #azQuadRingCanvas,
+  #azTerrain3dCanvas,
+  #azTerrainSideCanvas,
+  #azIncReliefCanvas {
     display: none !important;
   }
 
-  /* 3. MODO INCURSÃO — BARRA SUPERIOR PADRONIZADA + ALTERNADOR ECO / ESPECTRO */
+  /* 2. BOTÃO TRÊS RISCOS (☰) NO CANTO SUPERIOR DIREITO */
+  #azAtakHamburgerBtn {
+    position: fixed;
+    top: 8px;
+    right: 8px;
+    z-index: 100040;
+    width: 38px;
+    height: 36px;
+    background: rgba(13, 13, 13, 0.95);
+    color: #C5A869;
+    border: 1.5px solid #C5A869;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 900;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.9);
+  }
+  #azAtakHamburgerBtn.is-visible {
+    display: flex;
+  }
+  #azAtakHamburgerBtn.is-open {
+    background: #C5A869;
+    color: #0D0D0D;
+  }
+
+  /* 3. ABA LATERAL DIREITA (OCUPA SOMENTE A LATERAL SEM SOBREPOR O MAPA) */
+  #azAtakRightDock {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 286px;
+    max-width: 82vw;
+    z-index: 100035;
+    background: #0D0D0D;
+    border-left: 1.5px solid #C5A869;
+    padding: 48px 9px 12px 9px;
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    overflow-y: auto;
+    box-sizing: border-box;
+    color: #F2F0EA;
+  }
+  #azAtakRightDock.is-open {
+    display: flex;
+  }
+
+  /* Ajusta a largura do mapa e do Modo Incursão ao lado da aba sem sobreposição */
+  body.az-atak-dock-open #azGeoMap,
+  body.az-atak-dock-open #azIncursionOverlay.is-open {
+    width: calc(100vw - 286px) !important;
+    max-width: calc(100vw - 286px) !important;
+    right: 286px !important;
+  }
+  body.az-atak-dock-open #azIncAtakTopBar {
+    right: 292px !important;
+  }
+
+  /* 4. BARRA SUPERIOR COMPACTA DO MODO INCURSÃO */
   #azIncursionOverlay.is-open {
     overflow: hidden !important;
-    padding: 38px 26px 46px 6px !important;
+    padding: 38px 6px 6px 6px !important;
     background: #0D0D0D !important;
   }
   #azIncursionOverlay.is-open .az-inc-body {
-    height: calc(100vh - 86px) !important;
-    max-height: calc(100vh - 86px) !important;
-    gap: 6px !important;
+    height: calc(100vh - 46px) !important;
+    max-height: calc(100vh - 46px) !important;
+  }
+  /* Expande o mapa do Modo Incursão para ocupar a área antes usada pelo Espectro */
+  #azIncursionOverlay.is-open .az-inc-map-col,
+  #azIncursionOverlay.is-open [class*="map"] {
+    flex: 1 1 100% !important;
+    width: 100% !important;
   }
 
   #azIncAtakTopBar {
     position: fixed;
     top: 4px;
     left: 6px;
-    right: 26px;
+    right: 52px;
     height: 30px;
     z-index: 100025;
     background: #161616;
@@ -21014,7 +21017,6 @@ if (document.readyState === "loading") {
   body.az-inc-active #azIncAtakTopBar {
     display: flex;
   }
-
   .az-atak-med-btn {
     display: inline-flex;
     align-items: center;
@@ -21027,7 +21029,6 @@ if (document.readyState === "loading") {
     color: #EF4444;
     font-weight: 900;
     font-size: 15px;
-    line-height: 1;
     cursor: pointer;
     flex-shrink: 0;
   }
@@ -21040,7 +21041,6 @@ if (document.readyState === "loading") {
     border: 1px solid #28271F;
     border-radius: 4px;
     padding: 2px 6px;
-    white-space: nowrap;
   }
   .az-std-qth-tag {
     flex: 1 1 auto;
@@ -21052,150 +21052,46 @@ if (document.readyState === "loading") {
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  .az-std-qth-label {
-    color: #C5A869;
-    font-weight: 800;
-    margin-right: 4px;
-  }
   .az-std-clock-tag {
     flex-shrink: 0;
     font-family: monospace;
     font-size: 10px;
     font-weight: 700;
     color: #9E9A8F;
-    white-space: nowrap;
   }
 
-  .az-inc-mini-toggle {
-    display: inline-flex;
+  /* 5. COMPONENTES INTERNOS DA ABA LATERAL ATAK */
+  .az-dock-card {
+    background: #161616;
+    border: 1px solid #28271F;
+    border-radius: 8px;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .az-dock-sec-title {
+    font-size: 9.5px;
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    color: #C5A869;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 2px;
+  }
+  .az-team-row { display: flex; gap: 4px; align-items: center; }
+  .az-team-input {
+    flex: 1;
+    min-width: 0;
     background: #0D0D0D;
     border: 1px solid #28271F;
-    border-radius: 5px;
-    padding: 1px;
-    flex-shrink: 0;
-  }
-  .az-inc-mini-toggle button {
-    background: transparent;
-    border: none;
-    color: #9E9A8F;
-    font-size: 9px;
-    font-weight: 800;
-    padding: 2px 6px;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  .az-inc-mini-toggle button.is-active {
-    background: #C5A869;
-    color: #0D0D0D;
-  }
-
-  /* 4. RETORNO APH -> MODO INCURSÃO */
-  #azReturnIncursionBanner {
-    position: fixed;
-    top: 6px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 100050;
-    display: none;
-    align-items: center;
-    gap: 8px;
-    background: #161616;
+    border-radius: 6px;
     color: #FFFFFF;
-    border: 1.5px solid #C5A869;
-    border-radius: 999px;
-    padding: 6px 14px;
-    font-size: 11px;
-    font-weight: 800;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.9);
-    cursor: pointer;
+    padding: 5px 6px;
+    font-size: 10.5px;
+    font-weight: 700;
   }
-  #azReturnIncursionBanner.is-visible {
-    display: inline-flex;
-  }
-
-  /* 5. GAVETA INFERIOR E ALÇA LATERAL TRANSLÚCIDA (EXCLUSIVA DO MODO INCURSÃO) */
-  #azUnderMapDrawer {
-    position: fixed !important;
-    left: 6px !important;
-    right: 26px !important;
-    bottom: 0 !important;
-    max-height: 76vh !important;
-    overflow-y: auto !important;
-    background: rgba(13, 13, 13, 0.97) !important;
-    border-top: 2px solid #C5A869 !important;
-    border-left: 1px solid #28271F !important;
-    border-right: 1px solid #28271F !important;
-    border-radius: 12px 12px 0 0 !important;
-    padding: 10px !important;
-    z-index: 100018 !important;
-    transform: translateY(100%);
-  }
-
-  #azVerticalGripLandscape {
-    display: none !important;
-  }
-  body.az-inc-active #azVerticalGripLandscape {
-    display: flex !important;
-    position: fixed !important;
-    top: 14% !important;
-    bottom: 14% !important;
-    right: 3px !important;
-    width: 18px !important;
-    z-index: 100028 !important;
-    background: rgba(13, 13, 13, 0.35) !important;
-    border: 1px solid rgba(197, 168, 105, 0.42) !important;
-    border-radius: 999px !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: flex-start !important;
-    padding: 3px 0 !important;
-    touch-action: none !important;
-    user-select: none !important;
-    cursor: grab !important;
-    opacity: 0.45 !important;
-    transition: opacity 0.15s ease !important;
-  }
-  body.az-inc-active #azVerticalGripLandscape:active,
-  body.az-inc-active #azVerticalGripLandscape.is-dragging {
-    opacity: 0.95 !important;
-    background: rgba(22, 22, 22, 0.88) !important;
-  }
-  #azVerticalGripThumb {
-    display: block !important;
-    width: 10px !important;
-    height: 42px !important;
-    border-radius: 999px !important;
-    background: rgba(197, 168, 105, 0.9) !important;
-    pointer-events: none !important;
-    transform: translateY(0px);
-  }
-
-  /* 6. BARRA HORIZONTAL GRADE / EQUIPE / LÁPIS (VISÍVEL SOMENTE COM MAPA ATIVO) */
-  #azAtakCommandStrip {
-    position: fixed;
-    bottom: 68px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 100030;
-    display: none;
-    align-items: center;
-    gap: 5px;
-    background: rgba(13, 13, 13, 0.96);
-    border: 1.5px solid #28271F;
-    border-radius: 10px;
-    padding: 4px 7px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.92);
-    max-width: calc(100vw - 44px);
-  }
-  #azAtakCommandStrip.is-visible {
-    display: flex;
-  }
-  body.az-inc-active #azAtakCommandStrip {
-    bottom: 8px;
-  }
-
   .az-atak-tool-btn {
     display: inline-flex;
     align-items: center;
@@ -21203,13 +21099,12 @@ if (document.readyState === "loading") {
     gap: 4px;
     height: 28px;
     padding: 0 8px;
-    background: #161616;
+    background: #0D0D0D;
     color: #F2F0EA;
     border: 1px solid #28271F;
-    border-radius: 7px;
+    border-radius: 6px;
     font-size: 9.5px;
     font-weight: 800;
-    letter-spacing: 0.04em;
     cursor: pointer;
     white-space: nowrap;
   }
@@ -21218,92 +21113,48 @@ if (document.readyState === "loading") {
     color: #0D0D0D;
     border-color: #C5A869;
   }
-  .az-atak-gps-pill {
-    font-family: monospace;
-    font-size: 9.5px;
-    font-weight: 800;
-    padding: 4px 6px;
-    border-radius: 6px;
-    background: #0D0D0D;
-    border: 1px solid #28271F;
-    color: #4ADE80;
-    white-space: nowrap;
+  .az-atak-tool-btn.is-danger {
+    background: #2A0E0E;
+    border-color: #EF4444;
+    color: #FCA5A5;
+    width: 100%;
+    height: 32px;
   }
-  .az-atak-gps-pill.is-warn { color: #F59E0B; border-color: #F59E0B; }
-  .az-atak-gps-pill.is-bad  { color: #EF4444; border-color: #EF4444; }
 
-  /* 7. MENU EM GRADE 3x3 & MODAL EQUIPE */
-  #azAtakGridMenu {
-    position: fixed;
-    bottom: 104px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 100035;
-    width: 282px;
-    background: #161616;
-    border: 1.5px solid #C5A869;
-    border-radius: 12px;
-    padding: 9px;
-    display: none;
+  .az-atak-grid-3x3 {
+    display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 6px;
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.95);
+    gap: 5px;
   }
-  body.az-inc-active #azAtakGridMenu { bottom: 44px; }
-  #azAtakGridMenu.is-open { display: grid; }
   .az-grid-tile {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 3px;
-    height: 54px;
+    height: 52px;
     background: #0D0D0D;
     border: 1px solid #28271F;
-    border-radius: 8px;
+    border-radius: 7px;
     color: #F2F0EA;
-    font-size: 9px;
+    font-size: 8.5px;
     font-weight: 800;
     text-align: center;
     padding: 3px;
     cursor: pointer;
   }
-  .az-grid-tile:active { border-color: #C5A869; background: #221E15; color: #C5A869; }
-  .az-grid-ico { font-size: 14px; color: #C5A869; line-height: 1; }
+  .az-grid-tile:active, .az-grid-tile.is-on {
+    border-color: #C5A869;
+    background: #221E15;
+    color: #C5A869;
+  }
+  .az-grid-tile.is-prio {
+    border-color: #EF4444;
+    color: #FECACA;
+  }
+  .az-grid-ico { font-size: 13px; color: #C5A869; line-height: 1; }
+  .az-grid-tile.is-prio .az-grid-ico { color: #EF4444; }
 
-  #azTeamPinModal {
-    position: fixed;
-    bottom: 104px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 100040;
-    width: 312px;
-    max-height: 70vh;
-    overflow-y: auto;
-    background: #161616;
-    border: 1.5px solid #C5A869;
-    border-radius: 12px;
-    padding: 10px;
-    display: none;
-    flex-direction: column;
-    gap: 7px;
-    color: #FFFFFF;
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.96);
-  }
-  body.az-inc-active #azTeamPinModal { bottom: 44px; }
-  #azTeamPinModal.is-open { display: flex; }
-  .az-team-row { display: flex; gap: 5px; align-items: center; }
-  .az-team-input {
-    flex: 1;
-    min-width: 0;
-    background: #0D0D0D;
-    border: 1px solid #28271F;
-    border-radius: 6px;
-    color: #FFFFFF;
-    padding: 5px 7px;
-    font-size: 10.5px;
-    font-weight: 700;
-  }
   .az-team-chips { display: flex; flex-wrap: wrap; gap: 4px; }
   .az-qra-chip {
     background: #0D0D0D;
@@ -21317,19 +21168,8 @@ if (document.readyState === "loading") {
   }
   .az-qra-chip.is-selected { background: #C5A869; color: #0D0D0D; border-color: #C5A869; }
   .az-qra-chip.is-live { border-color: #4ADE80; }
-  .az-net-status-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #0D0D0D;
-    border: 1px solid #28271F;
-    border-radius: 6px;
-    padding: 4px 7px;
-    font-size: 9.5px;
-    font-weight: 800;
-  }
 
-  /* 8. MARCADORES NO MAPA & RODA DE AÇÕES */
+  /* 6. MARCADORES NO MAPA & RODA DE AÇÕES (COM ROTA) */
   .az-tac-pin {
     position: relative;
     display: flex;
@@ -21380,26 +21220,26 @@ if (document.readyState === "loading") {
   #azRadialWheel {
     position: fixed;
     z-index: 100045;
-    width: 176px;
-    height: 176px;
-    margin-left: -88px;
-    margin-top: -88px;
+    width: 190px;
+    height: 190px;
+    margin-left: -95px;
+    margin-top: -95px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(13,13,13,0.45) 26%, rgba(22,22,22,0.96) 28%);
+    background: radial-gradient(circle, rgba(13,13,13,0.45) 26%, rgba(22,22,22,0.97) 28%);
     border: 1.5px solid #C5A869;
     display: none;
-    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.92);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.94);
   }
   #azRadialWheel.is-open { display: block; }
   .az-wheel-btn {
     position: absolute;
-    width: 54px;
-    height: 30px;
+    width: 58px;
+    height: 32px;
     border-radius: 8px;
     background: #0D0D0D;
     border: 1px solid #C5A869;
     color: #FFFFFF;
-    font-size: 9px;
+    font-size: 8.5px;
     font-weight: 800;
     cursor: pointer;
     display: flex;
@@ -21407,15 +21247,15 @@ if (document.readyState === "loading") {
     justify-content: center;
     text-align: center;
   }
-  .az-wheel-top    { top: 8px;   left: 61px; }
-  .az-wheel-right  { top: 73px;  right: 6px; }
-  .az-wheel-bottom { bottom: 8px; left: 61px; border-color: #EF4444; color: #FCA5A5; }
-  .az-wheel-left   { top: 73px;  left: 6px; }
+  .az-wheel-top    { top: 8px;   left: 66px; border-color: #4ADE80; color: #BBF7D0; }
+  .az-wheel-right  { top: 79px;  right: 6px; }
+  .az-wheel-bottom { bottom: 8px; left: 66px; border-color: #EF4444; color: #FCA5A5; }
+  .az-wheel-left   { top: 79px;  left: 6px; }
 
   #azFineNudgePad {
     position: fixed;
-    bottom: 104px;
-    right: 34px;
+    bottom: 14px;
+    left: 14px;
     z-index: 100046;
     background: #161616;
     border: 1.5px solid #C5A869;
@@ -21426,7 +21266,6 @@ if (document.readyState === "loading") {
     align-items: center;
     gap: 4px;
   }
-  body.az-inc-active #azFineNudgePad { bottom: 44px; }
   #azFineNudgePad.is-open { display: flex; }
   .az-nudge-btn {
     width: 34px;
@@ -21439,113 +21278,129 @@ if (document.readyState === "loading") {
     cursor: pointer;
   }
 
+  /* 7. BANNER DE ALERTA / ROTA / CORRIDA */
   #azTacHudToast {
     position: fixed;
     top: 42px;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 12px;
     z-index: 100048;
     background: #161616;
-    border: 1px solid #C5A869;
+    border: 1.5px solid #C5A869;
     color: #FFFFFF;
-    border-radius: 999px;
-    padding: 5px 14px;
+    border-radius: 8px;
+    padding: 6px 12px;
     font-size: 11px;
     font-weight: 800;
     display: none;
-    white-space: nowrap;
-    max-width: 92vw;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.9);
+    max-width: calc(100vw - 310px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.92);
   }
+  #azTacHudToast.is-alert {
+    background: #2A0E0E;
+    border-color: #EF4444;
+    color: #FECACA;
+  }
+  #azReturnIncursionBanner {
+    position: fixed;
+    top: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100050;
+    display: none;
+    align-items: center;
+    background: #161616;
+    color: #FFFFFF;
+    border: 1.5px solid #C5A869;
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 11px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+  #azReturnIncursionBanner.is-visible { display: inline-flex; }
 </style>
 
-<!-- TOPO MODO INCURSÃO -->
-<div id="azIncAtakTopBar" aria-label="Barra Tática Modo Incursão">
-  <button type="button" class="az-atak-med-btn" id="azAtakRedCrossBtn" title="Abrir APH">+</button>
+<!-- TOPO COMPACTO MODO INCURSÃO -->
+<div id="azIncAtakTopBar">
+  <button type="button" class="az-atak-med-btn" id="azAtakRedCrossBtn" title="APH">+</button>
   <span class="az-std-net-tag" id="azAtakNetText">REDE: PMMG / RMBH</span>
-  <span class="az-std-qth-tag"><span class="az-std-qth-label">QTH:</span><span id="azAtakStreetText">Aguardando via...</span></span>
+  <span class="az-std-qth-tag"><span style="color:#C5A869;font-weight:800;margin-right:4px;">QTH:</span><span id="azAtakStreetText">Aguardando via...</span></span>
   <span class="az-std-clock-tag" id="azAtakClockText">--/-- --:--</span>
 </div>
-
 <button type="button" id="azReturnIncursionBanner">← VOLTAR AO MODO INCURSÃO</button>
 
-<!-- BARRA HORIZONTAL TÁTICA -->
-<div id="azAtakCommandStrip" role="toolbar" aria-label="Barra Tática">
-  <button type="button" class="az-atak-tool-btn" id="azToggleGridBtn" title="Menu em Grade">⊞ GRADE</button>
-  <button type="button" class="az-atak-tool-btn" id="azQuickTeamBtn" title="Rede da Equipe e Alfinetes">⌖ EQUIPE <span id="azLiveCountBadge" style="color:#4ADE80;"></span></button>
-  <button type="button" class="az-atak-tool-btn" id="azQuickPencilBtn" title="Lápis Tático (Cerco/Bloqueio)">✎ LÁPIS</button>
-  <span class="az-atak-gps-pill" id="azAtakGpsBadge">GPS OK</span>
-</div>
+<!-- BOTÃO TRÊS RISCOS (☰) -->
+<button type="button" id="azAtakHamburgerBtn" title="Abrir Painel Tático ATAK">☰</button>
 
-<!-- MENU EM GRADE 3x3 -->
-<div id="azAtakGridMenu">
-  <button type="button" class="az-grid-tile" data-grid-act="desloque"><span class="az-grid-ico">➤</span>DESLOQUE</button>
-  <button type="button" class="az-grid-tile" data-grid-act="reagrupar"><span class="az-grid-ico">◎</span>REAGRUPAR</button>
-  <button type="button" class="az-grid-tile" data-grid-act="gpe"><span class="az-grid-ico">▲</span>ALERTA GPE</button>
-  <button type="button" class="az-grid-tile" data-grid-act="lapis"><span class="az-grid-ico">✎</span>LÁPIS / CERCO</button>
-  <button type="button" class="az-grid-tile" data-grid-act="limpar_lapis"><span class="az-grid-ico">⌫</span>LIMPAR TRAÇO</button>
-  <button type="button" class="az-grid-tile" data-grid-act="offline"><span class="az-grid-ico">⇩</span>MAPA OFFLINE</button>
-  <button type="button" class="az-grid-tile" data-grid-act="incursao"><span class="az-grid-ico">▣</span>MODO INCURSÃO</button>
-  <button type="button" class="az-grid-tile" data-grid-act="limpar_pins"><span class="az-grid-ico">✕</span>LIMPAR PINS</button>
-  <button type="button" class="az-grid-tile" data-grid-act="fechar"><span class="az-grid-ico">▼</span>FECHAR</button>
-</div>
-
-<!-- MODAL DE EQUIPE & REDE HÍBRIDA -->
-<div id="azTeamPinModal">
-  <div style="display:flex;justify-content:space-between;align-items:center;">
-    <span style="font-size:10px;font-weight:900;color:#C5A869;">REDE HÍBRIDA • POSIÇÃO & COMANDO SILENCIOSO</span>
-    <button type="button" id="azCloseTeamModal" style="background:none;border:none;color:#9E9A8F;font-weight:900;cursor:pointer;">✕</button>
-  </div>
-  <div class="az-team-row">
-    <input type="text" id="azMyQraInput" class="az-team-input" placeholder="Meu QRA (ex: Sgt Pablo)" maxlength="20">
-    <input type="text" id="azRoomCodeInput" class="az-team-input" placeholder="Turno (ex: ALPHA-01)" maxlength="18">
-    <button type="button" class="az-atak-tool-btn is-active" id="azConnectNetBtn">CONECTAR</button>
-  </div>
-  <div class="az-net-status-bar">
-    <span id="azLiveNetStatus" style="color:#F59E0B;">● AGUARDANDO TURNO</span>
-    <span id="azFirebaseStatus" style="color:#9E9A8F;">FB: OFF</span>
-  </div>
-  <div class="az-team-chips" id="azTeamQraList"></div>
-  <div style="font-size:10px;color:#9E9A8F;">Selecione o modo e toque no mapa para posicionar:</div>
-  <div class="az-team-row">
-    <button type="button" class="az-atak-tool-btn" id="azArmDesloqueBtn" style="flex:1;border-color:#C5A869;">➤ PIN DESLOQUE</button>
-    <button type="button" class="az-atak-tool-btn" id="azArmRegroupBtn" style="flex:1;border-color:#4ADE80;color:#BBF7D0;">◎ REAGRUPAR</button>
-  </div>
-  <div class="az-team-chips">
-    <button type="button" class="az-qra-chip" data-quick-msg="QAP / POSIÇÃO">QAP</button>
-    <button type="button" class="az-qra-chip" data-quick-msg="CERCO FECHADO">CERCO OK</button>
-    <button type="button" class="az-qra-chip" data-quick-msg="VISUAL NO ALVO">VISUAL</button>
-    <button type="button" class="az-qra-chip" data-quick-msg="SOLICITO APOIO">APOIO</button>
-  </div>
-  <div class="az-team-row">
-    <input type="text" id="azSilentMsgInput" class="az-team-input" placeholder="Mensagem silenciosa p/ equipe..." maxlength="60">
-    <button type="button" class="az-atak-tool-btn" id="azSendSilentMsgBtn">ENVIAR</button>
-  </div>
-  <details style="border-top:1px solid #28271F;padding-top:5px;font-size:9.5px;color:#9E9A8F;">
-    <summary style="cursor:pointer;font-weight:800;color:#C5A869;">Firebase Persistente & Contingência Offline</summary>
-    <div style="display:flex;flex-direction:column;gap:5px;margin-top:6px;">
-      <div class="az-team-row">
-        <input type="text" id="azFirebaseUrlInput" class="az-team-input" placeholder="https://seu-projeto.firebaseio.com">
-        <button type="button" class="az-atak-tool-btn" id="azSaveFirebaseBtn">SALVAR</button>
-      </div>
-      <div class="az-team-row">
-        <button type="button" class="az-atak-tool-btn" id="azExportOfflineCodeBtn" style="flex:1;">COPIAR CÓDIGO OFFLINE</button>
-        <button type="button" class="az-atak-tool-btn" id="azImportOfflineCodeBtn" style="flex:1;">COLAR CÓDIGO</button>
-      </div>
+<!-- ABA LATERAL DIREITA ESTILO ATAK (SEM SOBREPOR O MAPA) -->
+<aside id="azAtakRightDock" aria-label="Painel Lateral ATAK">
+  <!-- BLOCO 1: EQUIPE & CONEXÃO -->
+  <div class="az-dock-card">
+    <div class="az-dock-sec-title">
+      <span>EQUIPE & REDE</span>
+      <span id="azAtakGpsBadge" style="font-family:monospace;color:#4ADE80;">GPS OK</span>
     </div>
-  </details>
-</div>
+    <div class="az-team-row">
+      <input type="text" id="azMyQraInput" class="az-team-input" placeholder="Meu QRA" maxlength="18">
+      <input type="text" id="azRoomCodeInput" class="az-team-input" placeholder="Turno" maxlength="14">
+      <button type="button" class="az-atak-tool-btn is-active" id="azConnectNetBtn">OK</button>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:9px;font-weight:800;">
+      <span id="azLiveNetStatus" style="color:#F59E0B;">● DESCONECTADO</span>
+      <span id="azLiveCountBadge" style="color:#4ADE80;">0 ATIVOS</span>
+    </div>
+    <div class="az-team-chips" id="azTeamQraList"></div>
+    <button type="button" class="az-atak-tool-btn" id="azRouteToMateBtn" style="width:100%;border-color:#38BDF8;color:#E0F2FE;">⇄ ROTA ATÉ MEMBRO SELECIONADO</button>
+  </div>
 
-<!-- RODA DE AÇÕES & AJUSTE FINO -->
+  <!-- BLOCO 2: GRADE DE FERRAMENTAS TÁTICAS ATAK -->
+  <div class="az-dock-card">
+    <div class="az-dock-sec-title"><span>FERRAMENTAS TÁTICAS</span></div>
+    <div class="az-atak-grid-3x3">
+      <button type="button" class="az-grid-tile" data-grid-act="desloque"><span class="az-grid-ico">➤</span>DESLOQUE</button>
+      <button type="button" class="az-grid-tile" data-grid-act="reagrupar"><span class="az-grid-ico">◎</span>REAGRUPAR</button>
+      <button type="button" class="az-grid-tile is-prio" data-grid-act="gpe"><span class="az-grid-ico">▲</span>PRIORIDADE</button>
+      <button type="button" class="az-grid-tile" id="azGridPencilTile" data-grid-act="lapis"><span class="az-grid-ico">✎</span>LÁPIS/CERCO</button>
+      <button type="button" class="az-grid-tile" data-grid-act="limpar_lapis"><span class="az-grid-ico">⌫</span>LIMPAR TRAÇO</button>
+      <button type="button" class="az-grid-tile" data-grid-act="limpar_rota"><span class="az-grid-ico">⊘</span>LIMPAR ROTA</button>
+      <button type="button" class="az-grid-tile" data-grid-act="copy_qth"><span class="az-grid-ico">⌖</span>COPIAR GPS</button>
+      <button type="button" class="az-grid-tile" data-grid-act="offline"><span class="az-grid-ico">⇩</span>CACHE MAPA</button>
+      <button type="button" class="az-grid-tile" data-grid-act="limpar_pins"><span class="az-grid-ico">✕</span>LIMPAR PINS</button>
+    </div>
+  </div>
+
+  <!-- BLOCO 3: MENSAGENS RÁPIDAS & LINK OFFLINE -->
+  <div class="az-dock-card">
+    <div class="az-dock-sec-title"><span>MENSAGEM SILENCIOSA</span></div>
+    <div class="az-team-chips">
+      <button type="button" class="az-qra-chip" data-quick-msg="QAP / POSIÇÃO">QAP</button>
+      <button type="button" class="az-qra-chip" data-quick-msg="CERCO FECHADO">CERCO</button>
+      <button type="button" class="az-qra-chip" data-quick-msg="VISUAL NO ALVO">VISUAL</button>
+      <button type="button" class="az-qra-chip" data-quick-msg="SOLICITO APOIO">APOIO</button>
+    </div>
+    <div class="az-team-row">
+      <input type="text" id="azSilentMsgInput" class="az-team-input" placeholder="Texto p/ equipe..." maxlength="60">
+      <button type="button" class="az-atak-tool-btn" id="azSendSilentMsgBtn">ENVIAR</button>
+    </div>
+    <div class="az-team-row">
+      <button type="button" class="az-atak-tool-btn" id="azExportOfflineCodeBtn" style="flex:1;">COPIAR LINK</button>
+      <button type="button" class="az-atak-tool-btn" id="azImportOfflineCodeBtn" style="flex:1;">COLAR LINK</button>
+    </div>
+  </div>
+
+  <!-- BLOCO 4: ENCERRAR SESSÃO -->
+  <button type="button" class="az-atak-tool-btn is-danger" id="azEndSessionBtn">■ ENCERRAR SESSÃO</button>
+</aside>
+
+<!-- RODA DE AÇÕES DO ALFINETE -->
 <div id="azRadialWheel">
-  <button type="button" class="az-wheel-btn az-wheel-top" data-wheel="nudge">AJUSTE<br>FINO</button>
-  <button type="button" class="az-wheel-btn az-wheel-right" data-wheel="measure">DIST /<br>AZIMUTE</button>
+  <button type="button" class="az-wheel-btn az-wheel-top" data-wheel="route">GERAR<br>ROTA</button>
+  <button type="button" class="az-wheel-btn az-wheel-right" data-wheel="nudge">AJUSTE<br>FINO</button>
   <button type="button" class="az-wheel-btn az-wheel-left" data-wheel="close">FECHAR</button>
   <button type="button" class="az-wheel-btn az-wheel-bottom" data-wheel="delete">EXCLUIR</button>
 </div>
 
+<!-- AJUSTE FINO -->
 <div id="azFineNudgePad">
   <span style="font-size:9px;font-weight:800;color:#C5A869;">AJUSTE FINO</span>
   <button type="button" class="az-nudge-btn" data-nudge="N">▲</button>
@@ -21566,12 +21421,11 @@ if (document.readyState === "loading") {
   const tac = {
     maps: [],
     myId: localStorage.getItem("az_tac_uid") || ("u_" + Math.random().toString(36).slice(2, 8)),
-    myQra: localStorage.getItem("az_tac_my_qra") || "Sgt Pablo",
+    myQra: localStorage.getItem("az_tac_my_qra") || "SGT PABLO",
     roomCode: localStorage.getItem("az_tac_room") || "",
-    firebaseUrl: localStorage.getItem("az_tac_fb_url") || "",
     roster: JSON.parse(localStorage.getItem("az_tac_roster") || '["Alfa 1","Alfa 2","Bravo 1"]'),
     selectedQra: "Alfa 1",
-    teammates: {},
+    teammates: {}, // uid -> { uid, qra, lat, lng, ts, lastRunAlert, markers: [] }
     pendingPinMode: null,
     pencilActive: false,
     pencilCoords: [],
@@ -21581,29 +21435,81 @@ if (document.readyState === "loading") {
     ws: null,
     bc: ("BroadcastChannel" in window) ? new BroadcastChannel("azimute_tac_sync") : null,
     myPos: null,
-    isSyncingSonar: false,
-    sonarWaveR: 0,
-    sonarTimer: null,
-    lastW: 360,
-    lastH: 260,
-    lastMatrix: null,
-    openRatio: 0,
-    draggingGrip: false,
-    incSideMode: "ESPECTRO"
+    prevPos: null,
+    lastMyRunAlert: 0,
+    dockOpen: false
   };
   localStorage.setItem("az_tac_uid", tac.myId);
 
-  function showToast(msg, ms) {
+  /* =====================================================================
+     1. VIBRAÇÃO E ÁUDIO DE ALERTA (DESCONEXÃO E SIRENE DEFESA CIVIL)
+     ===================================================================== */
+  function vibratePattern(pattern) {
+    if (navigator.vibrate) {
+      try { navigator.vibrate(pattern); } catch (_) {}
+    }
+  }
+
+  function playCivilDefenseSiren() {
+    vibratePattern([500, 150, 500, 150, 700]);
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "sawtooth";
+      gain.gain.value = 0.22;
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      const now = ctx.currentTime;
+      // Alternância bitonal estilo Defesa Civil (960Hz / 720Hz) por 2.2s
+      osc.frequency.setValueAtTime(960, now);
+      osc.frequency.setValueAtTime(720, now + 0.35);
+      osc.frequency.setValueAtTime(960, now + 0.70);
+      osc.frequency.setValueAtTime(720, now + 1.05);
+      osc.frequency.setValueAtTime(960, now + 1.40);
+      osc.frequency.setValueAtTime(720, now + 1.75);
+
+      osc.start(now);
+      osc.stop(now + 2.1);
+    } catch (_) {}
+  }
+
+  function playDisconnectAlert() {
+    vibratePattern([300, 120, 300]);
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "triangle";
+      gain.gain.value = 0.18;
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      const now = ctx.currentTime;
+      osc.frequency.setValueAtTime(620, now);
+      osc.frequency.setValueAtTime(380, now + 0.22);
+      osc.start(now);
+      osc.stop(now + 0.48);
+    } catch (_) {}
+  }
+
+  function showToast(msg, ms, isAlert) {
     const el = document.getElementById("azTacHudToast");
     if (!el) return;
     el.textContent = msg;
+    el.classList.toggle("is-alert", Boolean(isAlert));
     el.style.display = "block";
     clearTimeout(el._t);
-    el._t = setTimeout(function () { el.style.display = "none"; }, ms || 3000);
+    el._t = setTimeout(function () { el.style.display = "none"; }, ms || 3500);
   }
 
   /* =====================================================================
-     PARTE A: CAPTURA INFALÍVEL DA INSTÂNCIA DO MAPA (MAPLIBRE / WINDOW)
+     2. CAPTURA DO MAPA E CONTROLE DO BOTÃO TRÊS RISCOS (☰)
      ===================================================================== */
   function registerCapturedMap(mapInst) {
     if (!mapInst || typeof mapInst.unproject !== "function" || typeof mapInst.getContainer !== "function") return;
@@ -21617,7 +21523,6 @@ if (document.readyState === "loading") {
   }
 
   function scanAndCaptureExistingMaps() {
-    // 1. Hook no prototype do MapLibre se disponível
     if (window.maplibregl && window.maplibregl.Map && !window.maplibregl.Map.prototype._azHooked) {
       const proto = window.maplibregl.Map.prototype;
       proto._azHooked = true;
@@ -21631,8 +21536,6 @@ if (document.readyState === "loading") {
         }
       });
     }
-
-    // 2. Varredura direta nas propriedades globais de window
     try {
       const keys = Object.keys(window);
       for (let i = 0; i < keys.length; i++) {
@@ -21642,387 +21545,270 @@ if (document.readyState === "loading") {
         }
       }
     } catch (_) {}
-
-    // 3. Dispara resize suave apenas se ainda não capturou nenhum mapa
-    if (tac.maps.length === 0) {
-      window.dispatchEvent(new Event("resize"));
-    }
+    if (tac.maps.length === 0) window.dispatchEvent(new Event("resize"));
   }
 
   function getActiveMap() {
     const inc = document.getElementById("azIncursionOverlay");
     if (inc && inc.classList.contains("is-open")) {
-      const incMap = tac.maps.find(function (m) {
-        return m.getContainer && inc.contains(m.getContainer());
-      });
+      const incMap = tac.maps.find(function (m) { return m.getContainer && inc.contains(m.getContainer()); });
       if (incMap) return incMap;
     }
     return tac.maps[0] || null;
   }
 
-  /* =====================================================================
-     PARTE B: VISIBILIDADE DA BARRA (GRADE / EQUIPE / LÁPIS)
-     ===================================================================== */
   function isAnyMapVisibleOnScreen() {
     const inc = document.getElementById("azIncursionOverlay");
     if (inc && inc.classList.contains("is-open")) return true;
-
-    const selectors = ["#azGeoMap", ".maplibregl-map", ".mapboxgl-map"];
-    for (let s = 0; s < selectors.length; s++) {
-      const list = document.querySelectorAll(selectors[s]);
-      for (let i = 0; i < list.length; i++) {
-        const el = list[i];
-        if (el.offsetParent !== null) {
-          const r = el.getBoundingClientRect();
-          if (r.width > 120 && r.height > 120) return true;
-        }
+    const list = document.querySelectorAll("#azGeoMap, .maplibregl-map");
+    for (let i = 0; i < list.length; i++) {
+      if (list[i].offsetParent !== null) {
+        const r = list[i].getBoundingClientRect();
+        if (r.width > 120 && r.height > 120) return true;
       }
     }
     return false;
   }
 
-  function syncCommandStripVisibility() {
-    const strip = document.getElementById("azAtakCommandStrip");
-    if (!strip) return;
+  function syncDockVisibility() {
+    const btn = document.getElementById("azAtakHamburgerBtn");
+    const dock = document.getElementById("azAtakRightDock");
     const show = isAnyMapVisibleOnScreen();
-    strip.classList.toggle("is-visible", show);
-    if (!show) {
-      document.getElementById("azAtakGridMenu").classList.remove("is-open");
-      document.getElementById("azTeamPinModal").classList.remove("is-open");
+    if (btn) btn.classList.toggle("is-visible", show);
+    if (!show && tac.dockOpen) {
+      tac.dockOpen = false;
+      if (dock) dock.classList.remove("is-open");
+      if (btn) btn.classList.remove("is-open");
+      document.body.classList.remove("az-atak-dock-open");
     }
   }
 
+  function toggleRightDock(forceState) {
+    tac.dockOpen = typeof forceState === "boolean" ? forceState : !tac.dockOpen;
+    const dock = document.getElementById("azAtakRightDock");
+    const btn = document.getElementById("azAtakHamburgerBtn");
+    if (dock) dock.classList.toggle("is-open", tac.dockOpen);
+    if (btn) btn.classList.toggle("is-open", tac.dockOpen);
+    document.body.classList.toggle("az-atak-dock-open", tac.dockOpen);
+    setTimeout(function () {
+      tac.maps.forEach(function (m) { if (m.resize) m.resize(); });
+    }, 60);
+  }
+
   /* =====================================================================
-     PARTE C: CAIXAS FECHADAS PARA ECO E ESPECTRO + ALTERNÂNCIA NO INCURSÃO
+     3. ROTAS NO MAPA (DISTÂNCIA E TEMPO ATÉ ALFINETE OU MEMBRO DA EQUIPE)
      ===================================================================== */
-  function collapseBoxByDefault(canvasId, boxTitle) {
-    const canvas = document.getElementById(canvasId);
-    if (!canvas || !canvas.parentElement) return;
-    const box = canvas.parentElement;
-    if (box.dataset.azClosedBoxReady === "1") return;
-    box.dataset.azClosedBoxReady = "1";
-
-    box.classList.add("az-collapsible-box", "is-collapsed");
-
-    const bodyWrap = document.createElement("div");
-    bodyWrap.className = "az-collapsible-body";
-    while (box.firstChild) {
-      bodyWrap.appendChild(box.firstChild);
-    }
-
-    const head = document.createElement("div");
-    head.className = "az-collapsible-head";
-    head.innerHTML =
-      `<span class="az-collapsible-title">${boxTitle}</span>` +
-      `<span class="az-collapsible-state" style="font-size:9px;font-weight:800;color:#9E9A8F;">[ABRIR ▼]</span>`;
-
-    head.addEventListener("click", function (e) {
-      if (e.target && e.target.closest && e.target.closest("button")) return;
-      const collapsed = box.classList.toggle("is-collapsed");
-      const st = head.querySelector(".az-collapsible-state");
-      if (st) st.textContent = collapsed ? "[ABRIR ▼]" : "[FECHAR ▲]";
-    });
-
-    box.appendChild(head);
-    box.appendChild(bodyWrap);
+  function calcDistAndBearing(lat1, lon1, lat2, lon2) {
+    const R = 6371000;
+    const p1 = (lat1 * Math.PI) / 180, p2 = (lat2 * Math.PI) / 180;
+    const dp = ((lat2 - lat1) * Math.PI) / 180, dl = ((lon2 - lon1) * Math.PI) / 180;
+    const a = Math.sin(dp / 2) ** 2 + Math.cos(p1) * Math.cos(p2) * Math.sin(dl / 2) ** 2;
+    const dist = 2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const y = Math.sin(dl) * Math.cos(p2);
+    const x = Math.cos(p1) * Math.sin(p2) - Math.sin(p1) * Math.cos(p2) * Math.cos(dl);
+    return { dist: Math.round(dist), bearing: Math.round(((Math.atan2(y, x) * 180) / Math.PI + 360) % 360) };
   }
 
-  function syncOrbeMirrorCanvas() {
-    const mirror = document.getElementById("azIncOrbeMirrorCanvas");
-    const src = document.getElementById("azQuadRingCanvas");
-    if (!mirror || !src || mirror.style.display === "none") return;
-    const w = mirror.clientWidth || 220;
-    const h = mirror.clientHeight || 115;
-    if (mirror.width !== w || mirror.height !== h) {
-      mirror.width = w;
-      mirror.height = h;
-    }
-    const ctx = mirror.getContext("2d");
-    ctx.clearRect(0, 0, w, h);
-    if (src.width > 0 && src.height > 0) ctx.drawImage(src, 0, 0, w, h);
-  }
-
-  function enhanceIncursionMode() {
-    const inc = document.getElementById("azIncursionOverlay");
-    const isOpen = Boolean(inc && inc.classList.contains("is-open"));
-    document.body.classList.toggle("az-inc-active", isOpen);
-
-    // Mantém ECO (Orbe) e ESPECTRO como caixas fechadas na tela principal
-    collapseBoxByDefault("azQuadRingCanvas", "ECO • SONAR DE PROXIMIDADE");
-    collapseBoxByDefault("azTerrain3dCanvas", "ESPECTRO • RELEVO DO TERRENO");
-
-    if (!isOpen) return;
-
-    // Remove texto "MAPA INTERATIVO"
-    inc.querySelectorAll("div, span, p, small, label").forEach(function (el) {
-      if (el.children.length === 0 && /mapa\s+interativo/i.test(el.textContent || "")) {
-        el.style.display = "none";
-      }
-    });
-
-    // Atualiza Data/Hora, REDE e QTH
-    const now = new Date();
-    const clockEl = document.getElementById("azAtakClockText");
-    if (clockEl) {
-      clockEl.textContent =
-        String(now.getDate()).padStart(2, "0") + "/" +
-        String(now.getMonth() + 1).padStart(2, "0") + " " +
-        String(now.getHours()).padStart(2, "0") + ":" +
-        String(now.getMinutes()).padStart(2, "0");
-    }
-
-    const netEl = document.getElementById("azAtakNetText");
-    if (netEl) {
-      const unitNodes = document.querySelectorAll("#azGeoNearestUnit, #azHomeNearestUnit, [id*='Unit'], [id*='Bpm']");
-      for (let i = 0; i < unitNodes.length; i++) {
-        const m = (unitNodes[i].textContent || "").match(/(\d+º\s*BPM(?:\s*\/\s*\d+ª\s*CIA)?|\d+ª\s*RPM)/i);
-        if (m && m[1]) {
-          netEl.textContent = "REDE: " + m[1].toUpperCase();
-          break;
-        }
-      }
-    }
-
-    const streetEl = document.getElementById("azAtakStreetText");
-    if (streetEl) {
-      const nodes = inc.querySelectorAll("div, span");
-      for (let i = 0; i < nodes.length; i++) {
-        const m = (nodes[i].textContent || "").match(/(?:FRENTE|RETAGUARDA|ESQ|DIR)\s*:\s*([^•\n]+)/i);
-        if (m && m[1] && !/sem via/i.test(m[1]) && m[1].trim().length > 3) {
-          streetEl.textContent = m[1].trim();
-          break;
-        }
-      }
-    }
-
-    // Caixa fechada no Modo Incursão com alternador ECO | ESPECTRO
-    const reliefCanvas = document.getElementById("azIncReliefCanvas");
-    if (reliefCanvas && reliefCanvas.parentElement && !document.getElementById("azIncClosedBoxReady")) {
-      const box = reliefCanvas.parentElement;
-      box.id = "azIncClosedBoxReady";
-      box.classList.add("az-collapsible-box", "is-collapsed");
-
-      const bodyWrap = document.createElement("div");
-      bodyWrap.className = "az-collapsible-body";
-      while (box.firstChild) bodyWrap.appendChild(box.firstChild);
-
-      const head = document.createElement("div");
-      head.className = "az-collapsible-head";
-      head.innerHTML =
-        `<span class="az-collapsible-title" id="azIncSideBoxTitle">ESPECTRO (FECHADO)</span>` +
-        `<div class="az-inc-mini-toggle">` +
-          `<button type="button" data-side-mode="ECO">ECO</button>` +
-          `<button type="button" class="is-active" data-side-mode="ESPECTRO">ESPECTRO</button>` +
-        `</div>`;
-
-      head.addEventListener("click", function (e) {
-        if (e.target && e.target.closest && e.target.closest("button")) return;
-        const collapsed = box.classList.toggle("is-collapsed");
-        const titleEl = document.getElementById("azIncSideBoxTitle");
-        if (titleEl) titleEl.textContent = tac.incSideMode + (collapsed ? " (FECHADO)" : "");
-      });
-
-      head.querySelectorAll("[data-side-mode]").forEach(function (btn) {
-        btn.addEventListener("click", function (e) {
-          e.preventDefault();
-          e.stopPropagation();
-          tac.incSideMode = btn.getAttribute("data-side-mode");
-          box.classList.remove("is-collapsed");
-          const titleEl = document.getElementById("azIncSideBoxTitle");
-          if (titleEl) titleEl.textContent = tac.incSideMode;
-
-          head.querySelectorAll("[data-side-mode]").forEach(function (b) {
-            b.classList.toggle("is-active", b === btn);
-          });
-
-          let mirror = document.getElementById("azIncOrbeMirrorCanvas");
-          if (!mirror) {
-            mirror = document.createElement("canvas");
-            mirror.id = "azIncOrbeMirrorCanvas";
-            mirror.style.width = "100%";
-            mirror.style.height = "110px";
-            mirror.style.cursor = "pointer";
-            mirror.addEventListener("click", function (ev) {
-              ev.stopPropagation();
-              startSonarSyncCycle();
-            });
-            bodyWrap.appendChild(mirror);
-          }
-
-          if (tac.incSideMode === "ECO") {
-            reliefCanvas.style.display = "none";
-            mirror.style.display = "block";
-            if (typeof window.drawOrbeVectorAndRing === "function") window.drawOrbeVectorAndRing();
-            syncOrbeMirrorCanvas();
-          } else {
-            mirror.style.display = "none";
-            reliefCanvas.style.display = "block";
-          }
+  function renderRouteGeoJson(coords, summaryText) {
+    const geojson = { type: "Feature", geometry: { type: "LineString", coordinates: coords } };
+    tac.maps.forEach(function (m) {
+      if (!m.isStyleLoaded || !m.isStyleLoaded()) return;
+      if (m.getSource("az-tac-route")) {
+        m.getSource("az-tac-route").setData(geojson);
+      } else {
+        m.addSource("az-tac-route", { type: "geojson", data: geojson });
+        m.addLayer({
+          id: "az-tac-route-line",
+          type: "line",
+          source: "az-tac-route",
+          paint: { "line-color": "#38BDF8", "line-width": 4, "line-opacity": 0.92 }
         });
-      });
+      }
+    });
+    showToast(summaryText, 5000);
+  }
 
-      box.appendChild(head);
-      box.appendChild(bodyWrap);
-    }
+  function clearRouteGeoJson() {
+    tac.maps.forEach(function (m) {
+      if (m.getSource && m.getSource("az-tac-route")) {
+        m.getSource("az-tac-route").setData({ type: "Feature", geometry: { type: "LineString", coordinates: [] } });
+      }
+    });
+  }
+
+  async function generateRouteToTarget(targetLat, targetLng, targetName) {
+    const map = getActiveMap();
+    if (!map) return;
+    const originLat = tac.myPos ? tac.myPos.lat : map.getCenter().lat;
+    const originLng = tac.myPos ? tac.myPos.lng : map.getCenter().lng;
+
+    const direct = calcDistAndBearing(originLat, originLng, targetLat, targetLng);
+    const walkMinDirect = Math.max(1, Math.round(direct.dist / 80));
+
+    try {
+      const url = `https://router.project-osrm.org/route/v1/driving/${originLng},${originLat};${targetLng},${targetLat}?overview=full&geometries=geojson`;
+      const res = await fetch(url);
+      const data = await res.json();
+      if (data && data.routes && data.routes[0]) {
+        const r = data.routes[0];
+        const distM = Math.round(r.distance);
+        const distStr = distM >= 1000 ? (distM / 1000).toFixed(2) + " km" : distM + " m";
+        const driveMin = Math.max(1, Math.round(r.duration / 60));
+        const walkMin = Math.max(1, Math.round(distM / 80));
+        renderRouteGeoJson(
+          r.geometry.coordinates,
+          `ROTA → ${targetName}: ${distStr} • ~${driveMin} min (VTR) / ${walkMin} min (A PÉ)`
+        );
+        return;
+      }
+    } catch (_) {}
+
+    // Fallback offline em linha reta
+    const distStr = direct.dist >= 1000 ? (direct.dist / 1000).toFixed(2) + " km" : direct.dist + " m";
+    renderRouteGeoJson(
+      [[originLng, originLat], [targetLng, targetLat]],
+      `AZIMUTE DIRETO → ${targetName}: ${distStr} (${direct.bearing}°) • ~${walkMinDirect} min`
+    );
   }
 
   /* =====================================================================
-     PARTE D: SONAR DO ORBE + ALÇA LATERAL + CRUZ VERMELHA COM RETORNO
+     4. ALFINETES, RODA DE AÇÕES E LÁPIS TÁTICO
      ===================================================================== */
-  function startSonarSyncCycle() {
-    if (tac.sonarTimer) clearInterval(tac.sonarTimer);
-    tac.isSyncingSonar = true;
-    const centerFab = document.getElementById("azGeoCenterFab");
-    if (centerFab) centerFab.click();
+  function attachPinToMap(pinObj, mapInst) {
+    if (!mapInst || !window.maplibregl) return;
+    const el = document.createElement("div");
+    el.className = "az-tac-pin" + (pinObj.type === "reagrupar" ? " is-regroup" : pinObj.type === "gpe" ? " is-gpe" : "");
+    el.innerHTML = `<div class="az-tac-pin-badge">${pinObj.label}</div><div class="az-tac-pin-dot"></div>`;
+    const marker = new window.maplibregl.Marker({ element: el, anchor: "bottom" }).setLngLat([pinObj.lng, pinObj.lat]).addTo(mapInst);
+    pinObj.markers.push(marker);
+    el.addEventListener("click", function (ev) {
+      ev.stopPropagation();
+      openRadialWheel(pinObj, ev.clientX, ev.clientY);
+    });
+  }
 
-    let ticks = 0;
-    tac.sonarTimer = setInterval(function () {
-      ticks++;
-      if (typeof window.drawOrbeVectorAndRing === "function") window.drawOrbeVectorAndRing();
-      if (tac.incSideMode === "ECO") syncOrbeMirrorCanvas();
-      if (ticks >= 14) {
-        clearInterval(tac.sonarTimer);
-        tac.sonarTimer = null;
-        tac.isSyncingSonar = false;
+  function createTacticalPin(type, lng, lat, customLabel, remoteId, fromSync) {
+    if (tac.maps.length === 0) scanAndCaptureExistingMaps();
+    if (tac.maps.length === 0 || !window.maplibregl) {
+      if (!fromSync) showToast("Toque no mapa para ativar a camada.");
+      return;
+    }
+
+    const id = remoteId || ("pin_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6));
+    const existing = tac.pins.find(function (p) { return p.id === id; });
+    if (existing) {
+      existing.lng = lng;
+      existing.lat = lat;
+      existing.markers.forEach(function (mk) { mk.setLngLat([lng, lat]); });
+      return;
+    }
+
+    const label = customLabel || (
+      type === "desloque" ? "DESLOQUE: " + tac.selectedQra :
+      type === "reagrupar" ? "REAGRUPAR AQUI" : "PRIORIDADE • GPE"
+    );
+
+    const pinObj = { id, type, label, lng, lat, markers: [] };
+    tac.maps.forEach(function (m) { attachPinToMap(pinObj, m); });
+    tac.pins.push(pinObj);
+
+    if (type === "gpe") {
+      playCivilDefenseSiren();
+      showToast(`🚨 ALERTA DE PRIORIDADE: ${label}`, 5000, true);
+    } else if (fromSync) {
+      vibratePattern([220, 100, 220]);
+      showToast(`Alfinete recebido: ${label}`, 3800);
+    } else {
+      showToast(`Alfinete "${label}" posicionado.`);
+    }
+
+    if (!fromSync) {
+      broadcastPacket({ kind: "pin", pin: { id, type, label, lng, lat } });
+    }
+  }
+
+  function openRadialWheel(pinObj, x, y) {
+    tac.activePin = pinObj;
+    const wheel = document.getElementById("azRadialWheel");
+    if (!wheel) return;
+    wheel.style.left = Math.min(window.innerWidth - 105, Math.max(105, x)) + "px";
+    wheel.style.top = Math.min(window.innerHeight - 105, Math.max(105, y)) + "px";
+    wheel.classList.add("is-open");
+  }
+  function closeRadialWheel() {
+    const wheel = document.getElementById("azRadialWheel");
+    if (wheel) wheel.classList.remove("is-open");
+  }
+
+  function nudgeActivePin(dir) {
+    if (!tac.activePin) return;
+    const step = 0.000035;
+    if (dir === "N") tac.activePin.lat += step;
+    if (dir === "S") tac.activePin.lat -= step;
+    if (dir === "L") tac.activePin.lng += step;
+    if (dir === "O") tac.activePin.lng -= step;
+    tac.activePin.markers.forEach(function (mk) { mk.setLngLat([tac.activePin.lng, tac.activePin.lat]); });
+    broadcastPacket({ kind: "pin", pin: { id: tac.activePin.id, type: tac.activePin.type, label: tac.activePin.label, lng: tac.activePin.lng, lat: tac.activePin.lat } });
+  }
+
+  function updatePencilLayer() {
+    const geojson = { type: "Feature", geometry: { type: "LineString", coordinates: tac.pencilCoords } };
+    tac.maps.forEach(function (m) {
+      if (!m.isStyleLoaded || !m.isStyleLoaded()) return;
+      if (m.getSource("az-tac-pencil")) m.getSource("az-tac-pencil").setData(geojson);
+      else {
+        m.addSource("az-tac-pencil", { type: "geojson", data: geojson });
+        m.addLayer({ id: "az-tac-pencil-line", type: "line", source: "az-tac-pencil", paint: { "line-color": "#F59E0B", "line-width": 3 } });
       }
-    }, 80);
-  }
-
-  function ensureUnderMapDrawer() {
-    let drawer = document.getElementById("azUnderMapDrawer");
-    if (!drawer) {
-      drawer = document.createElement("div");
-      drawer.id = "azUnderMapDrawer";
-      document.body.appendChild(drawer);
-    }
-    const inc = document.getElementById("azIncursionOverlay");
-    const isIncOpen = Boolean(inc && inc.classList.contains("is-open"));
-
-    if (isIncOpen && drawer.dataset.azPopulated !== "1") {
-      const ids = ["azGeoLayersBox", "azGeoMunBox", "azGeoCfgBox", "azGeoRouteBox"];
-      let html = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;border-bottom:1px solid #28271F;padding-bottom:6px;">' +
-                 '<span style="font-size:10px;font-weight:800;color:#C5A869;">CONTROLES & CAMADAS (MAPA FIXO)</span>' +
-                 '<button type="button" id="azCloseDrawerQuickBtn" style="background:#161616;color:#C5A869;border:1px solid #C5A869;border-radius:6px;padding:2px 8px;font-size:10px;font-weight:700;">Recolher</button></div>';
-      ids.forEach(function (id) {
-        const el = document.getElementById(id);
-        if (el) html += '<div style="margin-bottom:8px;">' + el.innerHTML + '</div>';
-      });
-      drawer.innerHTML = html;
-      drawer.dataset.azPopulated = "1";
-
-      drawer.querySelectorAll("[data-layer]").forEach(function (chip) {
-        chip.addEventListener("click", function () {
-          const orig = document.querySelector('#azGeoLayerChips [data-layer="' + chip.getAttribute("data-layer") + '"]');
-          if (orig) orig.click();
-          chip.classList.toggle("is-on");
-        });
-      });
-      const closeBtn = document.getElementById("azCloseDrawerQuickBtn");
-      if (closeBtn) closeBtn.addEventListener("click", function () { setDrawerRatio(0); });
-    }
-    drawer.style.display = isIncOpen ? "block" : "none";
-  }
-
-  function setDrawerRatio(ratio) {
-    tac.openRatio = Math.min(1, Math.max(0, ratio));
-    const track = document.getElementById("azVerticalGripLandscape");
-    const thumb = document.getElementById("azVerticalGripThumb");
-    const drawer = document.getElementById("azUnderMapDrawer");
-    if (track && thumb) {
-      const usableH = Math.max(1, track.clientHeight - thumb.offsetHeight - 6);
-      thumb.style.transform = `translateY(${Math.round(tac.openRatio * usableH)}px)`;
-    }
-    if (drawer) {
-      drawer.style.transform = `translateY(${Math.round((1 - tac.openRatio) * 100)}%)`;
-    }
-  }
-
-  function initVerticalGripDrawer() {
-    let track = document.getElementById("azVerticalGripLandscape");
-    if (!track) {
-      track = document.createElement("div");
-      track.id = "azVerticalGripLandscape";
-      document.body.appendChild(track);
-    }
-    if (track.dataset.azGripReady === "1") return;
-    track.dataset.azGripReady = "1";
-    track.innerHTML = '<div id="azVerticalGripThumb"></div>';
-
-    function handleY(clientY) {
-      const rect = track.getBoundingClientRect();
-      const thumb = document.getElementById("azVerticalGripThumb");
-      const thumbH = thumb ? thumb.offsetHeight : 42;
-      const usableH = Math.max(1, rect.height - thumbH - 6);
-      setDrawerRatio(Math.min(usableH, Math.max(0, clientY - rect.top - thumbH / 2)) / usableH);
-    }
-
-    track.addEventListener("pointerdown", function (e) {
-      e.preventDefault();
-      e.stopPropagation();
-      tac.draggingGrip = true;
-      track.classList.add("is-dragging");
-      ensureUnderMapDrawer();
-      if (track.setPointerCapture) try { track.setPointerCapture(e.pointerId); } catch (_) {}
-      handleY(e.clientY);
     });
-    track.addEventListener("pointermove", function (e) {
-      if (!tac.draggingGrip) return;
-      e.preventDefault();
-      e.stopPropagation();
-      handleY(e.clientY);
-    });
-    function endGrip(e) {
-      if (!tac.draggingGrip) return;
-      tac.draggingGrip = false;
-      track.classList.remove("is-dragging");
-      if (e && track.releasePointerCapture) try { track.releasePointerCapture(e.pointerId); } catch (_) {}
+    if (tac.pencilCoords.length >= 2) {
+      let total = 0;
+      for (let i = 1; i < tac.pencilCoords.length; i++) total += calcDistAndBearing(tac.pencilCoords[i - 1][1], tac.pencilCoords[i - 1][0], tac.pencilCoords[i][1], tac.pencilCoords[i][0]).dist;
+      showToast(`Perímetro/Bloqueio: ${tac.pencilCoords.length} pts • ${total}m`);
     }
-    track.addEventListener("pointerup", endGrip);
-    track.addEventListener("pointercancel", endGrip);
   }
 
-  function bindRedCrossAndReturn() {
-    const medBtn = document.getElementById("azAtakRedCrossBtn");
-    const retBanner = document.getElementById("azReturnIncursionBanner");
-    if (medBtn && medBtn.dataset.azBound !== "1") {
-      medBtn.dataset.azBound = "1";
-      medBtn.addEventListener("click", function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        const inc = document.getElementById("azIncursionOverlay");
-        if (inc) inc.classList.remove("is-open");
-        document.body.classList.remove("az-inc-active");
-        if (retBanner) retBanner.classList.add("is-visible");
-        setTimeout(function () {
-          let tab = document.querySelector('[data-tab="aph"], [data-page="aph"], #tabAph');
-          if (!tab) {
-            document.querySelectorAll("button, [role='tab']").forEach(function (b) {
-              if (!tab && /\bAPH\b|Saúde/i.test(b.textContent || "")) tab = b;
-            });
-          }
-          if (tab) tab.click();
-        }, 80);
-      });
-    }
-    if (retBanner && retBanner.dataset.azBound !== "1") {
-      retBanner.dataset.azBound = "1";
-      retBanner.addEventListener("click", function () {
-        retBanner.classList.remove("is-visible");
-        const geoTab = document.querySelector('[data-tab="geo"], [data-page="geo"], #tabGeo');
-        if (geoTab) geoTab.click();
-        setTimeout(function () {
-          const inc = document.getElementById("azIncursionOverlay");
-          if (inc) {
-            inc.classList.add("is-open");
-            document.body.classList.add("az-inc-active");
-          }
-        }, 80);
-      });
-    }
+  function bindSingleMap(map) {
+    if (!map || map._azBlocoCBound) return;
+    map._azBlocoCBound = true;
+    const container = map.getContainer();
+
+    container.addEventListener("click", function (ev) {
+      if (ev.target && ev.target.closest && ev.target.closest(".az-tac-pin")) return;
+      closeRadialWheel();
+      if (!tac.pendingPinMode && !tac.pencilActive) return;
+
+      const rect = container.getBoundingClientRect();
+      const lngLat = map.unproject([ev.clientX - rect.left, ev.clientY - rect.top]);
+      if (!lngLat) return;
+
+      if (tac.pendingPinMode) {
+        createTacticalPin(tac.pendingPinMode, lngLat.lng, lngLat.lat);
+        tac.pendingPinMode = null;
+      } else if (tac.pencilActive) {
+        tac.pencilCoords.push([lngLat.lng, lngLat.lat]);
+        updatePencilLayer();
+      }
+    }, true);
+
+    let pressLngLat = null;
+    container.addEventListener("pointerdown", function (ev) {
+      if (ev.button && ev.button !== 0) return;
+      const rect = container.getBoundingClientRect();
+      pressLngLat = map.unproject([ev.clientX - rect.left, ev.clientY - rect.top]);
+      clearTimeout(tac.longPressTimer);
+      tac.longPressTimer = setTimeout(function () {
+        if (pressLngLat) createTacticalPin("gpe", pressLngLat.lng, pressLngLat.lat);
+      }, 750);
+    }, { passive: true });
+
+    ["pointermove", "pointerup", "pointercancel"].forEach(function (evtName) {
+      container.addEventListener(evtName, function () { clearTimeout(tac.longPressTimer); }, { passive: true });
+    });
   }
 
   /* =====================================================================
-     PARTE E: ALFINETES TÁTICOS, LÁPIS, RODA DE AÇÕES E REDE HÍBRIDA
+     5. REDE AO VIVO, DETECÇÃO DE CORRIDA E MONITOR DE DESCONEXÃO
      ===================================================================== */
   function xorCipher(str, key) {
     if (!key) return str;
@@ -22042,207 +21828,6 @@ if (document.readyState === "loading") {
     for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
     return (h >>> 0).toString(16);
   }
-
-  function calcDistAndBearing(lat1, lon1, lat2, lon2) {
-    const R = 6371000;
-    const p1 = (lat1 * Math.PI) / 180, p2 = (lat2 * Math.PI) / 180;
-    const dp = ((lat2 - lat1) * Math.PI) / 180, dl = ((lon2 - lon1) * Math.PI) / 180;
-    const a = Math.sin(dp / 2) ** 2 + Math.cos(p1) * Math.cos(p2) * Math.sin(dl / 2) ** 2;
-    const dist = 2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const y = Math.sin(dl) * Math.cos(p2);
-    const x = Math.cos(p1) * Math.sin(p2) - Math.sin(p1) * Math.cos(p2) * Math.cos(dl);
-    return { dist: Math.round(dist), bearing: Math.round(((Math.atan2(y, x) * 180) / Math.PI + 360) % 360) };
-  }
-
-  function renderRoster() {
-    const box = document.getElementById("azTeamQraList");
-    if (!box) return;
-    box.innerHTML = "";
-    const liveQras = Object.values(tac.teammates).map(function (m) { return m.qra; });
-    Array.from(new Set([...liveQras, ...tac.roster])).forEach(function (qra) {
-      if (!qra || qra === tac.myQra) return;
-      const chip = document.createElement("button");
-      chip.type = "button";
-      chip.className = "az-qra-chip" + (tac.selectedQra === qra ? " is-selected" : "") + (liveQras.includes(qra) ? " is-live" : "");
-      chip.textContent = (liveQras.includes(qra) ? "● " : "") + qra;
-      chip.addEventListener("click", function () { tac.selectedQra = qra; renderRoster(); });
-      box.appendChild(chip);
-    });
-    const badge = document.getElementById("azLiveCountBadge");
-    if (badge) {
-      const c = Object.keys(tac.teammates).length;
-      badge.textContent = c > 0 ? `(${c})` : "";
-    }
-  }
-
-  function renderMateOnMap(mate, mapInst) {
-    if (!mapInst || !window.maplibregl) return;
-    let ex = mate.markers.find(function (item) { return item.map === mapInst; });
-    if (ex) { ex.marker.setLngLat([mate.lng, mate.lat]); return; }
-    const el = document.createElement("div");
-    el.className = "az-tac-pin is-mate";
-    el.innerHTML = `<div class="az-tac-pin-badge">${mate.qra}</div><div class="az-tac-pin-dot"></div>`;
-    const marker = new window.maplibregl.Marker({ element: el, anchor: "bottom" }).setLngLat([mate.lng, mate.lat]).addTo(mapInst);
-    mate.markers.push({ map: mapInst, marker });
-  }
-
-  function attachPinToMap(pinObj, mapInst) {
-    if (!mapInst || !window.maplibregl) return;
-    const el = document.createElement("div");
-    el.className = "az-tac-pin" + (pinObj.type === "reagrupar" ? " is-regroup" : pinObj.type === "gpe" ? " is-gpe" : "");
-    el.innerHTML = `<div class="az-tac-pin-badge">${pinObj.label}</div><div class="az-tac-pin-dot"></div>`;
-    const marker = new window.maplibregl.Marker({ element: el, anchor: "bottom" }).setLngLat([pinObj.lng, pinObj.lat]).addTo(mapInst);
-    pinObj.markers.push(marker);
-    el.addEventListener("click", function (ev) {
-      ev.stopPropagation();
-      openRadialWheel(pinObj, ev.clientX, ev.clientY);
-    });
-  }
-
-  function createTacticalPin(type, lng, lat, customLabel, remoteId, fromSync) {
-    if (tac.maps.length === 0) scanAndCaptureExistingMaps();
-    if (tac.maps.length === 0 || !window.maplibregl) {
-      if (!fromSync) showToast("Toque no mapa para inicializar a camada e repita o toque.");
-      return;
-    }
-
-    const id = remoteId || ("pin_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6));
-    const existing = tac.pins.find(function (p) { return p.id === id; });
-    if (existing) {
-      existing.lng = lng;
-      existing.lat = lat;
-      existing.markers.forEach(function (mk) { mk.setLngLat([lng, lat]); });
-      return;
-    }
-
-    const label = customLabel || (
-      type === "desloque" ? "DESLOQUE: " + tac.selectedQra :
-      type === "reagrupar" ? "REAGRUPAR AQUI" : "GPE • PRIORIDADE"
-    );
-
-    const pinObj = { id, type, label, lng, lat, markers: [] };
-    tac.maps.forEach(function (m) { attachPinToMap(pinObj, m); });
-    tac.pins.push(pinObj);
-
-    if (!fromSync) {
-      broadcastPacket({ kind: "pin", pin: { id, type, label, lng, lat } });
-      syncFirebaseState();
-      if (type === "gpe") {
-        const coordStr = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
-        if (navigator.clipboard) navigator.clipboard.writeText(coordStr).catch(function () {});
-        showToast(`GPE MARCADO (${coordStr}) — COPIADO`, 3600);
-      } else {
-        showToast(`Alfinete "${label}" posicionado.`);
-      }
-    } else {
-      showToast(`Recebido da equipe: ${label}`, 3400);
-    }
-  }
-
-  function openRadialWheel(pinObj, x, y) {
-    tac.activePin = pinObj;
-    const wheel = document.getElementById("azRadialWheel");
-    if (!wheel) return;
-    wheel.style.left = Math.min(window.innerWidth - 95, Math.max(95, x)) + "px";
-    wheel.style.top = Math.min(window.innerHeight - 95, Math.max(95, y)) + "px";
-    wheel.classList.add("is-open");
-  }
-  function closeRadialWheel() {
-    const wheel = document.getElementById("azRadialWheel");
-    if (wheel) wheel.classList.remove("is-open");
-  }
-
-  function nudgeActivePin(dir) {
-    if (!tac.activePin) return;
-    const step = 0.000035;
-    if (dir === "N") tac.activePin.lat += step;
-    if (dir === "S") tac.activePin.lat -= step;
-    if (dir === "L") tac.activePin.lng += step;
-    if (dir === "O") tac.activePin.lng -= step;
-    tac.activePin.markers.forEach(function (mk) { mk.setLngLat([tac.activePin.lng, tac.activePin.lat]); });
-    broadcastPacket({ kind: "pin", pin: { id: tac.activePin.id, type: tac.activePin.type, label: tac.activePin.label, lng: tac.activePin.lng, lat: tac.activePin.lat } });
-  }
-
-  function drawMeasureLineToPin(pinObj) {
-    const map = getActiveMap();
-    if (!map) return;
-    const originLat = tac.myPos ? tac.myPos.lat : map.getCenter().lat;
-    const originLng = tac.myPos ? tac.myPos.lng : map.getCenter().lng;
-    const res = calcDistAndBearing(originLat, originLng, pinObj.lat, pinObj.lng);
-    showToast(`${pinObj.label}: ${res.dist}m • Azimute ${res.bearing}°`, 4200);
-
-    const geojson = { type: "Feature", geometry: { type: "LineString", coordinates: [[originLng, originLat], [pinObj.lng, pinObj.lat]] } };
-    tac.maps.forEach(function (m) {
-      if (!m.isStyleLoaded || !m.isStyleLoaded()) return;
-      if (m.getSource("az-tac-measure")) m.getSource("az-tac-measure").setData(geojson);
-      else {
-        m.addSource("az-tac-measure", { type: "geojson", data: geojson });
-        m.addLayer({ id: "az-tac-measure-line", type: "line", source: "az-tac-measure", paint: { "line-color": "#C5A869", "line-width": 2.5, "line-dasharray": [2, 2] } });
-      }
-    });
-  }
-
-  function updatePencilLayer() {
-    const geojson = { type: "Feature", geometry: { type: "LineString", coordinates: tac.pencilCoords } };
-    tac.maps.forEach(function (m) {
-      if (!m.isStyleLoaded || !m.isStyleLoaded()) return;
-      if (m.getSource("az-tac-pencil")) m.getSource("az-tac-pencil").setData(geojson);
-      else {
-        m.addSource("az-tac-pencil", { type: "geojson", data: geojson });
-        m.addLayer({ id: "az-tac-pencil-line", type: "line", source: "az-tac-pencil", paint: { "line-color": "#F59E0B", "line-width": 3 } });
-      }
-    });
-    if (tac.pencilCoords.length === 1) showToast("Ponto 1 marcado — toque no próximo ponto da via");
-    else if (tac.pencilCoords.length >= 2) {
-      let total = 0;
-      for (let i = 1; i < tac.pencilCoords.length; i++) total += calcDistAndBearing(tac.pencilCoords[i - 1][1], tac.pencilCoords[i - 1][0], tac.pencilCoords[i][1], tac.pencilCoords[i][0]).dist;
-      showToast(`Lápis Tático: ${tac.pencilCoords.length} pts • ${total}m`);
-    }
-  }
-
-  /* CLIQUE DIRETO NO CONTÊINER DO MAPA (GARANTE PLOTAGEM MESMO SEM EVENTO INTERNO) */
-  function bindSingleMap(map) {
-    if (!map || map._azBlocoCBound) return;
-    map._azBlocoCBound = true;
-
-    const container = map.getContainer();
-    container.addEventListener("click", function (ev) {
-      if (ev.target && ev.target.closest && ev.target.closest(".az-tac-pin")) return;
-      closeRadialWheel();
-      if (!tac.pendingPinMode && !tac.pencilActive) return;
-
-      const rect = container.getBoundingClientRect();
-      const lngLat = map.unproject([ev.clientX - rect.left, ev.clientY - rect.top]);
-      if (!lngLat) return;
-
-      if (tac.pendingPinMode) {
-        createTacticalPin(tac.pendingPinMode, lngLat.lng, lngLat.lat);
-        tac.pendingPinMode = null;
-        document.getElementById("azArmDesloqueBtn").classList.remove("is-active");
-        document.getElementById("azArmRegroupBtn").classList.remove("is-active");
-      } else if (tac.pencilActive) {
-        tac.pencilCoords.push([lngLat.lng, lngLat.lat]);
-        updatePencilLayer();
-      }
-    }, true);
-
-    let pressLngLat = null;
-    container.addEventListener("pointerdown", function (ev) {
-      if (ev.button && ev.button !== 0) return;
-      const rect = container.getBoundingClientRect();
-      pressLngLat = map.unproject([ev.clientX - rect.left, ev.clientY - rect.top]);
-      clearTimeout(tac.longPressTimer);
-      tac.longPressTimer = setTimeout(function () {
-        if (pressLngLat) createTacticalPin("gpe", pressLngLat.lng, pressLngLat.lat);
-      }, 700);
-    }, { passive: true });
-
-    ["pointermove", "pointerup", "pointercancel"].forEach(function (evtName) {
-      container.addEventListener(evtName, function () { clearTimeout(tac.longPressTimer); }, { passive: true });
-    });
-  }
-
-  /* REDE HÍBRIDA (MQTT WEBSOCKET + BROADCAST + FIREBASE) */
   function mqttEncodeStr(str) {
     const enc = new TextEncoder().encode(str);
     return [enc.length >> 8, enc.length & 0xff, ...enc];
@@ -22253,11 +21838,59 @@ if (document.readyState === "loading") {
     return out;
   }
 
+  function renderRoster() {
+    const box = document.getElementById("azTeamQraList");
+    if (!box) return;
+    box.innerHTML = "";
+    const liveMates = Object.values(tac.teammates);
+    const liveQras = liveMates.map(function (m) { return m.qra; });
+    Array.from(new Set([...liveQras, ...tac.roster])).forEach(function (qra) {
+      if (!qra || qra === tac.myQra) return;
+      const isLive = liveQras.includes(qra);
+      const chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "az-qra-chip" + (tac.selectedQra === qra ? " is-selected" : "") + (isLive ? " is-live" : "");
+      chip.textContent = (isLive ? "● " : "") + qra;
+      chip.addEventListener("click", function () {
+        tac.selectedQra = qra;
+        renderRoster();
+      });
+      box.appendChild(chip);
+    });
+    const badge = document.getElementById("azLiveCountBadge");
+    if (badge) badge.textContent = `${liveMates.length} ATIVOS`;
+  }
+
+  function renderMateOnMap(mate, mapInst) {
+    if (!mapInst || !window.maplibregl) return;
+    let ex = mate.markers.find(function (item) { return item.map === mapInst; });
+    if (ex) { ex.marker.setLngLat([mate.lng, mate.lat]); return; }
+    const el = document.createElement("div");
+    el.className = "az-tac-pin is-mate";
+    el.innerHTML = `<div class="az-tac-pin-badge">${mate.qra}</div><div class="az-tac-pin-dot"></div>`;
+    el.addEventListener("click", function (ev) {
+      ev.stopPropagation();
+      generateRouteToTarget(mate.lat, mate.lng, mate.qra);
+    });
+    const marker = new window.maplibregl.Marker({ element: el, anchor: "bottom" }).setLngLat([mate.lng, mate.lat]).addTo(mapInst);
+    mate.markers.push({ map: mapInst, marker });
+  }
+
+  function removeMateFromSession(uid, reasonText) {
+    const mate = tac.teammates[uid];
+    if (!mate) return;
+    mate.markers.forEach(function (item) { item.marker.remove(); });
+    delete tac.teammates[uid];
+    renderRoster();
+    playDisconnectAlert();
+    showToast(`⚠ ${mate.qra} ${reasonText || "SAIU / DESCONECTOU"}`, 4500, true);
+  }
+
   function connectLiveRoom() {
     if (!tac.roomCode) return;
     if (tac.ws) { try { tac.ws.close(); } catch (_) {} tac.ws = null; }
     const statusEl = document.getElementById("azLiveNetStatus");
-    if (statusEl) { statusEl.textContent = "● CONECTANDO AO TURNO..."; statusEl.style.color = "#F59E0B"; }
+    if (statusEl) { statusEl.textContent = "● CONECTANDO..."; statusEl.style.color = "#F59E0B"; }
 
     const topic = "azimute/pmmg/turno/" + roomTopicHash(tac.roomCode);
     const clientId = "az_" + tac.myId + "_" + Math.floor(Math.random() * 999);
@@ -22273,7 +21906,7 @@ if (document.readyState === "loading") {
           if (ws.readyState !== 1) return;
           const subBody = [0x00, 0x01, ...mqttEncodeStr(topic), 0x00];
           ws.send(new Uint8Array([0x82, ...mqttEncodeVarLen(subBody.length), ...subBody]));
-          if (statusEl) { statusEl.textContent = `● AO VIVO: ${tac.roomCode.toUpperCase()}`; statusEl.style.color = "#4ADE80"; }
+          if (statusEl) { statusEl.textContent = `● AO VIVO: ${tac.roomCode}`; statusEl.style.color = "#4ADE80"; }
           if (tac.myPos) broadcastPacket({ kind: "pos", lat: tac.myPos.lat, lng: tac.myPos.lng });
         }, 250);
       };
@@ -22308,11 +21941,22 @@ if (document.readyState === "loading") {
 
   function handleIncomingPacket(pkt) {
     if (!pkt || pkt.uid === tac.myId) return;
+
     if (pkt.kind === "pos" && typeof pkt.lat === "number" && typeof pkt.lng === "number") {
-      if (!tac.teammates[pkt.uid]) tac.teammates[pkt.uid] = { qra: pkt.qra, lat: pkt.lat, lng: pkt.lng, ts: Date.now(), markers: [] };
-      else Object.assign(tac.teammates[pkt.uid], { qra: pkt.qra, lat: pkt.lat, lng: pkt.lng, ts: Date.now() });
+      if (!tac.teammates[pkt.uid]) {
+        tac.teammates[pkt.uid] = { uid: pkt.uid, qra: pkt.qra, lat: pkt.lat, lng: pkt.lng, ts: Date.now(), lastRunAlert: 0, markers: [] };
+        vibratePattern(140);
+        showToast(`● ${pkt.qra} ENTROU NA REDE`, 3000);
+      } else {
+        Object.assign(tac.teammates[pkt.uid], { qra: pkt.qra, lat: pkt.lat, lng: pkt.lng, ts: Date.now() });
+      }
       tac.maps.forEach(function (m) { renderMateOnMap(tac.teammates[pkt.uid], m); });
       renderRoster();
+    } else if (pkt.kind === "run") {
+      vibratePattern([180, 90, 180]);
+      showToast(`🏃 ${pkt.qra} INICIOU UMA CORRIDA`, 4500);
+    } else if (pkt.kind === "leave") {
+      removeMateFromSession(pkt.uid, "ENCERROU A SESSÃO");
     } else if (pkt.kind === "pin" && pkt.pin) {
       createTacticalPin(pkt.pin.type, pkt.pin.lng, pkt.pin.lat, pkt.pin.label, pkt.pin.id, true);
     } else if (pkt.kind === "del_pin" && pkt.pinId) {
@@ -22322,6 +21966,7 @@ if (document.readyState === "loading") {
         tac.pins = tac.pins.filter(function (p) { return p.id !== pkt.pinId; });
       }
     } else if (pkt.kind === "msg" && pkt.text) {
+      vibratePattern([200, 100, 200]);
       showToast(`[${pkt.qra}]: ${pkt.text}`, 4500);
     }
   }
@@ -22334,112 +21979,175 @@ if (document.readyState === "loading") {
     };
   }
 
-  async function syncFirebaseState() {
-    if (!tac.firebaseUrl || !tac.roomCode) return;
-    const base = tac.firebaseUrl.replace(/\/+$/, "");
-    const roomKey = roomTopicHash(tac.roomCode);
-    const fbStatus = document.getElementById("azFirebaseStatus");
-    try {
-      if (tac.myPos) {
-        await fetch(`${base}/azimute/${roomKey}/members/${tac.myId}.json`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ blob: encodePayload({ uid: tac.myId, qra: tac.myQra, lat: tac.myPos.lat, lng: tac.myPos.lng }, tac.roomCode), ts: Date.now() })
-        });
-      }
-      const pinsMap = {};
-      tac.pins.forEach(function (p) { pinsMap[p.id] = encodePayload({ id: p.id, type: p.type, label: p.label, lng: p.lng, lat: p.lat }, tac.roomCode); });
-      await fetch(`${base}/azimute/${roomKey}/pins.json`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(pinsMap) });
-
-      const data = await (await fetch(`${base}/azimute/${roomKey}.json`)).json();
-      if (data && data.members) {
-        Object.values(data.members).forEach(function (m) {
-          if (m && m.blob && Date.now() - (m.ts || 0) < 300000) {
-            const dec = decodePayload(m.blob, tac.roomCode);
-            if (dec) handleIncomingPacket({ kind: "pos", ...dec });
-          }
-        });
-      }
-      if (data && data.pins) {
-        Object.values(data.pins).forEach(function (blob) {
-          const p = decodePayload(blob, tac.roomCode);
-          if (p) createTacticalPin(p.type, p.lng, p.lat, p.label, p.id, true);
-        });
-      }
-      if (fbStatus) { fbStatus.textContent = "FB: ATIVO"; fbStatus.style.color = "#4ADE80"; }
-    } catch (_) {
-      if (fbStatus) { fbStatus.textContent = "FB: ERRO"; fbStatus.style.color = "#EF4444"; }
-    }
-  }
-
-  function monitorGpsAccuracy() {
+  /* =====================================================================
+     6. GPS CONTÍNUO + DETECÇÃO DE CORRIDA (VELOCIDADE A PÉ > 8.5 KM/H)
+     ===================================================================== */
+  function monitorGpsAndRunState() {
     const badge = document.getElementById("azAtakGpsBadge");
     if (!navigator.geolocation) return;
     navigator.geolocation.getCurrentPosition(
       function (pos) {
-        tac.myPos = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-        if (tac.roomCode) broadcastPacket({ kind: "pos", lat: tac.myPos.lat, lng: tac.myPos.lng });
+        const now = Date.now();
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        let speedMs = typeof pos.coords.speed === "number" && pos.coords.speed >= 0 ? pos.coords.speed : 0;
+
+        if (!speedMs && tac.prevPos) {
+          const dt = (now - tac.prevPos.ts) / 1000;
+          if (dt >= 2 && dt <= 15) {
+            const d = calcDistAndBearing(tac.prevPos.lat, tac.prevPos.lng, lat, lng).dist;
+            speedMs = d / dt;
+          }
+        }
+
+        // Faixa de corrida a pé: entre 2.4 m/s (~8.6 km/h) e 7.5 m/s (~27 km/h)
+        if (speedMs >= 2.4 && speedMs <= 7.5 && now - tac.lastMyRunAlert > 25000) {
+          tac.lastMyRunAlert = now;
+          broadcastPacket({ kind: "run" });
+          showToast(`🏃 ${tac.myQra} INICIOU UMA CORRIDA`, 3500);
+        }
+
+        tac.prevPos = { lat, lng, ts: now };
+        tac.myPos = { lat, lng };
+        if (tac.roomCode) broadcastPacket({ kind: "pos", lat, lng });
+
         if (badge) {
           const acc = Math.round(pos.coords.accuracy || 0);
           badge.textContent = `GPS ±${acc}m`;
-          badge.classList.toggle("is-warn", acc > 25 && acc <= 60);
-          badge.classList.toggle("is-bad", acc > 60);
+          badge.style.color = acc > 40 ? "#F59E0B" : "#4ADE80";
         }
       },
       function () {
-        if (badge) { badge.textContent = "SEM GPS"; badge.classList.add("is-bad"); }
+        if (badge) { badge.textContent = "SEM GPS"; badge.style.color = "#EF4444"; }
       },
-      { enableHighAccuracy: true, timeout: 4000, maximumAge: 5000 }
+      { enableHighAccuracy: true, timeout: 4000, maximumAge: 3000 }
     );
   }
 
-  /* EVENTOS DOS BOTÕES */
+  /* =====================================================================
+     7. TOPO MODO INCURSÃO + CRUZ VERMELHA COM RETORNO
+     ===================================================================== */
+  function enhanceIncursionTop() {
+    const inc = document.getElementById("azIncursionOverlay");
+    const isOpen = Boolean(inc && inc.classList.contains("is-open"));
+    document.body.classList.toggle("az-inc-active", isOpen);
+    if (!isOpen) return;
+
+    inc.querySelectorAll("div, span, p, small, label").forEach(function (el) {
+      if (el.children.length === 0 && /mapa\s+interativo/i.test(el.textContent || "")) el.style.display = "none";
+    });
+
+    const now = new Date();
+    const clockEl = document.getElementById("azAtakClockText");
+    if (clockEl) {
+      clockEl.textContent =
+        String(now.getDate()).padStart(2, "0") + "/" + String(now.getMonth() + 1).padStart(2, "0") + " " +
+        String(now.getHours()).padStart(2, "0") + ":" + String(now.getMinutes()).padStart(2, "0");
+    }
+
+    const streetEl = document.getElementById("azAtakStreetText");
+    if (streetEl) {
+      const nodes = inc.querySelectorAll("div, span");
+      for (let i = 0; i < nodes.length; i++) {
+        const m = (nodes[i].textContent || "").match(/(?:FRENTE|RETAGUARDA|ESQ|DIR)\s*:\s*([^•\n]+)/i);
+        if (m && m[1] && !/sem via/i.test(m[1]) && m[1].trim().length > 3) {
+          streetEl.textContent = m[1].trim();
+          break;
+        }
+      }
+    }
+  }
+
+  function bindRedCrossAndReturn() {
+    const medBtn = document.getElementById("azAtakRedCrossBtn");
+    const retBanner = document.getElementById("azReturnIncursionBanner");
+    if (medBtn && medBtn.dataset.azBound !== "1") {
+      medBtn.dataset.azBound = "1";
+      medBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        const inc = document.getElementById("azIncursionOverlay");
+        if (inc) inc.classList.remove("is-open");
+        document.body.classList.remove("az-inc-active");
+        if (retBanner) retBanner.classList.add("is-visible");
+        setTimeout(function () {
+          let tab = document.querySelector('[data-tab="aph"], [data-page="aph"], #tabAph');
+          if (!tab) document.querySelectorAll("button, [role='tab']").forEach(function (b) { if (!tab && /\bAPH\b|Saúde/i.test(b.textContent || "")) tab = b; });
+          if (tab) tab.click();
+        }, 80);
+      });
+    }
+    if (retBanner && retBanner.dataset.azBound !== "1") {
+      retBanner.dataset.azBound = "1";
+      retBanner.addEventListener("click", function () {
+        retBanner.classList.remove("is-visible");
+        const geoTab = document.querySelector('[data-tab="geo"], [data-page="geo"], #tabGeo');
+        if (geoTab) geoTab.click();
+        setTimeout(function () {
+          const inc = document.getElementById("azIncursionOverlay");
+          if (inc) { inc.classList.add("is-open"); document.body.classList.add("az-inc-active"); }
+        }, 80);
+      });
+    }
+  }
+
+  /* =====================================================================
+     8. EVENTOS DE INTERFACE E ENCERRAR SESSÃO
+     ===================================================================== */
   document.getElementById("azMyQraInput").value = tac.myQra;
   document.getElementById("azRoomCodeInput").value = tac.roomCode;
-  document.getElementById("azFirebaseUrlInput").value = tac.firebaseUrl;
+  renderRoster();
 
-  document.getElementById("azToggleGridBtn").addEventListener("click", function () {
-    scanAndCaptureExistingMaps();
-    document.getElementById("azAtakGridMenu").classList.toggle("is-open");
-    document.getElementById("azTeamPinModal").classList.remove("is-open");
-  });
-
-  document.getElementById("azQuickTeamBtn").addEventListener("click", function () {
+  document.getElementById("azAtakHamburgerBtn").addEventListener("click", function () {
     scanAndCaptureExistingMaps();
     renderRoster();
-    document.getElementById("azTeamPinModal").classList.toggle("is-open");
-    document.getElementById("azAtakGridMenu").classList.remove("is-open");
-  });
-
-  document.getElementById("azCloseTeamModal").addEventListener("click", function () {
-    document.getElementById("azTeamPinModal").classList.remove("is-open");
+    toggleRightDock();
   });
 
   document.getElementById("azConnectNetBtn").addEventListener("click", function () {
-    const qraVal = (document.getElementById("azMyQraInput").value || "").trim();
+    const qraVal = (document.getElementById("azMyQraInput").value || "").trim().toUpperCase();
     const roomVal = (document.getElementById("azRoomCodeInput").value || "").trim().toUpperCase();
-    if (!roomVal) { showToast("Informe o Código do Turno (ex: ALPHA-01)."); return; }
+    if (!roomVal) { showToast("Digite o código do turno (ex: PMMG01)."); return; }
     tac.myQra = qraVal || tac.myQra;
     tac.roomCode = roomVal;
     localStorage.setItem("az_tac_my_qra", tac.myQra);
     localStorage.setItem("az_tac_room", tac.roomCode);
     connectLiveRoom();
-    syncFirebaseState();
-    showToast(`Conectado ao turno ${tac.roomCode} como ${tac.myQra}`);
+    showToast(`Conectado: ${tac.myQra} • Turno ${tac.roomCode}`);
   });
 
-  document.getElementById("azSaveFirebaseBtn").addEventListener("click", function () {
-    tac.firebaseUrl = (document.getElementById("azFirebaseUrlInput").value || "").trim();
-    localStorage.setItem("az_tac_fb_url", tac.firebaseUrl);
-    syncFirebaseState();
-    showToast(tac.firebaseUrl ? "URL Firebase salva." : "Firebase desativado.");
+  document.getElementById("azEndSessionBtn").addEventListener("click", function () {
+    if (tac.roomCode) {
+      broadcastPacket({ kind: "leave" });
+    }
+    if (tac.ws) { try { tac.ws.close(); } catch (_) {} tac.ws = null; }
+    Object.keys(tac.teammates).forEach(function (uid) {
+      tac.teammates[uid].markers.forEach(function (item) { item.marker.remove(); });
+      delete tac.teammates[uid];
+    });
+    tac.roomCode = "";
+    localStorage.removeItem("az_tac_room");
+    document.getElementById("azRoomCodeInput").value = "";
+    const statusEl = document.getElementById("azLiveNetStatus");
+    if (statusEl) { statusEl.textContent = "● SESSÃO ENCERRADA"; statusEl.style.color = "#EF4444"; }
+    renderRoster();
+    playDisconnectAlert();
+    showToast("Sessão encerrada e equipe notificada.", 3500, true);
+  });
+
+  document.getElementById("azRouteToMateBtn").addEventListener("click", function () {
+    const mate = Object.values(tac.teammates).find(function (m) { return m.qra === tac.selectedQra; });
+    if (!mate) {
+      showToast(`Integrante "${tac.selectedQra}" não está com GPS ativo na sala.`);
+      return;
+    }
+    generateRouteToTarget(mate.lat, mate.lng, mate.qra);
   });
 
   document.querySelectorAll("[data-quick-msg]").forEach(function (btn) {
     btn.addEventListener("click", function () {
       const txt = btn.getAttribute("data-quick-msg");
       broadcastPacket({ kind: "msg", text: txt });
-      showToast(`Enviado silencioso: ${txt}`);
+      showToast(`Enviado: ${txt}`);
     });
   });
 
@@ -22449,7 +22157,7 @@ if (document.readyState === "loading") {
     if (!txt) return;
     broadcastPacket({ kind: "msg", text: txt });
     inp.value = "";
-    showToast(`Enviado silencioso: ${txt}`);
+    showToast(`Enviado: ${txt}`);
   });
 
   document.getElementById("azExportOfflineCodeBtn").addEventListener("click", function () {
@@ -22458,11 +22166,11 @@ if (document.readyState === "loading") {
     tac.pins.slice(-3).forEach(function (p) { parts.push(`M:${p.type}|${p.label}@${p.lat.toFixed(5)},${p.lng.toFixed(5)}`); });
     const code = "AZ1|" + (parts.join(";") || "SEM_PONTOS");
     if (navigator.clipboard) navigator.clipboard.writeText(code).catch(function () {});
-    showToast("Código curto copiado: " + code, 4000);
+    showToast("Código copiado: " + code, 3800);
   });
 
   document.getElementById("azImportOfflineCodeBtn").addEventListener("click", function () {
-    const raw = window.prompt("Cole o código tático curto (ex: AZ1|...):");
+    const raw = window.prompt("Cole o código tático (AZ1|...):");
     if (!raw || !raw.startsWith("AZ1|")) return;
     raw.slice(4).split(";").forEach(function (item) {
       if (item.startsWith("P:")) {
@@ -22476,57 +22184,49 @@ if (document.readyState === "loading") {
         if (!isNaN(lat) && !isNaN(lng)) createTacticalPin(type || "desloque", lng, lat, label || "PONTO", null, true);
       }
     });
-    showToast("Dados offline plotados no mapa.");
-  });
-
-  document.getElementById("azArmDesloqueBtn").addEventListener("click", function () {
-    scanAndCaptureExistingMaps();
-    tac.pendingPinMode = "desloque";
-    tac.pencilActive = false;
-    document.getElementById("azQuickPencilBtn").classList.remove("is-active");
-    document.getElementById("azTeamPinModal").classList.remove("is-open");
-    showToast(`Toque no mapa para enviar ${tac.selectedQra}`);
-  });
-
-  document.getElementById("azArmRegroupBtn").addEventListener("click", function () {
-    scanAndCaptureExistingMaps();
-    tac.pendingPinMode = "reagrupar";
-    tac.pencilActive = false;
-    document.getElementById("azQuickPencilBtn").classList.remove("is-active");
-    document.getElementById("azTeamPinModal").classList.remove("is-open");
-    showToast("Toque no mapa para marcar ponto de REAGRUPAR");
-  });
-
-  document.getElementById("azQuickPencilBtn").addEventListener("click", function () {
-    scanAndCaptureExistingMaps();
-    tac.pencilActive = !tac.pencilActive;
-    tac.pendingPinMode = null;
-    this.classList.toggle("is-active", tac.pencilActive);
-    showToast(tac.pencilActive ? "Lápis ATIVO: toque nos vértices no mapa" : "Lápis desativado");
   });
 
   document.querySelectorAll("[data-grid-act]").forEach(function (tile) {
     tile.addEventListener("click", function () {
       const act = tile.getAttribute("data-grid-act");
-      document.getElementById("azAtakGridMenu").classList.remove("is-open");
       scanAndCaptureExistingMaps();
 
-      if (act === "desloque") { tac.pendingPinMode = "desloque"; showToast(`Toque no mapa para enviar ${tac.selectedQra}`); }
-      else if (act === "reagrupar") { tac.pendingPinMode = "reagrupar"; showToast("Toque no mapa para marcar REAGRUPAR"); }
-      else if (act === "gpe") { tac.pendingPinMode = "gpe"; showToast("Toque no ponto crítico para marcar GPE"); }
-      else if (act === "lapis") { document.getElementById("azQuickPencilBtn").click(); }
-      else if (act === "limpar_lapis") { tac.pencilCoords = []; updatePencilLayer(); showToast("Traçado removido."); }
-      else if (act === "offline") {
+      if (act === "desloque") {
+        tac.pendingPinMode = "desloque";
+        tac.pencilActive = false;
+        showToast(`Toque no mapa para enviar ${tac.selectedQra}`);
+      } else if (act === "reagrupar") {
+        tac.pendingPinMode = "reagrupar";
+        tac.pencilActive = false;
+        showToast("Toque no mapa para marcar REAGRUPAR");
+      } else if (act === "gpe") {
+        tac.pendingPinMode = "gpe";
+        tac.pencilActive = false;
+        showToast("Toque no ponto crítico para PRIORIDADE");
+      } else if (act === "lapis") {
+        tac.pencilActive = !tac.pencilActive;
+        tac.pendingPinMode = null;
+        tile.classList.toggle("is-on", tac.pencilActive);
+        showToast(tac.pencilActive ? "Lápis ATIVO: toque nos pontos da via" : "Lápis desativado");
+      } else if (act === "limpar_lapis") {
+        tac.pencilCoords = [];
+        updatePencilLayer();
+        showToast("Traçado removido.");
+      } else if (act === "limpar_rota") {
+        clearRouteGeoJson();
+        showToast("Rota limpa.");
+      } else if (act === "copy_qth") {
+        const c = tac.myPos ? `${tac.myPos.lat.toFixed(6)}, ${tac.myPos.lng.toFixed(6)}` : "GPS indisponível";
+        if (navigator.clipboard && tac.myPos) navigator.clipboard.writeText(c).catch(function () {});
+        showToast("GPS: " + c);
+      } else if (act === "offline") {
         if ("caches" in window) caches.open("azimute-map-offline-v1").then(function (c) { return c.add(window.location.href); }).catch(function () {});
-        showToast("Área e interface salvas em cache offline.");
-      }
-      else if (act === "incursao") { const b = document.getElementById("azOpenIncursionBtn"); if (b) b.click(); }
-      else if (act === "limpar_pins") {
+        showToast("Mapa salvo no cache offline.");
+      } else if (act === "limpar_pins") {
         tac.pins.forEach(function (p) { p.markers.forEach(function (mk) { mk.remove(); }); });
         tac.pins = [];
-        syncFirebaseState();
         closeRadialWheel();
-        showToast("Todos os alfinetes removidos.");
+        showToast("Alfinetes removidos.");
       }
     });
   });
@@ -22535,18 +22235,23 @@ if (document.readyState === "loading") {
     wbtn.addEventListener("click", function (e) {
       e.stopPropagation();
       const act = wbtn.getAttribute("data-wheel");
-      if (act === "nudge") { closeRadialWheel(); document.getElementById("azFineNudgePad").classList.add("is-open"); }
-      else if (act === "measure" && tac.activePin) { drawMeasureLineToPin(tac.activePin); closeRadialWheel(); }
-      else if (act === "delete" && tac.activePin) {
+      if (act === "route" && tac.activePin) {
+        generateRouteToTarget(tac.activePin.lat, tac.activePin.lng, tac.activePin.label);
+        closeRadialWheel();
+      } else if (act === "nudge") {
+        closeRadialWheel();
+        document.getElementById("azFineNudgePad").classList.add("is-open");
+      } else if (act === "delete" && tac.activePin) {
         const delId = tac.activePin.id;
         tac.activePin.markers.forEach(function (mk) { mk.remove(); });
         tac.pins = tac.pins.filter(function (p) { return p.id !== delId; });
         broadcastPacket({ kind: "del_pin", pinId: delId });
-        syncFirebaseState();
         tac.activePin = null;
         closeRadialWheel();
         showToast("Alfinete removido.");
-      } else { closeRadialWheel(); }
+      } else {
+        closeRadialWheel();
+      }
     });
   });
 
@@ -22555,24 +22260,34 @@ if (document.readyState === "loading") {
   });
   document.getElementById("azCloseNudgeBtn").addEventListener("click", function () {
     document.getElementById("azFineNudgePad").classList.remove("is-open");
-    syncFirebaseState();
   });
+
+  window.addEventListener("beforeunload", function () {
+    if (tac.roomCode) broadcastPacket({ kind: "leave" });
+  });
+
+  // Verifica periodicamente se algum integrante caiu sem encerrar (timeout > 25s)
+  setInterval(function () {
+    const now = Date.now();
+    Object.keys(tac.teammates).forEach(function (uid) {
+      if (now - tac.teammates[uid].ts > 25000) {
+        removeMateFromSession(uid, "PERDEU CONEXÃO");
+      }
+    });
+  }, 5000);
 
   function heartbeat() {
     scanAndCaptureExistingMaps();
-    syncCommandStripVisibility();
-    initVerticalGripDrawer();
-    ensureUnderMapDrawer();
-    enhanceIncursionMode();
+    syncDockVisibility();
+    enhanceIncursionTop();
     bindRedCrossAndReturn();
   }
 
   if (tac.roomCode) connectLiveRoom();
   heartbeat();
-  monitorGpsAccuracy();
+  monitorGpsAndRunState();
   setInterval(heartbeat, 1000);
-  setInterval(monitorGpsAccuracy, 6000);
-  setInterval(syncFirebaseState, 8000);
+  setInterval(monitorGpsAndRunState, 4500);
 })();
 </script></body>
 </html>
