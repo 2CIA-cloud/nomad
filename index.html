@@ -1388,6 +1388,32 @@
       backdrop-filter: blur(4px);
     }
 
+    .az-geo-lock-badge {
+      position: absolute;
+      right: 54px;
+      top: 12px;
+      z-index: 600;
+      height: 34px;
+      padding: 0 9px;
+      border-radius: 17px;
+      background: rgba(13, 13, 13, 0.85);
+      border: 1px solid var(--geo-border);
+      color: var(--geo-muted);
+      font-size: 10px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      backdrop-filter: blur(4px);
+    }
+
+    .az-geo-lock-badge.is-locked {
+      background: rgba(180, 83, 9, 0.92);
+      border-color: #FBBF24;
+      color: #FFFFFF;
+    }
+
     .az-geo-btn {
       background: var(--geo-gold);
       color: #0D0D0D;
@@ -1427,6 +1453,11 @@
       color: #FFFFFF;
       border-color: #22C55E;
       font-weight: 800;
+    }
+
+    .az-geo-btn.mini {
+      padding: 6px 8px;
+      font-size: 11px;
     }
 
     .az-geo-layer-chip {
@@ -1528,13 +1559,62 @@
       align-items: center;
       justify-content: space-between;
       gap: 6px;
-      padding: 5px 0;
+      padding: 6px 0;
       border-bottom: 1px solid var(--geo-border);
     }
 
     .az-geo-cfg-row:last-child {
       border-bottom: 0;
       padding-bottom: 0;
+    }
+
+    .az-geo-cal-box {
+      background: #0D0D0D;
+      border: 1px solid #C5A869;
+      border-radius: 8px;
+      padding: 9px 10px;
+      margin: 6px 0;
+    }
+
+    .az-geo-cal-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      margin-bottom: 7px;
+    }
+
+    .az-geo-cal-mode-pill {
+      font-size: 10px;
+      font-weight: 800;
+      color: #0D0D0D;
+      background: #C5A869;
+      padding: 2px 7px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .az-geo-cal-readout {
+      font-family: monospace;
+      font-size: 11px;
+      color: #F2F0EA;
+      background: #161616;
+      border: 1px solid #28271F;
+      border-radius: 6px;
+      padding: 5px 8px;
+      margin-bottom: 7px;
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .az-geo-cal-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      align-items: center;
+      justify-content: space-between;
     }
 
     .az-geo-group {
@@ -2016,6 +2096,9 @@
         <button type="button" id="azGeoZoomInBtn" aria-label="Aproximar">+</button>
         <button type="button" id="azGeoZoomOutBtn" aria-label="Afastar">−</button>
       </div>
+      <button type="button" id="azGeoLockBadge" class="az-geo-lock-badge" title="Travar rumo do mapa e quadrante ao manusear o celular">
+        <span>RUMO LIVRE</span>
+      </button>
       <button type="button" id="azGeoNorthBadge" class="az-geo-compass-badge" title="Alinhar Norte para cima">N</button>
       <button type="button" id="azGeoCenterFab" class="az-geo-locate-fab is-heading-up" aria-label="Centralizar na Minha Posicao" title="Centralizar e Alinhar">
         <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -2105,19 +2188,36 @@
     </div>
 
     <div id="azGeoCfgBox" class="az-geo-collapsible">
+      <div class="az-geo-cal-box">
+        <div class="az-geo-cal-head">
+          <span class="az-geo-label" style="color:#C5A869;">Calibrador de Bússola / Quadrante</span>
+          <span id="azCalScreenBadge" class="az-geo-cal-mode-pill">Modo: Vertical</span>
+        </div>
+        <div class="az-geo-cal-readout">
+          <span>Sensor: <strong id="azCalRawDeg">000°</strong></span>
+          <span>Ajuste: <strong id="azCalOffsetDeg" style="color:#C5A869;">0°</strong></span>
+          <span>Final: <strong id="azCalFinalDeg" style="color:#4ADE80;">000°</strong></span>
+        </div>
+        <div class="az-geo-cal-grid" id="azCalButtons">
+          <button type="button" class="az-geo-btn subtle mini" data-cal-delta="-90">-90°</button>
+          <button type="button" class="az-geo-btn subtle mini" data-cal-delta="-5">-5°</button>
+          <button type="button" class="az-geo-btn subtle mini" data-cal-delta="-1">-1°</button>
+          <button type="button" class="az-geo-btn subtle mini" data-cal-reset="1">0°</button>
+          <button type="button" class="az-geo-btn subtle mini" data-cal-delta="1">+1°</button>
+          <button type="button" class="az-geo-btn subtle mini" data-cal-delta="5">+5°</button>
+          <button type="button" class="az-geo-btn subtle mini" data-cal-delta="90">+90°</button>
+        </div>
+        <div style="display:flex; gap:6px; margin-top:7px;">
+          <button type="button" id="azCalAlignFrontBtn" class="az-geo-btn mini" style="flex:1;">Gravar Frente Atual</button>
+          <button type="button" id="azCalLockToggleBtn" class="az-geo-btn subtle mini" style="flex:1;">Travar Rumo ao Digitar</button>
+        </div>
+      </div>
+
       <div class="az-geo-cfg-row">
         <span class="az-geo-label">Visual do Mapa:</span>
         <div class="az-geo-group" id="azGeoMapThemes">
           <button type="button" class="az-geo-btn active" data-theme="dark">Escuro Contraste</button>
           <button type="button" class="az-geo-btn subtle" data-theme="light">Claro (Sol)</button>
-        </div>
-      </div>
-      <div class="az-geo-cfg-row">
-        <span class="az-geo-label">Pegada:</span>
-        <div class="az-geo-group" id="azGeoOrientations">
-          <button type="button" class="az-geo-btn active" data-orient="app">APP</button>
-          <button type="button" class="az-geo-btn subtle" data-orient="grid-destro">GRID Destro</button>
-          <button type="button" class="az-geo-btn subtle" data-orient="grid-canhoto">GRID Canhoto</button>
         </div>
       </div>
       <div class="az-geo-cfg-row">
@@ -16836,6 +16936,7 @@ function initAzimuteGeo() {
   const searchResultsEl = document.getElementById("azGeoSearchResults");
   const centerFab = document.getElementById("azGeoCenterFab");
   const northBadge = document.getElementById("azGeoNorthBadge");
+  const lockBadge = document.getElementById("azGeoLockBadge");
   const zoomInBtn = document.getElementById("azGeoZoomInBtn");
   const zoomOutBtn = document.getElementById("azGeoZoomOutBtn");
   const stageEl = document.getElementById("azGeoStage");
@@ -16873,8 +16974,15 @@ function initAzimuteGeo() {
   const citiesRight = document.getElementById("azGeoCitiesRight");
   const modesWrap = document.getElementById("azGeoModes");
   const themesWrap = document.getElementById("azGeoMapThemes");
-  const orientWrap = document.getElementById("azGeoOrientations");
   const colorsWrap = document.getElementById("azGeoArrowColors");
+
+  const calScreenBadge = document.getElementById("azCalScreenBadge");
+  const calRawDegEl = document.getElementById("azCalRawDeg");
+  const calOffsetDegEl = document.getElementById("azCalOffsetDeg");
+  const calFinalDegEl = document.getElementById("azCalFinalDeg");
+  const calButtonsWrap = document.getElementById("azCalButtons");
+  const calAlignFrontBtn = document.getElementById("azCalAlignFrontBtn");
+  const calLockToggleBtn = document.getElementById("azCalLockToggleBtn");
 
   const terrainModal = document.getElementById("azTerrainModal");
   const terrainHeaderInfo = document.getElementById("azTerrainHeaderInfo");
@@ -16886,11 +16994,6 @@ function initAzimuteGeo() {
   const radarExpandBtn = document.getElementById("azRadarExpandBtn");
   const radarNextStepEl = document.getElementById("azRadarNextStep");
   const radarCurrentViaEl = document.getElementById("azRadarCurrentVia");
-
-  if (orientWrap) {
-    const row = orientWrap.closest(".az-geo-cfg-row");
-    if (row) row.style.display = "none";
-  }
 
   const map = new maplibregl.Map({
     container: "azGeoMap",
@@ -16936,6 +17039,12 @@ function initAzimuteGeo() {
   let userTouchPauseUntil = 0;
   let lastMapBearingApplied = 0;
 
+  // Calibrador separado por orientacao (Vertical vs Horizontal/GRID) + Trava Anti-Giro no Manuseio
+  let calOffsetPortrait = parseInt(localStorage.getItem("az_cal_offset_portrait") || "0", 10) || 0;
+  let calOffsetLandscape = parseInt(localStorage.getItem("az_cal_offset_landscape") || "0", 10) || 0;
+  let isHeadingManuallyLocked = false;
+  let handlingFreezeUntil = 0;
+
   let lastQuadHeading = null;
   let lastQuadUpdateTime = 0;
   let lastQuadStreetSource = "";
@@ -16960,7 +17069,6 @@ function initAzimuteGeo() {
   let firstGpsFix = true;
   let localPoints = [];
 
-  // Estado das camadas JSON (Unidades, Hospitais, BSCs, Deplans)
   let datasetPoints = {
     unidades: [],
     hospitais: [],
@@ -17024,6 +17132,101 @@ function initAzimuteGeo() {
     return 0;
   }
 
+  function isLandscapeMode() {
+    const ang = getNativeScreenAngle();
+    if (ang === 90 || ang === 270) return true;
+    return window.innerWidth > window.innerHeight;
+  }
+
+  function getActiveCalibrationOffset() {
+    return isLandscapeMode() ? calOffsetLandscape : calOffsetPortrait;
+  }
+
+  function setActiveCalibrationOffset(val) {
+    let clean = ((val + 180) % 360 + 360) % 360 - 180;
+    if (isLandscapeMode()) {
+      calOffsetLandscape = clean;
+      localStorage.setItem("az_cal_offset_landscape", String(clean));
+    } else {
+      calOffsetPortrait = clean;
+      localStorage.setItem("az_cal_offset_portrait", String(clean));
+    }
+    updateCalibratorReadout();
+    refreshStabilizedHeading(true);
+  }
+
+  function updateCalibratorReadout() {
+    const landscape = isLandscapeMode();
+    const off = getActiveCalibrationOffset();
+    if (calScreenBadge) {
+      calScreenBadge.textContent = landscape ? "Modo: Horizontal (GRID)" : "Modo: Vertical (Em pé)";
+    }
+    if (calRawDegEl) {
+      calRawDegEl.textContent = `${String(Math.round(rawCompassHeading)).padStart(3, "0")}°`;
+    }
+    if (calOffsetDegEl) {
+      calOffsetDegEl.textContent = `${off >= 0 ? "+" : ""}${off}°`;
+    }
+    if (calFinalDegEl) {
+      calFinalDegEl.textContent = `${String(Math.round(stableHeading)).padStart(3, "0")}°`;
+    }
+  }
+
+  function setHeadingLockState(locked) {
+    isHeadingManuallyLocked = !!locked;
+    if (lockBadge) {
+      lockBadge.classList.toggle("is-locked", isHeadingManuallyLocked);
+      lockBadge.innerHTML = isHeadingManuallyLocked ? "<span>RUMO TRAVADO</span>" : "<span>RUMO LIVRE</span>";
+    }
+    if (calLockToggleBtn) {
+      calLockToggleBtn.textContent = isHeadingManuallyLocked ? "Destravar Rumo" : "Travar Rumo ao Digitar";
+      calLockToggleBtn.classList.toggle("active", isHeadingManuallyLocked);
+      calLockToggleBtn.classList.toggle("subtle", !isHeadingManuallyLocked);
+    }
+  }
+
+  if (lockBadge) {
+    lockBadge.addEventListener("click", (e) => {
+      e.stopPropagation();
+      setHeadingLockState(!isHeadingManuallyLocked);
+    });
+  }
+  if (calLockToggleBtn) {
+    calLockToggleBtn.addEventListener("click", () => {
+      setHeadingLockState(!isHeadingManuallyLocked);
+    });
+  }
+
+  // Trava automatica enquanto o usuario digita na busca para nao girar ao segurar na vertical
+  if (searchInput) {
+    searchInput.addEventListener("focus", () => {
+      handlingFreezeUntil = Date.now() + 8000;
+    });
+  }
+
+  if (calButtonsWrap) {
+    calButtonsWrap.querySelectorAll("button").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        if (btn.hasAttribute("data-cal-reset")) {
+          setActiveCalibrationOffset(0);
+          return;
+        }
+        const delta = parseInt(btn.getAttribute("data-cal-delta") || "0", 10);
+        setActiveCalibrationOffset(getActiveCalibrationOffset() + delta);
+      });
+    });
+  }
+
+  if (calAlignFrontBtn) {
+    calAlignFrontBtn.addEventListener("click", () => {
+      // Grava o rumo atual da bussola pura + tela como frente (offset 0 em relacao ao sensor atual)
+      const baseSensor = normalizeAngle(rawCompassHeading + getNativeScreenAngle());
+      const diffToCurrentMap = Math.round(shortestAngleDiff(baseSensor, getMapBearing()));
+      setActiveCalibrationOffset(diffToCurrentMap);
+      statusEl.textContent = "Frente atual gravada no calibrador";
+    });
+  }
+
   function pushSmoothedCompass(newDeg) {
     compassSamples.push(newDeg);
     if (compassSamples.length > 10) compassSamples.shift();
@@ -17050,7 +17253,9 @@ function initAzimuteGeo() {
   }
 
   function applyMapHeadingUp(headingDeg, forceInstant) {
-    if (!forceInstant && Date.now() < userTouchPauseUntil) return;
+    if (!forceInstant && (Date.now() < userTouchPauseUntil || Date.now() < handlingFreezeUntil || isHeadingManuallyLocked)) {
+      return;
+    }
     const clean = normalizeAngle(headingDeg);
     const diffFromLast = Math.abs(shortestAngleDiff(lastMapBearingApplied, clean));
     if (!forceInstant && diffFromLast < 14) return;
@@ -17088,10 +17293,15 @@ function initAzimuteGeo() {
         return normalizeAngle(computedGpsCourse);
       }
     }
-    return normalizeAngle(rawCompassHeading + getNativeScreenAngle());
+    return normalizeAngle(rawCompassHeading + getNativeScreenAngle() + getActiveCalibrationOffset());
   }
 
   function refreshStabilizedHeading(forceSnap) {
+    if (!forceSnap && (isHeadingManuallyLocked || Date.now() < handlingFreezeUntil)) {
+      updateCalibratorReadout();
+      return;
+    }
+
     const moving = isMovingCourseActive();
     const target = getTargetHeading();
     const diff = shortestAngleDiff(stableHeading, target);
@@ -17105,16 +17315,20 @@ function initAzimuteGeo() {
       }
       updateDirectionalIcons(!!forceSnap);
     }
+    updateCalibratorReadout();
   }
 
+  // Carencia de 1.8s ao tirar o celular do peito (horizontal -> vertical) para nao torcer as ruas no movimento
   function handleScreenOrientationChange() {
     compassSamples = [];
-    userTouchPauseUntil = 0;
-    refreshStabilizedHeading(true);
+    handlingFreezeUntil = Date.now() + 1800;
+    updateCalibratorReadout();
     setTimeout(() => {
       map.resize();
-      refreshStabilizedHeading(true);
-    }, 220);
+      if (Date.now() >= handlingFreezeUntil) {
+        refreshStabilizedHeading(true);
+      }
+    }, 1850);
   }
   window.addEventListener("orientationchange", handleScreenOrientationChange);
   if (window.screen && window.screen.orientation && typeof window.screen.orientation.addEventListener === "function") {
@@ -17547,7 +17761,6 @@ function initAzimuteGeo() {
     });
   }
 
-  // Extrator flexivel para ler unidades_1bpm.json, hospitais_1bpm.json, bsc_1bpm.json, deplan_1bpm.json e batalhao_22.json
   function flattenJsonRecords(raw) {
     const out = [];
     const seen = new Set();
@@ -18107,6 +18320,8 @@ function initAzimuteGeo() {
     clearCityHighlight();
     requestCompassPermissionIfNeeded();
     userTouchPauseUntil = 0;
+    handlingFreezeUntil = 0;
+    setHeadingLockState(false);
     syncFromMainAzimuteGps(false);
 
     if (lastPos) {
@@ -18163,6 +18378,7 @@ function initAzimuteGeo() {
       const open = cfgBox.classList.toggle("is-open");
       cfgToggleBtn.classList.toggle("active", open);
       cfgToggleBtn.classList.toggle("subtle", !open);
+      if (open) updateCalibratorReadout();
     });
   }
 
@@ -18201,6 +18417,8 @@ function initAzimuteGeo() {
 
     isNavigationStarted = true;
     userTouchPauseUntil = 0;
+    handlingFreezeUntil = 0;
+    setHeadingLockState(false);
     requestCompassPermissionIfNeeded();
     setFollowState(true);
     setHeadingUpState(true);
@@ -18751,7 +18969,6 @@ function initAzimuteGeo() {
     const qNorm = q.toLowerCase();
     const options = [];
 
-    // Busca em todas as camadas carregadas (Unidades, Hospitais, BSCs, Deplans e extras)
     ["unidades", "hospitais", "bscs", "deplans"].forEach((cat) => {
       const tag = LAYER_META[cat].label;
       datasetPoints[cat].forEach((p) => {
@@ -19126,6 +19343,11 @@ function initAzimuteGeo() {
       return;
     }
 
+    // Congela o Quadrante durante o movimento de tirar o celular do peito ou se o rumo estiver travado
+    if (!forceUpdate && (isHeadingManuallyLocked || Date.now() < handlingFreezeUntil)) {
+      return;
+    }
+
     const refHeading = getQuadranteReferenceHeading();
     const now = Date.now();
 
@@ -19438,6 +19660,7 @@ function initAzimuteGeo() {
   window.azimuteGeoInvalidate = function () {
     requestAnimationFrame(() => {
       map.resize();
+      updateCalibratorReadout();
       recomputeQuadranteSectors(true);
     });
   };
