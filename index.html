@@ -20909,7 +20909,7 @@ if (document.readyState === "loading") {
   initAzimuteGeo();
 }
 </script>
-<!-- ================= ETAPA 1 (BLOCO B - ALINHADO): ORBE 16 PONTOS, SONAR, CENTRALIZAR E ESPECTRO ================= -->
+<!-- ================= ETAPA 1 (BLOCO B - CENTRO TRAVADO): ORBE 16 PONTOS, SONAR E ESPECTRO ================= -->
 <style>
   .az-orbe-sonar-btn {
     position: relative;
@@ -21024,29 +21024,29 @@ if (document.readyState === "loading") {
     sonarWaveR: 0,
     sonarActive: false,
     spectrumPhase: 0,
-    scheduledOverlay: false
+    scheduledOverlay: false,
+    lastW: 360,
+    lastH: 260,
+    lastMatrix: null
   };
 
-  /* 1. DESENHA OS 16 PONTOS + ANEL INTERNO + ONDA SONAR NO CENTRO EXATO DO ORBE */
+  /* 1. DESENHA OS 16 PONTOS + ANEL INTERNO + ONDA SONAR USANDO A MESMA MATRIZ DO ORBE */
   function drawOrbe16Overlay(canvas) {
     if (!canvas) canvas = document.getElementById("azQuadRingCanvas");
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const rect = canvas.getBoundingClientRect();
-    const w = rect.width || canvas.clientWidth;
-    const h = rect.height || canvas.clientHeight;
-    if (!w || !h) return;
-
-    const dpr = canvas.width / w || window.devicePixelRatio || 1;
+    const w = state.lastW || 360;
+    const h = state.lastH || 260;
     const cx = w / 2;
     const cy = h / 2;
     const outerR = Math.min(w * 0.25, h * 0.34, 78);
 
     ctx.save();
-    // Reseta a matriz para evitar dupla multiplicação de escala (DPR)
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    if (state.lastMatrix) {
+      ctx.setTransform(state.lastMatrix);
+    }
 
     // Anel interno de precisão concêntrico (72% do raio)
     ctx.strokeStyle = "rgba(197, 168, 105, 0.22)";
@@ -21106,17 +21106,26 @@ if (document.readyState === "loading") {
     ctx.restore();
   }
 
-  /* 2. INTERCEPTA O CLEARRECT DO CANVAS DO ORBE PARA NUNCA SER APAGADO */
+  /* 2. CAPTURA A MATRIZ E AS DIMENSÕES EXATAS QUANDO O ORBE LIMPA O CANVAS */
   const origClearRect = CanvasRenderingContext2D.prototype.clearRect;
-  CanvasRenderingContext2D.prototype.clearRect = function () {
+  CanvasRenderingContext2D.prototype.clearRect = function (x, y, w, h) {
     origClearRect.apply(this, arguments);
-    if (this.canvas && this.canvas.id === "azQuadRingCanvas" && !state.scheduledOverlay) {
-      state.scheduledOverlay = true;
-      const targetCanvas = this.canvas;
-      setTimeout(function () {
-        state.scheduledOverlay = false;
-        drawOrbe16Overlay(targetCanvas);
-      }, 0);
+    if (this.canvas && this.canvas.id === "azQuadRingCanvas") {
+      if (w > 0 && h > 0) {
+        state.lastW = w;
+        state.lastH = h;
+      }
+      if (typeof this.getTransform === "function") {
+        state.lastMatrix = this.getTransform();
+      }
+      if (!state.scheduledOverlay) {
+        state.scheduledOverlay = true;
+        const targetCanvas = this.canvas;
+        setTimeout(function () {
+          state.scheduledOverlay = false;
+          drawOrbe16Overlay(targetCanvas);
+        }, 0);
+      }
     }
   };
 
@@ -21280,7 +21289,6 @@ if (document.readyState === "loading") {
     requestAnimationFrame(tick);
   }
 
-  // Detecta quando você arrasta o mapa para disparar o alerta de desvio + sonar automaticamente
   document.addEventListener("pointermove", function (ev) {
     if (ev.buttons > 0 && ev.target && ev.target.closest && ev.target.closest("#azGeoMap")) {
       if (!state.isOffCenter) {
@@ -21291,7 +21299,6 @@ if (document.readyState === "loading") {
     }
   }, { passive: true });
 
-  setTimeout(() => drawOrbe16Overlay(), 400);
   requestAnimationFrame(tick);
 })();
 </script></body>
