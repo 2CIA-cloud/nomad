@@ -20909,7 +20909,7 @@ if (document.readyState === "loading") {
   initAzimuteGeo();
 }
 </script>
-<!-- ================= AZIMUTE BLINDADO: PTT ALTO CONTRASTE + 1 BOTÃO CENTRALIZAR + SEM TRAVAMENTOS ================= -->
+<!-- ================= AZIMUTE COMPLETO: ÁUDIO WEBRTC/FILEREADER + AJUSTE FINO DE MARCADORES + PIN FOTO + PTT ALTO CONTRASTE ================= -->
 <style>
   #azTerrain3dCanvas,
   #azTerrainSideCanvas,
@@ -21044,7 +21044,7 @@ if (document.readyState === "loading") {
     line-height: 1.2;
   }
 
-  /* GRUPO FLUTUANTE PTT ALTO CONTRASTE (NUNCA FICA TRANSPARENTE) */
+  /* GRUPO FLUTUANTE PTT ALTO CONTRASTE */
   #azFloatingPttGroup {
     position: fixed !important;
     bottom: 76px;
@@ -21098,6 +21098,52 @@ if (document.readyState === "loading") {
   #azFloatingMapPttBtn.is-tx {
     background: #DC2626 !important;
     color: #FFFFFF !important;
+  }
+
+  /* PAINEL DE AJUSTE FINO DE MARCADORES (D-PAD) */
+  #azFineTunePad {
+    position: fixed !important;
+    bottom: 128px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 100049 !important;
+    background: rgba(13, 13, 13, 0.96) !important;
+    border: 1.5px solid #C5A869 !important;
+    border-radius: 12px;
+    padding: 8px 10px;
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    width: 274px;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.96);
+    color: #FFFFFF;
+  }
+  #azFineTunePad.is-open { display: flex !important; }
+  .az-ft-dpad-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px;
+  }
+  .az-ft-btn {
+    height: 30px !important;
+    min-width: 38px !important;
+    padding: 0 8px !important;
+    border-radius: 6px !important;
+    background: #161616 !important;
+    border: 1px solid #C5A869 !important;
+    color: #C5A869 !important;
+    font-size: 11px !important;
+    font-weight: 900 !important;
+    cursor: pointer;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    opacity: 1 !important;
+  }
+  .az-ft-btn.is-done {
+    background: #C5A869 !important;
+    color: #0D0D0D !important;
   }
 
   /* BANNER DE QUEM ESTÁ FALANDO NA TELA */
@@ -21215,13 +21261,13 @@ if (document.readyState === "loading") {
     transform: translateY(100%);
   }
 
-  /* GAVETA LATERAL FLUTUANTE ☰ (ABAS FECHADAS POR PADRÃO) */
+  /* GAVETA LATERAL FLUTUANTE ☰ */
   #azAtakRightDock {
     position: fixed !important;
     top: 48px !important;
     right: 8px !important;
     bottom: 76px !important;
-    width: 300px;
+    width: 304px;
     max-width: calc(100vw - 16px);
     z-index: 100045 !important;
     background: rgba(13, 13, 13, 0.97) !important;
@@ -21442,7 +21488,7 @@ if (document.readyState === "loading") {
     border: 1px solid #28271F !important;
     border-radius: 7px !important;
     color: #F2F0EA !important;
-    font-size: 8.5px !important;
+    font-size: 8px !important;
     font-weight: 800 !important;
     text-align: center;
     padding: 2px !important;
@@ -21454,11 +21500,16 @@ if (document.readyState === "loading") {
     background: #221E15 !important;
     color: #C5A869 !important;
   }
+  .az-grid-tile.is-photo-tile {
+    border-color: #38BDF8 !important;
+    color: #BAE6FD !important;
+  }
   .az-grid-tile.is-prio {
     border-color: #EF4444 !important;
     color: #FECACA !important;
   }
   .az-grid-ico { font-size: 13px; color: #C5A869; line-height: 1; }
+  .az-grid-tile.is-photo-tile .az-grid-ico { color: #38BDF8; }
   .az-grid-tile.is-prio .az-grid-ico { color: #EF4444; }
 
   .az-team-chips { display: flex; flex-wrap: wrap; gap: 4px; }
@@ -21472,6 +21523,14 @@ if (document.readyState === "loading") {
     font-weight: 800 !important;
     cursor: pointer;
     opacity: 1 !important;
+  }
+  .az-qra-chip.is-highlight {
+    border-color: #C5A869 !important;
+    color: #C5A869 !important;
+  }
+  .az-qra-chip.is-warn {
+    border-color: #F59E0B !important;
+    color: #FDE68A !important;
   }
 
   #azPttHoldBtn {
@@ -21521,14 +21580,20 @@ if (document.readyState === "loading") {
     display: none !important;
   }
 
+  /* MODAIS */
   #azPinEditorModal,
-  #azVtrEditorModal {
+  #azVtrEditorModal,
+  #azPhotoPinModal,
+  #azPhotoViewerModal {
     position: fixed !important;
     top: 50% !important;
     left: 50% !important;
     transform: translate(-50%, -50%) !important;
     z-index: 100055 !important;
-    width: 292px;
+    width: 304px;
+    max-width: calc(100vw - 20px);
+    max-height: 86vh;
+    overflow-y: auto;
     background: #161616 !important;
     border: 1.5px solid #C5A869 !important;
     border-radius: 12px;
@@ -21540,8 +21605,20 @@ if (document.readyState === "loading") {
     box-shadow: 0 16px 40px rgba(0, 0, 0, 0.96);
   }
   #azPinEditorModal.is-open,
-  #azVtrEditorModal.is-open { display: flex !important; }
+  #azVtrEditorModal.is-open,
+  #azPhotoPinModal.is-open,
+  #azPhotoViewerModal.is-open { display: flex !important; }
 
+  .az-photo-preview-box {
+    width: 100%;
+    max-height: 180px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #C5A869;
+    background: #0D0D0D;
+  }
+
+  /* MARCADORES NO MAPA */
   .az-tac-pin {
     position: relative;
     display: flex;
@@ -21589,9 +21666,26 @@ if (document.readyState === "loading") {
     border: 2px solid #0D0D0D;
     margin-top: 2px;
   }
+  .az-tac-pin.is-fine-tuning .az-tac-pin-dot {
+    width: 18px;
+    height: 18px;
+    border: 2.5px solid #FFFFFF;
+    box-shadow: 0 0 14px #C5A869;
+  }
   .az-tac-pin.is-gpe .az-tac-pin-badge { background: #2A0E0E; border-color: #EF4444; color: #FECACA; }
   .az-tac-pin.is-gpe .az-tac-pin-dot { background: #EF4444; }
   .az-tac-pin.is-vtr .az-tac-pin-badge { background: #141B24; border-width: 2px; }
+  .az-tac-pin.is-photo-pin .az-tac-pin-badge {
+    background: #0F1E2E;
+    border: 2px solid #38BDF8;
+    color: #E0F2FE;
+  }
+  .az-tac-pin.is-photo-pin .az-tac-pin-dot {
+    width: 14px;
+    height: 14px;
+    background: #38BDF8;
+    box-shadow: 0 0 8px rgba(56, 189, 248, 0.9);
+  }
 
   #azRadialWheel,
   #azMemberRoleWheel {
@@ -21630,7 +21724,7 @@ if (document.readyState === "loading") {
   .az-wheel-top    { top: 8px;   left: 74px; border-color: #4ADE80 !important; color: #BBF7D0 !important; }
   .az-wheel-right  { top: 89px;  right: 6px; border-color: #C5A869 !important; color: #C5A869 !important; }
   .az-wheel-bottom { bottom: 8px; left: 74px; border-color: #EF4444 !important; color: #FCA5A5 !important; }
-  .az-wheel-left   { top: 89px;  left: 6px; }
+  .az-wheel-left   { top: 89px;  left: 6px; border-color: #38BDF8 !important; color: #BAE6FD !important; }
 
   #azTacHudToast {
     position: fixed !important;
@@ -21655,6 +21749,9 @@ if (document.readyState === "loading") {
   }
 </style>
 
+<input type="file" id="azNativeCameraInput" accept="image/*" capture="environment" style="display:none;">
+<input type="file" id="azNativeGalleryInput" accept="image/*" style="display:none;">
+
 <div id="azTopHudShell">
   <button type="button" class="az-hud-glass-btn" id="azHudSearchToggleBtn" title="Buscar rua, unidade ou hospital">🔍</button>
   <div id="azMicroTelemetryHud" title="Toque para copiar QTH e coordenadas">
@@ -21674,6 +21771,22 @@ if (document.readyState === "loading") {
 <div id="azFloatingPttGroup">
   <span id="azPttDragHandle" title="Arraste aqui para mover o botão PTT">⋮⋮</span>
   <button type="button" id="azFloatingMapPttBtn" title="1 clique para falar, 1 clique para enviar">🎙 PTT</button>
+</div>
+
+<!-- PAINEL DE AJUSTE FINO DE MARCADORES -->
+<div id="azFineTunePad">
+  <div style="display:flex;justify-content:space-between;align-items:center;">
+    <span id="azFineTuneTitle" style="font-size:9.5px;font-weight:900;color:#C5A869;">✥ AJUSTE FINO DE MARCADOR</span>
+    <button type="button" class="az-ft-btn" id="azFineTuneStepBtn" style="height:22px !important;font-size:9px !important;">PASSO: 2m</button>
+  </div>
+  <div class="az-ft-dpad-row">
+    <button type="button" class="az-ft-btn" data-ft-dir="W">◄ O</button>
+    <button type="button" class="az-ft-btn" data-ft-dir="N">▲ N</button>
+    <button type="button" class="az-ft-btn" data-ft-dir="S">▼ S</button>
+    <button type="button" class="az-ft-btn" data-ft-dir="E">► L</button>
+    <button type="button" class="az-ft-btn is-done" id="azFineTuneDoneBtn">✔ OK</button>
+  </div>
+  <div id="azFineTuneCoordsLabel" style="font-size:9px;font-family:monospace;color:#9E9A8F;text-align:center;">Arraste o pino ou use as setas</div>
 </div>
 
 <button type="button" id="azNavChevronToggleBtn" title="Mostrar/Ocultar teclas de navegação">▲</button>
@@ -21720,8 +21833,11 @@ if (document.readyState === "loading") {
   </div>
 
   <details class="az-dock-accordion" id="azAccTools">
-    <summary><span>FERRAMENTAS TÁTICAS ATAK</span><span>▾</span></summary>
+    <summary><span>FERRAMENTAS ATAK & CÂMERA</span><span>▾</span></summary>
     <div class="az-atak-grid-3x3">
+      <button type="button" class="az-grid-tile is-photo-tile" data-grid-act="photo_coord_pin"><span class="az-grid-ico">📷</span>PIN FOTO/COORD</button>
+      <button type="button" class="az-grid-tile is-photo-tile" data-grid-act="open_camera"><span class="az-grid-ico">📸</span>CÂMERA</button>
+      <button type="button" class="az-grid-tile is-photo-tile" data-grid-act="open_gallery"><span class="az-grid-ico">🖼</span>GALERIA</button>
       <button type="button" class="az-grid-tile" data-grid-act="pin_edit"><span class="az-grid-ico">📍</span>+ PIN EDITÁVEL</button>
       <button type="button" class="az-grid-tile" data-grid-act="vtr_pin"><span class="az-grid-ico">🚓</span>VIATURAS</button>
       <button type="button" class="az-grid-tile is-prio" data-grid-act="gpe"><span class="az-grid-ico">▲</span>PRIORIDADE</button>
@@ -21735,7 +21851,7 @@ if (document.readyState === "loading") {
   </details>
 
   <details class="az-dock-accordion" id="azAccRadio">
-    <summary><span>RÁDIO PTT & ÁUDIO</span><span>▾</span></summary>
+    <summary><span>RÁDIO PTT (WEBRTC / FONE P2)</span><span>▾</span></summary>
     <div style="display:flex;flex-direction:column;gap:6px;">
       <div style="display:flex;justify-content:space-between;align-items:center;">
         <span style="font-size:9px;color:#9E9A8F;">1 clique inicia, 1 clique envia</span>
@@ -21749,6 +21865,9 @@ if (document.readyState === "loading") {
     <summary><span>MENSAGEM SILENCIOSA</span><span>▾</span></summary>
     <div style="display:flex;flex-direction:column;gap:6px;">
       <div class="az-team-chips">
+        <button type="button" class="az-qra-chip is-highlight" data-quick-msg="WHATSAPP">WHATSAPP</button>
+        <button type="button" class="az-qra-chip is-warn" data-quick-msg="SILÊNCIO">SILÊNCIO</button>
+        <button type="button" class="az-qra-chip is-warn" data-quick-msg="ATENÇÃO">ATENÇÃO</button>
         <button type="button" class="az-qra-chip" data-quick-msg="QAP / POSIÇÃO">QAP</button>
         <button type="button" class="az-qra-chip" data-quick-msg="CERCO FECHADO">CERCO</button>
         <button type="button" class="az-qra-chip" data-quick-msg="VISUAL NO ALVO">VISUAL</button>
@@ -21785,6 +21904,49 @@ if (document.readyState === "loading") {
   <button type="button" class="az-atak-tool-btn is-danger" id="azEndSessionBtn">■ ENCERRAR SESSÃO</button>
 </aside>
 
+<!-- MODAL: MARCADOR DIFERENCIADO COM COORDENADAS + FOTO + LEGENDA -->
+<div id="azPhotoPinModal">
+  <div style="display:flex;justify-content:space-between;align-items:center;">
+    <span style="font-size:10px;font-weight:900;color:#38BDF8;">📷 MARCADOR COM COORDENADA & FOTO</span>
+    <button type="button" id="azClosePhotoPinModalBtn" style="background:none;border:none;color:#9E9A8F;font-weight:900;cursor:pointer;">✕</button>
+  </div>
+  <label style="font-size:9.5px;color:#9E9A8F;">Cole as coordenadas ou link do Google Maps:</label>
+  <div class="az-team-row">
+    <input type="text" id="azPhotoCoordInput" class="az-team-input" placeholder="-19.927700, -43.931700" autocomplete="off">
+    <button type="button" class="az-atak-tool-btn is-active" id="azPasteCoordBtn">📋 COLAR</button>
+    <button type="button" class="az-atak-tool-btn" id="azUseMyGpsCoordBtn" title="Usar minha localização atual">⌖ GPS</button>
+  </div>
+
+  <div class="az-team-row">
+    <button type="button" class="az-atak-tool-btn" id="azModalTakePhotoBtn" style="flex:1;border-color:#38BDF8;color:#BAE6FD;">📸 CÂMERA</button>
+    <button type="button" class="az-atak-tool-btn" id="azModalPickGalleryBtn" style="flex:1;border-color:#38BDF8;color:#BAE6FD;">🖼 GALERIA</button>
+  </div>
+
+  <img id="azPhotoPinPreviewImg" class="az-photo-preview-box" style="display:none;" alt="Prévia">
+
+  <label style="font-size:9.5px;color:#9E9A8F;">Legenda do Ponto / Alvo:</label>
+  <input type="text" id="azPhotoCaptionInput" class="az-team-input" placeholder="Ex: Portão cinza / Veículo suspeito" maxlength="48" autocomplete="off">
+
+  <button type="button" class="az-atak-tool-btn is-active" id="azConfirmPhotoPinSaveBtn" style="width:100%;height:34px;">PLOTAR NO MAPA</button>
+</div>
+
+<!-- MODAL: VISUALIZADOR AO TOCAR NO MARCADOR COM FOTO NO MAPA -->
+<div id="azPhotoViewerModal">
+  <div style="display:flex;justify-content:space-between;align-items:center;">
+    <span id="azPhotoViewerTitle" style="font-size:10.5px;font-weight:900;color:#38BDF8;">📷 PONTO GEORREFERENCIADO</span>
+    <button type="button" id="azClosePhotoViewerBtn" style="background:none;border:none;color:#9E9A8F;font-weight:900;cursor:pointer;">✕</button>
+  </div>
+  <img id="azPhotoViewerImg" class="az-photo-preview-box" style="max-height:240px;display:none;" alt="Foto do ponto">
+  <div id="azPhotoViewerCaption" style="font-size:11.5px;font-weight:800;color:#FFFFFF;"></div>
+  <div id="azPhotoViewerCoords" style="font-size:9.5px;font-family:monospace;color:#C5A869;"></div>
+  <div class="az-team-row">
+    <button type="button" class="az-atak-tool-btn is-active" id="azPhotoViewerRouteBtn" style="flex:1;">⇄ ROTA</button>
+    <button type="button" class="az-atak-tool-btn" id="azPhotoViewerFineTuneBtn" style="flex:1;border-color:#38BDF8;color:#BAE6FD;">✥ AJUSTE FINO</button>
+    <button type="button" class="az-atak-tool-btn is-danger" id="azPhotoViewerDeleteBtn" style="width:auto;padding:0 10px;">✕</button>
+  </div>
+</div>
+
+<!-- MODAL DE ALFINETE EDITÁVEL -->
 <div id="azPinEditorModal">
   <div style="display:flex;justify-content:space-between;align-items:center;">
     <span style="font-size:10px;font-weight:900;color:#C5A869;">ALFINETE TÁTICO EDITÁVEL</span>
@@ -21803,6 +21965,7 @@ if (document.readyState === "loading") {
   <button type="button" class="az-atak-tool-btn is-active" id="azConfirmPinSaveBtn" style="width:100%;height:32px;">CONFIRMAR NO MAPA</button>
 </div>
 
+<!-- MODAL DE VIATURAS NO MAPA -->
 <div id="azVtrEditorModal">
   <div style="display:flex;justify-content:space-between;align-items:center;">
     <span style="font-size:10px;font-weight:900;color:#C5A869;">🚓 MARCAR / RENOMEAR VIATURA</span>
@@ -21815,13 +21978,15 @@ if (document.readyState === "loading") {
   <button type="button" class="az-atak-tool-btn is-active" id="azConfirmVtrSaveBtn" style="width:100%;height:32px;">SALVAR VIATURA NO MAPA</button>
 </div>
 
+<!-- RODA DE AÇÕES DE ALFINETE / VIATURA (COM AJUSTE FINO RESTAURADO) -->
 <div id="azRadialWheel">
   <button type="button" class="az-wheel-btn az-wheel-top" data-wheel="route">GERAR<br>ROTA</button>
   <button type="button" class="az-wheel-btn az-wheel-right" data-wheel="edit">RENOMEAR<br>/ EDITAR</button>
-  <button type="button" class="az-wheel-btn az-wheel-left" data-wheel="close">FECHAR</button>
+  <button type="button" class="az-wheel-btn az-wheel-left" data-wheel="finetune">✥ AJUSTE<br>FINO</button>
   <button type="button" class="az-wheel-btn az-wheel-bottom" data-wheel="delete">EXCLUIR</button>
 </div>
 
+<!-- RODA ATAK DE FUNÇÃO TÁTICA DO MEMBRO -->
 <div id="azMemberRoleWheel">
   <button type="button" class="az-wheel-btn az-wheel-top" data-role="CMT">CMT /<br>LÍDER</button>
   <button type="button" class="az-wheel-btn az-wheel-right" data-role="PONTA">PONTA /<br>BATEDOR</button>
@@ -21873,8 +22038,11 @@ if (document.readyState === "loading") {
     pencilCoords: [],
     pins: [],
     pendingPinCoords: null,
+    pendingPhotoDataUrl: "",
     editingPinId: null,
     activePin: null,
+    fineTunePin: null,
+    fineTuneStepMeters: 2,
     ws: null,
     bc: ("BroadcastChannel" in window) ? new BroadcastChannel("azimute_tac_sync") : null,
     myPos: null,
@@ -21890,6 +22058,9 @@ if (document.readyState === "loading") {
     audioChunks: [],
     isRecordingPtt: false,
     pttAutoStopTimer: null,
+    rtcPeers: {},
+    rtcAudioReady: {},
+    localLiveStream: null,
     openRatio: 0,
     draggingGrip: false
   };
@@ -21961,7 +22132,178 @@ if (document.readyState === "loading") {
   }
 
   /* =====================================================================
-     1. CAPTURA DE MAPA LEVE (SEM ENGASGOS)
+     AJUSTE FINO DE MARCADORES (D-PAD MÉTRICO + ARRASTO DIRETO NO MAPA)
+     ===================================================================== */
+  function updateFineTuneCoordsUi(pinObj) {
+    const lbl = document.getElementById("azFineTuneCoordsLabel");
+    if (lbl && pinObj) {
+      lbl.textContent = `${pinObj.lat.toFixed(6)}, ${pinObj.lng.toFixed(6)}`;
+    }
+  }
+
+  function startFineTunePin(pinObj) {
+    if (!pinObj) return;
+    stopFineTunePin(false);
+    tac.fineTunePin = pinObj;
+
+    const pad = document.getElementById("azFineTunePad");
+    const titleEl = document.getElementById("azFineTuneTitle");
+    if (titleEl) titleEl.textContent = `✥ AJUSTE FINO: ${pinObj.rawTitle || pinObj.label}`;
+    updateFineTuneCoordsUi(pinObj);
+    if (pad) pad.classList.add("is-open");
+
+    pinObj.markers.forEach(function (item) {
+      item.el.classList.add("is-fine-tuning");
+      if (typeof item.marker.setDraggable === "function") {
+        item.marker.setDraggable(true);
+      }
+      if (!item.dragBound && typeof item.marker.on === "function") {
+        item.dragBound = true;
+        item.marker.on("drag", function () {
+          const ll = item.marker.getLngLat();
+          if (ll) {
+            pinObj.lng = ll.lng;
+            pinObj.lat = ll.lat;
+            updateFineTuneCoordsUi(pinObj);
+          }
+        });
+      }
+    });
+  }
+
+  function nudgeFineTunePin(dir) {
+    const pinObj = tac.fineTunePin;
+    if (!pinObj) return;
+    const stepM = tac.fineTuneStepMeters || 2;
+    const dLat = stepM / 111320;
+    const dLng = stepM / (111320 * Math.max(0.2, Math.cos((pinObj.lat * Math.PI) / 180)));
+
+    if (dir === "N") pinObj.lat += dLat;
+    else if (dir === "S") pinObj.lat -= dLat;
+    else if (dir === "E") pinObj.lng += dLng;
+    else if (dir === "W") pinObj.lng -= dLng;
+
+    pinObj.markers.forEach(function (item) {
+      item.marker.setLngLat([pinObj.lng, pinObj.lat]);
+    });
+    updateFineTuneCoordsUi(pinObj);
+    vibratePattern(25);
+  }
+
+  function stopFineTunePin(commitChanges) {
+    const pinObj = tac.fineTunePin;
+    const pad = document.getElementById("azFineTunePad");
+    if (pad) pad.classList.remove("is-open");
+    if (!pinObj) return;
+
+    pinObj.markers.forEach(function (item) {
+      item.el.classList.remove("is-fine-tuning");
+      if (typeof item.marker.setDraggable === "function") {
+        item.marker.setDraggable(false);
+      }
+    });
+
+    tac.fineTunePin = null;
+    if (commitChanges) {
+      upsertTacticalPin(pinObj, false);
+    }
+  }
+
+  /* =====================================================================
+     MARCADOR COM COORDENADAS + FOTO + LEGENDA & CÂMERA/GALERIA
+     ===================================================================== */
+  function parseLatLngFromText(raw) {
+    if (!raw) return null;
+    const cleaned = String(raw).trim();
+    const matches = cleaned.match(/-?\d{1,3}\.\d+/g);
+    if (!matches || matches.length < 2) return null;
+    const lat = parseFloat(matches[0]);
+    const lng = parseFloat(matches[1]);
+    if (isNaN(lat) || isNaN(lng) || lat < -90 || lat > 90 || lng < -180 || lng > 180) return null;
+    return { lat, lng };
+  }
+
+  function compressImageFileToJpeg(file) {
+    return new Promise(function (resolve) {
+      if (!file) { resolve(""); return; }
+      const reader = new FileReader();
+      reader.onload = function (ev) {
+        const img = new Image();
+        img.onload = function () {
+          const maxDim = 460;
+          let w = img.width || 460;
+          let h = img.height || 460;
+          if (w > maxDim || h > maxDim) {
+            if (w > h) { h = Math.round((h * maxDim) / w); w = maxDim; }
+            else { w = Math.round((w * maxDim) / h); h = maxDim; }
+          }
+          const canvas = document.createElement("canvas");
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, w, h);
+          resolve(canvas.toDataURL("image/jpeg", 0.62));
+        };
+        img.onerror = function () { resolve(""); };
+        img.src = ev.target.result;
+      };
+      reader.onerror = function () { resolve(""); };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function openPhotoPinModal(presetPhotoUrl, prefillCurrentGps) {
+    const modal = document.getElementById("azPhotoPinModal");
+    const coordInp = document.getElementById("azPhotoCoordInput");
+    const capInp = document.getElementById("azPhotoCaptionInput");
+    const prevImg = document.getElementById("azPhotoPinPreviewImg");
+    if (!modal) return;
+
+    tac.pendingPhotoDataUrl = presetPhotoUrl || "";
+    if (prevImg) {
+      if (tac.pendingPhotoDataUrl) {
+        prevImg.src = tac.pendingPhotoDataUrl;
+        prevImg.style.display = "block";
+      } else {
+        prevImg.style.display = "none";
+      }
+    }
+    if (capInp) capInp.value = "";
+    if (coordInp) {
+      if (prefillCurrentGps && tac.myPos) {
+        coordInp.value = `${tac.myPos.lat.toFixed(6)}, ${tac.myPos.lng.toFixed(6)}`;
+      } else {
+        coordInp.value = "";
+      }
+    }
+    modal.classList.add("is-open");
+  }
+
+  function openPhotoPinViewer(pinObj) {
+    const modal = document.getElementById("azPhotoViewerModal");
+    if (!modal || !pinObj) return;
+    tac.activePin = pinObj;
+    const titleEl = document.getElementById("azPhotoViewerTitle");
+    const imgEl = document.getElementById("azPhotoViewerImg");
+    const capEl = document.getElementById("azPhotoViewerCaption");
+    const coordEl = document.getElementById("azPhotoViewerCoords");
+
+    if (titleEl) titleEl.textContent = `📷 PONTO REGISTRADO • ${pinObj.senderQra || "EQUIPE"}`;
+    if (capEl) capEl.textContent = pinObj.rawTitle || pinObj.label;
+    if (coordEl) coordEl.textContent = `COORD: ${pinObj.lat.toFixed(6)}, ${pinObj.lng.toFixed(6)}`;
+    if (imgEl) {
+      if (pinObj.photoUrl) {
+        imgEl.src = pinObj.photoUrl;
+        imgEl.style.display = "block";
+      } else {
+        imgEl.style.display = "none";
+      }
+    }
+    modal.classList.add("is-open");
+  }
+
+  /* =====================================================================
+     MAPA & FERRAMENTAS VISUAIS
      ===================================================================== */
   function registerCapturedMap(mapInst) {
     if (!mapInst || typeof mapInst.unproject !== "function" || typeof mapInst.getContainer !== "function") return;
@@ -22081,7 +22423,7 @@ if (document.readyState === "loading") {
   }
 
   /* =====================================================================
-     2. ALÇA DE ARRASTO DO PTT & ÁUDIO RÁPIDO SEM CADEADO
+     MOTOR DE ÁUDIO SEM ATRASO: WEBRTC DIRETO + FILEREADER + rec.start(180)
      ===================================================================== */
   function setupDraggablePttGroup() {
     const group = document.getElementById("azFloatingPttGroup");
@@ -22098,14 +22440,9 @@ if (document.readyState === "loading") {
 
     let startX = 0, startY = 0, origLeft = 0, origTop = 0, dragging = false;
     handle.addEventListener("pointerdown", function (e) {
-      e.preventDefault();
-      e.stopPropagation();
+      e.preventDefault(); e.stopPropagation();
       const rect = group.getBoundingClientRect();
-      startX = e.clientX;
-      startY = e.clientY;
-      origLeft = rect.left;
-      origTop = rect.top;
-      dragging = true;
+      startX = e.clientX; startY = e.clientY; origLeft = rect.left; origTop = rect.top; dragging = true;
       if (handle.setPointerCapture) try { handle.setPointerCapture(e.pointerId); } catch (_) {}
     });
     handle.addEventListener("pointermove", function (e) {
@@ -22113,8 +22450,7 @@ if (document.readyState === "loading") {
       e.preventDefault();
       group.style.left = Math.min(window.innerWidth - group.offsetWidth - 6, Math.max(6, origLeft + (e.clientX - startX))) + "px";
       group.style.top = Math.min(window.innerHeight - group.offsetHeight - 6, Math.max(46, origTop + (e.clientY - startY))) + "px";
-      group.style.bottom = "auto";
-      group.style.right = "auto";
+      group.style.bottom = "auto"; group.style.right = "auto";
     });
     function endDrag(e) {
       if (!dragging) return;
@@ -22127,14 +22463,54 @@ if (document.readyState === "loading") {
     handle.addEventListener("pointercancel", endDrag);
   }
 
-  function arrayBufferToBase64(buffer) {
-    const bytes = new Uint8Array(buffer);
-    let binary = "";
-    const chunk = 0x8000;
-    for (let i = 0; i < bytes.length; i += chunk) {
-      binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunk));
+  async function initWebRtcAudioCall(targetUid, isInitiator) {
+    if (!window.RTCPeerConnection || !tac.roomCode) return null;
+    try {
+      if (!tac.localLiveStream) {
+        tac.localLiveStream = await navigator.mediaDevices.getUserMedia({
+          audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+        });
+        tac.localLiveStream.getAudioTracks().forEach(function (t) { t.enabled = tac.isRecordingPtt; });
+      }
+      if (tac.rtcPeers[targetUid]) return tac.rtcPeers[targetUid];
+
+      const pc = new RTCPeerConnection({ iceServers: [{ urls: "stun:stun.l.google.com:19302" }] });
+      tac.rtcPeers[targetUid] = pc;
+
+      tac.localLiveStream.getTracks().forEach(function (track) {
+        pc.addTrack(track, tac.localLiveStream);
+      });
+
+      pc.ontrack = function (ev) {
+        tac.rtcAudioReady[targetUid] = true;
+        if (tac.audioMuted) return;
+        const remoteAudio = new Audio();
+        remoteAudio.srcObject = ev.streams[0];
+        remoteAudio.autoplay = true;
+        remoteAudio.play().catch(function () {});
+      };
+
+      pc.onicecandidate = function (ev) {
+        if (ev.candidate) {
+          broadcastPacket({ kind: "rtc_ice", to: targetUid, candidate: ev.candidate });
+        }
+      };
+
+      if (isInitiator) {
+        const offer = await pc.createOffer();
+        await pc.setLocalDescription(offer);
+        broadcastPacket({ kind: "rtc_offer", to: targetUid, sdp: offer });
+      }
+      return pc;
+    } catch (_) {
+      return null;
     }
-    return btoa(binary);
+  }
+
+  function setLiveMicEnabled(enabled) {
+    if (tac.localLiveStream) {
+      tac.localLiveStream.getAudioTracks().forEach(function (t) { t.enabled = Boolean(enabled); });
+    }
   }
 
   function armHeadsetP2Listener() {
@@ -22202,64 +22578,77 @@ if (document.readyState === "loading") {
       showToast("Entre na equipe pelo menu ☰ antes de usar o PTT.");
       return;
     }
+
+    tac.isRecordingPtt = true;
+    syncPttButtonState();
+    setSpeakerVisualIndicator(tac.myId, `${tac.myQra || "VOCÊ"}`, true);
+    setLiveMicEnabled(true);
+    broadcastPacket({ kind: "ptt_speaking", active: true });
+    vibratePattern(45);
+
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const stream = tac.localLiveStream || await navigator.mediaDevices.getUserMedia({
+        audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+      });
       const mime = MediaRecorder.isTypeSupported("audio/webm;codecs=opus") ? "audio/webm;codecs=opus" : "";
-      const rec = mime ? new MediaRecorder(stream, { mimeType: mime, audioBitsPerSecond: 16000 }) : new MediaRecorder(stream);
+      const rec = mime ? new MediaRecorder(stream, { mimeType: mime, audioBitsPerSecond: 20000 }) : new MediaRecorder(stream);
       tac.mediaRecorder = rec;
       tac.audioChunks = [];
-      tac.isRecordingPtt = true;
-      syncPttButtonState();
-      setSpeakerVisualIndicator(tac.myId, `${tac.myQra || "VOCÊ"}`, true);
-      vibratePattern(45);
 
       rec.ondataavailable = function (e) {
         if (e.data && e.data.size > 0) tac.audioChunks.push(e.data);
       };
 
-      rec.onstop = async function () {
-        stream.getTracks().forEach(function (t) { t.stop(); });
+      rec.onstop = function () {
+        if (!tac.localLiveStream) stream.getTracks().forEach(function (t) { t.stop(); });
+        setLiveMicEnabled(false);
         tac.isRecordingPtt = false;
         clearTimeout(tac.pttAutoStopTimer);
         syncPttButtonState();
         setSpeakerVisualIndicator(tac.myId, "", false);
+        broadcastPacket({ kind: "ptt_speaking", active: false });
 
-        const mimeUsed = rec.mimeType || "audio/webm";
-        const blob = new Blob(tac.audioChunks, { type: mimeUsed });
+        const blob = new Blob(tac.audioChunks, { type: rec.mimeType || "audio/webm" });
         if (blob.size < 300) return;
 
-        try {
-          const buf = await blob.arrayBuffer();
-          const b64 = arrayBufferToBase64(buf);
-          broadcastPacket({ kind: "ptt", audioB64: b64, mime: mimeUsed, colorId: tac.myColorId });
+        // Usa FileReader nativo em C++ para entrega imediata
+        const reader = new FileReader();
+        reader.onloadend = function () {
+          broadcastPacket({ kind: "ptt", audio: String(reader.result || ""), colorId: tac.myColorId });
           pushMessageLog(tac.myQra || "EU", "[Áudio PTT enviado]");
           playTone(880, 680, 0.09, 0.12);
-        } catch (_) {}
+        };
+        reader.readAsDataURL(blob);
       };
 
-      rec.start();
-      tac.pttAutoStopTimer = setTimeout(stopPttRecording, 10000);
+      // Codifica quadros Opus a cada 180ms enquanto fala (sem esperar soltar o botão)
+      rec.start(180);
+      tac.pttAutoStopTimer = setTimeout(stopPttRecording, 12000);
     } catch (_) {
+      setLiveMicEnabled(false);
       tac.isRecordingPtt = false;
       syncPttButtonState();
       setSpeakerVisualIndicator(tac.myId, "", false);
+      broadcastPacket({ kind: "ptt_speaking", active: false });
       showToast("Permissão de microfone negada.");
     }
   }
 
   function stopPttRecording() {
     if (!tac.isRecordingPtt) return;
+    setLiveMicEnabled(false);
     if (!tac.mediaRecorder || tac.mediaRecorder.state === "inactive") {
       tac.isRecordingPtt = false;
       syncPttButtonState();
       setSpeakerVisualIndicator(tac.myId, "", false);
+      broadcastPacket({ kind: "ptt_speaking", active: false });
       return;
     }
     try { tac.mediaRecorder.stop(); } catch (_) {}
   }
 
   /* =====================================================================
-     3. EQUIPE, CORES, VIATURAS & ALFINETES
+     EQUIPE, CORES, VIATURAS & ALFINETES
      ===================================================================== */
   function pushMessageLog(sender, text) {
     const now = new Date();
@@ -22458,14 +22847,20 @@ if (document.readyState === "loading") {
   function attachPinToMap(pinObj, mapInst) {
     if (!mapInst || !window.maplibregl) return;
     const el = document.createElement("div");
-    el.className = "az-tac-pin" + (pinObj.type === "gpe" ? " is-gpe" : pinObj.type === "vtr" ? " is-vtr" : "");
+    el.className = "az-tac-pin" +
+      (pinObj.type === "gpe" ? " is-gpe" : pinObj.type === "vtr" ? " is-vtr" : pinObj.type === "photo_pin" ? " is-photo-pin" : "");
     el.style.setProperty("--pin-color", pinObj.colorHex || "#C5A869");
     el.innerHTML = `<div class="az-tac-pin-badge">${pinObj.label}</div><div class="az-tac-pin-dot"></div>`;
     const marker = new window.maplibregl.Marker({ element: el, anchor: "bottom" }).setLngLat([pinObj.lng, pinObj.lat]).addTo(mapInst);
-    pinObj.markers.push({ marker, el });
+    pinObj.markers.push({ marker, el, dragBound: false });
 
     el.addEventListener("click", function (ev) {
       ev.stopPropagation();
+      if (tac.fineTunePin && tac.fineTunePin.id === pinObj.id) return;
+      if (pinObj.type === "photo_pin") {
+        openPhotoPinViewer(pinObj);
+        return;
+      }
       tac.activePin = pinObj;
       const wheel = document.getElementById("azRadialWheel");
       wheel.style.left = Math.min(window.innerWidth - 112, Math.max(112, ev.clientX)) + "px";
@@ -22502,7 +22897,22 @@ if (document.readyState === "loading") {
       }
     } else {
       vibratePattern(45);
-      broadcastPacket({ kind: "pin", pin: { id: data.id, type: data.type, label: data.label, rawTitle: data.rawTitle, teamTag: data.teamTag, targetUid: data.targetUid, colorHex: data.colorHex, lng: data.lng, lat: data.lat } });
+      broadcastPacket({
+        kind: "pin",
+        pin: {
+          id: data.id,
+          type: data.type,
+          label: data.label,
+          rawTitle: data.rawTitle,
+          teamTag: data.teamTag,
+          targetUid: data.targetUid,
+          colorHex: data.colorHex,
+          photoUrl: data.photoUrl || "",
+          senderQra: data.senderQra || tac.myQra || "EQUIPE",
+          lng: data.lng,
+          lat: data.lat
+        }
+      });
       syncFirebaseState();
       showToast(`Marcado: "${data.label}"`);
     }
@@ -22565,7 +22975,7 @@ if (document.readyState === "loading") {
   }
 
   /* =====================================================================
-     4. REDE AO VIVO & FIREBASE
+     REDE AO VIVO (MQTT + WEBRTC + FIREBASE)
      ===================================================================== */
   function xorCipher(str, key) {
     if (!key) return str;
@@ -22643,7 +23053,11 @@ if (document.readyState === "loading") {
       }
       const pinsMap = {};
       tac.pins.forEach(function (p) {
-        pinsMap[p.id] = encodePayload({ id: p.id, type: p.type, label: p.label, rawTitle: p.rawTitle, teamTag: p.teamTag, targetUid: p.targetUid, colorHex: p.colorHex, lng: p.lng, lat: p.lat }, tac.roomCode);
+        pinsMap[p.id] = encodePayload({
+          id: p.id, type: p.type, label: p.label, rawTitle: p.rawTitle, teamTag: p.teamTag,
+          targetUid: p.targetUid, colorHex: p.colorHex, photoUrl: p.photoUrl || "", senderQra: p.senderQra || "",
+          lng: p.lng, lat: p.lat
+        }, tac.roomCode);
       });
       await fetch(`${base}/azimute/${roomKey}/pins.json`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(pinsMap) });
       if (fbStatus) { fbStatus.textContent = "FB: ATIVO"; fbStatus.style.color = "#4ADE80"; }
@@ -22706,21 +23120,38 @@ if (document.readyState === "loading") {
     }
   }
 
-  function handleIncomingPacket(pkt) {
+  async function handleIncomingPacket(pkt) {
     if (!pkt || pkt.uid === tac.myId) return;
+    if (pkt.to && pkt.to !== tac.myId) return;
 
     if (pkt.kind === "pos" && typeof pkt.lat === "number" && typeof pkt.lng === "number") {
       const safeColor = pkt.colorId && pkt.colorId !== "rosa" ? pkt.colorId : "ciano";
-      if (!tac.teammates[pkt.uid]) {
+      const isNew = !tac.teammates[pkt.uid];
+      if (isNew) {
         tac.teammates[pkt.uid] = { uid: pkt.uid, qra: pkt.qra, colorId: safeColor, role: pkt.role || "", lat: pkt.lat, lng: pkt.lng, ts: Date.now(), speaking: false, markers: [] };
         if (!tac.selectedMateUid) tac.selectedMateUid = pkt.uid;
         vibratePattern(120);
         showToast(`● ${pkt.qra} CONECTOU`, 2600);
+        initWebRtcAudioCall(pkt.uid, tac.myId < pkt.uid);
       } else {
         Object.assign(tac.teammates[pkt.uid], { qra: pkt.qra, colorId: safeColor, role: pkt.role || tac.teammates[pkt.uid].role, lat: pkt.lat, lng: pkt.lng, ts: Date.now() });
       }
       tac.maps.forEach(function (m) { renderMateOnMap(tac.teammates[pkt.uid], m); });
       renderOnlineMembersList();
+    } else if (pkt.kind === "rtc_offer" && pkt.sdp) {
+      const pc = await initWebRtcAudioCall(pkt.uid, false);
+      if (pc) {
+        await pc.setRemoteDescription(new RTCSessionDescription(pkt.sdp));
+        const ans = await pc.createAnswer();
+        await pc.setLocalDescription(ans);
+        broadcastPacket({ kind: "rtc_answer", to: pkt.uid, sdp: ans });
+      }
+    } else if (pkt.kind === "rtc_answer" && pkt.sdp && tac.rtcPeers[pkt.uid]) {
+      await tac.rtcPeers[pkt.uid].setRemoteDescription(new RTCSessionDescription(pkt.sdp));
+    } else if (pkt.kind === "rtc_ice" && pkt.candidate && tac.rtcPeers[pkt.uid]) {
+      try { await tac.rtcPeers[pkt.uid].addIceCandidate(new RTCIceCandidate(pkt.candidate)); } catch (_) {}
+    } else if (pkt.kind === "ptt_speaking") {
+      setSpeakerVisualIndicator(pkt.uid, pkt.qra, Boolean(pkt.active));
     } else if (pkt.kind === "set_role" && pkt.targetUid) {
       if (tac.teammates[pkt.targetUid]) {
         tac.teammates[pkt.targetUid].role = pkt.role || "";
@@ -22730,26 +23161,26 @@ if (document.readyState === "loading") {
         vibratePattern([150, 80, 150]);
         showToast(`Sua função tática definida: ${pkt.role}`, 3800);
       }
-    } else if (pkt.kind === "ptt" && (pkt.audioB64 || pkt.audio)) {
-      setSpeakerVisualIndicator(pkt.uid, pkt.qra, true);
+    } else if (pkt.kind === "ptt" && pkt.audio) {
       vibratePattern(140);
       pushMessageLog(pkt.qra, "[Áudio PTT recebido]");
-      const srcUrl = pkt.audioB64 ? `data:${pkt.mime || "audio/webm"};base64,${pkt.audioB64}` : pkt.audio;
-      if (!tac.audioMuted && srcUrl) {
+      // Se o áudio ao vivo via WebRTC já entregou a fala, evita eco duplicado; caso contrário reproduz na hora
+      if (!tac.audioMuted && !tac.rtcAudioReady[pkt.uid]) {
+        setSpeakerVisualIndicator(pkt.uid, pkt.qra, true);
         try {
-          const aud = new Audio(srcUrl);
+          const aud = new Audio(pkt.audio);
           aud.onended = function () { setSpeakerVisualIndicator(pkt.uid, pkt.qra, false); };
           aud.play().catch(function () { setSpeakerVisualIndicator(pkt.uid, pkt.qra, false); });
         } catch (_) {
           setSpeakerVisualIndicator(pkt.uid, pkt.qra, false);
         }
-      } else {
-        setTimeout(function () { setSpeakerVisualIndicator(pkt.uid, pkt.qra, false); }, 2500);
       }
     } else if (pkt.kind === "run") {
       vibratePattern([180, 90, 180]);
       showToast(`🏃 ${pkt.qra} INICIOU UMA CORRIDA`, 4200);
     } else if (pkt.kind === "leave") {
+      if (tac.rtcPeers[pkt.uid]) { try { tac.rtcPeers[pkt.uid].close(); } catch (_) {} delete tac.rtcPeers[pkt.uid]; }
+      delete tac.rtcAudioReady[pkt.uid];
       const mate = tac.teammates[pkt.uid];
       if (mate) {
         mate.markers.forEach(function (i) { i.marker.remove(); });
@@ -22768,7 +23199,8 @@ if (document.readyState === "loading") {
         tac.pins = tac.pins.filter(function (p) { return p.id !== pkt.pinId; });
       }
     } else if (pkt.kind === "msg" && pkt.text) {
-      vibratePattern([200, 100, 200]);
+      const strongVib = /atenção|silêncio/i.test(pkt.text) ? [280, 90, 280] : [180, 90, 180];
+      vibratePattern(strongVib);
       pushMessageLog(pkt.qra, pkt.text);
       showToast(`[${pkt.qra}]: ${pkt.text}`, 4500);
     }
@@ -22783,7 +23215,7 @@ if (document.readyState === "loading") {
   }
 
   /* =====================================================================
-     5. DETECÇÃO SEGURA DE ABA VISÍVEL (SEM offsetParent EM POSITION FIXED)
+     HUD, ESPECTRO, ROLAGEM & EVENTOS DOS BOTÕES
      ===================================================================== */
   async function updateSpectrumStreetsAndElev() {
     const specBar = document.getElementById("azSpectrumDemandBar");
@@ -22995,7 +23427,7 @@ if (document.readyState === "loading") {
     );
   }
 
-  // Inicialização dos campos e listeners
+  // Inicialização
   const qraInp = document.getElementById("azMyQraInput");
   const roomInp = document.getElementById("azRoomCodeInput");
   const fbInp = document.getElementById("azFirebaseUrlInput");
@@ -23019,6 +23451,137 @@ if (document.readyState === "loading") {
       if (tac.isRecordingPtt) stopPttRecording();
       else startPttRecording();
     });
+  });
+
+  // Ajuste fino de marcadores (D-Pad + Passo + Concluir)
+  document.querySelectorAll("[data-ft-dir]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      nudgeFineTunePin(btn.getAttribute("data-ft-dir"));
+    });
+  });
+  onClick("azFineTuneStepBtn", function () {
+    const steps = [1, 2, 5, 15];
+    const nextIdx = (steps.indexOf(tac.fineTuneStepMeters) + 1) % steps.length;
+    tac.fineTuneStepMeters = steps[nextIdx];
+    this.textContent = `PASSO: ${tac.fineTuneStepMeters}m`;
+  });
+  onClick("azFineTuneDoneBtn", function () {
+    stopFineTunePin(true);
+  });
+
+  // Listeners dos inputs nativos de Câmera e Galeria
+  ["azNativeCameraInput", "azNativeGalleryInput"].forEach(function (inputId) {
+    const inp = document.getElementById(inputId);
+    if (!inp) return;
+    inp.addEventListener("change", async function () {
+      const file = inp.files && inp.files[0];
+      inp.value = "";
+      if (!file) return;
+      showToast("Comprimindo imagem...", 1800);
+      const dataUrl = await compressImageFileToJpeg(file);
+      if (!dataUrl) { showToast("Não foi possível carregar a imagem."); return; }
+
+      const modal = document.getElementById("azPhotoPinModal");
+      if (modal && modal.classList.contains("is-open")) {
+        tac.pendingPhotoDataUrl = dataUrl;
+        const prev = document.getElementById("azPhotoPinPreviewImg");
+        if (prev) { prev.src = dataUrl; prev.style.display = "block"; }
+      } else {
+        openPhotoPinModal(dataUrl, true);
+      }
+    });
+  });
+
+  onClick("azModalTakePhotoBtn", function () {
+    const cam = document.getElementById("azNativeCameraInput");
+    if (cam) cam.click();
+  });
+  onClick("azModalPickGalleryBtn", function () {
+    const gal = document.getElementById("azNativeGalleryInput");
+    if (gal) gal.click();
+  });
+
+  onClick("azPasteCoordBtn", async function () {
+    const coordInp = document.getElementById("azPhotoCoordInput");
+    if (!coordInp) return;
+    try {
+      const clip = await navigator.clipboard.readText();
+      if (clip) {
+        coordInp.value = clip.trim();
+        const parsed = parseLatLngFromText(clip);
+        if (parsed) showToast(`Coordenada lida: ${parsed.lat.toFixed(5)}, ${parsed.lng.toFixed(5)}`);
+      }
+    } catch (_) {
+      coordInp.focus();
+      showToast("Segure no campo e toque em Colar.");
+    }
+  });
+
+  onClick("azUseMyGpsCoordBtn", function () {
+    const coordInp = document.getElementById("azPhotoCoordInput");
+    if (!coordInp) return;
+    if (!tac.myPos) { showToast("GPS ainda localizando..."); return; }
+    coordInp.value = `${tac.myPos.lat.toFixed(6)}, ${tac.myPos.lng.toFixed(6)}`;
+  });
+
+  onClick("azClosePhotoPinModalBtn", function () {
+    tac.pendingPhotoDataUrl = "";
+    document.getElementById("azPhotoPinModal").classList.remove("is-open");
+  });
+
+  onClick("azConfirmPhotoPinSaveBtn", function () {
+    const coordRaw = (document.getElementById("azPhotoCoordInput") || {}).value || "";
+    const parsed = parseLatLngFromText(coordRaw);
+    if (!parsed) {
+      showToast("Cole coordenadas válidas (ex: -19.9277, -43.9317).");
+      return;
+    }
+    const caption = ((document.getElementById("azPhotoCaptionInput") || {}).value || "PONTO COM FOTO").trim().toUpperCase();
+    const label = `📷 ${caption}`;
+
+    upsertTacticalPin({
+      id: "photo_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6),
+      type: "photo_pin",
+      label: label,
+      rawTitle: caption,
+      photoUrl: tac.pendingPhotoDataUrl || "",
+      senderQra: tac.myQra || "EQUIPE",
+      targetUid: "GERAL",
+      colorHex: "#38BDF8",
+      lng: parsed.lng,
+      lat: parsed.lat
+    }, false);
+
+    tac.pendingPhotoDataUrl = "";
+    document.getElementById("azPhotoPinModal").classList.remove("is-open");
+
+    const map = getActiveMap();
+    if (map && typeof map.flyTo === "function") {
+      map.flyTo({ center: [parsed.lng, parsed.lat], zoom: 17, essential: true });
+    }
+  });
+
+  onClick("azClosePhotoViewerBtn", function () {
+    document.getElementById("azPhotoViewerModal").classList.remove("is-open");
+  });
+  onClick("azPhotoViewerRouteBtn", function () {
+    document.getElementById("azPhotoViewerModal").classList.remove("is-open");
+    if (tac.activePin) generateRouteToTarget(tac.activePin.lat, tac.activePin.lng, tac.activePin.label);
+  });
+  onClick("azPhotoViewerFineTuneBtn", function () {
+    document.getElementById("azPhotoViewerModal").classList.remove("is-open");
+    if (tac.activePin) startFineTunePin(tac.activePin);
+  });
+  onClick("azPhotoViewerDeleteBtn", function () {
+    document.getElementById("azPhotoViewerModal").classList.remove("is-open");
+    if (!tac.activePin) return;
+    const delId = tac.activePin.id;
+    tac.activePin.markers.forEach(function (i) { i.marker.remove(); });
+    tac.pins = tac.pins.filter(function (p) { return p.id !== delId; });
+    broadcastPacket({ kind: "del_pin", pinId: delId });
+    syncFirebaseState();
+    tac.activePin = null;
+    showToast("Marcador com foto excluído.");
   });
 
   onClick("azTogglePureFullscreenBtn", function () {
@@ -23133,15 +23696,29 @@ if (document.readyState === "loading") {
     tile.addEventListener("click", function () {
       const act = tile.getAttribute("data-grid-act");
       scanAndCaptureExistingMaps();
-      if (act === "pin_edit") { tac.toolMode = "pin_edit"; showToast("Toque no mapa para posicionar o alfinete."); }
-      else if (act === "vtr_pin") { tac.toolMode = "vtr_pin"; showToast("Toque no mapa para marcar a posição da VIATURA."); }
-      else if (act === "ruler") {
+      if (act === "photo_coord_pin") {
+        openPhotoPinModal("", false);
+      } else if (act === "open_camera") {
+        const cam = document.getElementById("azNativeCameraInput");
+        if (cam) cam.click();
+      } else if (act === "open_gallery") {
+        const gal = document.getElementById("azNativeGalleryInput");
+        if (gal) gal.click();
+      } else if (act === "pin_edit") {
+        tac.toolMode = "pin_edit";
+        showToast("Toque no mapa para posicionar o alfinete.");
+      } else if (act === "vtr_pin") {
+        tac.toolMode = "vtr_pin";
+        showToast("Toque no mapa para marcar a posição da VIATURA.");
+      } else if (act === "ruler") {
         tac.toolMode = tac.toolMode === "ruler" ? null : "ruler";
         tac.rulerCoords = [];
         tile.classList.toggle("is-on", tac.toolMode === "ruler");
         showToast(tac.toolMode === "ruler" ? "Régua ATIVA: toque nos pontos" : "Régua encerrada.");
-      } else if (act === "gpe") { tac.toolMode = "gpe"; showToast("Toque no ponto crítico para disparar PRIORIDADE."); }
-      else if (act === "lapis") {
+      } else if (act === "gpe") {
+        tac.toolMode = "gpe";
+        showToast("Toque no ponto crítico para disparar PRIORIDADE.");
+      } else if (act === "lapis") {
         tac.toolMode = tac.toolMode === "lapis" ? null : "lapis";
         tile.classList.toggle("is-on", tac.toolMode === "lapis");
         showToast(tac.toolMode === "lapis" ? "Lápis ATIVO: toque nos pontos do cerco" : "Lápis encerrado.");
@@ -23162,6 +23739,7 @@ if (document.readyState === "loading") {
         renderLineOnMaps("az-tac-route", "az-tac-route-line", [], "#38BDF8", false);
         showToast("Traçados, régua e rotas limpos.");
       } else if (act === "clear_pins") {
+        stopFineTunePin(false);
         tac.pins.forEach(function (p) { p.markers.forEach(function (i) { i.marker.remove(); }); });
         tac.pins = [];
         const wheel = document.getElementById("azRadialWheel");
@@ -23221,6 +23799,7 @@ if (document.readyState === "loading") {
       const act = wbtn.getAttribute("data-wheel");
       document.getElementById("azRadialWheel").classList.remove("is-open");
       if (act === "route" && tac.activePin) generateRouteToTarget(tac.activePin.lat, tac.activePin.lng, tac.activePin.label);
+      else if (act === "finetune" && tac.activePin) startFineTunePin(tac.activePin);
       else if (act === "edit" && tac.activePin) {
         if (tac.activePin.type === "vtr") openVtrEditor(tac.activePin.lng, tac.activePin.lat, tac.activePin);
         else openPinEditor(tac.activePin.lng, tac.activePin.lat, tac.activePin);
@@ -23279,9 +23858,13 @@ if (document.readyState === "loading") {
 
   onClick("azEndSessionBtn", function () {
     if (!window.confirm("Tem certeza que deseja encerrar a sessão?")) return;
+    stopFineTunePin(false);
     if (tac.isRecordingPtt) stopPttRecording();
     if (tac.roomCode) broadcastPacket({ kind: "leave" });
     if (tac.ws) { try { tac.ws.close(); } catch (_) {} tac.ws = null; }
+    Object.values(tac.rtcPeers).forEach(function (pc) { try { pc.close(); } catch (_) {} });
+    tac.rtcPeers = {};
+    tac.rtcAudioReady = {};
     Object.keys(tac.teammates).forEach(function (uid) {
       tac.teammates[uid].markers.forEach(function (i) { i.marker.remove(); });
       delete tac.teammates[uid];
