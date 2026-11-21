@@ -20909,7 +20909,7 @@ if (document.readyState === "loading") {
   initAzimuteGeo();
 }
 </script>
-<!-- ================= AZIMUTE FINAL: PTT FLUTUANTE + MEMBROS ONLINE (VER NO MAPA) + SEM SUGESTÕES + SONAR ================= -->
+<!-- ================= AZIMUTE UNIFICADO: PTT ARRASTÁVEL + FONE P2 + INCURSÃO/VIA OFFLINE + FIREBASE + WEBRTC ================= -->
 <style>
   /* 1. MAPA EM TELA CHEIA (EDGE-TO-EDGE) & SONAR REATIVADO NA ABA DE LOCALIZAÇÃO */
   #azTerrain3dCanvas,
@@ -20918,7 +20918,6 @@ if (document.readyState === "loading") {
     display: none !important;
   }
 
-  /* Reabre o canvas do Orbe como SONAR na aba de Localização */
   #azQuadRingCanvas {
     display: block !important;
     margin: 6px auto !important;
@@ -20933,6 +20932,18 @@ if (document.readyState === "loading") {
     border: none !important;
     border-radius: 0 !important;
     z-index: 10 !important;
+  }
+
+  /* Reposiciona o botão nativo de Centralizar Mapa para fora do meio da tela */
+  #azGeoCenterFab,
+  .az-geo-center-fab {
+    position: fixed !important;
+    top: auto !important;
+    bottom: 76px !important;
+    right: 12px !important;
+    left: auto !important;
+    transform: none !important;
+    z-index: 100038 !important;
   }
 
   /* Recolhe a barra de busca original em favor da Lupa Translúcida */
@@ -20955,7 +20966,7 @@ if (document.readyState === "loading") {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.92) !important;
   }
 
-  /* 2. MICRO-HUD SUPERIOR: LUPA + BATALHÃO/REDE/VIA + SONAR (S) + HOSPITAL (+) + MENU ☰ */
+  /* 2. MICRO-HUD SUPERIOR */
   #azTopHudShell {
     position: fixed;
     top: 8px;
@@ -21037,16 +21048,16 @@ if (document.readyState === "loading") {
     line-height: 1.2;
   }
 
-  /* 3. BOTÃO FLUTUANTE PTT SOBRE O MAPA (CANTO INFERIOR ESQUERDO) */
+  /* 3. BOTÃO FLUTUANTE PTT ARRASTÁVEL (LIVRE DO RODAPÉ) */
   #azFloatingMapPttBtn {
     position: fixed;
-    bottom: 14px;
+    bottom: 76px;
     left: 12px;
     z-index: 100041;
     height: 44px;
     padding: 0 14px;
     border-radius: 999px;
-    background: rgba(13, 13, 13, 0.88);
+    background: rgba(13, 13, 13, 0.90);
     backdrop-filter: blur(4px);
     border: 1.5px solid #C5A869;
     color: #C5A869;
@@ -21057,7 +21068,7 @@ if (document.readyState === "loading") {
     align-items: center;
     justify-content: center;
     gap: 6px;
-    cursor: pointer;
+    cursor: grab;
     user-select: none;
     touch-action: none;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.92);
@@ -21079,7 +21090,7 @@ if (document.readyState === "loading") {
     opacity: 0.78;
   }
 
-  /* 4. SONAR HUD FANTASMA (ACIMA DO MAPA, TRANSPARENTE AO TOQUE) */
+  /* 4. SONAR HUD FANTASMA & ESPECTRO SOB DEMANDA */
   #azSonarGhostOverlay {
     position: fixed;
     inset: 0;
@@ -21093,10 +21104,9 @@ if (document.readyState === "loading") {
     display: flex !important;
   }
 
-  /* ESPECTRO SOB DEMANDA */
   #azSpectrumDemandBar {
     position: fixed;
-    bottom: 66px;
+    bottom: 128px;
     left: 10px;
     right: 10px;
     height: 68px;
@@ -21110,12 +21120,59 @@ if (document.readyState === "loading") {
   }
   #azSpectrumDemandBar.is-on { display: flex; }
 
-  /* 5. GAVETA LATERAL FLUTUANTE ☰ (NÃO EMPURRA O MAPA) */
+  /* 5. ALÇA DE ROLAGEM LATERAL (EXCLUSIVA DO MODO INCURSÃO) */
+  #azVerticalGripLandscape {
+    display: none !important;
+  }
+  body.az-inc-active #azVerticalGripLandscape {
+    display: flex !important;
+    position: fixed !important;
+    top: 54px !important;
+    bottom: 76px !important;
+    right: 4px !important;
+    width: 18px !important;
+    z-index: 100039 !important;
+    background: rgba(13, 13, 13, 0.45) !important;
+    border: 1px solid rgba(197, 168, 105, 0.5) !important;
+    border-radius: 999px !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    padding: 3px 0 !important;
+    touch-action: none !important;
+    user-select: none !important;
+    cursor: grab !important;
+  }
+  #azVerticalGripThumb {
+    display: block !important;
+    width: 10px !important;
+    height: 42px !important;
+    border-radius: 999px !important;
+    background: #C5A869 !important;
+    pointer-events: none !important;
+  }
+
+  #azUnderMapDrawer {
+    position: fixed !important;
+    left: 8px !important;
+    right: 26px !important;
+    bottom: 0 !important;
+    max-height: 72vh !important;
+    overflow-y: auto !important;
+    background: rgba(13, 13, 13, 0.96) !important;
+    border-top: 2px solid #C5A869 !important;
+    border-radius: 12px 12px 0 0 !important;
+    padding: 10px !important;
+    z-index: 100037 !important;
+    transform: translateY(100%);
+  }
+
+  /* 6. GAVETA LATERAL FLUTUANTE ☰ */
   #azAtakRightDock {
     position: fixed;
     top: 48px;
     right: 8px;
-    bottom: 66px;
+    bottom: 76px;
     width: 296px;
     max-width: calc(100vw - 16px);
     z-index: 100045;
@@ -21201,12 +21258,11 @@ if (document.readyState === "loading") {
     height: 30px;
   }
 
-  /* LISTA DE MEMBROS ONLINE DO TURNO + BOTÃO VER NO MAPA */
   .az-online-roster-list {
     display: flex;
     flex-direction: column;
     gap: 4px;
-    max-height: 132px;
+    max-height: 120px;
     overflow-y: auto;
   }
   .az-member-row {
@@ -21244,7 +21300,6 @@ if (document.readyState === "loading") {
     display: flex;
   }
 
-  /* SELETOR DE CORES ÚNICAS TRAVADAS */
   #azColorLockSection {
     display: none;
     flex-direction: column;
@@ -21284,7 +21339,6 @@ if (document.readyState === "loading") {
     text-decoration: line-through;
   }
 
-  /* HISTÓRICO DE ÚLTIMAS MENSAGENS */
   .az-msg-log-box {
     max-height: 76px;
     overflow-y: auto;
@@ -21308,7 +21362,6 @@ if (document.readyState === "loading") {
   .az-msg-log-item:last-child { border-bottom: none; }
   .az-msg-log-time { font-family: monospace; color: #9E9A8F; font-size: 8.5px; flex-shrink: 0; }
 
-  /* GRADE 3x3 ATAK */
   .az-atak-grid-3x3 {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -21355,7 +21408,6 @@ if (document.readyState === "loading") {
     cursor: pointer;
   }
 
-  /* BOTÃO PTT INTERNO DA GAVETA */
   #azPttHoldBtn {
     width: 100%;
     height: 34px;
@@ -21384,7 +21436,7 @@ if (document.readyState === "loading") {
     opacity: 0.72;
   }
 
-  /* 6. SETINHA (V INVERTIDO ▲) PARA REVELAR TECLAS GEO / INÍCIO / UNIDADES */
+  /* SETINHA (V INVERTIDO ▲) PARA REVELAR TECLAS DO RODAPÉ */
   #azNavChevronToggleBtn {
     position: fixed;
     bottom: 8px;
@@ -21414,7 +21466,7 @@ if (document.readyState === "loading") {
     display: none !important;
   }
 
-  /* 7. MODAL DE ALFINETE EDITÁVEL & RODA DE AÇÕES */
+  /* MODAL DE ALFINETE EDITÁVEL & RODA DE AÇÕES */
   #azPinEditorModal {
     position: fixed;
     top: 50%;
@@ -21528,20 +21580,20 @@ if (document.readyState === "loading") {
   <button type="button" class="az-hud-glass-btn" id="azHudSearchToggleBtn" title="Buscar rua, unidade ou hospital">🔍</button>
   <div id="azMicroTelemetryHud" title="Toque para copiar QTH e coordenadas">
     <div class="az-hud-line-top" id="azHudUnitNetLine">PMMG • REDE RMBH</div>
-    <div class="az-hud-line-sub" id="azHudStreetLine">Obtendo localização...</div>
+    <div class="az-hud-line-sub" id="azHudStreetLine">Localizando via...</div>
   </div>
   <button type="button" class="az-hud-glass-btn" id="azQuickSonarShortcutBtn" title="Ativar/Desativar SONAR (S)">S</button>
   <button type="button" class="az-hud-glass-btn az-hud-hosp-btn" id="azQuickHospitalRouteBtn" title="Toque: Rota Hospital Próximo | Segurar: APH">+</button>
   <button type="button" class="az-hud-glass-btn" id="azAtakHamburgerBtn" title="Menu Tático ATAK">☰</button>
 </div>
 
-<!-- BOTÃO FLUTUANTE PTT SOBRE O MAPA -->
-<button type="button" id="azFloatingMapPttBtn" title="Segure para falar no rádio da equipe">🎙 PTT</button>
+<!-- BOTÃO FLUTUANTE PTT ARRASTÁVEL (CLIQUE P2 OU SEGURE NA TELA) -->
+<button type="button" id="azFloatingMapPttBtn" title="Segure para falar ou arraste para mover na tela">🎙 PTT</button>
 
-<!-- SETINHA (V INVERTIDO) PARA ALTERNAR TECLAS GEO / INÍCIO / UNIDADES -->
+<!-- SETINHA (V INVERTIDO) PARA ALTERNAR TECLAS DO RODAPÉ -->
 <button type="button" id="azNavChevronToggleBtn" title="Mostrar/Ocultar teclas de navegação">▲</button>
 
-<!-- SONAR HUD FANTASMA (ACIMA DO MAPA, TRANSPARENTE AO TOQUE) -->
+<!-- SONAR HUD FANTASMA -->
 <div id="azSonarGhostOverlay" aria-hidden="true">
   <svg width="248" height="248" viewBox="0 0 248 248">
     <circle cx="124" cy="124" r="100" fill="none" stroke="rgba(197,168,105,0.65)" stroke-width="1.5" stroke-dasharray="5 4"/>
@@ -21569,7 +21621,8 @@ if (document.readyState === "loading") {
 
 <!-- GAVETA LATERAL FLUTUANTE ☰ -->
 <aside id="azAtakRightDock">
-  <button type="button" class="az-atak-tool-btn is-exit-inc" id="azDockExitIncursionBtn" style="display:none;">↩ SAIR DO MODO INCURSÃO</button>
+  <!-- ITEM 1: ENTRAR / SAIR DO MODO INCURSÃO -->
+  <button type="button" class="az-atak-tool-btn is-exit-inc" id="azDockToggleIncursionBtn">▣ ENTRAR NO MODO INCURSÃO</button>
 
   <!-- 1. CONEXÃO SEM SUGESTÕES + LISTA DE MEMBROS ONLINE -->
   <div class="az-dock-card">
@@ -21592,22 +21645,21 @@ if (document.readyState === "loading") {
       <div class="az-color-palette" id="azColorPaletteBox"></div>
     </div>
 
-    <!-- Lista interativa de todos os membros online no turno -->
     <div class="az-online-roster-list" id="azOnlineRosterList">
       <div style="font-size:9.5px;color:#78746A;padding:4px;">Nenhum membro online no turno ainda.</div>
     </div>
   </div>
 
-  <!-- 2. RÁDIO PTT -->
+  <!-- 2. RÁDIO PTT (WEBRTC DIRETO + FONE P2 + RESERVA OPUS) -->
   <div class="az-dock-card">
     <div class="az-dock-sec-title">
-      <span>RÁDIO PTT (BAIXA LATÊNCIA)</span>
+      <span>RÁDIO PTT (WEBRTC / P2)</span>
       <button type="button" id="azAudioMuteToggleBtn" style="background:none;border:none;color:#4ADE80;font-size:9px;font-weight:900;cursor:pointer;">🔊 ÁUDIO ON</button>
     </div>
-    <button type="button" id="azPttHoldBtn">🎙 SEGURE P/ FALAR (OU CLIQUE NO FONE)</button>
+    <button type="button" id="azPttHoldBtn">🎙 SEGURE P/ FALAR (OU CLIQUE NO FONE P2)</button>
   </div>
 
-  <!-- 3. GRADE TÁTICA ATAK (SONAR E ESPECTRO) -->
+  <!-- 3. GRADE TÁTICA ATAK -->
   <div class="az-dock-card">
     <div class="az-dock-sec-title"><span>FERRAMENTAS ATAK</span></div>
     <div class="az-atak-grid-3x3">
@@ -21641,6 +21693,18 @@ if (document.readyState === "loading") {
       <div style="color:#78746A;">Nenhuma mensagem registrada no turno.</div>
     </div>
   </div>
+
+  <!-- ITEM 2: FIREBASE PERSISTENTE (HÍBRIDO) -->
+  <details class="az-dock-card" style="font-size:9.5px;color:#9E9A8F;">
+    <summary style="cursor:pointer;font-weight:900;color:#C5A869;">FIREBASE PERSISTENTE (HÍBRIDO)</summary>
+    <div style="display:flex;flex-direction:column;gap:5px;margin-top:6px;">
+      <div class="az-team-row">
+        <input type="text" id="azFirebaseUrlInput" class="az-team-input" placeholder="https://seu-projeto.firebaseio.com" autocomplete="off">
+        <button type="button" class="az-atak-tool-btn" id="azSaveFirebaseBtn">SALVAR</button>
+      </div>
+      <span id="azFirebaseStatus" style="font-size:9px;font-weight:800;color:#9E9A8F;">FB: DESATIVADO</span>
+    </div>
+  </details>
 
   <button type="button" class="az-atak-tool-btn is-danger" id="azEndSessionBtn">■ ENCERRAR SESSÃO</button>
 </aside>
@@ -21689,7 +21753,6 @@ if (document.readyState === "loading") {
     { id: "branco",  name: "BRANCO",  hex: "#F8FAFC" }
   ];
 
-  // Limpa qualquer sugestão prévia herdada para não aparecer "SGT PABLO" ao compartilhar o link
   const savedQra = (localStorage.getItem("az_tac_my_qra") || "").trim();
   const cleanInitialQra = savedQra.toUpperCase() === "SGT PABLO" ? "" : savedQra;
   if (!cleanInitialQra) localStorage.removeItem("az_tac_my_qra");
@@ -21700,6 +21763,7 @@ if (document.readyState === "loading") {
     myQra: cleanInitialQra,
     myColorId: localStorage.getItem("az_tac_my_color") || "azul",
     roomCode: localStorage.getItem("az_tac_room") || "",
+    firebaseUrl: localStorage.getItem("az_tac_fb_url") || "",
     joinedTeam: false,
     navHiddenByChevron: true,
     selectedMateUid: "",
@@ -21730,7 +21794,12 @@ if (document.readyState === "loading") {
     pttAutoStopTimer: null,
     pttLockOwnerUid: null,
     pttLockOwnerQra: "",
-    pttLockExpiresAt: 0
+    pttLockExpiresAt: 0,
+    rtcPeers: {},
+    localLiveStream: null,
+    openRatio: 0,
+    draggingGrip: false,
+    silentKeepAliveAudio: null
   };
   localStorage.setItem("az_tac_uid", tac.myId);
   if (tac.myColorId === "rosa") tac.myColorId = "safira";
@@ -21741,7 +21810,165 @@ if (document.readyState === "loading") {
   }
 
   /* =====================================================================
-     1. FUNÇÃO SONAR (ANTIGA ECO) NA ABA DE LOCALIZAÇÃO & HUD
+     1. MOBILIDADE (ARRASTAR E SOLTAR BOTÃO PTT NA TELA)
+     ===================================================================== */
+  function makePttButtonDraggable(btn) {
+    if (!btn) return;
+    const savedPos = JSON.parse(localStorage.getItem("az_ptt_btn_pos") || "null");
+    if (savedPos && typeof savedPos.left === "number" && typeof savedPos.top === "number") {
+      btn.style.left = Math.min(window.innerWidth - 90, Math.max(6, savedPos.left)) + "px";
+      btn.style.top = Math.min(window.innerHeight - 54, Math.max(46, savedPos.top)) + "px";
+      btn.style.bottom = "auto";
+      btn.style.right = "auto";
+    }
+
+    let startX = 0, startY = 0, origLeft = 0, origTop = 0, moved = false, dragging = false;
+
+    btn.addEventListener("pointerdown", function (e) {
+      if (btn.disabled) return;
+      e.preventDefault();
+      e.stopPropagation();
+      const rect = btn.getBoundingClientRect();
+      startX = e.clientX;
+      startY = e.clientY;
+      origLeft = rect.left;
+      origTop = rect.top;
+      moved = false;
+      dragging = true;
+      if (btn.setPointerCapture) try { btn.setPointerCapture(e.pointerId); } catch (_) {}
+
+      // Inicia PTT imediatamente no toque
+      startPttRecording();
+    });
+
+    btn.addEventListener("pointermove", function (e) {
+      if (!dragging) return;
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      if (Math.abs(dx) > 8 || Math.abs(dy) > 8) moved = true;
+      if (!moved) return;
+      const nextLeft = Math.min(window.innerWidth - btn.offsetWidth - 6, Math.max(6, origLeft + dx));
+      const nextTop = Math.min(window.innerHeight - btn.offsetHeight - 6, Math.max(46, origTop + dy));
+      btn.style.left = nextLeft + "px";
+      btn.style.top = nextTop + "px";
+      btn.style.bottom = "auto";
+      btn.style.right = "auto";
+    });
+
+    function finishDragAndPtt(e) {
+      if (!dragging) return;
+      dragging = false;
+      if (e && btn.releasePointerCapture) try { btn.releasePointerCapture(e.pointerId); } catch (_) {}
+      if (moved) {
+        const rect = btn.getBoundingClientRect();
+        localStorage.setItem("az_ptt_btn_pos", JSON.stringify({ left: rect.left, top: rect.top }));
+      }
+      stopPttRecording();
+    }
+
+    btn.addEventListener("pointerup", finishDragAndPtt);
+    btn.addEventListener("pointercancel", finishDragAndPtt);
+  }
+
+  /* =====================================================================
+     2. FONE P2 COM FIO: ÁUDIO SILENCIOSO PARA CAPTURAR CLIQUE FÍSICO DO FONE
+     ===================================================================== */
+  function armHeadsetP2Listener() {
+    // Cria um WAV silencioso mínimo para manter o foco de mídia do Android no navegador
+    if (!tac.silentKeepAliveAudio) {
+      const silentWav = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA";
+      const a = new Audio(silentWav);
+      a.loop = true;
+      a.volume = 0.001;
+      tac.silentKeepAliveAudio = a;
+    }
+
+    const unlockMediaFocus = function () {
+      if (tac.silentKeepAliveAudio && tac.silentKeepAliveAudio.paused) {
+        tac.silentKeepAliveAudio.play().catch(function () {});
+      }
+      if ("mediaSession" in navigator) {
+        try {
+          navigator.mediaSession.metadata = new MediaMetadata({ title: "AZIMUTE RÁDIO PTT", artist: "Canal Operacional" });
+          navigator.mediaSession.playbackState = "playing";
+          const toggleFromP2 = function () {
+            if (tac.isRecordingPtt) stopPttRecording();
+            else startPttRecording();
+          };
+          navigator.mediaSession.setActionHandler("play", toggleFromP2);
+          navigator.mediaSession.setActionHandler("pause", toggleFromP2);
+          navigator.mediaSession.setActionHandler("nexttrack", toggleFromP2);
+          navigator.mediaSession.setActionHandler("previoustrack", toggleFromP2);
+        } catch (_) {}
+      }
+    };
+
+    document.addEventListener("pointerdown", unlockMediaFocus, { once: true });
+    document.addEventListener("keydown", function (ev) {
+      if (ev.key === "MediaPlayPause" || ev.key === "HeadsetHook" || ev.code === "MediaPlayPause") {
+        ev.preventDefault();
+        if (tac.isRecordingPtt) stopPttRecording();
+        else startPttRecording();
+      }
+    });
+  }
+
+  /* =====================================================================
+     3. ITEM 3: ÁUDIO WEBRTC DIRETO + RESERVA POR PACOTES OPUS
+     ===================================================================== */
+  async function initWebRtcAudioCall(targetUid, isInitiator) {
+    if (!window.RTCPeerConnection || !tac.roomCode) return;
+    try {
+      if (!tac.localLiveStream) {
+        tac.localLiveStream = await navigator.mediaDevices.getUserMedia({
+          audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+        });
+        // Deixa microfone mutado até apertar PTT
+        tac.localLiveStream.getAudioTracks().forEach(function (t) { t.enabled = tac.isRecordingPtt; });
+      }
+
+      if (tac.rtcPeers[targetUid]) return tac.rtcPeers[targetUid];
+
+      const pc = new RTCPeerConnection({ iceServers: [{ urls: "stun:stun.l.google.com:19302" }] });
+      tac.rtcPeers[targetUid] = pc;
+
+      tac.localLiveStream.getTracks().forEach(function (track) {
+        pc.addTrack(track, tac.localLiveStream);
+      });
+
+      pc.ontrack = function (ev) {
+        if (tac.audioMuted) return;
+        const remoteAudio = new Audio();
+        remoteAudio.srcObject = ev.streams[0];
+        remoteAudio.autoplay = true;
+        remoteAudio.play().catch(function () {});
+      };
+
+      pc.onicecandidate = function (ev) {
+        if (ev.candidate) {
+          broadcastPacket({ kind: "rtc_ice", to: targetUid, candidate: ev.candidate });
+        }
+      };
+
+      if (isInitiator) {
+        const offer = await pc.createOffer();
+        await pc.setLocalDescription(offer);
+        broadcastPacket({ kind: "rtc_offer", to: targetUid, sdp: offer });
+      }
+      return pc;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function setLiveMicEnabled(enabled) {
+    if (tac.localLiveStream) {
+      tac.localLiveStream.getAudioTracks().forEach(function (t) { t.enabled = Boolean(enabled); });
+    }
+  }
+
+  /* =====================================================================
+     4. FUNÇÃO SONAR NA ABA DE LOCALIZAÇÃO & HUD
      ===================================================================== */
   function renameEcoToSonarInLocationTab() {
     const ringCanvas = document.getElementById("azQuadRingCanvas");
@@ -21768,7 +21995,7 @@ if (document.readyState === "loading") {
   }
 
   /* =====================================================================
-     2. HISTÓRICO DE ÚLTIMAS MENSAGENS
+     5. HISTÓRICO DE MENSAGENS, VIBRAÇÃO & SIRENE DEFESA CIVIL
      ===================================================================== */
   function pushMessageLog(sender, text) {
     const now = new Date();
@@ -21791,13 +22018,8 @@ if (document.readyState === "loading") {
     }).join("");
   }
 
-  /* =====================================================================
-     3. VIBRAÇÃO, SIRENE DEFESA CIVIL (APENAS RECEPTOR) E BIPES PTT
-     ===================================================================== */
   function vibratePattern(pat) {
-    if (navigator.vibrate) {
-      try { navigator.vibrate(pat); } catch (_) {}
-    }
+    if (navigator.vibrate) { try { navigator.vibrate(pat); } catch (_) {} }
   }
 
   function playTone(freq1, freq2, durationSec, vol) {
@@ -21856,7 +22078,7 @@ if (document.readyState === "loading") {
   }
 
   /* =====================================================================
-     4. RÁDIO PTT (FLUTUANTE NO MAPA + GAVETA + BOTÃO DO FONE + TRAVA)
+     6. RÁDIO PTT (WEBRTC + PACOTES + TRAVA CANAL OCUPADO)
      ===================================================================== */
   function syncPttButtonState() {
     const buttons = [
@@ -21886,7 +22108,7 @@ if (document.readyState === "loading") {
       } else {
         btn.disabled = false;
         btn.classList.remove("is-tx", "is-busy");
-        btn.textContent = isFloat ? "🎙 PTT" : "🎙 SEGURE P/ FALAR (OU CLIQUE NO FONE)";
+        btn.textContent = isFloat ? "🎙 PTT" : "🎙 SEGURE P/ FALAR (OU CLIQUE NO FONE P2)";
       }
     });
   }
@@ -21909,23 +22131,25 @@ if (document.readyState === "loading") {
     tac.pttLockExpiresAt = Date.now() + 14000;
     syncPttButtonState();
     broadcastPacket({ kind: "ptt_lock" });
+    setLiveMicEnabled(true);
 
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
+      const stream = tac.localLiveStream || await navigator.mediaDevices.getUserMedia({
         audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
       });
       const mime = MediaRecorder.isTypeSupported("audio/webm;codecs=opus") ? "audio/webm;codecs=opus" : "";
       const rec = mime ? new MediaRecorder(stream, { mimeType: mime, audioBitsPerSecond: 24000 }) : new MediaRecorder(stream);
       tac.mediaRecorder = rec;
       tac.audioChunks = [];
-      playTone(520, 680, 0.11, 0.14);
+      playTone(520, 680, 0.10, 0.14);
 
       rec.ondataavailable = function (e) {
         if (e.data && e.data.size > 0) tac.audioChunks.push(e.data);
       };
 
       rec.onstop = function () {
-        stream.getTracks().forEach(function (t) { t.stop(); });
+        if (!tac.localLiveStream) stream.getTracks().forEach(function (t) { t.stop(); });
+        setLiveMicEnabled(false);
         tac.isRecordingPtt = false;
         tac.pttLockOwnerUid = null;
         tac.pttLockOwnerQra = "";
@@ -21941,14 +22165,14 @@ if (document.readyState === "loading") {
         reader.onloadend = function () {
           broadcastPacket({ kind: "ptt", audio: String(reader.result || ""), colorId: tac.myColorId });
           pushMessageLog(tac.myQra || "EU", "[Áudio PTT enviado]");
-          showToast("Áudio PTT enviado.");
         };
         reader.readAsDataURL(blob);
       };
 
-      rec.start(200);
+      rec.start(180);
       tac.pttAutoStopTimer = setTimeout(stopPttRecording, 12000);
     } catch (_) {
+      setLiveMicEnabled(false);
       tac.isRecordingPtt = false;
       tac.pttLockOwnerUid = null;
       syncPttButtonState();
@@ -21959,6 +22183,7 @@ if (document.readyState === "loading") {
 
   function stopPttRecording() {
     if (!tac.isRecordingPtt) return;
+    setLiveMicEnabled(false);
     if (!tac.mediaRecorder || tac.mediaRecorder.state === "inactive") {
       tac.isRecordingPtt = false;
       tac.pttLockOwnerUid = null;
@@ -21969,21 +22194,8 @@ if (document.readyState === "loading") {
     try { tac.mediaRecorder.stop(); } catch (_) {}
   }
 
-  function setupHeadsetPttButton() {
-    if (!("mediaSession" in navigator)) return;
-    try {
-      navigator.mediaSession.metadata = new MediaMetadata({ title: "AZIMUTE PTT", artist: "PMMG" });
-      const toggleFromHeadset = function () {
-        if (tac.isRecordingPtt) stopPttRecording();
-        else startPttRecording();
-      };
-      navigator.mediaSession.setActionHandler("play", toggleFromHeadset);
-      navigator.mediaSession.setActionHandler("pause", toggleFromHeadset);
-    } catch (_) {}
-  }
-
   /* =====================================================================
-     5. CORES ÚNICAS & LISTA DE MEMBROS ONLINE COM "VER NO MAPA"
+     7. CORES ÚNICAS & MEMBROS ONLINE ("VER NO MAPA")
      ===================================================================== */
   function syncJoinedTeamUi() {
     const sec = document.getElementById("azColorLockSection");
@@ -22020,16 +22232,14 @@ if (document.readyState === "loading") {
       btn.title = ownerQra ? `Travada por ${ownerQra}` : `Selecionar ${col.name}`;
 
       btn.addEventListener("click", function () {
-        if (ownerQra) {
-          showToast(`Cor ${col.name} travada por ${ownerQra}.`);
-          return;
-        }
+        if (ownerQra) { showToast(`Cor ${col.name} travada por ${ownerQra}.`); return; }
         tac.myColorId = col.id;
         localStorage.setItem("az_tac_my_color", col.id);
         renderColorPalette();
         if (tac.myPos && tac.roomCode) {
           broadcastPacket({ kind: "pos", lat: tac.myPos.lat, lng: tac.myPos.lng, colorId: tac.myColorId });
         }
+        syncFirebaseState();
       });
       box.appendChild(btn);
     });
@@ -22046,7 +22256,6 @@ if (document.readyState === "loading") {
     } else if (typeof map.setCenter === "function") {
       map.setCenter([mate.lng, mate.lat]);
     }
-    // Fecha a gaveta lateral para deixar o mapa visível no ponto do colega
     tac.dockOpen = false;
     document.getElementById("azAtakRightDock").classList.remove("is-open");
     document.getElementById("azAtakHamburgerBtn").classList.remove("is-active");
@@ -22118,7 +22327,179 @@ if (document.readyState === "loading") {
   }
 
   /* =====================================================================
-     6. CAPTURA DO MAPA, LOCALIZAÇÃO NO TOPO & ROTA HOSPITALAR
+     8. ITEM 1: MODO INCURSÃO + ALÇA LATERAL + ENDEREÇO OFFLINE NO TOPO
+     ===================================================================== */
+  function initVerticalGripDrawer() {
+    let track = document.getElementById("azVerticalGripLandscape");
+    if (!track) {
+      track = document.createElement("div");
+      track.id = "azVerticalGripLandscape";
+      track.innerHTML = '<div id="azVerticalGripThumb"></div>';
+      document.body.appendChild(track);
+    }
+    let drawer = document.getElementById("azUnderMapDrawer");
+    if (!drawer) {
+      drawer = document.createElement("div");
+      drawer.id = "azUnderMapDrawer";
+      document.body.appendChild(drawer);
+    }
+
+    if (track.dataset.azGripReady === "1") return;
+    track.dataset.azGripReady = "1";
+
+    function setRatio(r) {
+      tac.openRatio = Math.min(1, Math.max(0, r));
+      const thumb = document.getElementById("azVerticalGripThumb");
+      if (thumb) {
+        const usable = Math.max(1, track.clientHeight - thumb.offsetHeight - 6);
+        thumb.style.transform = `translateY(${Math.round(tac.openRatio * usable)}px)`;
+      }
+      drawer.style.transform = `translateY(${Math.round((1 - tac.openRatio) * 100)}%)`;
+    }
+
+    function handleMove(clientY) {
+      const rect = track.getBoundingClientRect();
+      const thumb = document.getElementById("azVerticalGripThumb");
+      const th = thumb ? thumb.offsetHeight : 42;
+      const usable = Math.max(1, rect.height - th - 6);
+      setRatio(Math.min(usable, Math.max(0, clientY - rect.top - th / 2)) / usable);
+    }
+
+    track.addEventListener("pointerdown", function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      tac.draggingGrip = true;
+      if (drawer.dataset.azPop !== "1") {
+        const ids = ["azGeoLayersBox", "azGeoMunBox", "azGeoCfgBox"];
+        let html = '<div style="font-size:10px;font-weight:900;color:#C5A869;margin-bottom:6px;">CAMADAS & TERRITÓRIO (MODO INCURSÃO)</div>';
+        ids.forEach(function (id) { const el = document.getElementById(id); if (el) html += '<div style="margin-bottom:8px;">' + el.innerHTML + '</div>'; });
+        drawer.innerHTML = html;
+        drawer.dataset.azPop = "1";
+      }
+      if (track.setPointerCapture) try { track.setPointerCapture(e.pointerId); } catch (_) {}
+      handleMove(e.clientY);
+    });
+    track.addEventListener("pointermove", function (e) {
+      if (!tac.draggingGrip) return;
+      e.preventDefault();
+      handleMove(e.clientY);
+    });
+    function endGrip(e) {
+      if (!tac.draggingGrip) return;
+      tac.draggingGrip = false;
+      if (e && track.releasePointerCapture) try { track.releasePointerCapture(e.pointerId); } catch (_) {}
+    }
+    track.addEventListener("pointerup", endGrip);
+    track.addEventListener("pointercancel", endGrip);
+  }
+
+  function readOfflineAddressFromDom() {
+    // 1. Lê variável global já resolvida pela base offline do AZIMUTE
+    if (typeof window.cachedCurrentStreet === "string" && window.cachedCurrentStreet.trim().length > 3) {
+      return window.cachedCurrentStreet.trim();
+    }
+    // 2. Lê o elemento de rua da aba Localização/Geolocalização já preenchido offline
+    const selectors = ["#azGeoQthStreet", "#azHomeQthStreet", ".az-qth-street", "[id*='Street']", "[id*='Endereco']"];
+    for (let i = 0; i < selectors.length; i++) {
+      const el = document.querySelector(selectors[i]);
+      if (el && el.id !== "azHudStreetLine") {
+        const txt = (el.textContent || "").replace(/^QTH\s*:\s*/i, "").trim();
+        if (txt.length > 3 && !/aguardando|obtendo|localizando/i.test(txt)) {
+          return txt;
+        }
+      }
+    }
+    return "";
+  }
+
+  async function resolveAddressFromCoords(lat, lng) {
+    const offlineFirst = readOfflineAddressFromDom();
+    if (offlineFirst) {
+      tac.resolvedAddressText = offlineFirst;
+      return;
+    }
+
+    const key = `${lat.toFixed(4)},${lng.toFixed(4)}`;
+    if (key === tac.lastGeocodeKey && tac.resolvedAddressText) return;
+    tac.lastGeocodeKey = key;
+    tac.resolvedAddressText = `LAT ${lat.toFixed(5)}, LNG ${lng.toFixed(5)}`;
+
+    try {
+      const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&zoom=18`, {
+        headers: { "Accept": "application/json" }
+      });
+      const data = await res.json();
+      if (data && data.address) {
+        const road = data.address.road || data.address.pedestrian || data.address.path || data.address.suburb || "";
+        const house = data.address.house_number ? `, ${data.address.house_number}` : "";
+        const bairro = data.address.suburb || data.address.neighbourhood || data.address.city_district || "";
+        const parts = [];
+        if (road) parts.push(road + house);
+        if (bairro && bairro !== road) parts.push(bairro);
+        if (parts.length) tac.resolvedAddressText = parts.join(" • ");
+      }
+    } catch (_) {}
+  }
+
+  function isIncursionOpen() {
+    const incEl = document.getElementById("azIncursionOverlay");
+    return Boolean(incEl && incEl.classList.contains("is-open"));
+  }
+
+  function isMapTabVisible() {
+    const geoEl = document.getElementById("azGeoMap");
+    const geoVisible = Boolean(geoEl && geoEl.offsetParent !== null);
+    return geoVisible || isIncursionOpen();
+  }
+
+  function updateHudAndModes() {
+    renameEcoToSonarInLocationTab();
+    initVerticalGripDrawer();
+
+    const shell = document.getElementById("azTopHudShell");
+    const floatPtt = document.getElementById("azFloatingMapPttBtn");
+    const visible = isMapTabVisible();
+    const incOpen = isIncursionOpen();
+
+    document.body.classList.toggle("az-map-fullscreen", visible);
+    document.body.classList.toggle("az-inc-active", incOpen);
+    document.body.classList.toggle("az-nav-hidden", Boolean(tac.navHiddenByChevron));
+    if (shell) shell.classList.toggle("is-visible", visible);
+    if (floatPtt) floatPtt.classList.toggle("is-visible", visible);
+
+    const incBtn = document.getElementById("azDockToggleIncursionBtn");
+    if (incBtn) {
+      incBtn.textContent = incOpen ? "↩ SAIR DO MODO INCURSÃO" : "▣ ENTRAR NO MODO INCURSÃO";
+    }
+
+    if (!visible) {
+      tac.dockOpen = false;
+      document.getElementById("azAtakRightDock").classList.remove("is-open");
+      applySonarState(false);
+      document.getElementById("azSpectrumDemandBar").classList.remove("is-on");
+      return;
+    }
+
+    const unitLine = document.getElementById("azHudUnitNetLine");
+    if (unitLine) {
+      const unitEl = document.querySelector("#azGeoNearestUnit, #azHomeNearestUnit, [id*='Unit'], [id*='Bpm']");
+      const m = unitEl ? (unitEl.textContent || "").match(/(\d+º\s*BPM(?:\s*\/\s*\d+ª\s*CIA)?|\d+ª\s*RPM)/i) : null;
+      const unitStr = m && m[1] ? m[1].toUpperCase() : "PMMG • RMBH";
+      const netStr = tac.roomCode ? `TURNO ${tac.roomCode}` : "REDE LOCAL";
+      unitLine.textContent = `${unitStr} • ${netStr}`;
+    }
+
+    const streetLine = document.getElementById("azHudStreetLine");
+    if (streetLine) {
+      const offlineStreet = readOfflineAddressFromDom();
+      if (offlineStreet) streetLine.textContent = offlineStreet;
+      else if (tac.resolvedAddressText) streetLine.textContent = tac.resolvedAddressText;
+      else if (tac.myPos) streetLine.textContent = `LAT ${tac.myPos.lat.toFixed(5)}, LNG ${tac.myPos.lng.toFixed(5)}`;
+    }
+  }
+
+  /* =====================================================================
+     9. CAPTURA DE MAPA, ROTAS, ALFINETES & REDE HÍBRIDA (MQTT + FIREBASE)
      ===================================================================== */
   function registerCapturedMap(mapInst) {
     if (!mapInst || typeof mapInst.unproject !== "function" || typeof mapInst.getContainer !== "function") return;
@@ -22164,82 +22545,6 @@ if (document.readyState === "loading") {
     return tac.maps[0] || null;
   }
 
-  function isIncursionOpen() {
-    const incEl = document.getElementById("azIncursionOverlay");
-    return Boolean(incEl && incEl.classList.contains("is-open"));
-  }
-
-  function isMapTabVisible() {
-    const geoEl = document.getElementById("azGeoMap");
-    const geoVisible = Boolean(geoEl && geoEl.offsetParent !== null);
-    return geoVisible || isIncursionOpen();
-  }
-
-  async function resolveAddressFromCoords(lat, lng) {
-    const key = `${lat.toFixed(4)},${lng.toFixed(4)}`;
-    if (key === tac.lastGeocodeKey && tac.resolvedAddressText) return;
-    tac.lastGeocodeKey = key;
-    tac.resolvedAddressText = `LAT ${lat.toFixed(5)}, LNG ${lng.toFixed(5)}`;
-    const streetLine = document.getElementById("azHudStreetLine");
-    if (streetLine) streetLine.textContent = tac.resolvedAddressText;
-
-    try {
-      const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&zoom=18`, {
-        headers: { "Accept": "application/json" }
-      });
-      const data = await res.json();
-      if (data && data.address) {
-        const road = data.address.road || data.address.pedestrian || data.address.path || data.address.suburb || "";
-        const house = data.address.house_number ? `, ${data.address.house_number}` : "";
-        const bairro = data.address.suburb || data.address.neighbourhood || data.address.city_district || "";
-        const parts = [];
-        if (road) parts.push(road + house);
-        if (bairro && bairro !== road) parts.push(bairro);
-        if (parts.length) tac.resolvedAddressText = parts.join(" • ");
-      }
-    } catch (_) {}
-  }
-
-  function updateHudAndModes() {
-    renameEcoToSonarInLocationTab();
-
-    const shell = document.getElementById("azTopHudShell");
-    const floatPtt = document.getElementById("azFloatingMapPttBtn");
-    const visible = isMapTabVisible();
-    const incOpen = isIncursionOpen();
-
-    document.body.classList.toggle("az-map-fullscreen", visible);
-    document.body.classList.toggle("az-nav-hidden", Boolean(tac.navHiddenByChevron));
-    if (shell) shell.classList.toggle("is-visible", visible);
-    if (floatPtt) floatPtt.classList.toggle("is-visible", visible);
-
-    const exitIncBtn = document.getElementById("azDockExitIncursionBtn");
-    if (exitIncBtn) exitIncBtn.style.display = incOpen ? "inline-flex" : "none";
-
-    if (!visible) {
-      tac.dockOpen = false;
-      document.getElementById("azAtakRightDock").classList.remove("is-open");
-      applySonarState(false);
-      document.getElementById("azSpectrumDemandBar").classList.remove("is-on");
-      return;
-    }
-
-    const unitLine = document.getElementById("azHudUnitNetLine");
-    if (unitLine) {
-      const unitEl = document.querySelector("#azGeoNearestUnit, #azHomeNearestUnit, [id*='Unit'], [id*='Bpm']");
-      const m = unitEl ? (unitEl.textContent || "").match(/(\d+º\s*BPM(?:\s*\/\s*\d+ª\s*CIA)?|\d+ª\s*RPM)/i) : null;
-      const unitStr = m && m[1] ? m[1].toUpperCase() : "PMMG • RMBH";
-      const netStr = tac.roomCode ? `TURNO ${tac.roomCode}` : "REDE LOCAL";
-      unitLine.textContent = `${unitStr} • ${netStr}`;
-    }
-
-    const streetLine = document.getElementById("azHudStreetLine");
-    if (streetLine) {
-      if (tac.resolvedAddressText) streetLine.textContent = tac.resolvedAddressText;
-      else if (tac.myPos) streetLine.textContent = `LAT ${tac.myPos.lat.toFixed(5)}, LNG ${tac.myPos.lng.toFixed(5)}`;
-    }
-  }
-
   async function routeToNearestHospital() {
     const map = getActiveMap();
     const originLat = tac.myPos ? tac.myPos.lat : (map ? map.getCenter().lat : -19.9191);
@@ -22260,9 +22565,6 @@ if (document.readyState === "loading") {
     await generateRouteToTarget(nearest.lat, nearest.lng, nearest.name);
   }
 
-  /* =====================================================================
-     7. ROTAS, RÉGUA, LÁPIS E ALFINETES EDITÁVEIS
-     ===================================================================== */
   function calcDistAndBearing(lat1, lon1, lat2, lon2) {
     const R = 6371000;
     const p1 = (lat1 * Math.PI) / 180, p2 = (lat2 * Math.PI) / 180;
@@ -22391,6 +22693,7 @@ if (document.readyState === "loading") {
     } else {
       vibratePattern(45);
       broadcastPacket({ kind: "pin", pin: { id: data.id, type: data.type, label: data.label, rawTitle: data.rawTitle, targetUid: data.targetUid, colorHex: data.colorHex, lng: data.lng, lat: data.lat } });
+      syncFirebaseState();
       showToast(`Alfinete "${data.label}" enviado.`);
     }
   }
@@ -22447,9 +22750,6 @@ if (document.readyState === "loading") {
     }, true);
   }
 
-  /* =====================================================================
-     8. REDE AO VIVO (MQTT WEBSOCKET + BROADCAST)
-     ===================================================================== */
   function xorCipher(str, key) {
     if (!key) return str;
     let out = "";
@@ -22486,6 +22786,56 @@ if (document.readyState === "loading") {
     });
     const marker = new window.maplibregl.Marker({ element: el, anchor: "bottom" }).setLngLat([mate.lng, mate.lat]).addTo(mapInst);
     mate.markers.push({ map: mapInst, marker, el });
+  }
+
+  /* ITEM 2: FIREBASE PERSISTENTE */
+  async function syncFirebaseState() {
+    if (!tac.firebaseUrl || !tac.roomCode) return;
+    const base = tac.firebaseUrl.replace(/\/+$/, "");
+    const roomKey = roomTopicHash(tac.roomCode);
+    const fbStatus = document.getElementById("azFirebaseStatus");
+
+    try {
+      if (tac.myPos) {
+        await fetch(`${base}/azimute/${roomKey}/members/${tac.myId}.json`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            blob: encodePayload({ uid: tac.myId, qra: tac.myQra, colorId: tac.myColorId, lat: tac.myPos.lat, lng: tac.myPos.lng }, tac.roomCode),
+            ts: Date.now()
+          })
+        });
+      }
+
+      const pinsMap = {};
+      tac.pins.forEach(function (p) {
+        pinsMap[p.id] = encodePayload({ id: p.id, type: p.type, label: p.label, rawTitle: p.rawTitle, targetUid: p.targetUid, colorHex: p.colorHex, lng: p.lng, lat: p.lat }, tac.roomCode);
+      });
+      await fetch(`${base}/azimute/${roomKey}/pins.json`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(pinsMap)
+      });
+
+      const data = await (await fetch(`${base}/azimute/${roomKey}.json`)).json();
+      if (data && data.members) {
+        Object.values(data.members).forEach(function (m) {
+          if (m && m.blob && Date.now() - (m.ts || 0) < 300000) {
+            const dec = decodePayload(m.blob, tac.roomCode);
+            if (dec) handleIncomingPacket({ kind: "pos", ...dec });
+          }
+        });
+      }
+      if (data && data.pins) {
+        Object.values(data.pins).forEach(function (blob) {
+          const p = decodePayload(blob, tac.roomCode);
+          if (p) upsertTacticalPin(p, true);
+        });
+      }
+      if (fbStatus) { fbStatus.textContent = "FB: ATIVO"; fbStatus.style.color = "#4ADE80"; }
+    } catch (_) {
+      if (fbStatus) { fbStatus.textContent = "FB: ERRO"; fbStatus.style.color = "#EF4444"; }
+    }
   }
 
   function connectLiveRoom() {
@@ -22545,21 +22895,36 @@ if (document.readyState === "loading") {
     }
   }
 
-  function handleIncomingPacket(pkt) {
+  async function handleIncomingPacket(pkt) {
     if (!pkt || pkt.uid === tac.myId) return;
+    if (pkt.to && pkt.to !== tac.myId) return;
 
     if (pkt.kind === "pos" && typeof pkt.lat === "number" && typeof pkt.lng === "number") {
       const safeColor = pkt.colorId && pkt.colorId !== "rosa" ? pkt.colorId : "ciano";
-      if (!tac.teammates[pkt.uid]) {
+      const isNew = !tac.teammates[pkt.uid];
+      if (isNew) {
         tac.teammates[pkt.uid] = { uid: pkt.uid, qra: pkt.qra, colorId: safeColor, lat: pkt.lat, lng: pkt.lng, ts: Date.now(), markers: [] };
         if (!tac.selectedMateUid) tac.selectedMateUid = pkt.uid;
         vibratePattern(120);
         showToast(`● ${pkt.qra} CONECTOU NA REDE`, 2800);
+        initWebRtcAudioCall(pkt.uid, tac.myId < pkt.uid);
       } else {
         Object.assign(tac.teammates[pkt.uid], { qra: pkt.qra, colorId: safeColor, lat: pkt.lat, lng: pkt.lng, ts: Date.now() });
       }
       tac.maps.forEach(function (m) { renderMateOnMap(tac.teammates[pkt.uid], m); });
       renderOnlineMembersList();
+    } else if (pkt.kind === "rtc_offer" && pkt.sdp) {
+      const pc = await initWebRtcAudioCall(pkt.uid, false);
+      if (pc) {
+        await pc.setRemoteDescription(new RTCSessionDescription(pkt.sdp));
+        const ans = await pc.createAnswer();
+        await pc.setLocalDescription(ans);
+        broadcastPacket({ kind: "rtc_answer", to: pkt.uid, sdp: ans });
+      }
+    } else if (pkt.kind === "rtc_answer" && pkt.sdp && tac.rtcPeers[pkt.uid]) {
+      await tac.rtcPeers[pkt.uid].setRemoteDescription(new RTCSessionDescription(pkt.sdp));
+    } else if (pkt.kind === "rtc_ice" && pkt.candidate && tac.rtcPeers[pkt.uid]) {
+      try { await tac.rtcPeers[pkt.uid].addIceCandidate(new RTCIceCandidate(pkt.candidate)); } catch (_) {}
     } else if (pkt.kind === "ptt_lock") {
       tac.pttLockOwnerUid = pkt.uid;
       tac.pttLockOwnerQra = pkt.qra || "OPERADOR";
@@ -22593,6 +22958,7 @@ if (document.readyState === "loading") {
         tac.pttLockExpiresAt = 0;
         syncPttButtonState();
       }
+      if (tac.rtcPeers[pkt.uid]) { try { tac.rtcPeers[pkt.uid].close(); } catch (_) {} delete tac.rtcPeers[pkt.uid]; }
       const mate = tac.teammates[pkt.uid];
       if (mate) {
         mate.markers.forEach(function (i) { i.marker.remove(); });
@@ -22626,7 +22992,7 @@ if (document.readyState === "loading") {
   }
 
   /* =====================================================================
-     9. GPS & EVENTOS DOS BOTÕES
+     10. GPS & EVENTOS DOS BOTÕES
      ===================================================================== */
   function monitorGps() {
     const badge = document.getElementById("azAtakGpsBadge");
@@ -22662,25 +23028,51 @@ if (document.readyState === "loading") {
     );
   }
 
-  // Inicializa inputs limpos sem sugestões de usuário/turno
   document.getElementById("azMyQraInput").value = tac.myQra;
   document.getElementById("azRoomCodeInput").value = tac.roomCode;
+  document.getElementById("azFirebaseUrlInput").value = tac.firebaseUrl;
+  if (tac.firebaseUrl) {
+    document.getElementById("azFirebaseStatus").textContent = "FB: PRONTO";
+    document.getElementById("azFirebaseStatus").style.color = "#C5A869";
+  }
   if (tac.roomCode && tac.myQra) tac.joinedTeam = true;
+
   renderOnlineMembersList();
   renderMessageLog();
-  setupHeadsetPttButton();
+  armHeadsetP2Listener();
   syncPttButtonState();
+  makePttButtonDraggable(document.getElementById("azFloatingMapPttBtn"));
+
+  const dockPttBtn = document.getElementById("azPttHoldBtn");
+  if (dockPttBtn) {
+    dockPttBtn.addEventListener("pointerdown", function (e) {
+      if (dockPttBtn.disabled) return;
+      e.preventDefault();
+      startPttRecording();
+    });
+    dockPttBtn.addEventListener("pointerup", stopPttRecording);
+    dockPttBtn.addEventListener("pointercancel", stopPttRecording);
+  }
 
   document.getElementById("azNavChevronToggleBtn").addEventListener("click", function () {
     tac.navHiddenByChevron = !tac.navHiddenByChevron;
     document.body.classList.toggle("az-nav-hidden", tac.navHiddenByChevron);
   });
 
-  document.getElementById("azDockExitIncursionBtn").addEventListener("click", function () {
-    const exitBtn = document.getElementById("azIncExitBtn");
-    if (exitBtn) exitBtn.click();
-    const inc = document.getElementById("azIncursionOverlay");
-    if (inc) inc.classList.remove("is-open");
+  document.getElementById("azDockToggleIncursionBtn").addEventListener("click", function () {
+    if (isIncursionOpen()) {
+      const exitBtn = document.getElementById("azIncExitBtn");
+      if (exitBtn) exitBtn.click();
+      const inc = document.getElementById("azIncursionOverlay");
+      if (inc) inc.classList.remove("is-open");
+    } else {
+      const openBtn = document.getElementById("azOpenIncursionBtn");
+      if (openBtn) openBtn.click();
+      else {
+        const inc = document.getElementById("azIncursionOverlay");
+        if (inc) inc.classList.add("is-open");
+      }
+    }
     tac.dockOpen = false;
     document.getElementById("azAtakRightDock").classList.remove("is-open");
     document.getElementById("azAtakHamburgerBtn").classList.remove("is-active");
@@ -22745,27 +23137,21 @@ if (document.readyState === "loading") {
     localStorage.setItem("az_tac_my_qra", tac.myQra);
     localStorage.setItem("az_tac_room", tac.roomCode);
     connectLiveRoom();
+    syncFirebaseState();
     showToast(`Conectado: ${tac.myQra} • ${tac.roomCode}`);
+  });
+
+  document.getElementById("azSaveFirebaseBtn").addEventListener("click", function () {
+    tac.firebaseUrl = (document.getElementById("azFirebaseUrlInput").value || "").trim();
+    localStorage.setItem("az_tac_fb_url", tac.firebaseUrl);
+    syncFirebaseState();
+    showToast(tac.firebaseUrl ? "URL Firebase salva e sincronizada." : "Firebase desativado.");
   });
 
   document.getElementById("azAudioMuteToggleBtn").addEventListener("click", function () {
     tac.audioMuted = !tac.audioMuted;
     this.textContent = tac.audioMuted ? "🔇 ÁUDIO MUTE" : "🔊 ÁUDIO ON";
     this.style.color = tac.audioMuted ? "#EF4444" : "#4ADE80";
-  });
-
-  // Vincula tanto o botão PTT da gaveta quanto o botão PTT flutuante no mapa
-  ["azPttHoldBtn", "azFloatingMapPttBtn"].forEach(function (id) {
-    const btn = document.getElementById(id);
-    if (!btn) return;
-    btn.addEventListener("pointerdown", function (e) {
-      if (btn.disabled) return;
-      e.preventDefault();
-      e.stopPropagation();
-      startPttRecording();
-    });
-    btn.addEventListener("pointerup", stopPttRecording);
-    btn.addEventListener("pointercancel", stopPttRecording);
   });
 
   document.querySelectorAll("[data-grid-act]").forEach(function (tile) {
@@ -22809,6 +23195,7 @@ if (document.readyState === "loading") {
         tac.pins.forEach(function (p) { p.markers.forEach(function (i) { i.marker.remove(); }); });
         tac.pins = [];
         document.getElementById("azRadialWheel").classList.remove("is-open");
+        syncFirebaseState();
         showToast("Alfinetes removidos.");
       }
     });
@@ -22859,6 +23246,7 @@ if (document.readyState === "loading") {
         tac.activePin.markers.forEach(function (i) { i.marker.remove(); });
         tac.pins = tac.pins.filter(function (p) { return p.id !== delId; });
         broadcastPacket({ kind: "del_pin", pinId: delId });
+        syncFirebaseState();
         tac.activePin = null;
         showToast("Alfinete excluído.");
       }
@@ -22893,6 +23281,8 @@ if (document.readyState === "loading") {
     if (tac.isRecordingPtt) stopPttRecording();
     if (tac.roomCode) broadcastPacket({ kind: "leave" });
     if (tac.ws) { try { tac.ws.close(); } catch (_) {} tac.ws = null; }
+    Object.values(tac.rtcPeers).forEach(function (pc) { try { pc.close(); } catch (_) {} });
+    tac.rtcPeers = {};
     Object.keys(tac.teammates).forEach(function (uid) {
       tac.teammates[uid].markers.forEach(function (i) { i.marker.remove(); });
       delete tac.teammates[uid];
@@ -22916,7 +23306,10 @@ if (document.readyState === "loading") {
     }
   });
 
-  if (tac.roomCode && tac.myQra) connectLiveRoom();
+  if (tac.roomCode && tac.myQra) {
+    connectLiveRoom();
+    syncFirebaseState();
+  }
   scanAndCaptureExistingMaps();
   updateHudAndModes();
   monitorGps();
@@ -22926,6 +23319,7 @@ if (document.readyState === "loading") {
     syncPttButtonState();
   }, 1000);
   setInterval(monitorGps, 4500);
+  setInterval(syncFirebaseState, 8000);
 })();
 </script></body>
 </html>
