@@ -20909,7 +20909,7 @@ if (document.readyState === "loading") {
   initAzimuteGeo();
 }
 </script>
-<!-- ================= AZIMUTE COMPLETO: ÁUDIO WEBRTC/FILEREADER + AJUSTE FINO DE MARCADORES + PIN FOTO + PTT ALTO CONTRASTE ================= -->
+<!-- ================= AZIMUTE COMPLETO: ÁUDIO PTT CORRIGIDO (SEM MUDO) + AJUSTE FINO + PIN FOTO + FONE P2 ================= -->
 <style>
   #azTerrain3dCanvas,
   #azTerrainSideCanvas,
@@ -21749,6 +21749,9 @@ if (document.readyState === "loading") {
   }
 </style>
 
+<!-- ELEMENTO DE ÁUDIO PERSISTENTE DESBLOQUEADO NO PRIMEIRO TOQUE -->
+<audio id="azPttRxAudio" playsinline preload="auto" style="display:none;"></audio>
+
 <input type="file" id="azNativeCameraInput" accept="image/*" capture="environment" style="display:none;">
 <input type="file" id="azNativeGalleryInput" accept="image/*" style="display:none;">
 
@@ -21773,7 +21776,7 @@ if (document.readyState === "loading") {
   <button type="button" id="azFloatingMapPttBtn" title="1 clique para falar, 1 clique para enviar">🎙 PTT</button>
 </div>
 
-<!-- PAINEL DE AJUSTE FINO DE MARCADORES -->
+<!-- PAINEL DE AJUSTE FINO DE MARCADORES (D-PAD) -->
 <div id="azFineTunePad">
   <div style="display:flex;justify-content:space-between;align-items:center;">
     <span id="azFineTuneTitle" style="font-size:9.5px;font-weight:900;color:#C5A869;">✥ AJUSTE FINO DE MARCADOR</span>
@@ -21851,11 +21854,11 @@ if (document.readyState === "loading") {
   </details>
 
   <details class="az-dock-accordion" id="azAccRadio">
-    <summary><span>RÁDIO PTT (WEBRTC / FONE P2)</span><span>▾</span></summary>
+    <summary><span>RÁDIO PTT & ÁUDIO</span><span>▾</span></summary>
     <div style="display:flex;flex-direction:column;gap:6px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;">
-        <span style="font-size:9px;color:#9E9A8F;">1 clique inicia, 1 clique envia</span>
-        <button type="button" id="azAudioMuteToggleBtn" style="background:none;border:none;color:#4ADE80;font-size:9px;font-weight:900;cursor:pointer;">🔊 ÁUDIO ON</button>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:4px;">
+        <button type="button" id="azAudioMuteToggleBtn" style="background:none;border:none;color:#4ADE80;font-size:9px;font-weight:900;cursor:pointer;padding:0;">🔊 ÁUDIO ON</button>
+        <button type="button" class="az-atak-tool-btn" id="azTestSpeakerBtn" style="height:22px !important;font-size:8.5px !important;">🔔 TESTAR SOM</button>
       </div>
       <button type="button" id="azPttHoldBtn">🎙 CLIQUE P/ FALAR (OU FONE P2)</button>
     </div>
@@ -21978,7 +21981,7 @@ if (document.readyState === "loading") {
   <button type="button" class="az-atak-tool-btn is-active" id="azConfirmVtrSaveBtn" style="width:100%;height:32px;">SALVAR VIATURA NO MAPA</button>
 </div>
 
-<!-- RODA DE AÇÕES DE ALFINETE / VIATURA (COM AJUSTE FINO RESTAURADO) -->
+<!-- RODA DE AÇÕES DE ALFINETE / VIATURA -->
 <div id="azRadialWheel">
   <button type="button" class="az-wheel-btn az-wheel-top" data-wheel="route">GERAR<br>ROTA</button>
   <button type="button" class="az-wheel-btn az-wheel-right" data-wheel="edit">RENOMEAR<br>/ EDITAR</button>
@@ -22054,13 +22057,12 @@ if (document.readyState === "loading") {
     specOn: false,
     pureFs: false,
     audioMuted: false,
+    audioCtx: null,
+    audioUnlocked: false,
     mediaRecorder: null,
     audioChunks: [],
     isRecordingPtt: false,
     pttAutoStopTimer: null,
-    rtcPeers: {},
-    rtcAudioReady: {},
-    localLiveStream: null,
     openRatio: 0,
     draggingGrip: false
   };
@@ -22086,12 +22088,39 @@ if (document.readyState === "loading") {
     if (navigator.vibrate) { try { navigator.vibrate(pat); } catch (_) {} }
   }
 
+  /* =====================================================================
+     SISTEMA DE ÁUDIO DESBLOQUEADO (HTML5 PERSISTENTE + WEB AUDIO FALLBACK)
+     ===================================================================== */
+  function getSharedAudioCtx() {
+    if (!tac.audioCtx) {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (AudioCtx) tac.audioCtx = new AudioCtx();
+    }
+    if (tac.audioCtx && tac.audioCtx.state === "suspended") {
+      tac.audioCtx.resume().catch(function () {});
+    }
+    return tac.audioCtx;
+  }
+
+  function unlockAudioOutput() {
+    getSharedAudioCtx();
+    if (tac.audioUnlocked) return;
+    tac.audioUnlocked = true;
+    const rxEl = document.getElementById("azPttRxAudio");
+    if (rxEl) {
+      rxEl.muted = false;
+      rxEl.volume = 1.0;
+    }
+  }
+
+  document.addEventListener("pointerdown", unlockAudioOutput, { passive: true });
+  document.addEventListener("click", unlockAudioOutput, { passive: true });
+
   function playTone(freq1, freq2, durationSec, vol) {
     if (tac.audioMuted) return;
     try {
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      if (!AudioCtx) return;
-      const ctx = new AudioCtx();
+      const ctx = getSharedAudioCtx();
+      if (!ctx) return;
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.type = "triangle";
@@ -22110,9 +22139,8 @@ if (document.readyState === "loading") {
     vibratePattern([500, 150, 500, 150, 700]);
     if (tac.audioMuted) return;
     try {
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      if (!AudioCtx) return;
-      const ctx = new AudioCtx();
+      const ctx = getSharedAudioCtx();
+      if (!ctx) return;
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.type = "sawtooth";
@@ -22129,6 +22157,43 @@ if (document.readyState === "loading") {
       osc.start(now);
       osc.stop(now + 2.1);
     } catch (_) {}
+  }
+
+  async function playIncomingPttAudio(dataUrl, uid, qra) {
+    if (tac.audioMuted || !dataUrl) return;
+    setSpeakerVisualIndicator(uid, qra, true);
+
+    const rxEl = document.getElementById("azPttRxAudio");
+    if (rxEl) {
+      try {
+        rxEl.pause();
+        rxEl.currentTime = 0;
+        rxEl.muted = false;
+        rxEl.volume = 1.0;
+        rxEl.src = dataUrl;
+        rxEl.onended = function () { setSpeakerVisualIndicator(uid, qra, false); };
+        rxEl.onerror = function () { setSpeakerVisualIndicator(uid, qra, false); };
+        await rxEl.play();
+        return;
+      } catch (_) {
+        // Se o <audio> falhar por política de autoplay, cai direto para Web Audio API
+      }
+    }
+
+    try {
+      const ctx = getSharedAudioCtx();
+      if (!ctx) { setSpeakerVisualIndicator(uid, qra, false); return; }
+      const resp = await fetch(dataUrl);
+      const arrBuf = await resp.arrayBuffer();
+      const audioBuf = await ctx.decodeAudioData(arrBuf);
+      const src = ctx.createBufferSource();
+      src.buffer = audioBuf;
+      src.connect(ctx.destination);
+      src.onended = function () { setSpeakerVisualIndicator(uid, qra, false); };
+      src.start(0);
+    } catch (_) {
+      setSpeakerVisualIndicator(uid, qra, false);
+    }
   }
 
   /* =====================================================================
@@ -22423,7 +22488,7 @@ if (document.readyState === "loading") {
   }
 
   /* =====================================================================
-     MOTOR DE ÁUDIO SEM ATRASO: WEBRTC DIRETO + FILEREADER + rec.start(180)
+     PTT LIVRE + ALÇA DE ARRASTO + FONE P2 (SEM BLOQUEIO DE ÁUDIO)
      ===================================================================== */
   function setupDraggablePttGroup() {
     const group = document.getElementById("azFloatingPttGroup");
@@ -22463,58 +22528,9 @@ if (document.readyState === "loading") {
     handle.addEventListener("pointercancel", endDrag);
   }
 
-  async function initWebRtcAudioCall(targetUid, isInitiator) {
-    if (!window.RTCPeerConnection || !tac.roomCode) return null;
-    try {
-      if (!tac.localLiveStream) {
-        tac.localLiveStream = await navigator.mediaDevices.getUserMedia({
-          audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
-        });
-        tac.localLiveStream.getAudioTracks().forEach(function (t) { t.enabled = tac.isRecordingPtt; });
-      }
-      if (tac.rtcPeers[targetUid]) return tac.rtcPeers[targetUid];
-
-      const pc = new RTCPeerConnection({ iceServers: [{ urls: "stun:stun.l.google.com:19302" }] });
-      tac.rtcPeers[targetUid] = pc;
-
-      tac.localLiveStream.getTracks().forEach(function (track) {
-        pc.addTrack(track, tac.localLiveStream);
-      });
-
-      pc.ontrack = function (ev) {
-        tac.rtcAudioReady[targetUid] = true;
-        if (tac.audioMuted) return;
-        const remoteAudio = new Audio();
-        remoteAudio.srcObject = ev.streams[0];
-        remoteAudio.autoplay = true;
-        remoteAudio.play().catch(function () {});
-      };
-
-      pc.onicecandidate = function (ev) {
-        if (ev.candidate) {
-          broadcastPacket({ kind: "rtc_ice", to: targetUid, candidate: ev.candidate });
-        }
-      };
-
-      if (isInitiator) {
-        const offer = await pc.createOffer();
-        await pc.setLocalDescription(offer);
-        broadcastPacket({ kind: "rtc_offer", to: targetUid, sdp: offer });
-      }
-      return pc;
-    } catch (_) {
-      return null;
-    }
-  }
-
-  function setLiveMicEnabled(enabled) {
-    if (tac.localLiveStream) {
-      tac.localLiveStream.getAudioTracks().forEach(function (t) { t.enabled = Boolean(enabled); });
-    }
-  }
-
   function armHeadsetP2Listener() {
     const togglePttClick = function () {
+      unlockAudioOutput();
       if (tac.isRecordingPtt) stopPttRecording();
       else startPttRecording();
     };
@@ -22574,69 +22590,77 @@ if (document.readyState === "loading") {
 
   async function startPttRecording() {
     if (tac.isRecordingPtt) return;
+    unlockAudioOutput();
+
     if (!tac.roomCode) {
       showToast("Entre na equipe pelo menu ☰ antes de usar o PTT.");
       return;
     }
 
-    tac.isRecordingPtt = true;
-    syncPttButtonState();
-    setSpeakerVisualIndicator(tac.myId, `${tac.myQra || "VOCÊ"}`, true);
-    setLiveMicEnabled(true);
-    broadcastPacket({ kind: "ptt_speaking", active: true });
-    vibratePattern(45);
-
     try {
-      const stream = tac.localLiveStream || await navigator.mediaDevices.getUserMedia({
-        audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
-      });
-      const mime = MediaRecorder.isTypeSupported("audio/webm;codecs=opus") ? "audio/webm;codecs=opus" : "";
-      const rec = mime ? new MediaRecorder(stream, { mimeType: mime, audioBitsPerSecond: 20000 }) : new MediaRecorder(stream);
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      let mime = "";
+      if (typeof MediaRecorder !== "undefined" && MediaRecorder.isTypeSupported) {
+        if (MediaRecorder.isTypeSupported("audio/webm;codecs=opus")) mime = "audio/webm;codecs=opus";
+        else if (MediaRecorder.isTypeSupported("audio/webm")) mime = "audio/webm";
+        else if (MediaRecorder.isTypeSupported("audio/mp4")) mime = "audio/mp4";
+      }
+      const rec = mime ? new MediaRecorder(stream, { mimeType: mime, audioBitsPerSecond: 24000 }) : new MediaRecorder(stream);
+
       tac.mediaRecorder = rec;
       tac.audioChunks = [];
+      tac.isRecordingPtt = true;
+
+      syncPttButtonState();
+      setSpeakerVisualIndicator(tac.myId, `${tac.myQra || "VOCÊ"}`, true);
+      broadcastPacket({ kind: "ptt_speaking", active: true });
+      playTone(540, 720, 0.08, 0.14);
+      vibratePattern(45);
 
       rec.ondataavailable = function (e) {
         if (e.data && e.data.size > 0) tac.audioChunks.push(e.data);
       };
 
       rec.onstop = function () {
-        if (!tac.localLiveStream) stream.getTracks().forEach(function (t) { t.stop(); });
-        setLiveMicEnabled(false);
+        stream.getTracks().forEach(function (t) { t.stop(); });
         tac.isRecordingPtt = false;
         clearTimeout(tac.pttAutoStopTimer);
+
         syncPttButtonState();
         setSpeakerVisualIndicator(tac.myId, "", false);
         broadcastPacket({ kind: "ptt_speaking", active: false });
 
-        const blob = new Blob(tac.audioChunks, { type: rec.mimeType || "audio/webm" });
-        if (blob.size < 300) return;
+        const finalType = rec.mimeType || mime || "audio/webm";
+        const blob = new Blob(tac.audioChunks, { type: finalType });
+        if (blob.size < 250) {
+          showToast("Áudio muito curto, não enviado.");
+          return;
+        }
 
-        // Usa FileReader nativo em C++ para entrega imediata
         const reader = new FileReader();
         reader.onloadend = function () {
-          broadcastPacket({ kind: "ptt", audio: String(reader.result || ""), colorId: tac.myColorId });
+          const dataUrl = String(reader.result || "");
+          if (!dataUrl) return;
+          broadcastPacket({ kind: "ptt", audio: dataUrl, colorId: tac.myColorId });
           pushMessageLog(tac.myQra || "EU", "[Áudio PTT enviado]");
-          playTone(880, 680, 0.09, 0.12);
+          playTone(880, 660, 0.09, 0.14);
+          showToast("Áudio PTT enviado.", 2000);
         };
         reader.readAsDataURL(blob);
       };
 
-      // Codifica quadros Opus a cada 180ms enquanto fala (sem esperar soltar o botão)
-      rec.start(180);
+      rec.start(150);
       tac.pttAutoStopTimer = setTimeout(stopPttRecording, 12000);
     } catch (_) {
-      setLiveMicEnabled(false);
       tac.isRecordingPtt = false;
       syncPttButtonState();
       setSpeakerVisualIndicator(tac.myId, "", false);
-      broadcastPacket({ kind: "ptt_speaking", active: false });
-      showToast("Permissão de microfone negada.");
+      showToast("Permissão de microfone negada no navegador.");
     }
   }
 
   function stopPttRecording() {
     if (!tac.isRecordingPtt) return;
-    setLiveMicEnabled(false);
     if (!tac.mediaRecorder || tac.mediaRecorder.state === "inactive") {
       tac.isRecordingPtt = false;
       syncPttButtonState();
@@ -22975,7 +22999,7 @@ if (document.readyState === "loading") {
   }
 
   /* =====================================================================
-     REDE AO VIVO (MQTT + WEBRTC + FIREBASE)
+     REDE AO VIVO (MQTT WEBSOCKET + BROADCAST + FIREBASE)
      ===================================================================== */
   function xorCipher(str, key) {
     if (!key) return str;
@@ -23120,9 +23144,8 @@ if (document.readyState === "loading") {
     }
   }
 
-  async function handleIncomingPacket(pkt) {
+  function handleIncomingPacket(pkt) {
     if (!pkt || pkt.uid === tac.myId) return;
-    if (pkt.to && pkt.to !== tac.myId) return;
 
     if (pkt.kind === "pos" && typeof pkt.lat === "number" && typeof pkt.lng === "number") {
       const safeColor = pkt.colorId && pkt.colorId !== "rosa" ? pkt.colorId : "ciano";
@@ -23132,24 +23155,11 @@ if (document.readyState === "loading") {
         if (!tac.selectedMateUid) tac.selectedMateUid = pkt.uid;
         vibratePattern(120);
         showToast(`● ${pkt.qra} CONECTOU`, 2600);
-        initWebRtcAudioCall(pkt.uid, tac.myId < pkt.uid);
       } else {
         Object.assign(tac.teammates[pkt.uid], { qra: pkt.qra, colorId: safeColor, role: pkt.role || tac.teammates[pkt.uid].role, lat: pkt.lat, lng: pkt.lng, ts: Date.now() });
       }
       tac.maps.forEach(function (m) { renderMateOnMap(tac.teammates[pkt.uid], m); });
       renderOnlineMembersList();
-    } else if (pkt.kind === "rtc_offer" && pkt.sdp) {
-      const pc = await initWebRtcAudioCall(pkt.uid, false);
-      if (pc) {
-        await pc.setRemoteDescription(new RTCSessionDescription(pkt.sdp));
-        const ans = await pc.createAnswer();
-        await pc.setLocalDescription(ans);
-        broadcastPacket({ kind: "rtc_answer", to: pkt.uid, sdp: ans });
-      }
-    } else if (pkt.kind === "rtc_answer" && pkt.sdp && tac.rtcPeers[pkt.uid]) {
-      await tac.rtcPeers[pkt.uid].setRemoteDescription(new RTCSessionDescription(pkt.sdp));
-    } else if (pkt.kind === "rtc_ice" && pkt.candidate && tac.rtcPeers[pkt.uid]) {
-      try { await tac.rtcPeers[pkt.uid].addIceCandidate(new RTCIceCandidate(pkt.candidate)); } catch (_) {}
     } else if (pkt.kind === "ptt_speaking") {
       setSpeakerVisualIndicator(pkt.uid, pkt.qra, Boolean(pkt.active));
     } else if (pkt.kind === "set_role" && pkt.targetUid) {
@@ -23164,23 +23174,11 @@ if (document.readyState === "loading") {
     } else if (pkt.kind === "ptt" && pkt.audio) {
       vibratePattern(140);
       pushMessageLog(pkt.qra, "[Áudio PTT recebido]");
-      // Se o áudio ao vivo via WebRTC já entregou a fala, evita eco duplicado; caso contrário reproduz na hora
-      if (!tac.audioMuted && !tac.rtcAudioReady[pkt.uid]) {
-        setSpeakerVisualIndicator(pkt.uid, pkt.qra, true);
-        try {
-          const aud = new Audio(pkt.audio);
-          aud.onended = function () { setSpeakerVisualIndicator(pkt.uid, pkt.qra, false); };
-          aud.play().catch(function () { setSpeakerVisualIndicator(pkt.uid, pkt.qra, false); });
-        } catch (_) {
-          setSpeakerVisualIndicator(pkt.uid, pkt.qra, false);
-        }
-      }
+      playIncomingPttAudio(pkt.audio, pkt.uid, pkt.qra);
     } else if (pkt.kind === "run") {
       vibratePattern([180, 90, 180]);
       showToast(`🏃 ${pkt.qra} INICIOU UMA CORRIDA`, 4200);
     } else if (pkt.kind === "leave") {
-      if (tac.rtcPeers[pkt.uid]) { try { tac.rtcPeers[pkt.uid].close(); } catch (_) {} delete tac.rtcPeers[pkt.uid]; }
-      delete tac.rtcAudioReady[pkt.uid];
       const mate = tac.teammates[pkt.uid];
       if (mate) {
         mate.markers.forEach(function (i) { i.marker.remove(); });
@@ -23453,7 +23451,16 @@ if (document.readyState === "loading") {
     });
   });
 
-  // Ajuste fino de marcadores (D-Pad + Passo + Concluir)
+  onClick("azTestSpeakerBtn", function () {
+    unlockAudioOutput();
+    tac.audioMuted = false;
+    const muteBtn = document.getElementById("azAudioMuteToggleBtn");
+    if (muteBtn) { muteBtn.textContent = "🔊 ÁUDIO ON"; muteBtn.style.color = "#4ADE80"; }
+    playTone(660, 990, 0.28, 0.22);
+    showToast("Sinal sonoro emitido no alto-falante/fone.", 2500);
+  });
+
+  // Ajuste fino de marcadores
   document.querySelectorAll("[data-ft-dir]").forEach(function (btn) {
     btn.addEventListener("click", function () {
       nudgeFineTunePin(btn.getAttribute("data-ft-dir"));
@@ -23469,7 +23476,7 @@ if (document.readyState === "loading") {
     stopFineTunePin(true);
   });
 
-  // Listeners dos inputs nativos de Câmera e Galeria
+  // Câmera e Galeria
   ["azNativeCameraInput", "azNativeGalleryInput"].forEach(function (inputId) {
     const inp = document.getElementById(inputId);
     if (!inp) return;
@@ -23655,6 +23662,7 @@ if (document.readyState === "loading") {
   }
 
   onClick("azAtakHamburgerBtn", function () {
+    unlockAudioOutput();
     scanAndCaptureExistingMaps();
     renderOnlineMembersList();
     syncPttButtonState();
@@ -23666,6 +23674,7 @@ if (document.readyState === "loading") {
   });
 
   onClick("azConnectNetBtn", function () {
+    unlockAudioOutput();
     const qraVal = ((document.getElementById("azMyQraInput") || {}).value || "").trim().toUpperCase();
     const roomVal = ((document.getElementById("azRoomCodeInput") || {}).value || "").trim().toUpperCase();
     if (!qraVal) { showToast("Digite o seu QRA antes de entrar."); return; }
@@ -23862,9 +23871,6 @@ if (document.readyState === "loading") {
     if (tac.isRecordingPtt) stopPttRecording();
     if (tac.roomCode) broadcastPacket({ kind: "leave" });
     if (tac.ws) { try { tac.ws.close(); } catch (_) {} tac.ws = null; }
-    Object.values(tac.rtcPeers).forEach(function (pc) { try { pc.close(); } catch (_) {} });
-    tac.rtcPeers = {};
-    tac.rtcAudioReady = {};
     Object.keys(tac.teammates).forEach(function (uid) {
       tac.teammates[uid].markers.forEach(function (i) { i.marker.remove(); });
       delete tac.teammates[uid];
