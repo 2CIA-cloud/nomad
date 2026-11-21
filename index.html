@@ -20909,7 +20909,7 @@ if (document.readyState === "loading") {
   initAzimuteGeo();
 }
 </script>
-<!-- ================= AZIMUTE UNIFICADO REVISADO: PTT 1-CLIQUE + ALÇA ARRASTO + VIATURAS + RODA FUNÇÃO ATAK + ESPECTRO RUAS ================= -->
+<!-- ================= AZIMUTE COMPLETO CONSOLIDADO: ÁUDIO PTT CORRIGIDO + ALÇA ARRASTO + VIATURAS + RODA FUNÇÃO + ESPECTRO RUAS ================= -->
 <style>
   /* 1. MAPA EM TELA CHEIA FLUIDO & REMOÇÃO DE PAINÉIS FIXOS PESADOS */
   #azTerrain3dCanvas,
@@ -21948,8 +21948,7 @@ if (document.readyState === "loading") {
     pttLockOwnerQra: "",
     pttLockExpiresAt: 0,
     openRatio: 0,
-    draggingGrip: false,
-    silentKeepAliveAudio: null
+    draggingGrip: false
   };
   localStorage.setItem("az_tac_uid", tac.myId);
   if (tac.myColorId === "rosa") tac.myColorId = "safira";
@@ -22058,37 +22057,28 @@ if (document.readyState === "loading") {
     handle.addEventListener("pointercancel", endDrag);
   }
 
+  /* =====================================================================
+     ÁUDIO & PTT CORRIGIDO (SEM BLOQUEIO DE CADEADO E SEM DELAY)
+     ===================================================================== */
   function armHeadsetP2Listener() {
-    if (!tac.silentKeepAliveAudio) {
-      const silentWav = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA";
-      const a = new Audio(silentWav);
-      a.loop = true;
-      a.volume = 0.001;
-      tac.silentKeepAliveAudio = a;
-    }
-
     const togglePttClick = function () {
       if (tac.isRecordingPtt) stopPttRecording();
       else startPttRecording();
     };
 
-    const unlockMediaFocus = function () {
-      if (tac.silentKeepAliveAudio && tac.silentKeepAliveAudio.paused) {
-        tac.silentKeepAliveAudio.play().catch(function () {});
-      }
-      if ("mediaSession" in navigator) {
-        try {
-          navigator.mediaSession.metadata = new MediaMetadata({ title: "AZIMUTE RÁDIO PTT", artist: "PMMG" });
-          navigator.mediaSession.playbackState = "playing";
-          navigator.mediaSession.setActionHandler("play", togglePttClick);
-          navigator.mediaSession.setActionHandler("pause", togglePttClick);
-          navigator.mediaSession.setActionHandler("nexttrack", togglePttClick);
-          navigator.mediaSession.setActionHandler("previoustrack", togglePttClick);
-        } catch (_) {}
-      }
+    const registerMediaHandlers = function () {
+      if (!("mediaSession" in navigator)) return;
+      try {
+        navigator.mediaSession.metadata = new MediaMetadata({ title: "AZIMUTE RÁDIO PTT", artist: "PMMG" });
+        navigator.mediaSession.setActionHandler("play", togglePttClick);
+        navigator.mediaSession.setActionHandler("pause", togglePttClick);
+        navigator.mediaSession.setActionHandler("nexttrack", togglePttClick);
+        navigator.mediaSession.setActionHandler("previoustrack", togglePttClick);
+      } catch (_) {}
     };
 
-    document.addEventListener("pointerdown", unlockMediaFocus, { once: true });
+    registerMediaHandlers();
+    document.addEventListener("pointerdown", registerMediaHandlers, { once: true });
     document.addEventListener("keydown", function (ev) {
       if (ev.key === "MediaPlayPause" || ev.key === "HeadsetHook" || ev.code === "MediaPlayPause") {
         ev.preventDefault();
@@ -22123,12 +22113,16 @@ if (document.readyState === "loading") {
       document.getElementById("azPttHoldBtn"),
       document.getElementById("azFloatingMapPttBtn")
     ];
-    if (tac.pttLockOwnerUid && Date.now() > tac.pttLockExpiresAt) {
-      setSpeakerVisualIndicator(tac.pttLockOwnerUid, tac.pttLockOwnerQra, false);
-      tac.pttLockOwnerUid = null;
-      tac.pttLockOwnerQra = "";
-      tac.pttLockExpiresAt = 0;
+
+    if (tac.pttLockOwnerUid === tac.myId || (tac.pttLockOwnerUid && Date.now() > tac.pttLockExpiresAt)) {
+      if (!tac.isRecordingPtt) {
+        setSpeakerVisualIndicator(tac.pttLockOwnerUid, tac.pttLockOwnerQra, false);
+        tac.pttLockOwnerUid = null;
+        tac.pttLockOwnerQra = "";
+        tac.pttLockExpiresAt = 0;
+      }
     }
+
     const lockedByOther = Boolean(tac.pttLockOwnerUid && tac.pttLockOwnerUid !== tac.myId);
 
     buttons.forEach(function (btn) {
@@ -22154,33 +22148,34 @@ if (document.readyState === "loading") {
 
   async function startPttRecording() {
     if (tac.isRecordingPtt) return;
+
     if (tac.pttLockOwnerUid && tac.pttLockOwnerUid !== tac.myId && Date.now() < tac.pttLockExpiresAt) {
       vibratePattern([80, 60, 80]);
       showToast(`Canal ocupado por ${tac.pttLockOwnerQra}.`);
       return;
     }
+
     if (!tac.roomCode) {
       showToast("Entre na equipe pelo menu ☰ antes de usar o PTT.");
       return;
     }
 
-    tac.isRecordingPtt = true;
-    tac.pttLockOwnerUid = tac.myId;
-    tac.pttLockOwnerQra = tac.myQra || "OPERADOR";
-    tac.pttLockExpiresAt = Date.now() + 14000;
-    syncPttButtonState();
-    setSpeakerVisualIndicator(tac.myId, `${tac.pttLockOwnerQra} (VOCÊ)`, true);
-    broadcastPacket({ kind: "ptt_lock" });
-
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
-      });
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const mime = MediaRecorder.isTypeSupported("audio/webm;codecs=opus") ? "audio/webm;codecs=opus" : "";
-      const rec = mime ? new MediaRecorder(stream, { mimeType: mime, audioBitsPerSecond: 24000 }) : new MediaRecorder(stream);
+      const rec = mime ? new MediaRecorder(stream, { mimeType: mime }) : new MediaRecorder(stream);
+
       tac.mediaRecorder = rec;
       tac.audioChunks = [];
-      playTone(520, 680, 0.10, 0.14);
+      tac.isRecordingPtt = true;
+      tac.pttLockOwnerUid = tac.myId;
+      tac.pttLockOwnerQra = tac.myQra || "OPERADOR";
+      tac.pttLockExpiresAt = Date.now() + 12000;
+
+      syncPttButtonState();
+      setSpeakerVisualIndicator(tac.myId, `${tac.pttLockOwnerQra} (VOCÊ)`, true);
+      broadcastPacket({ kind: "ptt_lock" });
+      vibratePattern(50);
 
       rec.ondataavailable = function (e) {
         if (e.data && e.data.size > 0) tac.audioChunks.push(e.data);
@@ -22193,30 +22188,33 @@ if (document.readyState === "loading") {
         tac.pttLockOwnerQra = "";
         tac.pttLockExpiresAt = 0;
         clearTimeout(tac.pttAutoStopTimer);
+
         syncPttButtonState();
         setSpeakerVisualIndicator(tac.myId, "", false);
         broadcastPacket({ kind: "ptt_unlock" });
-        playTone(880, 680, 0.10, 0.14);
 
         const blob = new Blob(tac.audioChunks, { type: rec.mimeType || "audio/webm" });
-        if (blob.size < 300) return;
+        if (blob.size < 350) return;
+
         const reader = new FileReader();
         reader.onloadend = function () {
           broadcastPacket({ kind: "ptt", audio: String(reader.result || ""), colorId: tac.myColorId });
           pushMessageLog(tac.myQra || "EU", "[Áudio PTT enviado]");
+          playTone(880, 680, 0.10, 0.12);
         };
         reader.readAsDataURL(blob);
       };
 
-      rec.start(180);
+      rec.start();
       tac.pttAutoStopTimer = setTimeout(stopPttRecording, 12000);
     } catch (_) {
       tac.isRecordingPtt = false;
       tac.pttLockOwnerUid = null;
+      tac.pttLockOwnerQra = "";
+      tac.pttLockExpiresAt = 0;
       syncPttButtonState();
       setSpeakerVisualIndicator(tac.myId, "", false);
-      broadcastPacket({ kind: "ptt_unlock" });
-      showToast("Permissão de microfone necessária.");
+      showToast("Permissão de microfone negada ou ocupada por outro app.");
     }
   }
 
@@ -22225,6 +22223,8 @@ if (document.readyState === "loading") {
     if (!tac.mediaRecorder || tac.mediaRecorder.state === "inactive") {
       tac.isRecordingPtt = false;
       tac.pttLockOwnerUid = null;
+      tac.pttLockOwnerQra = "";
+      tac.pttLockExpiresAt = 0;
       syncPttButtonState();
       setSpeakerVisualIndicator(tac.myId, "", false);
       broadcastPacket({ kind: "ptt_unlock" });
@@ -22233,6 +22233,9 @@ if (document.readyState === "loading") {
     try { tac.mediaRecorder.stop(); } catch (_) {}
   }
 
+  /* =====================================================================
+     CORES EXCLUSIVAS & EQUIPE
+     ===================================================================== */
   function renderColorPalette() {
     const box = document.getElementById("azColorPaletteBox");
     const labelEl = document.getElementById("azSelectedColorLabel");
