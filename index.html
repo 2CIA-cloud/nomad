@@ -13749,7 +13749,7 @@ body.az-modo-limpo footer {
 
             if (typeof showToast === 'function') {
                 const labelMap = { good: 'Conectividade BOA', moderate: 'Conectividade MODERADA', bad: 'Conectividade RUIM' };
-                showToast(`${labelMap[finalState]} (${downFmt} • ${pingFmt})`);
+                //showToast(`${labelMap[finalState]} (${downFmt} • ${pingFmt})`);
             }
 
             setTimeout(() => {
@@ -21856,6 +21856,15 @@ if (document.readyState === "loading") {
   <button type="button" class="az-hud-glass-btn" id="azSatToggleBtn" title="Alternar Mapa Satélite">
     <svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
   </button>
+    <button type="button" class="az-hud-glass-btn az-icon-wrap" id="btn-hub-equipe" onclick="abrirHubEquipe()" title="Hub da Equipe">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+    <circle cx="9" cy="7" r="4"/>
+    <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+  </svg>
+  <span id="hub-unread-badge" class="az-badge hidden">0</span>
+</button>
   <button type="button" class="az-hud-glass-btn az-hud-hosp-btn" id="azQuickHospitalRouteBtn" title="Rota Hospital Próximo">+</button>
   <button type="button" class="az-hud-glass-btn" id="azAtakHamburgerBtn" title="Menu Tático">
     <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
@@ -21937,7 +21946,24 @@ if (document.readyState === "loading") {
   <span id="azPttDragHandle" title="Arraste para mover o PTT">⋮⋮</span>
   <button type="button" id="azFloatingMapPttBtn" title="Toque para falar na rede">PTT</button>
 </div>
+<!-- PILHA DE CONTROLES DO MAPA: 2D, 3D, GIRAR 90°, NORTE E BOTÃO AZUL GPS -->
+<div id="azMapControlsRestored" style="position:fixed; right:12px; bottom:174px; z-index:100045; display:flex; flex-direction:column; align-items:flex-end; gap:8px; pointer-events:auto;">
+  
+  <div style="display:flex; flex-direction:column; background:rgba(13,13,13,0.94); border:1.5px solid #C5A869; border-radius:8px; overflow:hidden; box-shadow:0 4px 14px rgba(0,0,0,0.75);">
+    <button type="button" onclick="azSetMapMode('2D')" style="width:42px; height:36px; background:transparent; border:none; border-bottom:1px solid rgba(197,168,105,0.25); color:#C5A869; font-size:11px; font-weight:800;">2D</button>
+    <button type="button" onclick="azSetMapMode('3D')" style="width:42px; height:36px; background:transparent; border:none; border-bottom:1px solid rgba(197,168,105,0.25); color:#F2F2F2; font-size:11px; font-weight:800;">3D</button>
+    <button type="button" onclick="azRotateMap90()" style="width:42px; height:36px; background:transparent; border:none; border-bottom:1px solid rgba(197,168,105,0.25); color:#F2F2F2; font-size:11px; font-weight:800;">90°</button>
+    <button type="button" onclick="azResetNorth()" style="width:42px; height:34px; background:transparent; border:none; color:#C5A869; font-size:11px; font-weight:800;">N</button>
+  </div>
 
+  <!-- BOTÃO AZUL CENTRALIZAR GPS -->
+  <button type="button" id="btnCentralizarGpsAzul" onclick="azCentralizarGpsAgora()" title="Centralizar no GPS" style="width:44px; height:44px; border-radius:50%; background:#1E88E5; border:2px solid #90CAF9; color:#FFFFFF; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 16px rgba(30,136,229,0.55); cursor:pointer;">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <polygon points="3 11 22 2 13 21 11 13 3 11"/>
+    </svg>
+  </button>
+
+</div>
 <!-- Travar Mapa -->
 <button type="button" id="azLockMapDrawBtn">TRAVAR MAPA</button>
 
@@ -24507,6 +24533,119 @@ if (document.readyState === "loading") {
       badge.classList.add('hidden');
     }
   };
+})();
+</script>
+<script>
+(function initAzimuteFixes() {
+  // 1. Localiza automaticamente a instância do mapa ativa no AZIMUTE (MapLibre ou Leaflet)
+  function getInstanciaMapa() {
+    return window.map || window.azMap || window.tacticalMap || window.leafletMap || null;
+  }
+
+  // 2. Alternar 2D / 3D
+  window.azSetMapMode = function(modo) {
+    const m = getInstanciaMapa();
+    if (!m) return;
+    if (typeof m.easeTo === 'function') {
+      m.easeTo({ pitch: modo === '3D' ? 60 : 0, duration: 450 });
+    }
+    if (navigator.vibrate) navigator.vibrate(12);
+  };
+
+  // 3. Girar 90 graus
+  window.azRotateMap90 = function() {
+    const m = getInstanciaMapa();
+    if (!m) return;
+    if (typeof m.getBearing === 'function' && typeof m.easeTo === 'function') {
+      const atual = m.getBearing();
+      const proximo = (Math.round(atual / 90) * 90 + 90) % 360;
+      m.easeTo({ bearing: proximo, duration: 350 });
+    }
+    if (navigator.vibrate) navigator.vibrate(12);
+  };
+
+  // 4. Resetar para o Norte (0°)
+  window.azResetNorth = function() {
+    const m = getInstanciaMapa();
+    if (!m) return;
+    if (typeof m.easeTo === 'function') {
+      m.easeTo({ bearing: 0, pitch: 0, duration: 350 });
+    }
+    if (navigator.vibrate) navigator.vibrate(12);
+  };
+
+  // 5. GPS DE ALTA PRECISÃO CONTÍNUO (Sem cache antigo de torre/Wi-Fi)
+  window.azUltimaPosicaoReal = null;
+
+  if ('geolocation' in navigator) {
+    navigator.geolocation.watchPosition(
+      (pos) => {
+        // Ignora leituras muito imprecisas (> 80m) se já houver uma leitura boa
+        if (window.azUltimaPosicaoReal && pos.coords.accuracy > 80) return;
+
+        window.azUltimaPosicaoReal = {
+          lat: pos.coords.latitude,
+          lon: pos.coords.longitude,
+          accuracy: pos.coords.accuracy,
+          heading: pos.coords.heading
+        };
+      },
+      null,
+      {
+        enableHighAccuracy: true, // Força chip GPS puro do aparelho
+        maximumAge: 0,            // Nunca usa posição velha em cache
+        timeout: 15000
+      }
+    );
+  }
+
+  // 6. BOTÃO AZUL: Centralizar imediatamente na posição real
+  window.azCentralizarGpsAgora = function() {
+    if (navigator.vibrate) navigator.vibrate(15);
+    const m = getInstanciaMapa();
+
+    const moverPara = (lat, lon) => {
+      if (!m) return;
+      // Suporte MapLibre / Mapbox ([lon, lat])
+      if (typeof m.flyTo === 'function' && typeof m.getBearing === 'function') {
+        m.flyTo({ center: [lon, lat], zoom: Math.max(m.getZoom(), 16.5), speed: 1.6, essential: true });
+      }
+      // Suporte Leaflet ([lat, lon])
+      else if (typeof m.setView === 'function') {
+        m.setView([lat, lon], Math.max(m.getZoom(), 17), { animate: true });
+      }
+    };
+
+    if (window.azUltimaPosicaoReal) {
+      moverPara(window.azUltimaPosicaoReal.lat, window.azUltimaPosicaoReal.lon);
+    }
+
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          window.azUltimaPosicaoReal = { lat: pos.coords.latitude, lon: pos.coords.longitude };
+          moverPara(pos.coords.latitude, pos.coords.longitude);
+        },
+        null,
+        { enableHighAccuracy: true, maximumAge: 0, timeout: 8000 }
+      );
+    }
+  };
+
+  // 7. Placeholder para o botão do Hub da Equipe até montarmos o drawer completo do chat
+  if (typeof window.abrirHubEquipe !== 'function') {
+    window.abrirHubEquipe = function() {
+      if (navigator.vibrate) navigator.vibrate(15);
+      const badge = document.getElementById('hub-unread-badge');
+      if (badge) badge.classList.add('hidden');
+      if (typeof showToast === 'function') {
+        showToast('Hub da Equipe (Sala PMMG01): canal de mensagens pronto para ativação.');
+      }
+    };
+  }
+
+  // 8. Variável global de tempo do Toque Longo (Long-Press) calibrada em 850ms
+  window.AZ_LONG_PRESS_MS = 850;
 })();
 </script></body>
 </html>
