@@ -473,123 +473,6 @@
             padding-bottom: 0.25rem !important;
             overflow: visible !important;
         }
-        /* =========================================================
-   AZIMUTE - POLIMENTO NATIVO SEGURO
-   ========================================================= */
-:root {
-  --az-bg: #0D0D0D;
-  --az-surface: #161616;
-  --az-gold: #C5A869;
-  --az-gold-dim: rgba(197, 168, 105, 0.22);
-  --az-border: rgba(197, 168, 105, 0.32);
-  --az-text: #F2F2F2;
-  --az-danger: #E53935;
-}
-
-/* 1. Bloqueia zoom duplo, seleção acidental e puxar-para-recarregar */
-html, body {
-  overscroll-behavior-y: none;
-  -webkit-tap-highlight-color: transparent;
-  -webkit-touch-callout: none;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-  background-color: var(--az-bg);
-}
-
-/* Permite digitar e selecionar texto apenas dentro de caixas de texto */
-input, textarea, [contenteditable="true"] {
-  user-select: text;
-  -webkit-user-select: text;
-  touch-action: auto;
-}
-
-/* 2. Números de GPS, altitude e ângulo não tremem ao mudar */
-.gps-coords, .telemetry-value, .qth-coords, .timer, [data-tabular] {
-  font-variant-numeric: tabular-nums;
-  font-feature-settings: "tnum" 1;
-}
-
-/* 3. Efeito tátil imediato ao apertar qualquer botão */
-button:active, .btn:active, .tool-btn:active, .menu-item:active {
-  transform: scale(0.94);
-  opacity: 0.88;
-}
-
-/* 4. Barras de rolagem finas na cor caqui/dourado */
-::-webkit-scrollbar { width: 3px; height: 3px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--az-gold-dim); border-radius: 3px; }
-
-/* 5. Garante que controles do mapa (2D, 3D, 90°, GPS Azul) fiquem sempre no topo */
-.map-controls, .map-buttons, #map-controls, .maplibregl-ctrl-top-right, .maplibregl-ctrl-bottom-right {
-  z-index: 1500 !important;
-  pointer-events: auto !important;
-}
-
-/* 6. Modo Limpo (quando acionar tela cheia no app instalado) */
-body.az-modo-limpo .top-bar,
-body.az-modo-limpo .telemetry-bar,
-body.az-modo-limpo footer {
-  opacity: 0 !important;
-  pointer-events: none !important;
-}
-
-/* 7. Notificação Flutuante Tática (Toast) */
-#az-toast-container {
-  position: fixed;
-  top: calc(env(safe-area-inset-top, 12px) + 58px);
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 99999;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  width: min(92vw, 360px);
-  pointer-events: none;
-}
-
-.az-toast {
-  background: rgba(22, 22, 22, 0.96);
-  border: 1px solid var(--az-border);
-  border-left: 3px solid var(--az-gold);
-  color: var(--az-text);
-  padding: 10px 14px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 600;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
-  opacity: 0;
-  transform: translateY(-10px);
-  transition: all 0.22s ease;
-}
-
-.az-toast.show {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* 8. Badge vermelho de notificação do Hub da Equipe */
-.az-icon-wrap { position: relative; display: inline-flex; align-items: center; justify-content: center; }
-.az-badge {
-  position: absolute;
-  top: -4px;
-  right: -5px;
-  min-width: 16px;
-  height: 16px;
-  padding: 0 4px;
-  border-radius: 999px;
-  background: var(--az-danger);
-  color: #FFF;
-  font-size: 10px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1.5px solid var(--az-bg);
-  pointer-events: none;
-}
-.az-badge.hidden { transform: scale(0); }
     </style>
 </head>
 <body class="bg-pmmg-black text-gray-200 font-sans min-h-screen pb-16 antialiased selection:bg-pmmg-khaki selection:text-pmmg-black mode-app">
@@ -13749,7 +13632,7 @@ body.az-modo-limpo footer {
 
             if (typeof showToast === 'function') {
                 const labelMap = { good: 'Conectividade BOA', moderate: 'Conectividade MODERADA', bad: 'Conectividade RUIM' };
-                //showToast(`${labelMap[finalState]} (${downFmt} • ${pingFmt})`);
+                showToast(`${labelMap[finalState]} (${downFmt} • ${pingFmt})`);
             }
 
             setTimeout(() => {
@@ -17467,8 +17350,7 @@ function initAzimuteGeo() {
     extra: { label: "Ponto", color: "#F2F0EA" }
   };
 
-/* [AZ-08A-TEMA-MAPA] Mapa Claro como padrão + exposição global do mapa */
-let mapTheme = localStorage.getItem("az_geo_map_theme") || "light";
+  let mapTheme = localStorage.getItem("az_geo_map_theme") || "dark";
 
   const searchInput = document.getElementById("azGeoSearchInput");
   const searchBtn = document.getElementById("azGeoSearchBtn");
@@ -17551,7 +17433,7 @@ let mapTheme = localStorage.getItem("az_geo_map_theme") || "light";
 
   const map = new maplibregl.Map({
     container: "azGeoMap",
-    style: STYLE_URLS.light,
+    style: STYLE_URLS[mapTheme] || STYLE_URLS.dark,
     center: [-43.9386, -19.9191],
     zoom: 13,
     bearing: 0,
@@ -17560,7 +17442,7 @@ let mapTheme = localStorage.getItem("az_geo_map_theme") || "light";
     touchPitch: true,
     pitchWithRotate: true,
     attributionControl: false
-  });window.azGeoMap = map;
+  });
 
   function syncTiltBadgeUi() {
     if (!tiltBadge) return;
@@ -18389,9 +18271,9 @@ let mapTheme = localStorage.getItem("az_geo_map_theme") || "light";
             targetMap.setPaintProperty(layer.id, "text-halo-blur", 0.4);
             targetMap.setPaintProperty(layer.id, "text-opacity", 1);
           } else {
-        targetMap.setPaintProperty(layer.id, "text-color", isMajor ? "#1E3A8A" : "#0F172A");
-          targetMap.setPaintProperty(layer.id, "text-halo-color", "#FFFFFF");
-          targetMap.setPaintProperty(layer.id, "text-halo-width", 2.8);
+            targetMap.setPaintProperty(layer.id, "text-color", "#0A0A0A");
+            targetMap.setPaintProperty(layer.id, "text-halo-color", "#FFFFFF");
+            targetMap.setPaintProperty(layer.id, "text-halo-width", 2.5);
             targetMap.setPaintProperty(layer.id, "text-opacity", 1);
           }
 
@@ -21061,90 +20943,15 @@ if (document.readyState === "loading") {
     display: none !important;
   }
 
- /* [AZ-08B-CONTROLES-NATIVOS] Restaura botões originais do mapa e gaveta de Configurações acima do z-index 99980 */
-  body:not(.az-map-fullscreen) #azGeoCenterFab,
-  body:not(.az-map-fullscreen) #azGeoTiltBadge,
-  body:not(.az-map-fullscreen) #azGeoNorthBadge,
-  body:not(.az-map-fullscreen) #azGeoLockBadge {
-    display: none !important;
-  }
-
-  body.az-map-fullscreen #azGeoCenterFab {
-    display: inline-flex !important;
+  /* 3. Botão azul original de centralizar acima do mapa */
+  #azGeoCenterFab {
     position: fixed !important;
-    bottom: 84px !important;
-    right: 12px !important;
-    width: 44px !important;
-    height: 44px !important;
-    background: #2563EB !important;
-    border: 2px solid #93C5FD !important;
-    color: #FFFFFF !important;
-    z-index: 100043 !important;
-  }
-
-  body.az-map-fullscreen #azGeoNorthBadge {
-    display: flex !important;
-    position: fixed !important;
-    top: 52px !important;
+    bottom: 76px !important;
     right: 12px !important;
     z-index: 100043 !important;
   }
 
-  body.az-map-fullscreen #azGeoTiltBadge {
-    display: flex !important;
-    position: fixed !important;
-    top: 94px !important;
-    right: 12px !important;
-    z-index: 100043 !important;
-  }
-
-  body.az-map-fullscreen #azGeoLockBadge {
-    display: flex !important;
-    position: fixed !important;
-    top: 52px !important;
-    right: 54px !important;
-    z-index: 100043 !important;
-  }
-
-  /* Barra inferior transparente com Camadas e Configurações (Claro/Escuro/Satélite/Girar) */
-  #azNativeMapBarWrap {
-    position: fixed !important;
-    bottom: 42px !important;
-    left: 12px !important;
-    z-index: 100043 !important;
-    display: none;
-    gap: 6px;
-    background: transparent !important;
-    pointer-events: none;
-  }
-  body.az-map-fullscreen #azNativeMapBarWrap.has-items {
-    display: flex !important;
-  }
-  #azNativeMapBarWrap > button {
-    pointer-events: auto !important;
-    z-index: 100044 !important;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.85) !important;
-  }
-
-  /* Gavetas nativas (Configurações e Camadas) abrem flutuando sobre o mapa em tela cheia */
-  body.az-map-fullscreen #azGeoCfgBox.is-open,
-  body.az-map-fullscreen #azGeoLayersBox.is-open,
-  body.az-map-fullscreen #azGeoMunBox.is-open {
-    display: block !important;
-    position: fixed !important;
-    bottom: 84px !important;
-    left: 12px !important;
-    right: 64px !important;
-    max-height: 55vh !important;
-    overflow-y: auto !important;
-    z-index: 100055 !important;
-    background: rgba(13, 13, 13, 0.97) !important;
-    border: 1.5px solid #C5A869 !important;
-    border-radius: 12px !important;
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.95) !important;
-  }
-
-  /* 6. Barra Superior ATAK */
+  /* 4. Barra Superior ATAK */
   #azTopHudShell {
     position: fixed !important;
     top: 8px !important;
@@ -21285,7 +21092,7 @@ if (document.readyState === "loading") {
   /* Controles inferiores (Travar Mapa, Desfazer, Encerrar Ferramentas) */
   #azLockMapDrawBtn {
     position: fixed !important;
-    bottom: 132px !important;
+    bottom: 124px !important;
     right: 12px !important;
     z-index: 100044 !important;
     height: 32px !important;
@@ -21310,7 +21117,7 @@ if (document.readyState === "loading") {
 
   #azLeftControlsRow {
     position: fixed !important;
-    bottom: 132px !important;
+    bottom: 124px !important;
     left: 12px !important;
     z-index: 100044 !important;
     display: none;
@@ -21323,7 +21130,7 @@ if (document.readyState === "loading") {
   /* PTT Arrastável */
   #azFloatingPttGroup {
     position: fixed !important;
-    bottom: 84px;
+    bottom: 76px;
     left: 12px;
     z-index: 100044 !important;
     display: none;
@@ -21374,7 +21181,7 @@ if (document.readyState === "loading") {
   /* Ajuste Fino Quadrado 8 Direções (incluindo Diagonais) */
   #azRemoteFineTunePad {
     position: fixed !important;
-    bottom: 140px !important;
+    bottom: 132px !important;
     left: 50% !important;
     transform: translateX(-50%) !important;
     z-index: 100055 !important;
@@ -21472,7 +21279,7 @@ if (document.readyState === "loading") {
     position: fixed !important;
     top: 48px !important;
     right: 8px !important;
-    bottom: 84px !important;
+    bottom: 76px !important;
     width: 300px;
     max-width: calc(100vw - 16px);
     z-index: 100045 !important;
@@ -21525,11 +21332,6 @@ if (document.readyState === "loading") {
     color: #C5A869 !important;
   }
   .az-grid-tile.is-prio svg { stroke: #EF4444; }
-  .az-grid-tile.is-eraser.is-on {
-    border-color: #EF4444 !important;
-    background: #2A0E0E !important;
-    color: #FCA5A5 !important;
-  }
 
   .az-dock-card {
     background: #141414;
@@ -21896,15 +21698,6 @@ if (document.readyState === "loading") {
   <button type="button" class="az-hud-glass-btn" id="azSatToggleBtn" title="Alternar Mapa Satélite">
     <svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
   </button>
-    <button type="button" class="az-hud-glass-btn az-icon-wrap" id="btn-hub-equipe" onclick="abrirHubEquipe()" title="Hub da Equipe">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-    <circle cx="9" cy="7" r="4"/>
-    <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
-    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-  </svg>
-  <span id="hub-unread-badge" class="az-badge hidden">0</span>
-</button>
   <button type="button" class="az-hud-glass-btn az-hud-hosp-btn" id="azQuickHospitalRouteBtn" title="Rota Hospital Próximo">+</button>
   <button type="button" class="az-hud-glass-btn" id="azAtakHamburgerBtn" title="Menu Tático">
     <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
@@ -21935,7 +21728,6 @@ if (document.readyState === "loading") {
   <button type="button" class="az-atak-tool-btn" id="azUndoStepBtn" title="Desfazer última ação">← DESFAZER</button>
   <button type="button" class="az-atak-tool-btn is-active" id="azFinishRulerBtn" style="display:none;">FINALIZAR RÉGUA</button>
   <button type="button" class="az-atak-tool-btn is-active" id="azFinishDrawBtn" style="display:none;">FIM CANETA</button>
-  <button type="button" class="az-atak-tool-btn is-danger" id="azFinishEraserBtn" style="display:none;">SAIR BORRACHA</button>
   <button type="button" class="az-atak-tool-btn is-active" id="azFinishCrumbRouteBtn" style="display:none;">CONCLUIR ROTA</button>
   <button type="button" class="az-atak-tool-btn is-danger" id="azClearCrumbRouteBtn" style="display:none;">APAGAR MIGALHAS</button>
   <button type="button" class="az-atak-tool-btn is-danger" id="azClearRouteBtn" style="display:none;">ENCERRAR ROTA</button>
@@ -22012,10 +21804,6 @@ if (document.readyState === "loading") {
       <svg viewBox="0 0 24 24"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/></svg>
       Caneta
     </button>
-    <button type="button" class="az-grid-tile is-eraser" id="azGridEraserTile" data-grid-act="eraser_tool">
-      <svg viewBox="0 0 24 24"><path d="M20 20H7L3 16c-.8-.8-.8-2 0-2.8L13.4 2.8c.8-.8 2-.8 2.8 0L21 7.6c.8.8.8 2 0 2.8L11.4 20"/><line x1="6" y1="11" x2="13" y2="18"/></svg>
-      Borracha
-    </button>
     <button type="button" class="az-grid-tile" id="azGridCrumbRouteTile" data-grid-act="draw_route">
       <svg viewBox="0 0 24 24"><circle cx="5" cy="19" r="2.5"/><circle cx="12" cy="12" r="2.5"/><circle cx="19" cy="5" r="2.5"/><line x1="7" y1="17" x2="10" y2="14"/><line x1="14" y1="10" x2="17" y2="7"/></svg>
       Desenhar Rota
@@ -22066,21 +21854,12 @@ if (document.readyState === "loading") {
     </div>
   </div>
 
-  <details class="az-dock-accordion" open>
-    <summary><span>RÁDIO PTT (3 MODOS) & VOZ RECEPÇÃO</span><span>▾</span></summary>
+  <details class="az-dock-accordion">
+    <summary><span>RÁDIO PTT & VOZ RECEPÇÃO</span><span>▾</span></summary>
     <div style="display:flex;flex-direction:column;gap:6px;">
       <div style="display:flex;justify-content:space-between;align-items:center;">
         <button type="button" id="azAudioMuteToggleBtn" style="background:none;border:none;color:#4ADE80;font-size:9px;font-weight:900;cursor:pointer;padding:0;">ÁUDIO ATIVO</button>
         <button type="button" class="az-atak-tool-btn" id="azTestSpeakerBtn" style="height:22px !important;font-size:8.5px !important;">TESTAR SOM</button>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:3px;">
-        <span style="font-size:8.5px;font-weight:800;color:#9E9A8F;">MOTOR DE TRANSMISSÃO PTT:</span>
-        <select id="azPttEngineSelect" class="az-team-input" style="font-size:9.5px !important;">
-          <option value="webm_blocks">1. Blocos WebM (Padrão Atual)</option>
-          <option value="pcm_binary">2. AudioContext 16kHz Binário MQTT (Recomendado)</option>
-          <option value="webrtc_p2p">3. WebRTC P2P (Tempo Real Direto)</option>
-        </select>
-        <span id="azPttEngineHint" style="font-size:8px;color:#9E9A8F;">Modo 1 ativo: blocos curtos WebM/Opus.</span>
       </div>
       <button type="button" class="az-atak-tool-btn is-active" id="azPttHoldBtn" style="width:100%;">TRANSMITIR PTT (OU FONE P2)</button>
       <div style="display:flex;gap:4px;align-items:center;">
@@ -22261,18 +22040,18 @@ if (document.readyState === "loading") {
     firebaseUrl: localStorage.getItem("az_tac_fb_url") || "",
     ghostEnabled: localStorage.getItem("az_tac_ghost_exit") !== "0",
     wheelEnabledIds: savedWheelIds,
-    pttEngine: localStorage.getItem("az_tac_ptt_engine") || "webm_blocks",
     satMode: false,
     teammates: {},
     selectedMateUid: "",
     toolMode: null,
     rulerActive: false,
     rulerCoords: [],
+    // Caneta livre: múltiplos traços independentes (MultiLineString)
     drawActive: false,
     drawStrokes: [],
-    eraserActive: false,
+    // Desenhar Rota (Migalhas de Pão)
     crumbRouteActive: false,
-    breadcrumbs: [],
+    breadcrumbs: [], // [{ lng, lat }]
     crumbMarkers: [],
     activeCrumbIndex: -1,
     hasActiveRoute: false,
@@ -22308,11 +22087,6 @@ if (document.readyState === "loading") {
     rxAudioQueue: [],
     rxPlaying: false,
     rxAudioEl: null,
-    pcmProcessor: null,
-    pcmSource: null,
-    pcmNextPlayTime: 0,
-    rtcPeers: {},
-    rtcLocalStream: null,
     hasTelestrationBase: false,
     mapLocked: false
   };
@@ -22338,11 +22112,6 @@ if (document.readyState === "loading") {
     if (navigator.vibrate) { try { navigator.vibrate(pat); } catch (_) {} }
   }
 
-  function formatDistance(meters) {
-    if (meters >= 1000) return (meters / 1000).toFixed(2) + " km";
-    return Math.round(meters) + " m";
-  }
-
   function closeDock() {
     tac.dockOpen = false;
     document.getElementById("azAtakRightDock").classList.remove("is-open");
@@ -22354,7 +22123,6 @@ if (document.readyState === "loading") {
     const uBtn = document.getElementById("azUndoStepBtn");
     const rFin = document.getElementById("azFinishRulerBtn");
     const dFin = document.getElementById("azFinishDrawBtn");
-    const eFin = document.getElementById("azFinishEraserBtn");
     const cFin = document.getElementById("azFinishCrumbRouteBtn");
     const cClr = document.getElementById("azClearCrumbRouteBtn");
     const rtClr = document.getElementById("azClearRouteBtn");
@@ -22368,69 +22136,13 @@ if (document.readyState === "loading") {
     if (uBtn) uBtn.style.display = hasUndo ? "inline-flex" : "none";
     if (rFin) rFin.style.display = tac.rulerActive ? "inline-flex" : "none";
     if (dFin) dFin.style.display = tac.drawActive ? "inline-flex" : "none";
-    if (eFin) eFin.style.display = tac.eraserActive ? "inline-flex" : "none";
     if (cFin) cFin.style.display = tac.crumbRouteActive ? "inline-flex" : "none";
     if (cClr) cClr.style.display = (!tac.crumbRouteActive && tac.breadcrumbs.length > 0) ? "inline-flex" : "none";
     if (rtClr) rtClr.style.display = tac.hasActiveRoute ? "inline-flex" : "none";
     if (ciClr) ciClr.style.display = tac.circleCenter ? "inline-flex" : "none";
 
-    const any = hasUndo || tac.rulerActive || tac.drawActive || tac.eraserActive || tac.crumbRouteActive || tac.breadcrumbs.length > 0 || tac.hasActiveRoute || Boolean(tac.circleCenter);
+    const any = hasUndo || tac.rulerActive || tac.drawActive || tac.crumbRouteActive || tac.breadcrumbs.length > 0 || tac.hasActiveRoute || Boolean(tac.circleCenter);
     if (row) row.classList.toggle("is-visible", any);
-  }
-
-  /* =====================================================================
-     CONTROLES NATIVOS DO MAPA (BOTÃO AZUL, CAMADAS, CONFIGURAÇÕES GIRAR 90°)
-     ===================================================================== */
-  let nativeBarWrap = document.getElementById("azNativeMapBarWrap");
-  if (!nativeBarWrap) {
-    nativeBarWrap = document.createElement("div");
-    nativeBarWrap.id = "azNativeMapBarWrap";
-    document.body.appendChild(nativeBarWrap);
-  }
-
-  const centerFabEl = document.getElementById("azGeoCenterFab");
-  if (centerFabEl && !centerFabEl._azCenterFixed) {
-    centerFabEl._azCenterFixed = true;
-    centerFabEl.addEventListener("click", function () {
-      const map = getActiveMap() || window.azGeoMap;
-      if (!map || typeof map.flyTo !== "function") return;
-      if (tac.myPos) {
-        map.flyTo({ center: [tac.myPos.lng, tac.myPos.lat], zoom: Math.max(map.getZoom ? map.getZoom() : 16, 16.5), essential: true });
-        return;
-      }
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function (pos) {
-          const lat = pos.coords.latitude;
-          const lng = pos.coords.longitude;
-          tac.myPos = { lat: lat, lng: lng };
-          map.flyTo({ center: [lng, lat], zoom: 16.5, essential: true });
-        }, function () {}, { enableHighAccuracy: true, timeout: 5000 });
-      }
-    });
-  }
-
-  function syncNativeMapControls() {
-    const geoMapEl = document.getElementById("azGeoMap");
-    if (!geoMapEl || !geoMapEl.parentElement) return;
-    const scope = geoMapEl.parentElement;
-
-    scope.querySelectorAll("button").forEach(function (btn) {
-      const txt = (btn.textContent || "").trim().toUpperCase();
-      if (txt === "CAMADAS" || txt === "CONFIGURAÇÕES") {
-        if (btn.parentElement !== nativeBarWrap) {
-          nativeBarWrap.appendChild(btn);
-        }
-      }
-    });
-    nativeBarWrap.classList.toggle("has-items", nativeBarWrap.children.length > 0);
-
-    scope.querySelectorAll("div").forEach(function (div) {
-      if (div === geoMapEl || div.contains(geoMapEl)) return;
-      const txt = (div.textContent || "").toUpperCase();
-      if ((txt.includes("GIRAR") || txt.includes("90°") || txt.includes("INCLINAÇÃO")) && window.getComputedStyle(div).display !== "none") {
-        div.style.zIndex = "100050";
-      }
-    });
   }
 
   /* =====================================================================
@@ -22487,7 +22199,7 @@ if (document.readyState === "loading") {
   window.addEventListener("focus", reconnectWhenResuming);
 
   /* =====================================================================
-     MOTORES DE RÁDIO PTT (3 OPÇÕES ISOLADAS: WEBM | PCM 16KHZ | WEBRTC P2P)
+     RÁDIO PTT BAIXA LATÊNCIA (~480ms POR BLOCO COM FILA IMEDIATA)
      ===================================================================== */
   function unlockAudioOutput() {
     if (!tac.audioCtx) {
@@ -22532,26 +22244,6 @@ if (document.readyState === "loading") {
     else b.classList.remove("is-on");
   }
 
-  function updateEngineHint() {
-    const hint = document.getElementById("azPttEngineHint");
-    if (!hint) return;
-    if (tac.pttEngine === "pcm_binary") {
-      hint.textContent = "Modo 2 ativo: 16kHz mono binário MQTT (~250ms delay, sem cortes).";
-    } else if (tac.pttEngine === "webrtc_p2p") {
-      hint.textContent = "Modo 3 ativo: WebRTC P2P direto (<150ms, sujeito a CGNAT 4G/5G).";
-    } else {
-      hint.textContent = "Modo 1 ativo: blocos curtos WebM/Opus (padrão).";
-    }
-  }
-
-  function syncPttUi() {
-    const fb = document.getElementById("azFloatingMapPttBtn");
-    const db = document.getElementById("azPttHoldBtn");
-    if (fb) { fb.classList.toggle("is-tx", tac.isRecordingPtt); fb.textContent = tac.isRecordingPtt ? "NO AR (ENCERRAR)" : "PTT"; }
-    if (db) { db.classList.toggle("is-tx", tac.isRecordingPtt); db.textContent = tac.isRecordingPtt ? "NO AR • CLIQUE P/ ENCERRAR" : "TRANSMITIR PTT (OU FONE P2)"; }
-  }
-
-  // --- MOTOR 1: BLOCOS WEBM ---
   function dataUrlToBlob(dataUrl) {
     const parts = dataUrl.split(",");
     const mimeMatch = parts[0].match(/:(.*?);/);
@@ -22562,13 +22254,13 @@ if (document.readyState === "loading") {
     return new Blob([arr], { type: mime });
   }
 
-  function enqueueWebmChunk(dataUrl, qra) {
+  function enqueuePttChunk(dataUrl, qra) {
     if (tac.audioMuted || !dataUrl) return;
     tac.rxAudioQueue.push({ dataUrl: dataUrl, qra: qra });
-    drainWebmQueue();
+    drainPttQueue();
   }
 
-  async function drainWebmQueue() {
+  async function drainPttQueue() {
     if (tac.rxPlaying || tac.rxAudioQueue.length === 0) return;
     tac.rxPlaying = true;
     const item = tac.rxAudioQueue.shift();
@@ -22582,31 +22274,58 @@ if (document.readyState === "loading") {
       player.src = objUrl;
       player.volume = 1.0;
       await new Promise(function (resolve) {
-        const done = function () { player.onended = null; player.onerror = null; resolve(); };
+        const done = function () {
+          player.onended = null;
+          player.onerror = null;
+          resolve();
+        };
         player.onended = done;
         player.onerror = done;
         const p = player.play();
-        if (p && typeof p.catch === "function") p.catch(done);
+        if (p && typeof p.catch === "function") {
+          p.catch(function () {
+            const ctx = tac.audioCtx;
+            if (!ctx) return done();
+            blob.arrayBuffer().then(function (ab) { return ctx.decodeAudioData(ab); }).then(function (buf) {
+              const src = ctx.createBufferSource();
+              src.buffer = buf;
+              src.connect(ctx.destination);
+              src.onended = done;
+              src.start(0);
+            }).catch(done);
+          });
+        }
       });
     } catch (_) {}
     if (objUrl) try { URL.revokeObjectURL(objUrl); } catch (_) {}
     tac.rxPlaying = false;
-    if (tac.rxAudioQueue.length > 0) drainWebmQueue();
+    if (tac.rxAudioQueue.length > 0) drainPttQueue();
     else setSpeakerBanner("", false);
   }
 
-  function recordSingleWebmSegment() {
+  function syncPttUi() {
+    const fb = document.getElementById("azFloatingMapPttBtn");
+    const db = document.getElementById("azPttHoldBtn");
+    if (fb) { fb.classList.toggle("is-tx", tac.isRecordingPtt); fb.textContent = tac.isRecordingPtt ? "NO AR (ENCERRAR)" : "PTT"; }
+    if (db) { db.classList.toggle("is-tx", tac.isRecordingPtt); db.textContent = tac.isRecordingPtt ? "NO AR • CLIQUE P/ ENCERRAR" : "TRANSMITIR PTT (OU FONE P2)"; }
+  }
+
+  function recordSingleFastSegment() {
     if (!tac.isRecordingPtt || !tac.pttStream) return;
     const mime = MediaRecorder.isTypeSupported("audio/webm;codecs=opus")
       ? "audio/webm;codecs=opus"
       : (MediaRecorder.isTypeSupported("audio/mp4") ? "audio/mp4" : "");
-    const rec = mime ? new MediaRecorder(tac.pttStream, { mimeType: mime, audioBitsPerSecond: 16000 }) : new MediaRecorder(tac.pttStream);
+    const rec = mime
+      ? new MediaRecorder(tac.pttStream, { mimeType: mime, audioBitsPerSecond: 16000 })
+      : new MediaRecorder(tac.pttStream);
     const chunks = [];
     tac.activeSegmentRec = rec;
 
-    rec.ondataavailable = function (e) { if (e.data && e.data.size > 0) chunks.push(e.data); };
+    rec.ondataavailable = function (e) {
+      if (e.data && e.data.size > 0) chunks.push(e.data);
+    };
     rec.onstop = function () {
-      if (tac.isRecordingPtt) recordSingleWebmSegment();
+      if (tac.isRecordingPtt) recordSingleFastSegment();
       const blob = new Blob(chunks, { type: rec.mimeType || mime || "audio/webm" });
       if (blob.size > 160) {
         const reader = new FileReader();
@@ -22617,215 +22336,31 @@ if (document.readyState === "loading") {
         reader.readAsDataURL(blob);
       }
     };
+
     rec.start();
     clearTimeout(tac.pttSegmentTimer);
     tac.pttSegmentTimer = setTimeout(function () {
-      if (rec.state !== "inactive") { try { rec.stop(); } catch (_) {} }
+      if (rec.state !== "inactive") {
+        try { rec.stop(); } catch (_) {}
+      }
     }, 480);
   }
 
-  // --- MOTOR 2: AUDIOCONTEXT 16KHZ MONO BINÁRIO MQTT ---
-  function downsampleTo16kInt16(float32Buf, inSampleRate) {
-    const outRate = 16000;
-    const ratio = inSampleRate / outRate;
-    const newLen = Math.round(float32Buf.length / ratio);
-    const result = new Int16Array(newLen);
-    let offsetResult = 0, offsetBuffer = 0;
-    while (offsetResult < result.length) {
-      const nextOffsetBuffer = Math.round((offsetResult + 1) * ratio);
-      let accum = 0, count = 0;
-      for (let i = offsetBuffer; i < nextOffsetBuffer && i < float32Buf.length; i++) {
-        accum += float32Buf[i];
-        count++;
-      }
-      const s = Math.max(-1, Math.min(1, count > 0 ? accum / count : 0));
-      result[offsetResult] = s < 0 ? s * 0x8000 : s * 0x7FFF;
-      offsetResult++;
-      offsetBuffer = nextOffsetBuffer;
-    }
-    return new Uint8Array(result.buffer);
-  }
-
-  function broadcastBinaryPcmFrame(pcmBytes) {
-    if (!tac.roomCode) return;
-    const header = new Uint8Array(32);
-    const enc = new TextEncoder();
-    header.set(enc.encode(tac.myId.slice(0, 16)), 0);
-    header.set(enc.encode((tac.myQra || "OPERADOR").slice(0, 16)), 16);
-    const frame = new Uint8Array(32 + pcmBytes.length);
-    frame.set(header, 0);
-    frame.set(pcmBytes, 32);
-
-    if (tac.bc) {
-      tac.bc.postMessage({ room: tac.roomCode.toUpperCase(), pcmFrame: frame });
-    }
-    if (tac.ws && tac.ws.readyState === 1) {
-      const pcmTopic = "azimute/pmmg/pcm/" + roomTopicHash(tac.roomCode);
-      const body = [...mqttEncodeStr(pcmTopic), ...frame];
-      tac.ws.send(new Uint8Array([0x30, ...mqttEncodeVarLen(body.length), ...body]));
-    }
-  }
-
-  function playBinaryPcmFrame(frameBytes) {
-    if (tac.audioMuted || !frameBytes || frameBytes.length <= 34) return;
-    const dec = new TextDecoder();
-    const senderUid = dec.decode(frameBytes.slice(0, 16)).replace(/\0/g, "").trim();
-    if (!senderUid || senderUid === tac.myId) return;
-    const senderQra = dec.decode(frameBytes.slice(16, 32)).replace(/\0/g, "").trim() || "OPERADOR";
-
-    const pcmRaw = frameBytes.slice(32);
-    const alignedLen = pcmRaw.byteLength - (pcmRaw.byteLength % 2);
-    if (alignedLen <= 0) return;
-    const view = new DataView(pcmRaw.buffer, pcmRaw.byteOffset, alignedLen);
-    const samples = alignedLen / 2;
-
-    unlockAudioOutput();
-    const ctx = tac.audioCtx;
-    if (!ctx) return;
-
-    const audioBuf = ctx.createBuffer(1, samples, 16000);
-    const ch = audioBuf.getChannelData(0);
-    for (let i = 0; i < samples; i++) {
-      ch[i] = view.getInt16(i * 2, true) / 32768;
-    }
-
-    const src = ctx.createBufferSource();
-    src.buffer = audioBuf;
-    src.connect(ctx.destination);
-
-    const now = ctx.currentTime;
-    if (tac.pcmNextPlayTime < now) tac.pcmNextPlayTime = now + 0.03;
-    src.start(tac.pcmNextPlayTime);
-    tac.pcmNextPlayTime += audioBuf.duration;
-
-    setSpeakerBanner(senderQra, true);
-    clearTimeout(tac._pcmBannerTimer);
-    tac._pcmBannerTimer = setTimeout(function () { setSpeakerBanner("", false); }, 550);
-  }
-
-  async function startPcmBinaryStream() {
-    unlockAudioOutput();
-    const stream = await navigator.mediaDevices.getUserMedia({
-      audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
-    });
-    tac.pttStream = stream;
-    const ctx = tac.audioCtx;
-    const source = ctx.createMediaStreamSource(stream);
-    const processor = ctx.createScriptProcessor(4096, 1, 1);
-    const silentGain = ctx.createGain();
-    silentGain.gain.value = 0;
-
-    processor.onaudioprocess = function (ev) {
-      if (!tac.isRecordingPtt) return;
-      const input = ev.inputBuffer.getChannelData(0);
-      const pcmBytes = downsampleTo16kInt16(input, ctx.sampleRate);
-      broadcastBinaryPcmFrame(pcmBytes);
-    };
-
-    source.connect(processor);
-    processor.connect(silentGain);
-    silentGain.connect(ctx.destination);
-    tac.pcmSource = source;
-    tac.pcmProcessor = processor;
-  }
-
-  function stopPcmBinaryStream() {
-    if (tac.pcmProcessor) { try { tac.pcmProcessor.disconnect(); } catch (_) {} tac.pcmProcessor = null; }
-    if (tac.pcmSource) { try { tac.pcmSource.disconnect(); } catch (_) {} tac.pcmSource = null; }
-  }
-
-  // --- MOTOR 3: WEBRTC P2P ---
-  function closeAllRtcPeers() {
-    Object.values(tac.rtcPeers).forEach(function (pc) { try { pc.close(); } catch (_) {} });
-    tac.rtcPeers = {};
-    if (tac.rtcLocalStream) {
-      try { tac.rtcLocalStream.getTracks().forEach(function (t) { t.stop(); }); } catch (_) {}
-      tac.rtcLocalStream = null;
-    }
-  }
-
-  async function ensureRtcLocalStream() {
-    if (!tac.rtcLocalStream) {
-      tac.rtcLocalStream = await navigator.mediaDevices.getUserMedia({
-        audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
-      });
-    }
-    return tac.rtcLocalStream;
-  }
-
-  function getOrCreateRtcPeer(remoteUid, remoteQra) {
-    if (tac.rtcPeers[remoteUid]) return tac.rtcPeers[remoteUid];
-    const pc = new RTCPeerConnection({
-      iceServers: [{ urls: "stun:stun.l.google.com:19302" }, { urls: "stun:stun1.l.google.com:19302" }]
-    });
-    tac.rtcPeers[remoteUid] = pc;
-
-    pc.onicecandidate = function (ev) {
-      if (ev.candidate) {
-        broadcastPacket({ kind: "rtc_ice", targetUid: remoteUid, candidate: ev.candidate });
-      }
-    };
-
-    pc.ontrack = function (ev) {
-      if (tac.audioMuted) return;
-      const remoteAudio = new Audio();
-      remoteAudio.srcObject = ev.streams[0];
-      remoteAudio.autoplay = true;
-      remoteAudio.play().catch(function () {});
-      setSpeakerBanner(remoteQra || "ALIADO P2P", true);
-    };
-
-    return pc;
-  }
-
-  async function startWebRtcPtt() {
-    const stream = await ensureRtcLocalStream();
-    stream.getAudioTracks().forEach(function (t) { t.enabled = true; });
-    const mates = Object.values(tac.teammates);
-    for (let i = 0; i < mates.length; i++) {
-      const m = mates[i];
-      const pc = getOrCreateRtcPeer(m.uid, m.qra);
-      if (pc.getSenders().length === 0) {
-        stream.getTracks().forEach(function (tr) { pc.addTrack(tr, stream); });
-      }
-      const offer = await pc.createOffer();
-      await pc.setLocalDescription(offer);
-      broadcastPacket({ kind: "rtc_offer", targetUid: m.uid, sdp: offer });
-    }
-    broadcastPacket({ kind: "rtc_tx_state", speaking: true });
-  }
-
-  function stopWebRtcPtt() {
-    if (tac.rtcLocalStream) {
-      tac.rtcLocalStream.getAudioTracks().forEach(function (t) { t.enabled = false; });
-    }
-    broadcastPacket({ kind: "rtc_tx_state", speaking: false });
-  }
-
-  async function startSelectedPtt() {
+  async function startLivePttStream() {
     if (tac.isRecordingPtt) return;
     unlockAudioOutput();
     if (!tac.roomCode) { showToast("Entre na equipe antes de acionar o PTT."); return; }
-
     try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+      });
+      tac.pttStream = stream;
       tac.isRecordingPtt = true;
       syncPttUi();
       setSpeakerBanner(`${tac.myQra || "VOCÊ"}`, true);
       vibratePattern(35);
-
-      if (tac.pttEngine === "pcm_binary") {
-        await startPcmBinaryStream();
-      } else if (tac.pttEngine === "webrtc_p2p") {
-        await startWebRtcPtt();
-      } else {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
-        });
-        tac.pttStream = stream;
-        recordSingleWebmSegment();
-      }
-
-      tac.pttAutoStopTimer = setTimeout(stopSelectedPtt, 25000);
+      recordSingleFastSegment();
+      tac.pttAutoStopTimer = setTimeout(stopLivePttStream, 20000);
     } catch (_) {
       tac.isRecordingPtt = false;
       syncPttUi();
@@ -22834,21 +22369,15 @@ if (document.readyState === "loading") {
     }
   }
 
-  function stopSelectedPtt() {
+  function stopLivePttStream() {
     if (!tac.isRecordingPtt) return;
     tac.isRecordingPtt = false;
     clearTimeout(tac.pttSegmentTimer);
     clearTimeout(tac.pttAutoStopTimer);
-
-    if (tac.pttEngine === "pcm_binary") {
-      stopPcmBinaryStream();
-    } else if (tac.pttEngine === "webrtc_p2p") {
-      stopWebRtcPtt();
-    } else if (tac.activeSegmentRec && tac.activeSegmentRec.state !== "inactive") {
+    if (tac.activeSegmentRec && tac.activeSegmentRec.state !== "inactive") {
       try { tac.activeSegmentRec.stop(); } catch (_) {}
     }
     tac.activeSegmentRec = null;
-
     if (tac.pttStream) {
       try { tac.pttStream.getTracks().forEach(function (t) { t.stop(); }); } catch (_) {}
       tac.pttStream = null;
@@ -22858,7 +22387,7 @@ if (document.readyState === "loading") {
   }
 
   /* =====================================================================
-     CAMADAS DO MAPA, CANETA MULTI-TRAÇO, BORRACHA & MIGALHAS DE PÃO
+     CAMADAS DO MAPA, CANETA MULTI-TRAÇO, MIGALHAS DE PÃO & CÃO DE CAÇA
      ===================================================================== */
   function canDrawOnMap(m) {
     return Boolean(m && typeof m.getStyle === "function" && m.getStyle());
@@ -22954,6 +22483,7 @@ if (document.readyState === "loading") {
     refreshLeftControls();
   }
 
+  // Caneta livre: renderiza traços separados (MultiLineString) sem ligar um rabisco no outro
   function renderFreehandStrokes(fromSync) {
     const validLines = tac.drawStrokes.filter(function (s) { return Array.isArray(s) && s.length > 0; });
     const gj = { type: "Feature", geometry: { type: "MultiLineString", coordinates: validLines } };
@@ -22976,82 +22506,16 @@ if (document.readyState === "loading") {
   }
 
   function setCanetaMode(enable) {
-    if (enable) setEraserMode(false);
     tac.drawActive = enable;
     const tile = document.getElementById("azGridDrawTile");
     if (tile) tile.classList.toggle("is-on", enable);
     tac.maps.forEach(function (m) {
       if (m && m.dragPan) {
-        if (enable || tac.eraserActive || tac.mapLocked) m.dragPan.disable();
+        if (enable || tac.mapLocked) m.dragPan.disable();
         else m.dragPan.enable();
       }
     });
     refreshLeftControls();
-  }
-
-  function setEraserMode(enable) {
-    if (enable) {
-      tac.drawActive = false;
-      const dTile = document.getElementById("azGridDrawTile");
-      if (dTile) dTile.classList.remove("is-on");
-    }
-    tac.eraserActive = enable;
-    const eTile = document.getElementById("azGridEraserTile");
-    if (eTile) eTile.classList.toggle("is-on", enable);
-    tac.maps.forEach(function (m) {
-      if (m && m.dragPan) {
-        if (enable || tac.drawActive || tac.mapLocked) m.dragPan.disable();
-        else m.dragPan.enable();
-      }
-    });
-    refreshLeftControls();
-  }
-
-  function eraseAtMapPoint(map, screenX, screenY, lngLat) {
-    const HIT_PX = 24;
-    let erasedSomething = false;
-
-    for (let i = tac.pins.length - 1; i >= 0; i--) {
-      const p = tac.pins[i];
-      if (p.isGhost) continue;
-      const pt = map.project([p.lng, p.lat]);
-      if (Math.hypot(pt.x - screenX, pt.y - screenY) <= HIT_PX) {
-        deletePinById(p.id);
-        erasedSomething = true;
-      }
-    }
-
-    const beforeStrokes = tac.drawStrokes.length;
-    tac.drawStrokes = tac.drawStrokes.filter(function (stroke) {
-      return !stroke.some(function (coord) {
-        const pt = map.project(coord);
-        return Math.hypot(pt.x - screenX, pt.y - screenY) <= HIT_PX;
-      });
-    });
-    if (tac.drawStrokes.length !== beforeStrokes) {
-      renderFreehandStrokes(false);
-      erasedSomething = true;
-    }
-
-    const beforeCrumbs = tac.breadcrumbs.length;
-    tac.breadcrumbs = tac.breadcrumbs.filter(function (c) {
-      const pt = map.project([c.lng, c.lat]);
-      return Math.hypot(pt.x - screenX, pt.y - screenY) > HIT_PX;
-    });
-    if (tac.breadcrumbs.length !== beforeCrumbs) {
-      renderBreadcrumbRoute(false);
-      erasedSomething = true;
-    }
-
-    if (tac.circleCenter && lngLat) {
-      const d = calcDistAndBearing(lngLat.lat, lngLat.lng, tac.circleCenter.lat, tac.circleCenter.lng).dist;
-      if (d <= 25 || Math.abs(d - tac.circleRadius) <= 25) {
-        clearCircleFromMaps(false);
-        erasedSomething = true;
-      }
-    }
-
-    if (erasedSomething) vibratePattern(25);
   }
 
   /* =====================================================================
@@ -23076,11 +22540,6 @@ if (document.readyState === "loading") {
           el.title = `Toque para iniciar rota pela migalha M${idx + 1}`;
           el.addEventListener("click", function (ev) {
             ev.stopPropagation();
-            if (tac.eraserActive) {
-              tac.breadcrumbs.splice(idx, 1);
-              renderBreadcrumbRoute(false);
-              return;
-            }
             followBreadcrumbsFromIndex(idx);
           });
           const mk = new window.maplibregl.Marker({ element: el, anchor: "center" }).setLngLat([pt.lng, pt.lat]).addTo(m);
@@ -23110,13 +22569,15 @@ if (document.readyState === "loading") {
     tac.hasActiveRoute = true;
     refreshLeftControls();
 
+    // Tenta rota viária encadeada pelas migalhas; se offline, usa linha direta sequencial
     try {
       const waypoints = chain.map(function (p) { return `${p[0]},${p[1]}`; }).join(";");
       const url = `https://router.project-osrm.org/route/v1/driving/${waypoints}?overview=full&geometries=geojson`;
       const d = await (await fetch(url)).json();
       if (d && d.routes && d.routes[0]) {
         const r = d.routes[0];
-        renderLineOnMaps("az-tac-route", "az-tac-route-line", r.geometry.coordinates, "#22C55E", false, `ROTA MIGALHAS (M${startIdx + 1}→M${tac.breadcrumbs.length}): ${formatDistance(r.distance)}`, null, 4.5);
+        const distStr = r.distance >= 1000 ? (r.distance / 1000).toFixed(2) + " km" : Math.round(r.distance) + " m";
+        renderLineOnMaps("az-tac-route", "az-tac-route-line", r.geometry.coordinates, "#22C55E", false, `ROTA MIGALHAS (M${startIdx + 1}→M${tac.breadcrumbs.length}): ${distStr}`, null, 4.5);
         return;
       }
     } catch (_) {}
@@ -23135,6 +22596,7 @@ if (document.readyState === "loading") {
     return { dist: Math.round(dist), bearing: Math.round(((Math.atan2(y, x) * 180) / Math.PI + 360) % 360) };
   }
 
+  // CÃO DE CAÇA: desenha linha laranja entre operador e alvo e modula ao vivo
   function updateBloodhoundVector() {
     const banner = document.getElementById("azBloodhoundBanner");
     const info = document.getElementById("azBloodhoundInfo");
@@ -23152,7 +22614,8 @@ if (document.readyState === "loading") {
     const oLat = tac.myPos ? tac.myPos.lat : (map ? map.getCenter().lat : tac.bloodhoundTarget.lat);
     const oLng = tac.myPos ? tac.myPos.lng : (map ? map.getCenter().lng : tac.bloodhoundTarget.lng);
     const db = calcDistAndBearing(oLat, oLng, tac.bloodhoundTarget.lat, tac.bloodhoundTarget.lng);
-    if (info) info.textContent = `CÃO DE CAÇA → ${tac.bloodhoundTarget.label} | AZIMUTE ${db.bearing}° | DIST ${formatDistance(db.dist)}`;
+    const distStr = db.dist >= 1000 ? (db.dist / 1000).toFixed(2) + " km" : db.dist + " m";
+    if (info) info.textContent = `CÃO DE CAÇA → ${tac.bloodhoundTarget.label} | AZIMUTE ${db.bearing}° | DIST ${distStr}`;
     if (banner) banner.classList.add("is-open");
     renderLineOnMaps(
       "az-bloodhound-src",
@@ -23178,7 +22641,8 @@ if (document.readyState === "loading") {
       const d = await (await fetch(url)).json();
       if (d && d.routes && d.routes[0]) {
         const r = d.routes[0];
-        renderLineOnMaps("az-tac-route", "az-tac-route-line", r.geometry.coordinates, "#38BDF8", false, `ROTA → ${name}: ${formatDistance(r.distance)}`);
+        const distStr = r.distance >= 1000 ? (r.distance / 1000).toFixed(2) + " km" : Math.round(r.distance) + " m";
+        renderLineOnMaps("az-tac-route", "az-tac-route-line", r.geometry.coordinates, "#38BDF8", false, `ROTA → ${name}: ${distStr}`);
         return;
       }
     } catch (_) {}
@@ -23411,7 +22875,7 @@ if (document.readyState === "loading") {
   }
 
   /* =====================================================================
-     MAPA, CANETA, BORRACHA & MIGALHAS DE PÃO
+     MAPA, CANETA MULTI-TRAÇO EM QUALQUER PONTO & MIGALHAS DE PÃO
      ===================================================================== */
   function registerCapturedMap(mapInst) {
     if (!mapInst || typeof mapInst.unproject !== "function" || typeof mapInst.getContainer !== "function") return;
@@ -23452,26 +22916,17 @@ if (document.readyState === "loading") {
     map._azMapBound = true;
     const container = map.getContainer();
 
-    let holdTimer = null, holdReady = false, sx = 0, sy = 0, downLngLat = null, isFreeDrawing = false, isErasing = false;
+    let holdTimer = null, holdReady = false, sx = 0, sy = 0, downLngLat = null, isFreeDrawing = false;
 
     container.addEventListener("pointerdown", function (ev) {
-      const r = container.getBoundingClientRect();
-      const px = ev.clientX - r.left;
-      const py = ev.clientY - r.top;
-      const ll = map.unproject([px, py]);
-
-      if (tac.eraserActive) {
-        ev.preventDefault();
-        ev.stopPropagation();
-        isErasing = true;
-        eraseAtMapPoint(map, px, py, ll);
-        return;
-      }
-
       if (ev.target && ev.target.closest && (ev.target.closest(".az-tac-pin") || ev.target.closest(".az-crumb-pin"))) return;
       document.getElementById("azRadialWheel").classList.remove("is-open");
+
+      const r = container.getBoundingClientRect();
+      const ll = map.unproject([ev.clientX - r.left, ev.clientY - r.top]);
       if (!ll) return;
 
+      // Caneta livre: inicia um novo traço separado a cada toque
       if (tac.drawActive) {
         ev.preventDefault();
         ev.stopPropagation();
@@ -23481,6 +22936,7 @@ if (document.readyState === "loading") {
         return;
       }
 
+      // Desenhar Rota (Migalhas de Pão)
       if (tac.crumbRouteActive) {
         tac.breadcrumbs.push({ lng: ll.lng, lat: ll.lat });
         renderBreadcrumbRoute(false);
@@ -23516,7 +22972,7 @@ if (document.readyState === "loading") {
           for (let i = 1; i < tac.rulerCoords.length; i++) {
             total += calcDistAndBearing(tac.rulerCoords[i - 1][1], tac.rulerCoords[i - 1][0], tac.rulerCoords[i][1], tac.rulerCoords[i][0]).dist;
           }
-          renderLineOnMaps("az-tac-ruler", "az-tac-ruler-line", tac.rulerCoords, "#22C55E", true, `RÉGUA: ${formatDistance(total)}`, "ruler");
+          renderLineOnMaps("az-tac-ruler", "az-tac-ruler-line", tac.rulerCoords, "#22C55E", true, `RÉGUA: ${total}m`, "ruler");
         } else {
           refreshLeftControls();
           showToast("Régua: Ponto 1 fixado.");
@@ -23530,19 +22986,10 @@ if (document.readyState === "loading") {
         holdReady = true;
         vibratePattern(45);
         showToast("Solte para abrir opções", 1400);
-      }, 850);
+      }, 420);
     }, true);
 
     container.addEventListener("pointermove", function (ev) {
-      if (isErasing && tac.eraserActive) {
-        ev.preventDefault();
-        ev.stopPropagation();
-        const r = container.getBoundingClientRect();
-        const px = ev.clientX - r.left;
-        const py = ev.clientY - r.top;
-        eraseAtMapPoint(map, px, py, map.unproject([px, py]));
-        return;
-      }
       if (isFreeDrawing && tac.drawActive) {
         ev.preventDefault();
         ev.stopPropagation();
@@ -23560,8 +23007,11 @@ if (document.readyState === "loading") {
     }, true);
 
     container.addEventListener("pointerup", function (ev) {
-      if (isErasing) { isErasing = false; return; }
-      if (isFreeDrawing) { isFreeDrawing = false; renderFreehandStrokes(false); return; }
+      if (isFreeDrawing) {
+        isFreeDrawing = false;
+        renderFreehandStrokes(false);
+        return;
+      }
       if (holdTimer) { clearTimeout(holdTimer); holdTimer = null; }
       if (holdReady && downLngLat) {
         holdReady = false;
@@ -23576,7 +23026,6 @@ if (document.readyState === "loading") {
     }, true);
 
     container.addEventListener("pointercancel", function () {
-      isErasing = false;
       isFreeDrawing = false;
       if (holdTimer) { clearTimeout(holdTimer); holdTimer = null; }
     }, true);
@@ -23593,10 +23042,6 @@ if (document.readyState === "loading") {
 
     el.addEventListener("click", function (ev) {
       ev.stopPropagation();
-      if (tac.eraserActive && !pinObj.isGhost) {
-        deletePinById(pinObj.id);
-        return;
-      }
       if (pinObj.isGhost) {
         showToast(`Última posição: ${pinObj.lat.toFixed(5)}, ${pinObj.lng.toFixed(5)} • ${pinObj.lastSeenStr || ""}`, 4500);
         return;
@@ -23709,21 +23154,12 @@ if (document.readyState === "loading") {
     if (!modal || !body || !modal.classList.contains("is-open")) return;
     const mate = tac.teammates[tac.selectedMateUid];
     if (!mate) return;
-
     const ageSec = Math.max(0, Math.round((Date.now() - (mate.ts || Date.now())) / 1000));
     const staticSec = Math.max(0, Math.round((Date.now() - (mate.staticSince || mate.ts || Date.now())) / 1000));
     const sig = getSignalVisuals(mate);
     const batStr = typeof mate.batteryPct === "number" ? `${mate.batteryPct}%` : "Aguardando leitura...";
-
-    let distStr = "Aguardando seu GPS...";
-    if (tac.myPos) {
-      const db = calcDistAndBearing(tac.myPos.lat, tac.myPos.lng, mate.lat, mate.lng);
-      distStr = `${formatDistance(db.dist)} (${db.bearing}°)`;
-    }
-
     document.getElementById("azMateInspectTitle").textContent = `OPERADOR • ${mate.qra}`;
     body.innerHTML =
-      `Distância: <strong>${distStr}</strong><br>` +
       `Sinal: <strong>${sig.label}</strong> (${ageSec}s)<br>` +
       `Bateria real: <strong>${batStr}</strong><br>` +
       `Estático há: <strong>${staticSec}s</strong><br>` +
@@ -23737,7 +23173,7 @@ if (document.readyState === "loading") {
   }
 
   /* =====================================================================
-     REDE MQTT + BATERIA REAL + PACOTES JSON E BINÁRIOS
+     REDE MQTT + BATERIA REAL + PACOTES
      ===================================================================== */
   function xorCipher(s, k) {
     if (!k) return s;
@@ -23764,9 +23200,8 @@ if (document.readyState === "loading") {
     if (!list) return;
     if (mates.length === 0) { list.innerHTML = `<div style="font-size:9px;color:#78746A;">Nenhum membro online.</div>`; return; }
     list.innerHTML = mates.map(function (m) {
-      const distBadge = tac.myPos ? formatDistance(calcDistAndBearing(tac.myPos.lat, tac.myPos.lng, m.lat, m.lng).dist) : "";
       const bat = typeof m.batteryPct === "number" ? `BAT ${m.batteryPct}%` : "";
-      return `<div class="az-member-row" data-inspect-uid="${m.uid}" style="border-color:${getColorHex(m.colorId)};"><span>${m.qra}</span><span>${distBadge} ${bat}</span></div>`;
+      return `<div class="az-member-row" data-inspect-uid="${m.uid}" style="border-color:${getColorHex(m.colorId)};"><span>${m.qra}</span><span>${bat}</span></div>`;
     }).join("");
     list.querySelectorAll("[data-inspect-uid]").forEach(function (el) {
       el.addEventListener("click", function () {
@@ -23782,9 +23217,7 @@ if (document.readyState === "loading") {
     if (tac.ws) { try { tac.ws.close(); } catch (_) {} tac.ws = null; }
     const st = document.getElementById("azLiveNetStatus");
     if (st) { st.textContent = "CONECTANDO..."; st.style.color = "#F59E0B"; }
-    const hash = roomTopicHash(tac.roomCode);
-    const jsonTopic = "azimute/pmmg/turno/" + hash;
-    const pcmTopic = "azimute/pmmg/pcm/" + hash;
+    const topic = "azimute/pmmg/turno/" + roomTopicHash(tac.roomCode);
     const clientId = "az_" + tac.myId + "_" + Math.floor(Math.random() * 999);
     try {
       const ws = new WebSocket("wss://broker.emqx.io:8084/mqtt", "mqtt");
@@ -23795,11 +23228,8 @@ if (document.readyState === "loading") {
         ws.send(new Uint8Array([0x10, ...mqttEncodeVarLen(rem.length), ...rem]));
         setTimeout(function () {
           if (ws.readyState !== 1) return;
-          const sub1 = [0x00, 0x01, ...mqttEncodeStr(jsonTopic), 0x00];
-          ws.send(new Uint8Array([0x82, ...mqttEncodeVarLen(sub1.length), ...sub1]));
-          const sub2 = [0x00, 0x02, ...mqttEncodeStr(pcmTopic), 0x00];
-          ws.send(new Uint8Array([0x82, ...mqttEncodeVarLen(sub2.length), ...sub2]));
-
+          const sub = [0x00, 0x01, ...mqttEncodeStr(topic), 0x00];
+          ws.send(new Uint8Array([0x82, ...mqttEncodeVarLen(sub.length), ...sub]));
           if (st) { st.textContent = `AO VIVO: ${tac.roomCode}`; st.style.color = "#4ADE80"; }
           if (tac.myPos) {
             broadcastPacket({ kind: "pos", lat: tac.myPos.lat, lng: tac.myPos.lng, colorId: tac.myColorId, batteryPct: tac.myBatteryPct });
@@ -23812,17 +23242,10 @@ if (document.readyState === "loading") {
         let idx = 1; while (idx < buf.length && (buf[idx] & 0x80)) idx++; idx++;
         if (idx + 2 > buf.length) return;
         const tLen = (buf[idx] << 8) | buf[idx + 1];
-        const topicStr = new TextDecoder().decode(buf.slice(idx + 2, idx + 2 + tLen));
         idx += 2 + tLen;
         if ((buf[0] & 0x06) > 0) idx += 2;
         if (idx >= buf.length) return;
-
-        const payloadBytes = buf.slice(idx);
-        if (topicStr.indexOf("/pcm/") !== -1) {
-          playBinaryPcmFrame(payloadBytes);
-          return;
-        }
-        const pkt = decodePayload(new TextDecoder().decode(payloadBytes), tac.roomCode);
+        const pkt = decodePayload(new TextDecoder().decode(buf.slice(idx)), tac.roomCode);
         if (pkt) handleIncomingPacket(pkt);
       };
     } catch (_) {}
@@ -23841,7 +23264,7 @@ if (document.readyState === "loading") {
     return sent;
   }
 
-  async function handleIncomingPacket(pkt) {
+  function handleIncomingPacket(pkt) {
     if (!pkt || pkt.uid === tac.myId) return;
     if (pkt.kind === "pos" && typeof pkt.lat === "number") {
       removeGhostForUid(pkt.uid);
@@ -23869,27 +23292,7 @@ if (document.readyState === "loading") {
       renderMateInspectorContent();
       updateBloodhoundVector();
     } else if (pkt.kind === "ptt_chunk" && pkt.audio) {
-      enqueueWebmChunk(pkt.audio, pkt.qra);
-    } else if (pkt.kind === "rtc_offer" && pkt.targetUid === tac.myId && pkt.sdp) {
-      try {
-        const pc = getOrCreateRtcPeer(pkt.uid, pkt.qra);
-        await pc.setRemoteDescription(new RTCSessionDescription(pkt.sdp));
-        const ans = await pc.createAnswer();
-        await pc.setLocalDescription(ans);
-        broadcastPacket({ kind: "rtc_answer", targetUid: pkt.uid, sdp: ans });
-      } catch (_) {}
-    } else if (pkt.kind === "rtc_answer" && pkt.targetUid === tac.myId && pkt.sdp) {
-      try {
-        const pc = tac.rtcPeers[pkt.uid];
-        if (pc) await pc.setRemoteDescription(new RTCSessionDescription(pkt.sdp));
-      } catch (_) {}
-    } else if (pkt.kind === "rtc_ice" && pkt.targetUid === tac.myId && pkt.candidate) {
-      try {
-        const pc = tac.rtcPeers[pkt.uid];
-        if (pc) await pc.addIceCandidate(new RTCIceCandidate(pkt.candidate));
-      } catch (_) {}
-    } else if (pkt.kind === "rtc_tx_state") {
-      setSpeakerBanner(pkt.qra, Boolean(pkt.speaking));
+      enqueuePttChunk(pkt.audio, pkt.qra);
     } else if (pkt.kind === "run") {
       vibratePattern([180, 90, 180]);
       showToast(`ALERTA: ${pkt.qra} EM DESLOCAMENTO RÁPIDO (≥7 km/h)`, 3800);
@@ -23911,6 +23314,7 @@ if (document.readyState === "loading") {
       tac.breadcrumbs = Array.isArray(pkt.crumbs) ? pkt.crumbs : [];
       renderBreadcrumbRoute(true);
     } else if (pkt.kind === "msg" && pkt.text) {
+      // Apenas o receptor ouve a voz da mensagem rápida
       vibratePattern([180, 80, 180]);
       showToast(`[${pkt.qra}]: ${pkt.text}`, 4200);
       speakReceivedTacticalText(`${pkt.qra}: ${pkt.text}`);
@@ -23931,17 +23335,13 @@ if (document.readyState === "loading") {
   if (tac.bc) {
     tac.bc.onmessage = function (ev) {
       if (!ev.data || !tac.roomCode || ev.data.room !== tac.roomCode.toUpperCase()) return;
-      if (ev.data.pcmFrame) {
-        playBinaryPcmFrame(ev.data.pcmFrame);
-        return;
-      }
       const pkt = decodePayload(ev.data.data, tac.roomCode);
       if (pkt) handleIncomingPacket(pkt);
     };
   }
 
   /* =====================================================================
-     GPS CONTÍNUO & VISIBILIDADE DA ABA GEOLOCALIZAÇÃO
+     GPS CONTÍNUO, BOTÃO AZUL GARANTIDO NO BODY E VISIBILIDADE
      ===================================================================== */
   function readLocalBattery() {
     if (!navigator.getBattery) return;
@@ -23972,13 +23372,17 @@ if (document.readyState === "loading") {
 
   function updateHud() {
     disableIncursionCompletely();
-    syncNativeMapControls();
     const vis = isMapTabVisible();
     document.body.classList.toggle("az-map-fullscreen", vis);
     document.getElementById("azTopHudShell").classList.toggle("is-visible", vis);
     document.getElementById("azFloatingPttGroup").classList.toggle("is-visible", vis);
     document.getElementById("azLockMapDrawBtn").classList.toggle("is-visible", vis);
 
+    const centerFab = document.getElementById("azGeoCenterFab");
+    if (centerFab) {
+      if (centerFab.parentElement !== document.body) document.body.appendChild(centerFab);
+      centerFab.style.display = vis ? "inline-flex" : "none";
+    }
     if (!vis) closeDock();
 
     document.getElementById("azHudUnitNetLine").textContent = tac.roomCode ? `PMMG • TURNO ${tac.roomCode}` : "PMMG • REDE RMBH";
@@ -24021,7 +23425,6 @@ if (document.readyState === "loading") {
     tac.myPos = { lat: lat, lng: lng };
     resolveAddr(lat, lng);
     updateBloodhoundVector();
-    renderOnlineMembersList();
     if (tac.roomCode) {
       broadcastPacket({ kind: "pos", lat: lat, lng: lng, colorId: tac.myColorId, batteryPct: tac.myBatteryPct });
     }
@@ -24060,19 +23463,6 @@ if (document.readyState === "loading") {
   document.getElementById("azRoomCodeInput").value = tac.roomCode;
   document.getElementById("azFirebaseUrlInput").value = tac.firebaseUrl;
   document.getElementById("azToggleGhostExitBtn").textContent = tac.ghostEnabled ? "MARCADOR DE SAÍDA: ATIVADO" : "MARCADOR DE SAÍDA: DESATIVADO";
-
-  const pttSel = document.getElementById("azPttEngineSelect");
-  if (pttSel) {
-    pttSel.value = tac.pttEngine;
-    updateEngineHint();
-    pttSel.addEventListener("change", function () {
-      if (tac.isRecordingPtt) stopSelectedPtt();
-      closeAllRtcPeers();
-      tac.pttEngine = this.value;
-      localStorage.setItem("az_tac_ptt_engine", tac.pttEngine);
-      updateEngineHint();
-    });
-  }
   renderOnlineMembersList();
 
   // Travar Mapa
@@ -24082,14 +23472,14 @@ if (document.readyState === "loading") {
     this.textContent = tac.mapLocked ? "MAPA TRAVADO" : "TRAVAR MAPA";
     tac.maps.forEach(function (m) {
       ["dragPan", "scrollZoom", "doubleClickZoom", "touchZoomRotate", "boxZoom"].forEach(function (h) {
-        if (m[h]) (tac.mapLocked || (h === "dragPan" && (tac.drawActive || tac.eraserActive))) ? m[h].disable() : m[h].enable();
+        if (m[h]) (tac.mapLocked || (h === "dragPan" && tac.drawActive)) ? m[h].disable() : m[h].enable();
       });
     });
   });
 
   // PTT + Testar Som + Voz de Recepção
   ["azFloatingMapPttBtn", "azPttHoldBtn"].forEach(function (id) {
-    onClick(id, function (e) { e.preventDefault(); e.stopPropagation(); tac.isRecordingPtt ? stopSelectedPtt() : startSelectedPtt(); });
+    onClick(id, function (e) { e.preventDefault(); e.stopPropagation(); tac.isRecordingPtt ? stopLivePttStream() : startLivePttStream(); });
   });
   onClick("azTestSpeakerBtn", function () { unlockAudioOutput(); playTone(660, 990, 0.28, 0.24); showToast("Áudio de teste emitido.", 2000); });
   document.getElementById("azTtsVoiceSelect").addEventListener("change", function () {
@@ -24163,17 +23553,12 @@ if (document.readyState === "loading") {
       else if (act === "vtr_pin") { tac.toolMode = "vtr_pin"; showToast("Toque no mapa para posicionar Viatura."); }
       else if (act === "draw_free") {
         setCanetaMode(!tac.drawActive);
-        showToast(tac.drawActive ? "Caneta livre ATIVA" : "Caneta finalizada.");
-      } else if (act === "eraser_tool") {
-        setEraserMode(!tac.eraserActive);
-        showToast(tac.eraserActive ? "Borracha ATIVA: toque ou deslize sobre o que deseja apagar" : "Borracha desativada.");
+        showToast(tac.drawActive ? "Caneta livre ATIVA (toque e desenhe em qualquer ponto)" : "Caneta finalizada.");
       } else if (act === "draw_route") {
-        setEraserMode(false);
-        setCanetaMode(false);
         tac.crumbRouteActive = !tac.crumbRouteActive;
         document.getElementById("azGridCrumbRouteTile").classList.toggle("is-on", tac.crumbRouteActive);
         refreshLeftControls();
-        showToast(tac.crumbRouteActive ? "Desenhar Rota ATIVO: clique nos pontos para lançar migalhas" : "Rota de migalhas concluída.");
+        showToast(tac.crumbRouteActive ? "Desenhar Rota ATIVO: toque no mapa para lançar migalhas" : "Rota de migalhas concluída.");
       } else if (act === "photo_coord_pin") { openPhotoModal(null); }
       else if (act === "circle_tool") { tac.toolMode = "circle_pick"; showToast("Toque no centro do Perímetro no mapa."); }
       else if (act === "toggle_sat") { toggleSatelliteMode(); }
@@ -24194,7 +23579,6 @@ if (document.readyState === "loading") {
         tac.undoHistory = [];
         tac.rulerCoords = []; tac.rulerActive = false;
         tac.drawStrokes = []; setCanetaMode(false);
-        setEraserMode(false);
         tac.breadcrumbs = []; tac.crumbRouteActive = false; tac.activeCrumbIndex = -1;
         clearCrumbMarkers();
         tac.bloodhoundTarget = null;
@@ -24226,15 +23610,11 @@ if (document.readyState === "loading") {
     setCanetaMode(false);
     showToast("Caneta finalizada.");
   });
-  onClick("azFinishEraserBtn", function () {
-    setEraserMode(false);
-    showToast("Borracha desativada.");
-  });
   onClick("azFinishCrumbRouteBtn", function () {
     tac.crumbRouteActive = false;
     document.getElementById("azGridCrumbRouteTile").classList.remove("is-on");
     refreshLeftControls();
-    showToast("Rota de migalhas pronta. Toque em M1, M2... para seguir.");
+    showToast("Rota de migalhas pronta. Toque em qualquer migalha (M1, M2...) para seguir.");
   });
   onClick("azClearCrumbRouteBtn", function () {
     tac.breadcrumbs = [];
@@ -24428,8 +23808,7 @@ if (document.readyState === "loading") {
       setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
     }
 
-    if (tac.isRecordingPtt) stopSelectedPtt();
-    closeAllRtcPeers();
+    if (tac.isRecordingPtt) stopLivePttStream();
     if (tac.roomCode) broadcastPacket({ kind: "leave" });
     if (tac.ws) { try { tac.ws.close(); } catch (_) {} tac.ws = null; }
 
@@ -24475,841 +23854,6 @@ if (document.readyState === "loading") {
   setInterval(monitorGps, 3500);
 })();
 </script>
-<!-- FIM BLOCO AZIMUTE TÁTICO --><div id="az-toast-container"></div>
-
-<script>
-(function initAzimutePolimentoFinal() {
-  // 1. Vibração tátil curta em todos os botões
-  document.addEventListener('pointerdown', (e) => {
-    if (e.target.closest('button, .btn, .tool-btn, .menu-item, [role="button"]')) {
-      if (navigator.vibrate) navigator.vibrate(12);
-    }
-  }, { passive: true });
-
-  // 2. Bloqueia menu de segurar o dedo (copiar/colar) fora de caixas de texto
-  document.addEventListener('contextmenu', (e) => {
-    if (!e.target.closest('input, textarea, [contenteditable="true"]')) {
-      e.preventDefault();
-    }
-  });
-
-  // 3. Sistema de Notificação Flutuante (com filtro contra spam de "conexão ruim")
-  window.azToast = function(mensagem, duracao = 2500) {
-    if (!mensagem) return;
-    const textoLower = String(mensagem).toLowerCase();
-
-    // Silencia alertas repetitivos de oscilação de 4G/internet
-    if (
-      textoLower.includes('conexão') ||
-      textoLower.includes('conexao') ||
-      textoLower.includes('offline') ||
-      textoLower.includes('sinal de rede') ||
-      textoLower.includes('internet')
-    ) {
-      return;
-    }
-
-    const container = document.getElementById('az-toast-container');
-    if (!container) return;
-
-    const toast = document.createElement('div');
-    toast.className = 'az-toast';
-    toast.textContent = mensagem;
-    container.appendChild(toast);
-
-    requestAnimationFrame(() => toast.classList.add('show'));
-    setTimeout(() => {
-      toast.classList.remove('show');
-      setTimeout(() => toast.remove(), 220);
-    }, duracao);
-  };
-
-  // Substitui o alert() padrão do navegador pelo toast escuro
-  window.alert = function(msg) {
-    window.azToast(msg, 2800);
-  };
-
-  // 4. Tela Cheia Inteligente (sem tela preta de 1,5s e sem aviso "2cia..." no PWA)
-  window.alternarTelaCheiaAzimute = function() {
-    const modoAppInstalado = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-
-    if (modoAppInstalado) {
-      document.body.classList.toggle('az-modo-limpo');
-      return;
-    }
-
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch(() => {});
-    } else {
-      document.exitFullscreen().catch(() => {});
-    }
-  };
-
-  // 5. Função pronta para controlar o número vermelho do Hub da Equipe
-  window.atualizarBadgeHub = function(qtd) {
-    const badge = document.getElementById('hub-unread-badge');
-    if (!badge) return;
-    if (qtd > 0) {
-      badge.textContent = qtd > 99 ? '99+' : qtd;
-      badge.classList.remove('hidden');
-    } else {
-      badge.classList.add('hidden');
-    }
-  };
-})();
-<!-- [AZ-PATCH-FINAL-INICIO] -->
-<style id="azimuteFinalPatchCss">
-  /* 1. Impede qualquer controle do mapa de vazar para Início, Unidades, APH, Drones, etc. */
-  body:not(.az-map-fullscreen) #azGeoCenterFab,
-  body:not(.az-map-fullscreen) #azGeoTiltBadge,
-  body:not(.az-map-fullscreen) #azGeoNorthBadge,
-  body:not(.az-map-fullscreen) #azGeoLockBadge,
-  body:not(.az-map-fullscreen) #azNativeMapBarWrap {
-    display: none !important;
-  }
-
-  /* 2. Botão Azul Original de Centralizar GPS (Exclusivo da tela do Mapa) */
-  body.az-map-fullscreen #azGeoCenterFab {
-    display: inline-flex !important;
-    position: fixed !important;
-    bottom: 88px !important;
-    right: 12px !important;
-    left: auto !important;
-    top: auto !important;
-    width: 44px !important;
-    height: 44px !important;
-    border-radius: 50% !important;
-    background: #2563EB !important;
-    border: 2px solid #93C5FD !important;
-    color: #FFFFFF !important;
-    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.75) !important;
-    z-index: 100046 !important;
-    pointer-events: auto !important;
-  }
-
-  /* 3. Botões originais do canto superior direito do mapa (RUMO LIVRE, N, 2D/3D) */
-  body.az-map-fullscreen #azGeoNorthBadge {
-    display: flex !important;
-    position: fixed !important;
-    top: 52px !important;
-    right: 12px !important;
-    z-index: 100043 !important;
-  }
-  body.az-map-fullscreen #azGeoTiltBadge {
-    display: flex !important;
-    position: fixed !important;
-    top: 94px !important;
-    right: 12px !important;
-    z-index: 100043 !important;
-  }
-  body.az-map-fullscreen #azGeoLockBadge {
-    display: flex !important;
-    position: fixed !important;
-    top: 52px !important;
-    right: 54px !important;
-    z-index: 100043 !important;
-  }
-
-  /* 4. Barra Inferior Original (Configurações, Camadas, + Alfinete, Limpar, Municípios) */
-  #azNativeMapBarWrap {
-    position: fixed !important;
-    bottom: 38px !important;
-    left: 10px !important;
-    right: 64px !important;
-    z-index: 100046 !important;
-    display: none;
-    flex-wrap: nowrap !important;
-    overflow-x: auto !important;
-    scrollbar-width: none !important;
-    gap: 6px;
-    padding: 2px 0;
-    background: transparent !important;
-    pointer-events: none;
-  }
-  #azNativeMapBarWrap::-webkit-scrollbar {
-    display: none;
-  }
-  body.az-map-fullscreen #azNativeMapBarWrap.has-items {
-    display: flex !important;
-  }
-  #azNativeMapBarWrap > button {
-    pointer-events: auto !important;
-    flex-shrink: 0 !important;
-    z-index: 100047 !important;
-    background: rgba(13, 13, 13, 0.94) !important;
-    color: #F2F0EA !important;
-    border: 1px solid rgba(197, 168, 105, 0.55) !important;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.92) !important;
-  }
-  #azNativeMapBarWrap > button.active {
-    background: #C5A869 !important;
-    color: #0D0D0D !important;
-    border-color: #C5A869 !important;
-  }
-
-  /* 5. Gaveta de Configurações (Claro/Escuro/Satélite/Girar), Camadas e Municípios acima do mapa */
-  body.az-map-fullscreen #azGeoCfgBox.is-open,
-  body.az-map-fullscreen #azGeoLayersBox.is-open,
-  body.az-map-fullscreen #azGeoMunBox.is-open,
-  body.az-map-fullscreen #azGeoPinForm.is-open {
-    display: flex !important;
-    flex-direction: column !important;
-    position: fixed !important;
-    bottom: 86px !important;
-    left: 10px !important;
-    right: 64px !important;
-    max-height: 58vh !important;
-    overflow-y: auto !important;
-    z-index: 100060 !important;
-    background: rgba(13, 13, 13, 0.98) !important;
-    border: 1.5px solid #C5A869 !important;
-    border-radius: 12px !important;
-    padding: 10px !important;
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.96) !important;
-  }
-
-  /* 6. Seletor de Cor do Operador (Equipe / Hub) */
-  .az-color-picker-row {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-wrap: wrap;
-    padding: 4px 0;
-  }
-  .az-op-color-dot {
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    border: 2px solid #28271F;
-    cursor: pointer;
-    padding: 0;
-    transition: transform 0.15s ease, border-color 0.15s ease;
-  }
-  .az-op-color-dot.is-selected {
-    border-color: #FFFFFF;
-    transform: scale(1.16);
-    box-shadow: 0 0 8px rgba(255, 255, 255, 0.55);
-  }
-  .az-op-color-dot.is-taken {
-    opacity: 0.25;
-    cursor: not-allowed;
-    position: relative;
-  }
-
-  /* 7. Chips de Mensagens Rápidas e Controles de Mídia no Hub da Equipe */
-  .az-hub-quick-row {
-    display: flex;
-    gap: 6px;
-    overflow-x: auto;
-    scrollbar-width: none;
-    padding: 8px 12px;
-    background: #121212;
-    border-top: 1px solid rgba(197, 168, 105, 0.22);
-  }
-  .az-hub-quick-row::-webkit-scrollbar {
-    display: none;
-  }
-  .az-hub-quick-chip {
-    flex-shrink: 0;
-    background: #161616;
-    color: #C5A869;
-    border: 1px solid rgba(197, 168, 105, 0.45);
-    border-radius: 999px;
-    padding: 5px 11px;
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: 0.04em;
-    cursor: pointer;
-  }
-  .az-hub-quick-chip:active {
-    background: #C5A869;
-    color: #0D0D0D;
-  }
-  .az-hub-media-btn {
-    width: 38px;
-    height: 38px;
-    border-radius: 10px;
-    background: #0D0D0D;
-    border: 1px solid rgba(197, 168, 105, 0.45);
-    color: #C5A869;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    cursor: pointer;
-  }
-  .az-hub-media-btn.is-rec {
-    background: #DC2626 !important;
-    border-color: #FCA5A5 !important;
-    color: #FFFFFF !important;
-    animation: azRecPulse 1s infinite;
-  }
-  @keyframes azRecPulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.65; }
-  }
-</style>
-
-<input type="file" id="azHubChatPhotoInput" accept="image/*" style="display:none;" />
-
-<!-- [AZ-PARTE-1-CSS] -->
-<style id="azimuteFinalPatchCss">
-  /* Oculta controles do mapa nas outras abas (Início, Unidades, APH, Drones) */
-  body:not(.az-map-fullscreen) #azGeoCenterFab,
-  body:not(.az-map-fullscreen) #azGeoTiltBadge,
-  body:not(.az-map-fullscreen) #azGeoNorthBadge,
-  body:not(.az-map-fullscreen) #azGeoLockBadge,
-  body:not(.az-map-fullscreen) #azNativeMapBarWrap {
-    display: none !important;
-  }
-
-  /* Botão Azul de Centralizar GPS (Exclusivo da tela do Mapa) */
-  body.az-map-fullscreen #azGeoCenterFab {
-    display: inline-flex !important;
-    position: fixed !important;
-    bottom: 88px !important;
-    right: 12px !important;
-    left: auto !important;
-    top: auto !important;
-    width: 44px !important;
-    height: 44px !important;
-    border-radius: 50% !important;
-    background: #2563EB !important;
-    border: 2px solid #93C5FD !important;
-    color: #FFFFFF !important;
-    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.8) !important;
-    z-index: 100072 !important;
-    pointer-events: auto !important;
-  }
-
-  /* Controles do canto superior direito do mapa */
-  body.az-map-fullscreen #azGeoNorthBadge {
-    display: flex !important;
-    position: fixed !important;
-    top: 52px !important;
-    right: 12px !important;
-    z-index: 100071 !important;
-  }
-  body.az-map-fullscreen #azGeoTiltBadge {
-    display: flex !important;
-    position: fixed !important;
-    top: 94px !important;
-    right: 12px !important;
-    z-index: 100071 !important;
-  }
-  body.az-map-fullscreen #azGeoLockBadge {
-    display: flex !important;
-    position: fixed !important;
-    top: 52px !important;
-    right: 54px !important;
-    z-index: 100071 !important;
-  }
-
-  /* Barra Superior do Mapa sempre clicável */
-  #azTopHudShell {
-    z-index: 100075 !important;
-  }
-  #btn-hub-equipe {
-    pointer-events: auto !important;
-    cursor: pointer !important;
-  }
-
-  /* Barra Inferior com Configurações, Camadas, + Alfinete, Limpar e Municípios */
-  #azNativeMapBarWrap {
-    position: fixed !important;
-    bottom: 38px !important;
-    left: 10px !important;
-    right: 64px !important;
-    z-index: 100072 !important;
-    display: none;
-    flex-wrap: nowrap !important;
-    overflow-x: auto !important;
-    scrollbar-width: none !important;
-    gap: 6px;
-    padding: 2px 0;
-    background: transparent !important;
-    pointer-events: none;
-  }
-  #azNativeMapBarWrap::-webkit-scrollbar { display: none; }
-  body.az-map-fullscreen #azNativeMapBarWrap.has-items {
-    display: flex !important;
-  }
-  #azNativeMapBarWrap > button {
-    pointer-events: auto !important;
-    flex-shrink: 0 !important;
-    z-index: 100073 !important;
-    background: rgba(13, 13, 13, 0.95) !important;
-    color: #F2F0EA !important;
-    border: 1px solid rgba(197, 168, 105, 0.6) !important;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.92) !important;
-  }
-  #azNativeMapBarWrap > button.active {
-    background: #C5A869 !important;
-    color: #0D0D0D !important;
-    border-color: #C5A869 !important;
-  }
-
-  /* Gaveta de Configurações (Claro/Escuro/Satélite/Girar) acima do mapa */
-  body.az-map-fullscreen #azGeoCfgBox.is-open,
-  body.az-map-fullscreen #azGeoLayersBox.is-open,
-  body.az-map-fullscreen #azGeoMunBox.is-open,
-  body.az-map-fullscreen #azGeoPinForm.is-open {
-    display: flex !important;
-    flex-direction: column !important;
-    position: fixed !important;
-    bottom: 86px !important;
-    left: 10px !important;
-    right: 64px !important;
-    max-height: 58vh !important;
-    overflow-y: auto !important;
-    z-index: 100082 !important;
-    background: rgba(13, 13, 13, 0.98) !important;
-    border: 1.5px solid #C5A869 !important;
-    border-radius: 12px !important;
-    padding: 10px !important;
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.96) !important;
-  }
-
-  /* Seletor de Cores e Chips do Hub da Equipe */
-  .az-color-picker-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; padding: 4px 0; }
-  .az-op-color-dot { width: 22px; height: 22px; border-radius: 50%; border: 2px solid #28271F; cursor: pointer; padding: 0; }
-  .az-op-color-dot.is-selected { border-color: #FFFFFF; transform: scale(1.16); }
-  .az-op-color-dot.is-taken { opacity: 0.25; cursor: not-allowed; }
-  .az-hub-quick-row { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding: 8px 12px; background: #121212; border-top: 1px solid rgba(197, 168, 105, 0.22); }
-  .az-hub-quick-row::-webkit-scrollbar { display: none; }
-  .az-hub-quick-chip { flex-shrink: 0; background: #161616; color: #C5A869; border: 1px solid rgba(197, 168, 105, 0.45); border-radius: 999px; padding: 5px 11px; font-size: 11px; font-weight: 800; cursor: pointer; }
-  .az-hub-media-btn { width: 38px; height: 38px; border-radius: 10px; background: #0D0D0D; border: 1px solid rgba(197, 168, 105, 0.45); color: #C5A869; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer; }
-  .az-hub-media-btn.is-rec { background: #DC2626 !important; border-color: #FCA5A5 !important; color: #FFFFFF !important; }
-</style>
-<input type="file" id="azHubChatPhotoInput" accept="image/*" style="display:none;" />
-    <!-- [AZ-PARTE-2-MAPA] -->
-<script>
-(function azimuteCorePatch() {
-  const oldRestored = document.getElementById('azMapControlsRestored');
-  if (oldRestored) oldRestored.remove();
-
-  // 1. Trava para 2 dedos (girar/zoom) não abrir a Roda de Opções
-  let multiTouchActive = false;
-  let lastMultiTouchTs = 0;
-
-  function blockWheelOnMultiTouch() {
-    multiTouchActive = true;
-    lastMultiTouchTs = Date.now();
-    const wheel = document.getElementById('azRadialWheel');
-    if (wheel) wheel.classList.remove('is-open');
-    const mapEl = document.getElementById('azGeoMap');
-    if (mapEl) {
-      try { mapEl.dispatchEvent(new PointerEvent('pointercancel', { bubbles: true, cancelable: true })); } catch (e) {}
-    }
-  }
-
-  document.addEventListener('touchstart', function (e) { if (e.touches && e.touches.length >= 2) blockWheelOnMultiTouch(); }, true);
-  document.addEventListener('touchmove', function (e) { if (e.touches && e.touches.length >= 2) blockWheelOnMultiTouch(); }, true);
-  document.addEventListener('touchend', function (e) { if (!e.touches || e.touches.length === 0) { multiTouchActive = false; lastMultiTouchTs = Date.now(); } }, true);
-  document.addEventListener('pointerdown', function (e) { if (e.isPrimary === false) blockWheelOnMultiTouch(); }, true);
-
-  const wheelEl = document.getElementById('azRadialWheel');
-  if (wheelEl && typeof MutationObserver !== 'undefined') {
-    new MutationObserver(function () {
-      if (wheelEl.classList.contains('is-open') && (multiTouchActive || (Date.now() - lastMultiTouchTs < 700))) {
-        wheelEl.classList.remove('is-open');
-      }
-    }).observe(wheelEl, { attributes: true, attributeFilter: ['class'] });
-  }
-
-  function getMapInstance() {
-    if (window.azTacState && Array.isArray(window.azTacState.maps) && window.azTacState.maps[0]) return window.azTacState.maps[0];
-    if (window.azGeoMap && typeof window.azGeoMap.flyTo === 'function') return window.azGeoMap;
-    return null;
-  }
-
-  // 2. Monta a Barra Inferior (Configurações, Camadas, etc.) e atalho no Menu Hambúrguer
-  function mountBottomBarAndHamburgerCfg() {
-    let wrap = document.getElementById('azNativeMapBarWrap');
-    if (!wrap) {
-      wrap = document.createElement('div');
-      wrap.id = 'azNativeMapBarWrap';
-      document.body.appendChild(wrap);
-    }
-
-    ['azGeoCfgToggleBtn', 'azGeoLayersToggleBtn', 'azGeoAddPinBtn', 'azGeoClearBtn', 'azGeoMunToggleBtn'].forEach(function (id) {
-      const btn = document.getElementById(id);
-      if (btn && btn.parentElement !== wrap) wrap.appendChild(btn);
-    });
-    if (wrap.children.length > 0) wrap.classList.add('has-items');
-
-    // Retira as gavetas de dentro do container com overflow:hidden para não serem cortadas
-    ['azGeoCfgBox', 'azGeoLayersBox', 'azGeoMunBox', 'azGeoPinForm'].forEach(function (boxId) {
-      const box = document.getElementById(boxId);
-      if (box && box.parentElement !== document.body) document.body.appendChild(box);
-    });
-
-    // Atalho "Config. Mapa" também dentro do Menu Hambúrguer
-    const grid3x3 = document.querySelector('#azAtakRightDock .az-atak-grid-3x3');
-    if (grid3x3 && !document.getElementById('azDockOpenMapCfgTile')) {
-      const tile = document.createElement('button');
-      tile.type = 'button';
-      tile.id = 'azDockOpenMapCfgTile';
-      tile.className = 'az-grid-tile';
-      tile.innerHTML = `<svg viewBox="0 0 24 24"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>Config. Mapa`;
-      tile.addEventListener('click', function () {
-        document.getElementById('azAtakRightDock')?.classList.remove('is-open');
-        document.getElementById('azAtakHamburgerBtn')?.classList.remove('is-active');
-        if (window.azTacState) window.azTacState.dockOpen = false;
-        document.getElementById('azGeoCfgToggleBtn')?.click();
-      });
-      grid3x3.appendChild(tile);
-    }
-  }
-
-  // 3. Botão Azul de Centralizar GPS fora do overflow:hidden
-  function setupBlueCenterButton() {
-    const centerFab = document.getElementById('azGeoCenterFab');
-    if (!centerFab) return;
-    if (centerFab.parentElement !== document.body) document.body.appendChild(centerFab);
-    if (centerFab.dataset.azUnifiedBound === '1') return;
-    centerFab.dataset.azUnifiedBound = '1';
-
-    centerFab.addEventListener('click', function (e) {
-      e.preventDefault();
-      e.stopPropagation();
-      if (navigator.vibrate) navigator.vibrate(25);
-      document.getElementById('azOrbeRecenterBtn')?.click();
-
-      const m = getMapInstance();
-      const pos = window.azTacState && window.azTacState.myPos;
-      if (m && pos && typeof m.flyTo === 'function') {
-        m.stop();
-        m.flyTo({ center: [pos.lng, pos.lat], zoom: Math.max(m.getZoom ? m.getZoom() : 17, 17), speed: 1.8, essential: true });
-        return;
-      }
-      if ('geolocation' in navigator) {
-        navigator.geolocation.getCurrentPosition(function (p) {
-          if (window.azTacState) window.azTacState.myPos = { lat: p.coords.latitude, lng: p.coords.longitude };
-          const mapNow = getMapInstance();
-          if (mapNow && typeof mapNow.flyTo === 'function') {
-            mapNow.stop();
-            mapNow.flyTo({ center: [p.coords.longitude, p.coords.latitude], zoom: 17, speed: 1.8, essential: true });
-          }
-        }, null, { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 });
-      }
-    }, true);
-  }
-
-  function applyDefaultLightThemeOnce() {
-    if (localStorage.getItem('az_geo_map_theme')) return;
-    document.querySelector('#azGeoMapThemes button[data-theme="light"]')?.click();
-  }<!-- [AZ-PARTE-3-GRUPO] -->
-  const OPERATOR_COLORS = [
-    { id: 'azul', name: 'AZUL', hex: '#3B82F6' },
-    { id: 'verde', name: 'VERDE', hex: '#22C55E' },
-    { id: 'laranja', name: 'LARANJA', hex: '#F97316' },
-    { id: 'ciano', name: 'CIANO', hex: '#06B6D4' },
-    { id: 'roxo', name: 'ROXO', hex: '#A855F7' },
-    { id: 'amarelo', name: 'AMARELO', hex: '#EAB308' },
-    { id: 'safira', name: 'SAFIRA', hex: '#6366F1' },
-    { id: 'branco', name: 'BRANCO', hex: '#F8FAFC' }
-  ];
-
-  function resolveColorHex(idOrHex) {
-    if (!idOrHex) return '#3B82F6';
-    if (String(idOrHex).startsWith('#')) return idOrHex;
-    const f = OPERATOR_COLORS.find(function (c) { return c.id === idOrHex; });
-    return f ? f.hex : '#3B82F6';
-  }
-
-  function getMyOperatorIdentity() {
-    const tac = window.azTacState || {};
-    const qraInp = document.getElementById('azMyQraInput');
-    const rawQra = (tac.myQra || (qraInp && qraInp.value) || localStorage.getItem('az_tac_my_qra') || '').trim().toUpperCase();
-    const qra = (rawQra && rawQra !== 'BEPE') ? rawQra : 'OPERADOR';
-    const colorId = tac.myColorId || localStorage.getItem('az_tac_my_color') || 'azul';
-    const room = (tac.roomCode || (document.getElementById('azRoomCodeInput') && document.getElementById('azRoomCodeInput').value) || localStorage.getItem('az_tac_room') || '').trim().toUpperCase();
-    const uid = tac.myId || localStorage.getItem('az_tac_uid') || 'u_local';
-    return { qra: qra, colorId: colorId, colorHex: resolveColorHex(colorId), room: room, uid: uid };
-  }
-
-  function renderOperatorColorPickers() {
-    const tac = window.azTacState || {};
-    const myColor = tac.myColorId || localStorage.getItem('az_tac_my_color') || 'azul';
-    const taken = new Set(Object.values(tac.teammates || {}).filter(function (m) { return m && m.uid !== tac.myId; }).map(function (m) { return m.colorId; }));
-
-    document.querySelectorAll('.az-dynamic-color-row').forEach(function (row) {
-      row.innerHTML = OPERATOR_COLORS.map(function (c) {
-        return `<button type="button" class="az-op-color-dot ${c.id === myColor ? 'is-selected' : ''} ${taken.has(c.id) ? 'is-taken' : ''}" data-pick-color="${c.id}" title="${c.name}" style="background:${c.hex};"></button>`;
-      }).join('');
-      row.querySelectorAll('[data-pick-color]').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          const cid = btn.getAttribute('data-pick-color');
-          if (taken.has(cid)) return;
-          if (window.azTacState) window.azTacState.myColorId = cid;
-          localStorage.setItem('az_tac_my_color', cid);
-          renderOperatorColorPickers();
-        });
-      });
-    });
-  }
-
-  function injectDockColorSelector() {
-    const netStatusEl = document.getElementById('azLiveNetStatus');
-    if (!netStatusEl || document.getElementById('azDockColorPickerRow')) return;
-    const row = document.createElement('div');
-    row.id = 'azDockColorPickerRow';
-    row.className = 'az-color-picker-row az-dynamic-color-row';
-    netStatusEl.parentElement.insertBefore(row, netStatusEl);
-    renderOperatorColorPickers();
-  }
-
-  function xorLocal(s, k) {
-    if (!k) return s;
-    let o = '';
-    for (let i = 0; i < s.length; i++) o += String.fromCharCode(s.charCodeAt(i) ^ k.charCodeAt(i % k.length));
-    return o;
-  }
-  function encodePkt(obj, k) { return btoa(xorLocal(unescape(encodeURIComponent(JSON.stringify(obj))), k || 'AZIMUTE')); }
-  function decodePkt(b64, k) { try { return JSON.parse(decodeURIComponent(escape(xorLocal(atob(b64), k || 'AZIMUTE')))); } catch (e) { return null; } }
-  function hashRoom(room) {
-    let h = 2166136261, s = 'AZIMUTE_PMMG_' + String(room || '').toUpperCase().trim();
-    for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
-    return (h >>> 0).toString(16);
-  }
-  function encStr(str) { const e = new TextEncoder().encode(str); return [e.length >> 8, e.length & 0xff, ...e]; }
-  function encLen(len) { const o = []; do { let b = len % 128; len = Math.floor(len / 128); if (len > 0) b |= 128; o.push(b); } while (len > 0); return o; }
-
-  let hubUnreadCount = 0;
-  let hubMediaRec = null;
-  let hubMediaStream = null;
-  let hubRecordingAudio = false;
-
-  function appendMessageToHub(opts) {
-    ensureHubEquipeDrawer();
-    const feed = document.getElementById('azHubChatFeed');
-    if (!feed) return;
-    const timeStr = new Date(opts.ts || Date.now()).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-    const sender = String(opts.senderQra || 'OPERADOR').toUpperCase().replace(/</g, '&lt;');
-    const col = resolveColorHex(opts.colorId);
-
-    const el = document.createElement('div');
-    el.style.cssText = `background:#161616; border:1.5px solid ${col}; border-radius:12px; padding:8px 12px; align-self:${opts.isSelf ? 'flex-end' : 'flex-start'}; max-width:86%;`;
-    let media = '';
-    if (opts.imageData) media += `<img src="${opts.imageData}" style="max-width:100%; max-height:210px; border-radius:8px; margin-top:4px; display:block;" />`;
-    if (opts.audioData) media += `<audio controls preload="metadata" src="${opts.audioData}" style="width:210px; max-width:100%; height:34px; margin-top:4px; display:block;"></audio>`;
-    if (opts.text) media += `<div style="margin-top:${media ? '6px' : '0'}; word-break:break-word;">${String(opts.text).replace(/</g, '&lt;')}</div>`;
-
-    el.innerHTML = `<div style="display:flex; align-items:center; gap:6px; font-size:10px; font-weight:800; margin-bottom:3px; color:${col};"><span style="width:8px; height:8px; border-radius:50%; background:${col}; display:inline-block;"></span><span>${opts.isSelf ? `VOCÊ (${sender})` : sender} • ${timeStr}</span></div>${media}`;
-    feed.appendChild(el);
-    feed.scrollTop = feed.scrollHeight;
-
-    const modal = document.getElementById('azHubEquipeModal');
-    if (!opts.isSelf && (!modal || modal.style.display === 'none')) {
-      hubUnreadCount += 1;
-      if (typeof window.atualizarBadgeHub === 'function') window.atualizarBadgeHub(hubUnreadCount);
-    }
-  }
-
-  function sendToGroupRoom(payload) {
-    const me = getMyOperatorIdentity();
-    const ts = Date.now();
-    appendMessageToHub({ senderQra: me.qra, colorId: me.colorId, text: payload.text || '', imageData: payload.imageData || '', audioData: payload.audioData || '', isSelf: true, ts: ts });
-    if (navigator.vibrate) navigator.vibrate(12);
-    if (!me.room) return;
-
-    const pkt = { kind: payload.kind || 'msg', text: payload.text || '', imageData: payload.imageData || '', audioData: payload.audioData || '', uid: me.uid, qra: me.qra, colorId: me.colorId, ts: ts };
-    const encoded = encodePkt(pkt, me.room);
-    const tac = window.azTacState || {};
-    if (tac.bc) { try { tac.bc.postMessage({ room: me.room, data: encoded }); } catch (e) {} }
-    if (tac.ws && tac.ws.readyState === 1) {
-      try {
-        const topic = 'azimute/pmmg/turno/' + hashRoom(me.room);
-        const body = [...encStr(topic), ...new TextEncoder().encode(encoded)];
-        tac.ws.send(new Uint8Array([0x30, ...encLen(body.length), ...body]));
-      } catch (e) {}
-    }
-  }
-
-  const seenChatIds = new Set();
-  function onRemoteChat(pkt) {
-    if (!pkt || (pkt.kind !== 'msg' && pkt.kind !== 'chat_photo' && pkt.kind !== 'chat_audio')) return;
-    const me = getMyOperatorIdentity();
-    if (pkt.uid && pkt.uid === me.uid) return;
-    const key = `${pkt.uid}_${pkt.ts}_${pkt.kind}`;
-    if (seenChatIds.has(key)) return;
-    seenChatIds.add(key);
-    const tac = window.azTacState || {};
-    const cId = pkt.colorId || (tac.teammates && tac.teammates[pkt.uid] && tac.teammates[pkt.uid].colorId) || 'ciano';
-    appendMessageToHub({ senderQra: pkt.qra || 'OPERADOR', colorId: cId, text: pkt.text || '', imageData: pkt.imageData || '', audioData: pkt.audioData || '', isSelf: false, ts: pkt.ts });
-  }
-
-  if ('BroadcastChannel' in window) {
-    new BroadcastChannel('azimute_tac_sync').onmessage = function (ev) {
-      const me = getMyOperatorIdentity();
-      if (ev.data && me.room && ev.data.room === me.room && ev.data.data) onRemoteChat(decodePkt(ev.data.data, me.room));
-    };
-  }
-
-  setInterval(function () {
-    const tac = window.azTacState;
-    if (!tac || !tac.ws || tac.ws._azHubHooked) return;
-    tac.ws._azHubHooked = true;
-    const orig = tac.ws.onmessage;
-    tac.ws.onmessage = function (ev) {
-      try {
-        const buf = new Uint8Array(ev.data);
-        if (buf.length >= 4 && (buf[0] & 0xf0) === 0x30) {
-          let idx = 1; while (idx < buf.length && (buf[idx] & 0x80)) idx++; idx++;
-          const tLen = (buf[idx] << 8) | buf[idx + 1];
-          const topic = new TextDecoder().decode(buf.slice(idx + 2, idx + 2 + tLen));
-          idx += 2 + tLen + ((buf[0] & 0x06) > 0 ? 2 : 0);
-          if (idx < buf.length && topic.indexOf('/pcm/') === -1) {
-            onRemoteChat(decodePkt(new TextDecoder().decode(buf.slice(idx)), getMyOperatorIdentity().room));
-          }
-        }
-      } catch (e) {}
-      if (typeof orig === 'function') orig.call(this, ev);
-    };
-  }, 800);
-
-  function compressAndSendPhoto(file) {
-    const reader = new FileReader();
-    reader.onload = function (ev) {
-      const img = new Image();
-      img.onload = function () {
-        const sc = Math.min(1, 460 / Math.max(img.width, img.height));
-        const cv = document.createElement('canvas');
-        cv.width = Math.round(img.width * sc);
-        cv.height = Math.round(img.height * sc);
-        cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
-        const inp = document.getElementById('azHubChatInput');
-        const cap = inp ? inp.value.trim() : '';
-        if (inp) inp.value = '';
-        sendToGroupRoom({ kind: 'chat_photo', imageData: cv.toDataURL('image/jpeg', 0.55), text: cap });
-      };
-      img.src = ev.target.result;
-    };
-    reader.readAsDataURL(file);
-  }
-
-  async function toggleHubVoiceRec() {
-    const micBtn = document.getElementById('azHubMicBtn');
-    if (hubRecordingAudio) {
-      hubRecordingAudio = false;
-      if (micBtn) micBtn.classList.remove('is-rec');
-      if (hubMediaRec && hubMediaRec.state !== 'inactive') { try { hubMediaRec.stop(); } catch (e) {} }
-      return;
-    }
-    try {
-      hubMediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mime = MediaRecorder.isTypeSupported('audio/webm;codecs=opus') ? 'audio/webm;codecs=opus' : '';
-      hubMediaRec = mime ? new MediaRecorder(hubMediaStream, { mimeType: mime, audioBitsPerSecond: 16000 }) : new MediaRecorder(hubMediaStream);
-      const chunks = [];
-      hubMediaRec.ondataavailable = function (e) { if (e.data && e.data.size > 0) chunks.push(e.data); };
-      hubMediaRec.onstop = function () {
-        if (hubMediaStream) { try { hubMediaStream.getTracks().forEach(function (t) { t.stop(); }); } catch (e) {} hubMediaStream = null; }
-        const blob = new Blob(chunks, { type: hubMediaRec.mimeType || 'audio/webm' });
-        if (blob.size > 150) {
-          const r = new FileReader();
-          r.onloadend = function () { sendToGroupRoom({ kind: 'chat_audio', audioData: String(r.result || '') }); };
-          r.readAsDataURL(blob);
-        }
-      };
-      hubRecordingAudio = true;
-      if (micBtn) micBtn.classList.add('is-rec');
-      hubMediaRec.start();
-      setTimeout(function () { if (hubRecordingAudio) toggleHubVoiceRec(); }, 20000);
-    } catch (e) { hubRecordingAudio = false; }
-  }
-
-  function ensureHubEquipeDrawer() {
-    const me = getMyOperatorIdentity();
-    const roomLabel = me.room ? `SALA ${me.room} • ${me.qra}` : `${me.qra} (OFFLINE)`;
-    let modal = document.getElementById('azHubEquipeModal');
-    if (modal) {
-      const t = document.getElementById('azHubEquipeHeaderTitle');
-      if (t) t.textContent = `HUB DA EQUIPE • ${roomLabel}`;
-      renderOperatorColorPickers();
-      return;
-    }
-
-    modal = document.createElement('div');
-    modal.id = 'azHubEquipeModal';
-    modal.style.cssText = 'display:none; position:fixed; inset:0; z-index:100095; background:rgba(0,0,0,0.82); backdrop-filter:blur(4px); align-items:flex-end; justify-content:center;';
-    modal.innerHTML = `
-      <div style="width:100%; max-width:520px; height:80vh; background:#0D0D0D; border-top:1.5px solid #C5A869; border-radius:16px 16px 0 0; display:flex; flex-direction:column; overflow:hidden;">
-        <div style="display:flex; align-items:center; justify-content:space-between; padding:10px 14px; background:#161616; border-bottom:1px solid rgba(197,168,105,0.28);">
-          <strong id="azHubEquipeHeaderTitle" style="color:#C5A869; font-size:12px; text-transform:uppercase;">HUB DA EQUIPE • ${roomLabel}</strong>
-          <button type="button" id="azCloseHubEquipeBtn" style="background:#0D0D0D; border:1px solid rgba(197,168,105,0.4); color:#C5A869; border-radius:8px; padding:4px 10px; font-size:11px; font-weight:700;">FECHAR</button>
-        </div>
-        <div style="display:flex; align-items:center; justify-content:space-between; padding:6px 14px; background:#111111; border-bottom:1px solid rgba(197,168,105,0.18);">
-          <span style="font-size:10px; font-weight:800; color:#9E9A8F;">COR DO OPERADOR:</span>
-          <div class="az-color-picker-row az-dynamic-color-row"></div>
-        </div>
-        <div id="azHubChatFeed" style="flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:8px; font-size:13px; color:#E5E5E5;"></div>
-        <div class="az-hub-quick-row">
-          <button type="button" class="az-hub-quick-chip" data-hub-qmsg="APOIO">APOIO</button>
-          <button type="button" class="az-hub-quick-chip" data-hub-qmsg="NO VISUAL">NO VISUAL</button>
-          <button type="button" class="az-hub-quick-chip" data-hub-qmsg="CERCO">CERCO</button>
-          <button type="button" class="az-hub-quick-chip" data-hub-qmsg="ATENÇÃO">ATENÇÃO</button>
-          <button type="button" class="az-hub-quick-chip" data-hub-qmsg="QAP">QAP</button>
-          <button type="button" class="az-hub-quick-chip" data-hub-qmsg="SILÊNCIO">SILÊNCIO</button>
-        </div>
-        <form id="azHubChatForm" style="display:flex; align-items:center; gap:6px; padding:9px 10px; background:#161616; border-top:1px solid rgba(197,168,105,0.25);">
-          <button type="button" id="azHubPhotoBtn" class="az-hub-media-btn" title="Foto"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></button>
-          <button type="button" id="azHubMicBtn" class="az-hub-media-btn" title="Áudio"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button>
-          <input type="text" id="azHubChatInput" placeholder="Mensagem para a equipe..." autocomplete="off" style="flex:1; min-width:0; background:#0D0D0D; border:1px solid rgba(197,168,105,0.35); border-radius:10px; padding:9px 10px; color:#FFF; font-size:13px; outline:none;" />
-          <button type="submit" style="background:#C5A869; color:#0D0D0D; border:none; border-radius:10px; height:38px; padding:0 14px; font-weight:800; font-size:12px;">ENVIAR</button>
-        </form>
-      </div>
-    `;
-    document.body.appendChild(modal);
-    renderOperatorColorPickers();
-
-    document.getElementById('azCloseHubEquipeBtn').addEventListener('click', function () { modal.style.display = 'none'; });
-    modal.addEventListener('click', function (e) { if (e.target === modal) modal.style.display = 'none'; });
-    modal.querySelectorAll('[data-hub-qmsg]').forEach(function (c) {
-      c.addEventListener('click', function () { sendToGroupRoom({ kind: 'msg', text: c.getAttribute('data-hub-qmsg') }); });
-    });
-    document.getElementById('azHubPhotoBtn').addEventListener('click', function () { document.getElementById('azHubChatPhotoInput')?.click(); });
-    const pInp = document.getElementById('azHubChatPhotoInput');
-    if (pInp && !pInp.dataset.bound) {
-      pInp.dataset.bound = '1';
-      pInp.addEventListener('change', function () { if (this.files && this.files[0]) compressAndSendPhoto(this.files[0]); this.value = ''; });
-    }
-    document.getElementById('azHubMicBtn').addEventListener('click', toggleHubVoiceRec);
-    document.getElementById('azHubChatForm').addEventListener('submit', function (e) {
-      e.preventDefault();
-      const inp = document.getElementById('azHubChatInput');
-      const txt = (inp.value || '').trim();
-      if (!txt) return;
-      inp.value = '';
-      sendToGroupRoom({ kind: 'msg', text: txt });
-    });
-  }
-
-  window.abrirHubEquipe = function (e) {
-    if (e) { e.preventDefault(); e.stopPropagation(); }
-    ensureHubEquipeDrawer();
-    const modal = document.getElementById('azHubEquipeModal');
-    if (modal) modal.style.display = 'flex';
-    hubUnreadCount = 0;
-    if (typeof window.atualizarBadgeHub === 'function') window.atualizarBadgeHub(0);
-  };
-
-  const hubBtn = document.getElementById('btn-hub-equipe');
-  if (hubBtn) {
-    hubBtn.removeAttribute('onclick');
-    hubBtn.addEventListener('click', window.abrirHubEquipe);
-  }
-
-  injectDockColorSelector();
-  mountBottomBarAndHamburgerCfg();
-  setupBlueCenterButton();
-  setTimeout(function () {
-    injectDockColorSelector();
-    mountBottomBarAndHamburgerCfg();
-    setupBlueCenterButton();
-    applyDefaultLightThemeOnce();
-  }, 1200);
-})();
-</script></body>
+<!-- FIM BLOCO AZIMUTE TÁTICO --></body>
 </html>
         
