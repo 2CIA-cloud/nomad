@@ -473,6 +473,123 @@
             padding-bottom: 0.25rem !important;
             overflow: visible !important;
         }
+        /* =========================================================
+   AZIMUTE - POLIMENTO NATIVO SEGURO
+   ========================================================= */
+:root {
+  --az-bg: #0D0D0D;
+  --az-surface: #161616;
+  --az-gold: #C5A869;
+  --az-gold-dim: rgba(197, 168, 105, 0.22);
+  --az-border: rgba(197, 168, 105, 0.32);
+  --az-text: #F2F2F2;
+  --az-danger: #E53935;
+}
+
+/* 1. Bloqueia zoom duplo, seleção acidental e puxar-para-recarregar */
+html, body {
+  overscroll-behavior-y: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  background-color: var(--az-bg);
+}
+
+/* Permite digitar e selecionar texto apenas dentro de caixas de texto */
+input, textarea, [contenteditable="true"] {
+  user-select: text;
+  -webkit-user-select: text;
+  touch-action: auto;
+}
+
+/* 2. Números de GPS, altitude e ângulo não tremem ao mudar */
+.gps-coords, .telemetry-value, .qth-coords, .timer, [data-tabular] {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* 3. Efeito tátil imediato ao apertar qualquer botão */
+button:active, .btn:active, .tool-btn:active, .menu-item:active {
+  transform: scale(0.94);
+  opacity: 0.88;
+}
+
+/* 4. Barras de rolagem finas na cor caqui/dourado */
+::-webkit-scrollbar { width: 3px; height: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--az-gold-dim); border-radius: 3px; }
+
+/* 5. Garante que controles do mapa (2D, 3D, 90°, GPS Azul) fiquem sempre no topo */
+.map-controls, .map-buttons, #map-controls, .maplibregl-ctrl-top-right, .maplibregl-ctrl-bottom-right {
+  z-index: 1500 !important;
+  pointer-events: auto !important;
+}
+
+/* 6. Modo Limpo (quando acionar tela cheia no app instalado) */
+body.az-modo-limpo .top-bar,
+body.az-modo-limpo .telemetry-bar,
+body.az-modo-limpo footer {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* 7. Notificação Flutuante Tática (Toast) */
+#az-toast-container {
+  position: fixed;
+  top: calc(env(safe-area-inset-top, 12px) + 58px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: min(92vw, 360px);
+  pointer-events: none;
+}
+
+.az-toast {
+  background: rgba(22, 22, 22, 0.96);
+  border: 1px solid var(--az-border);
+  border-left: 3px solid var(--az-gold);
+  color: var(--az-text);
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.22s ease;
+}
+
+.az-toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 8. Badge vermelho de notificação do Hub da Equipe */
+.az-icon-wrap { position: relative; display: inline-flex; align-items: center; justify-content: center; }
+.az-badge {
+  position: absolute;
+  top: -4px;
+  right: -5px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--az-danger);
+  color: #FFF;
+  font-size: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid var(--az-bg);
+  pointer-events: none;
+}
+.az-badge.hidden { transform: scale(0); }
     </style>
 </head>
 <body class="bg-pmmg-black text-gray-200 font-sans min-h-screen pb-16 antialiased selection:bg-pmmg-khaki selection:text-pmmg-black mode-app">
@@ -24309,6 +24426,88 @@ if (document.readyState === "loading") {
   setInterval(monitorGps, 3500);
 })();
 </script>
-<!-- FIM BLOCO AZIMUTE TÁTICO --></body>
+<!-- FIM BLOCO AZIMUTE TÁTICO --><div id="az-toast-container"></div>
+
+<script>
+(function initAzimutePolimentoFinal() {
+  // 1. Vibração tátil curta em todos os botões
+  document.addEventListener('pointerdown', (e) => {
+    if (e.target.closest('button, .btn, .tool-btn, .menu-item, [role="button"]')) {
+      if (navigator.vibrate) navigator.vibrate(12);
+    }
+  }, { passive: true });
+
+  // 2. Bloqueia menu de segurar o dedo (copiar/colar) fora de caixas de texto
+  document.addEventListener('contextmenu', (e) => {
+    if (!e.target.closest('input, textarea, [contenteditable="true"]')) {
+      e.preventDefault();
+    }
+  });
+
+  // 3. Sistema de Notificação Flutuante (com filtro contra spam de "conexão ruim")
+  window.azToast = function(mensagem, duracao = 2500) {
+    if (!mensagem) return;
+    const textoLower = String(mensagem).toLowerCase();
+
+    // Silencia alertas repetitivos de oscilação de 4G/internet
+    if (
+      textoLower.includes('conexão') ||
+      textoLower.includes('conexao') ||
+      textoLower.includes('offline') ||
+      textoLower.includes('sinal de rede') ||
+      textoLower.includes('internet')
+    ) {
+      return;
+    }
+
+    const container = document.getElementById('az-toast-container');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    toast.className = 'az-toast';
+    toast.textContent = mensagem;
+    container.appendChild(toast);
+
+    requestAnimationFrame(() => toast.classList.add('show'));
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => toast.remove(), 220);
+    }, duracao);
+  };
+
+  // Substitui o alert() padrão do navegador pelo toast escuro
+  window.alert = function(msg) {
+    window.azToast(msg, 2800);
+  };
+
+  // 4. Tela Cheia Inteligente (sem tela preta de 1,5s e sem aviso "2cia..." no PWA)
+  window.alternarTelaCheiaAzimute = function() {
+    const modoAppInstalado = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+
+    if (modoAppInstalado) {
+      document.body.classList.toggle('az-modo-limpo');
+      return;
+    }
+
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    } else {
+      document.exitFullscreen().catch(() => {});
+    }
+  };
+
+  // 5. Função pronta para controlar o número vermelho do Hub da Equipe
+  window.atualizarBadgeHub = function(qtd) {
+    const badge = document.getElementById('hub-unread-badge');
+    if (!badge) return;
+    if (qtd > 0) {
+      badge.textContent = qtd > 99 ? '99+' : qtd;
+      badge.classList.remove('hidden');
+    } else {
+      badge.classList.add('hidden');
+    }
+  };
+})();
+</script></body>
 </html>
         
