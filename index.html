@@ -24752,12 +24752,254 @@ if (document.readyState === "loading") {
 
 <input type="file" id="azHubChatPhotoInput" accept="image/*" style="display:none;" />
 
+<!-- [AZ-PARTE-1-CSS] -->
+<style id="azimuteFinalPatchCss">
+  /* Oculta controles do mapa nas outras abas (Início, Unidades, APH, Drones) */
+  body:not(.az-map-fullscreen) #azGeoCenterFab,
+  body:not(.az-map-fullscreen) #azGeoTiltBadge,
+  body:not(.az-map-fullscreen) #azGeoNorthBadge,
+  body:not(.az-map-fullscreen) #azGeoLockBadge,
+  body:not(.az-map-fullscreen) #azNativeMapBarWrap {
+    display: none !important;
+  }
+
+  /* Botão Azul de Centralizar GPS (Exclusivo da tela do Mapa) */
+  body.az-map-fullscreen #azGeoCenterFab {
+    display: inline-flex !important;
+    position: fixed !important;
+    bottom: 88px !important;
+    right: 12px !important;
+    left: auto !important;
+    top: auto !important;
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 50% !important;
+    background: #2563EB !important;
+    border: 2px solid #93C5FD !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.8) !important;
+    z-index: 100072 !important;
+    pointer-events: auto !important;
+  }
+
+  /* Controles do canto superior direito do mapa */
+  body.az-map-fullscreen #azGeoNorthBadge {
+    display: flex !important;
+    position: fixed !important;
+    top: 52px !important;
+    right: 12px !important;
+    z-index: 100071 !important;
+  }
+  body.az-map-fullscreen #azGeoTiltBadge {
+    display: flex !important;
+    position: fixed !important;
+    top: 94px !important;
+    right: 12px !important;
+    z-index: 100071 !important;
+  }
+  body.az-map-fullscreen #azGeoLockBadge {
+    display: flex !important;
+    position: fixed !important;
+    top: 52px !important;
+    right: 54px !important;
+    z-index: 100071 !important;
+  }
+
+  /* Barra Superior do Mapa sempre clicável */
+  #azTopHudShell {
+    z-index: 100075 !important;
+  }
+  #btn-hub-equipe {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+  }
+
+  /* Barra Inferior com Configurações, Camadas, + Alfinete, Limpar e Municípios */
+  #azNativeMapBarWrap {
+    position: fixed !important;
+    bottom: 38px !important;
+    left: 10px !important;
+    right: 64px !important;
+    z-index: 100072 !important;
+    display: none;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    scrollbar-width: none !important;
+    gap: 6px;
+    padding: 2px 0;
+    background: transparent !important;
+    pointer-events: none;
+  }
+  #azNativeMapBarWrap::-webkit-scrollbar { display: none; }
+  body.az-map-fullscreen #azNativeMapBarWrap.has-items {
+    display: flex !important;
+  }
+  #azNativeMapBarWrap > button {
+    pointer-events: auto !important;
+    flex-shrink: 0 !important;
+    z-index: 100073 !important;
+    background: rgba(13, 13, 13, 0.95) !important;
+    color: #F2F0EA !important;
+    border: 1px solid rgba(197, 168, 105, 0.6) !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.92) !important;
+  }
+  #azNativeMapBarWrap > button.active {
+    background: #C5A869 !important;
+    color: #0D0D0D !important;
+    border-color: #C5A869 !important;
+  }
+
+  /* Gaveta de Configurações (Claro/Escuro/Satélite/Girar) acima do mapa */
+  body.az-map-fullscreen #azGeoCfgBox.is-open,
+  body.az-map-fullscreen #azGeoLayersBox.is-open,
+  body.az-map-fullscreen #azGeoMunBox.is-open,
+  body.az-map-fullscreen #azGeoPinForm.is-open {
+    display: flex !important;
+    flex-direction: column !important;
+    position: fixed !important;
+    bottom: 86px !important;
+    left: 10px !important;
+    right: 64px !important;
+    max-height: 58vh !important;
+    overflow-y: auto !important;
+    z-index: 100082 !important;
+    background: rgba(13, 13, 13, 0.98) !important;
+    border: 1.5px solid #C5A869 !important;
+    border-radius: 12px !important;
+    padding: 10px !important;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.96) !important;
+  }
+
+  /* Seletor de Cores e Chips do Hub da Equipe */
+  .az-color-picker-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; padding: 4px 0; }
+  .az-op-color-dot { width: 22px; height: 22px; border-radius: 50%; border: 2px solid #28271F; cursor: pointer; padding: 0; }
+  .az-op-color-dot.is-selected { border-color: #FFFFFF; transform: scale(1.16); }
+  .az-op-color-dot.is-taken { opacity: 0.25; cursor: not-allowed; }
+  .az-hub-quick-row { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding: 8px 12px; background: #121212; border-top: 1px solid rgba(197, 168, 105, 0.22); }
+  .az-hub-quick-row::-webkit-scrollbar { display: none; }
+  .az-hub-quick-chip { flex-shrink: 0; background: #161616; color: #C5A869; border: 1px solid rgba(197, 168, 105, 0.45); border-radius: 999px; padding: 5px 11px; font-size: 11px; font-weight: 800; cursor: pointer; }
+  .az-hub-media-btn { width: 38px; height: 38px; border-radius: 10px; background: #0D0D0D; border: 1px solid rgba(197, 168, 105, 0.45); color: #C5A869; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer; }
+  .az-hub-media-btn.is-rec { background: #DC2626 !important; border-color: #FCA5A5 !important; color: #FFFFFF !important; }
+</style>
+<input type="file" id="azHubChatPhotoInput" accept="image/*" style="display:none;" />
+    <!-- [AZ-PARTE-2-MAPA] -->
 <script>
 (function azimuteCorePatch() {
-  // 1. Remove qualquer resquício dos botões inventados
   const oldRestored = document.getElementById('azMapControlsRestored');
   if (oldRestored) oldRestored.remove();
 
+  // 1. Trava para 2 dedos (girar/zoom) não abrir a Roda de Opções
+  let multiTouchActive = false;
+  let lastMultiTouchTs = 0;
+
+  function blockWheelOnMultiTouch() {
+    multiTouchActive = true;
+    lastMultiTouchTs = Date.now();
+    const wheel = document.getElementById('azRadialWheel');
+    if (wheel) wheel.classList.remove('is-open');
+    const mapEl = document.getElementById('azGeoMap');
+    if (mapEl) {
+      try { mapEl.dispatchEvent(new PointerEvent('pointercancel', { bubbles: true, cancelable: true })); } catch (e) {}
+    }
+  }
+
+  document.addEventListener('touchstart', function (e) { if (e.touches && e.touches.length >= 2) blockWheelOnMultiTouch(); }, true);
+  document.addEventListener('touchmove', function (e) { if (e.touches && e.touches.length >= 2) blockWheelOnMultiTouch(); }, true);
+  document.addEventListener('touchend', function (e) { if (!e.touches || e.touches.length === 0) { multiTouchActive = false; lastMultiTouchTs = Date.now(); } }, true);
+  document.addEventListener('pointerdown', function (e) { if (e.isPrimary === false) blockWheelOnMultiTouch(); }, true);
+
+  const wheelEl = document.getElementById('azRadialWheel');
+  if (wheelEl && typeof MutationObserver !== 'undefined') {
+    new MutationObserver(function () {
+      if (wheelEl.classList.contains('is-open') && (multiTouchActive || (Date.now() - lastMultiTouchTs < 700))) {
+        wheelEl.classList.remove('is-open');
+      }
+    }).observe(wheelEl, { attributes: true, attributeFilter: ['class'] });
+  }
+
+  function getMapInstance() {
+    if (window.azTacState && Array.isArray(window.azTacState.maps) && window.azTacState.maps[0]) return window.azTacState.maps[0];
+    if (window.azGeoMap && typeof window.azGeoMap.flyTo === 'function') return window.azGeoMap;
+    return null;
+  }
+
+  // 2. Monta a Barra Inferior (Configurações, Camadas, etc.) e atalho no Menu Hambúrguer
+  function mountBottomBarAndHamburgerCfg() {
+    let wrap = document.getElementById('azNativeMapBarWrap');
+    if (!wrap) {
+      wrap = document.createElement('div');
+      wrap.id = 'azNativeMapBarWrap';
+      document.body.appendChild(wrap);
+    }
+
+    ['azGeoCfgToggleBtn', 'azGeoLayersToggleBtn', 'azGeoAddPinBtn', 'azGeoClearBtn', 'azGeoMunToggleBtn'].forEach(function (id) {
+      const btn = document.getElementById(id);
+      if (btn && btn.parentElement !== wrap) wrap.appendChild(btn);
+    });
+    if (wrap.children.length > 0) wrap.classList.add('has-items');
+
+    // Retira as gavetas de dentro do container com overflow:hidden para não serem cortadas
+    ['azGeoCfgBox', 'azGeoLayersBox', 'azGeoMunBox', 'azGeoPinForm'].forEach(function (boxId) {
+      const box = document.getElementById(boxId);
+      if (box && box.parentElement !== document.body) document.body.appendChild(box);
+    });
+
+    // Atalho "Config. Mapa" também dentro do Menu Hambúrguer
+    const grid3x3 = document.querySelector('#azAtakRightDock .az-atak-grid-3x3');
+    if (grid3x3 && !document.getElementById('azDockOpenMapCfgTile')) {
+      const tile = document.createElement('button');
+      tile.type = 'button';
+      tile.id = 'azDockOpenMapCfgTile';
+      tile.className = 'az-grid-tile';
+      tile.innerHTML = `<svg viewBox="0 0 24 24"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>Config. Mapa`;
+      tile.addEventListener('click', function () {
+        document.getElementById('azAtakRightDock')?.classList.remove('is-open');
+        document.getElementById('azAtakHamburgerBtn')?.classList.remove('is-active');
+        if (window.azTacState) window.azTacState.dockOpen = false;
+        document.getElementById('azGeoCfgToggleBtn')?.click();
+      });
+      grid3x3.appendChild(tile);
+    }
+  }
+
+  // 3. Botão Azul de Centralizar GPS fora do overflow:hidden
+  function setupBlueCenterButton() {
+    const centerFab = document.getElementById('azGeoCenterFab');
+    if (!centerFab) return;
+    if (centerFab.parentElement !== document.body) document.body.appendChild(centerFab);
+    if (centerFab.dataset.azUnifiedBound === '1') return;
+    centerFab.dataset.azUnifiedBound = '1';
+
+    centerFab.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (navigator.vibrate) navigator.vibrate(25);
+      document.getElementById('azOrbeRecenterBtn')?.click();
+
+      const m = getMapInstance();
+      const pos = window.azTacState && window.azTacState.myPos;
+      if (m && pos && typeof m.flyTo === 'function') {
+        m.stop();
+        m.flyTo({ center: [pos.lng, pos.lat], zoom: Math.max(m.getZoom ? m.getZoom() : 17, 17), speed: 1.8, essential: true });
+        return;
+      }
+      if ('geolocation' in navigator) {
+        navigator.geolocation.getCurrentPosition(function (p) {
+          if (window.azTacState) window.azTacState.myPos = { lat: p.coords.latitude, lng: p.coords.longitude };
+          const mapNow = getMapInstance();
+          if (mapNow && typeof mapNow.flyTo === 'function') {
+            mapNow.stop();
+            mapNow.flyTo({ center: [p.coords.longitude, p.coords.latitude], zoom: 17, speed: 1.8, essential: true });
+          }
+        }, null, { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 });
+      }
+    }, true);
+  }
+
+  function applyDefaultLightThemeOnce() {
+    if (localStorage.getItem('az_geo_map_theme')) return;
+    document.querySelector('#azGeoMapThemes button[data-theme="light"]')?.click();
+  }<!-- [AZ-PARTE-3-GRUPO] -->
   const OPERATOR_COLORS = [
     { id: 'azul', name: 'AZUL', hex: '#3B82F6' },
     { id: 'verde', name: 'VERDE', hex: '#22C55E' },
@@ -24769,70 +25011,45 @@ if (document.readyState === "loading") {
     { id: 'branco', name: 'BRANCO', hex: '#F8FAFC' }
   ];
 
-  function resolveColorHex(colorIdOrHex) {
-    if (!colorIdOrHex) return '#3B82F6';
-    if (String(colorIdOrHex).startsWith('#')) return colorIdOrHex;
-    const found = OPERATOR_COLORS.find(function (c) { return c.id === colorIdOrHex; });
-    return found ? found.hex : '#3B82F6';
+  function resolveColorHex(idOrHex) {
+    if (!idOrHex) return '#3B82F6';
+    if (String(idOrHex).startsWith('#')) return idOrHex;
+    const f = OPERATOR_COLORS.find(function (c) { return c.id === idOrHex; });
+    return f ? f.hex : '#3B82F6';
   }
 
-  // Retorna sempre o QRA e a Cor escolhidos ao entrar na equipe (nunca o login BEPE)
   function getMyOperatorIdentity() {
     const tac = window.azTacState || {};
-    const qraInput = document.getElementById('azMyQraInput');
-    const rawQra = (tac.myQra || (qraInput && qraInput.value) || localStorage.getItem('az_tac_my_qra') || '').trim().toUpperCase();
+    const qraInp = document.getElementById('azMyQraInput');
+    const rawQra = (tac.myQra || (qraInp && qraInp.value) || localStorage.getItem('az_tac_my_qra') || '').trim().toUpperCase();
     const qra = (rawQra && rawQra !== 'BEPE') ? rawQra : 'OPERADOR';
     const colorId = tac.myColorId || localStorage.getItem('az_tac_my_color') || 'azul';
-    const colorHex = resolveColorHex(colorId);
     const room = (tac.roomCode || (document.getElementById('azRoomCodeInput') && document.getElementById('azRoomCodeInput').value) || localStorage.getItem('az_tac_room') || '').trim().toUpperCase();
     const uid = tac.myId || localStorage.getItem('az_tac_uid') || 'u_local';
-    return { qra: qra, colorId: colorId, colorHex: colorHex, room: room, uid: uid };
-  }
-
-  function setMyOperatorColor(colorId) {
-    const tac = window.azTacState;
-    if (tac) {
-      const takenByMate = Object.values(tac.teammates || {}).some(function (m) {
-        return m && m.uid !== tac.myId && m.colorId === colorId;
-      });
-      if (takenByMate) {
-        if (typeof window.azToast === 'function') window.azToast('Cor já em uso por outro operador da equipe.');
-        return;
-      }
-      tac.myColorId = colorId;
-    }
-    localStorage.setItem('az_tac_my_color', colorId);
-    renderOperatorColorPickers();
-    if (tac && tac.roomCode && tac.myPos && tac.ws && tac.ws.readyState === 1) {
-      document.getElementById('azConnectNetBtn')?.click();
-    }
+    return { qra: qra, colorId: colorId, colorHex: resolveColorHex(colorId), room: room, uid: uid };
   }
 
   function renderOperatorColorPickers() {
     const tac = window.azTacState || {};
     const myColor = tac.myColorId || localStorage.getItem('az_tac_my_color') || 'azul';
-    const takenSet = new Set(
-      Object.values(tac.teammates || {})
-        .filter(function (m) { return m && m.uid !== tac.myId; })
-        .map(function (m) { return m.colorId; })
-    );
+    const taken = new Set(Object.values(tac.teammates || {}).filter(function (m) { return m && m.uid !== tac.myId; }).map(function (m) { return m.colorId; }));
 
     document.querySelectorAll('.az-dynamic-color-row').forEach(function (row) {
       row.innerHTML = OPERATOR_COLORS.map(function (c) {
-        const isSel = c.id === myColor;
-        const isTaken = takenSet.has(c.id);
-        return `<button type="button" class="az-op-color-dot ${isSel ? 'is-selected' : ''} ${isTaken ? 'is-taken' : ''}" data-pick-color="${c.id}" title="${c.name}" style="background:${c.hex};"></button>`;
+        return `<button type="button" class="az-op-color-dot ${c.id === myColor ? 'is-selected' : ''} ${taken.has(c.id) ? 'is-taken' : ''}" data-pick-color="${c.id}" title="${c.name}" style="background:${c.hex};"></button>`;
       }).join('');
-
       row.querySelectorAll('[data-pick-color]').forEach(function (btn) {
         btn.addEventListener('click', function () {
-          setMyOperatorColor(btn.getAttribute('data-pick-color'));
+          const cid = btn.getAttribute('data-pick-color');
+          if (taken.has(cid)) return;
+          if (window.azTacState) window.azTacState.myColorId = cid;
+          localStorage.setItem('az_tac_my_color', cid);
+          renderOperatorColorPickers();
         });
       });
     });
   }
 
-  // Injeta seletor de cores na gaveta TURNO & EQUIPE (Menu Hambúrguer)
   function injectDockColorSelector() {
     const netStatusEl = document.getElementById('azLiveNetStatus');
     if (!netStatusEl || document.getElementById('azDockColorPickerRow')) return;
@@ -24843,362 +25060,90 @@ if (document.readyState === "loading") {
     renderOperatorColorPickers();
   }
 
-  // 2. Bloqueia a Roda de Opções quando o usuário usa 2 dedos para girar/dar zoom no mapa
-  let multiTouchActive = false;
-  let lastMultiTouchTs = 0;
-
-  function cancelRadialWheelForTwoFingers() {
-    multiTouchActive = true;
-    lastMultiTouchTs = Date.now();
-    const wheel = document.getElementById('azRadialWheel');
-    if (wheel) wheel.classList.remove('is-open');
-
-    const mapEl = document.getElementById('azGeoMap');
-    if (mapEl) {
-      try {
-        mapEl.dispatchEvent(new PointerEvent('pointercancel', { bubbles: true, cancelable: true }));
-      } catch (e) {}
-    }
+  function xorLocal(s, k) {
+    if (!k) return s;
+    let o = '';
+    for (let i = 0; i < s.length; i++) o += String.fromCharCode(s.charCodeAt(i) ^ k.charCodeAt(i % k.length));
+    return o;
   }
-
-  document.addEventListener('touchstart', function (e) {
-    if (e.touches && e.touches.length >= 2) cancelRadialWheelForTwoFingers();
-  }, true);
-
-  document.addEventListener('touchmove', function (e) {
-    if (e.touches && e.touches.length >= 2) cancelRadialWheelForTwoFingers();
-  }, true);
-
-  document.addEventListener('touchend', function (e) {
-    if (!e.touches || e.touches.length === 0) {
-      multiTouchActive = false;
-      lastMultiTouchTs = Date.now();
-    }
-  }, true);
-
-  document.addEventListener('pointerdown', function (e) {
-    if (e.isPrimary === false) cancelRadialWheelForTwoFingers();
-  }, true);
-
-  const wheelEl = document.getElementById('azRadialWheel');
-  if (wheelEl && typeof MutationObserver !== 'undefined') {
-    const wheelGuard = new MutationObserver(function () {
-      if (wheelEl.classList.contains('is-open') && (multiTouchActive || (Date.now() - lastMultiTouchTs < 700))) {
-        wheelEl.classList.remove('is-open');
-      }
-    });
-    wheelGuard.observe(wheelEl, { attributes: true, attributeFilter: ['class'] });
+  function encodePkt(obj, k) { return btoa(xorLocal(unescape(encodeURIComponent(JSON.stringify(obj))), k || 'AZIMUTE')); }
+  function decodePkt(b64, k) { try { return JSON.parse(decodeURIComponent(escape(xorLocal(atob(b64), k || 'AZIMUTE')))); } catch (e) { return null; } }
+  function hashRoom(room) {
+    let h = 2166136261, s = 'AZIMUTE_PMMG_' + String(room || '').toUpperCase().trim();
+    for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+    return (h >>> 0).toString(16);
   }
+  function encStr(str) { const e = new TextEncoder().encode(str); return [e.length >> 8, e.length & 0xff, ...e]; }
+  function encLen(len) { const o = []; do { let b = len % 128; len = Math.floor(len / 128); if (len > 0) b |= 128; o.push(b); } while (len > 0); return o; }
 
-  // 3. Localiza a instância real do mapa (MapLibre)
-  function getMapInstance() {
-    if (window.azTacState && Array.isArray(window.azTacState.maps) && window.azTacState.maps[0]) {
-      return window.azTacState.maps[0];
-    }
-    if (window.azGeoMap && typeof window.azGeoMap.flyTo === 'function') {
-      return window.azGeoMap;
-    }
-    return null;
-  }
-
-  // 4. Restaura a Barra Inferior de Configurações abaixo do mapa + Atalho no Menu Hambúrguer
-  function mountOriginalBottomBarAndHamburgerCfg() {
-    let wrap = document.getElementById('azNativeMapBarWrap');
-    if (!wrap) {
-      wrap = document.createElement('div');
-      wrap.id = 'azNativeMapBarWrap';
-      document.body.appendChild(wrap);
-    }
-
-    // Coloca Configurações em primeiro na barra inferior para acesso imediato
-    const actionIds = [
-      'azGeoCfgToggleBtn',
-      'azGeoLayersToggleBtn',
-      'azGeoAddPinBtn',
-      'azGeoClearBtn',
-      'azGeoMunToggleBtn'
-    ];
-
-    actionIds.forEach(function (id) {
-      const btn = document.getElementById(id);
-      if (btn && btn.parentElement !== wrap) {
-        wrap.appendChild(btn);
-      }
-    });
-
-    if (wrap.children.length > 0) {
-      wrap.classList.add('has-items');
-    }
-
-    // Adiciona também o botão "Config. Mapa" dentro da grade 3x3 do Menu Hambúrguer
-    const grid3x3 = document.querySelector('#azAtakRightDock .az-atak-grid-3x3');
-    if (grid3x3 && !document.getElementById('azDockOpenMapCfgTile')) {
-      const tile = document.createElement('button');
-      tile.type = 'button';
-      tile.id = 'azDockOpenMapCfgTile';
-      tile.className = 'az-grid-tile';
-      tile.innerHTML = `
-        <svg viewBox="0 0 24 24"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
-        Config. Mapa
-      `;
-      tile.addEventListener('click', function () {
-        const dock = document.getElementById('azAtakRightDock');
-        const hBtn = document.getElementById('azAtakHamburgerBtn');
-        if (dock) dock.classList.remove('is-open');
-        if (hBtn) hBtn.classList.remove('is-active');
-        if (window.azTacState) window.azTacState.dockOpen = false;
-
-        const cfgBtn = document.getElementById('azGeoCfgToggleBtn');
-        if (cfgBtn) cfgBtn.click();
-      });
-      grid3x3.appendChild(tile);
-    }
-  }
-
-  // 5. Botão Azul de Centralizar GPS
-  function setupBlueCenterButton() {
-    const centerFab = document.getElementById('azGeoCenterFab');
-    if (!centerFab) return;
-
-    if (centerFab.parentElement !== document.body) {
-      document.body.appendChild(centerFab);
-    }
-
-    if (centerFab.dataset.azUnifiedBound === '1') return;
-    centerFab.dataset.azUnifiedBound = '1';
-
-    centerFab.addEventListener('click', function (e) {
-      e.preventDefault();
-      e.stopPropagation();
-      if (navigator.vibrate) navigator.vibrate(25);
-
-      const pulsoBtn = document.getElementById('azOrbeRecenterBtn');
-      if (pulsoBtn) pulsoBtn.click();
-
-      const m = getMapInstance();
-      const pos = window.azTacState && window.azTacState.myPos;
-
-      if (m && pos && typeof m.flyTo === 'function') {
-        m.stop();
-        m.flyTo({
-          center: [pos.lng, pos.lat],
-          zoom: Math.max(m.getZoom ? m.getZoom() : 17, 17),
-          speed: 1.8,
-          essential: true
-        });
-        return;
-      }
-
-      if ('geolocation' in navigator) {
-        navigator.geolocation.getCurrentPosition(
-          function (p) {
-            const lat = p.coords.latitude;
-            const lng = p.coords.longitude;
-            if (window.azTacState) window.azTacState.myPos = { lat: lat, lng: lng };
-            const mapNow = getMapInstance();
-            if (mapNow && typeof mapNow.flyTo === 'function') {
-              mapNow.stop();
-              mapNow.flyTo({ center: [lng, lat], zoom: 17, speed: 1.8, essential: true });
-            }
-          },
-          null,
-          { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 }
-        );
-      }
-    }, true);
-  }
-
-  // 6. Restaura o Mapa Claro como padrão na abertura
-  function applyDefaultLightThemeOnce() {
-    if (localStorage.getItem('az_geo_map_theme')) return;
-    const lightBtn = document.querySelector('#azGeoMapThemes button[data-theme="light"]');
-    if (lightBtn) lightBtn.click();
-  }
-
-  // 7. Motor do Chat da Equipe (Texto, Mensagens Rápidas, Foto e Áudio com QRA e Cor do Operador)
   let hubUnreadCount = 0;
   let hubMediaRec = null;
   let hubMediaStream = null;
   let hubRecordingAudio = false;
 
-  function xorCipherLocal(s, k) {
-    if (!k) return s;
-    let o = '';
-    for (let i = 0; i < s.length; i++) {
-      o += String.fromCharCode(s.charCodeAt(i) ^ k.charCodeAt(i % k.length));
-    }
-    return o;
-  }
-
-  function encodeMqttPkt(obj, k) {
-    return btoa(xorCipherLocal(unescape(encodeURIComponent(JSON.stringify(obj))), k || 'AZIMUTE'));
-  }
-
-  function decodeMqttPkt(b64, k) {
-    try {
-      return JSON.parse(decodeURIComponent(escape(xorCipherLocal(atob(b64), k || 'AZIMUTE'))));
-    } catch (e) {
-      return null;
-    }
-  }
-
-  function roomTopicHashLocal(room) {
-    let h = 2166136261;
-    const s = 'AZIMUTE_PMMG_' + String(room || '').toUpperCase().trim();
-    for (let i = 0; i < s.length; i++) {
-      h ^= s.charCodeAt(i);
-      h = Math.imul(h, 16777619);
-    }
-    return (h >>> 0).toString(16);
-  }
-
-  function mqttEncodeStrLocal(str) {
-    const enc = new TextEncoder().encode(str);
-    return [enc.length >> 8, enc.length & 0xff, ...enc];
-  }
-
-  function mqttEncodeVarLenLocal(len) {
-    const out = [];
-    do {
-      let b = len % 128;
-      len = Math.floor(len / 128);
-      if (len > 0) b |= 128;
-      out.push(b);
-    } while (len > 0);
-    return out;
-  }
-
-  function appendRichMessageToHubFeed(opts) {
+  function appendMessageToHub(opts) {
     ensureHubEquipeDrawer();
     const feed = document.getElementById('azHubChatFeed');
     if (!feed) return;
-
     const timeStr = new Date(opts.ts || Date.now()).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-    const safeSender = String(opts.senderQra || 'OPERADOR').toUpperCase().replace(/</g, '&lt;');
-    const opColor = resolveColorHex(opts.colorId);
+    const sender = String(opts.senderQra || 'OPERADOR').toUpperCase().replace(/</g, '&lt;');
+    const col = resolveColorHex(opts.colorId);
 
-    const msgEl = document.createElement('div');
-    msgEl.style.cssText = opts.isSelf
-      ? `background:#161616; border:1.5px solid ${opColor}; border-radius:12px; padding:8px 12px; align-self:flex-end; max-width:86%;`
-      : `background:#161616; border:1.5px solid ${opColor}; border-radius:12px; padding:8px 12px; align-self:flex-start; max-width:86%;`;
+    const el = document.createElement('div');
+    el.style.cssText = `background:#161616; border:1.5px solid ${col}; border-radius:12px; padding:8px 12px; align-self:${opts.isSelf ? 'flex-end' : 'flex-start'}; max-width:86%;`;
+    let media = '';
+    if (opts.imageData) media += `<img src="${opts.imageData}" style="max-width:100%; max-height:210px; border-radius:8px; margin-top:4px; display:block;" />`;
+    if (opts.audioData) media += `<audio controls preload="metadata" src="${opts.audioData}" style="width:210px; max-width:100%; height:34px; margin-top:4px; display:block;"></audio>`;
+    if (opts.text) media += `<div style="margin-top:${media ? '6px' : '0'}; word-break:break-word;">${String(opts.text).replace(/</g, '&lt;')}</div>`;
 
-    let bodyHtml = '';
-    if (opts.imageData) {
-      bodyHtml += `<img src="${opts.imageData}" alt="Foto da equipe" style="max-width:100%; max-height:220px; border-radius:8px; margin-top:4px; display:block; border:1px solid rgba(255,255,255,0.15);" />`;
-    }
-    if (opts.audioData) {
-      bodyHtml += `<audio controls preload="metadata" src="${opts.audioData}" style="width:220px; max-width:100%; height:34px; margin-top:4px; display:block;"></audio>`;
-    }
-    if (opts.text) {
-      bodyHtml += `<div style="margin-top:${(opts.imageData || opts.audioData) ? '6px' : '0'}; word-break:break-word;">${String(opts.text).replace(/</g, '&lt;')}</div>`;
-    }
-
-    msgEl.innerHTML = `
-      <div style="display:flex; align-items:center; gap:6px; font-size:10px; font-weight:800; margin-bottom:3px; color:${opColor};">
-        <span style="width:8px; height:8px; border-radius:50%; background:${opColor}; display:inline-block;"></span>
-        <span>${opts.isSelf ? `VOCÊ (${safeSender})` : safeSender} • ${timeStr}</span>
-      </div>
-      ${bodyHtml}
-    `;
-
-    feed.appendChild(msgEl);
+    el.innerHTML = `<div style="display:flex; align-items:center; gap:6px; font-size:10px; font-weight:800; margin-bottom:3px; color:${col};"><span style="width:8px; height:8px; border-radius:50%; background:${col}; display:inline-block;"></span><span>${opts.isSelf ? `VOCÊ (${sender})` : sender} • ${timeStr}</span></div>${media}`;
+    feed.appendChild(el);
     feed.scrollTop = feed.scrollHeight;
 
     const modal = document.getElementById('azHubEquipeModal');
     if (!opts.isSelf && (!modal || modal.style.display === 'none')) {
       hubUnreadCount += 1;
-      if (typeof window.atualizarBadgeHub === 'function') {
-        window.atualizarBadgeHub(hubUnreadCount);
-      }
+      if (typeof window.atualizarBadgeHub === 'function') window.atualizarBadgeHub(hubUnreadCount);
     }
   }
 
-  function transmitGroupChatPayload(payload) {
+  function sendToGroupRoom(payload) {
     const me = getMyOperatorIdentity();
     const ts = Date.now();
-
-    appendRichMessageToHubFeed({
-      senderQra: me.qra,
-      colorId: me.colorId,
-      text: payload.text || '',
-      imageData: payload.imageData || '',
-      audioData: payload.audioData || '',
-      isSelf: true,
-      ts: ts
-    });
-
+    appendMessageToHub({ senderQra: me.qra, colorId: me.colorId, text: payload.text || '', imageData: payload.imageData || '', audioData: payload.audioData || '', isSelf: true, ts: ts });
     if (navigator.vibrate) navigator.vibrate(12);
+    if (!me.room) return;
 
-    if (!me.room) {
-      if (typeof window.azToast === 'function') {
-        window.azToast('Entre em uma Equipe no menu para enviar aos demais.');
-      }
-      return;
-    }
-
-    const pkt = {
-      kind: payload.kind || 'msg',
-      text: payload.text || '',
-      imageData: payload.imageData || '',
-      audioData: payload.audioData || '',
-      uid: me.uid,
-      qra: me.qra,
-      colorId: me.colorId,
-      ts: ts
-    };
-
-    const encoded = encodeMqttPkt(pkt, me.room);
+    const pkt = { kind: payload.kind || 'msg', text: payload.text || '', imageData: payload.imageData || '', audioData: payload.audioData || '', uid: me.uid, qra: me.qra, colorId: me.colorId, ts: ts };
+    const encoded = encodePkt(pkt, me.room);
     const tac = window.azTacState || {};
-
-    if (tac.bc) {
-      try {
-        tac.bc.postMessage({ room: me.room, data: encoded });
-      } catch (e) {}
-    }
-
+    if (tac.bc) { try { tac.bc.postMessage({ room: me.room, data: encoded }); } catch (e) {} }
     if (tac.ws && tac.ws.readyState === 1) {
       try {
-        const topic = 'azimute/pmmg/turno/' + roomTopicHashLocal(me.room);
-        const body = [...mqttEncodeStrLocal(topic), ...new TextEncoder().encode(encoded)];
-        tac.ws.send(new Uint8Array([0x30, ...mqttEncodeVarLenLocal(body.length), ...body]));
+        const topic = 'azimute/pmmg/turno/' + hashRoom(me.room);
+        const body = [...encStr(topic), ...new TextEncoder().encode(encoded)];
+        tac.ws.send(new Uint8Array([0x30, ...encLen(body.length), ...body]));
       } catch (e) {}
     }
   }
 
-  // Recebe mensagens (texto, foto e áudio) dos outros operadores da sala
-  const seenMsgKeys = new Set();
-  function handleRemoteChatPacket(pkt) {
-    if (!pkt) return;
-    if (pkt.kind !== 'msg' && pkt.kind !== 'chat_photo' && pkt.kind !== 'chat_audio') return;
-
+  const seenChatIds = new Set();
+  function onRemoteChat(pkt) {
+    if (!pkt || (pkt.kind !== 'msg' && pkt.kind !== 'chat_photo' && pkt.kind !== 'chat_audio')) return;
     const me = getMyOperatorIdentity();
     if (pkt.uid && pkt.uid === me.uid) return;
-
-    const dedupeKey = `${pkt.uid || ''}_${pkt.ts || ''}_${pkt.kind}_${(pkt.text || '').slice(0, 20)}`;
-    if (seenMsgKeys.has(dedupeKey)) return;
-    seenMsgKeys.add(dedupeKey);
-
+    const key = `${pkt.uid}_${pkt.ts}_${pkt.kind}`;
+    if (seenChatIds.has(key)) return;
+    seenChatIds.add(key);
     const tac = window.azTacState || {};
-    const mateColor = pkt.colorId || (tac.teammates && tac.teammates[pkt.uid] && tac.teammates[pkt.uid].colorId) || 'ciano';
-
-    appendRichMessageToHubFeed({
-      senderQra: pkt.qra || 'OPERADOR',
-      colorId: mateColor,
-      text: pkt.text || '',
-      imageData: pkt.imageData || '',
-      audioData: pkt.audioData || '',
-      isSelf: false,
-      ts: pkt.ts
-    });
+    const cId = pkt.colorId || (tac.teammates && tac.teammates[pkt.uid] && tac.teammates[pkt.uid].colorId) || 'ciano';
+    appendMessageToHub({ senderQra: pkt.qra || 'OPERADOR', colorId: cId, text: pkt.text || '', imageData: pkt.imageData || '', audioData: pkt.audioData || '', isSelf: false, ts: pkt.ts });
   }
 
   if ('BroadcastChannel' in window) {
-    const patchBc = new BroadcastChannel('azimute_tac_sync');
-    patchBc.onmessage = function (ev) {
+    new BroadcastChannel('azimute_tac_sync').onmessage = function (ev) {
       const me = getMyOperatorIdentity();
-      if (!ev.data || !me.room || ev.data.room !== me.room || !ev.data.data) return;
-      const pkt = decodeMqttPkt(ev.data.data, me.room);
-      handleRemoteChatPacket(pkt);
+      if (ev.data && me.room && ev.data.room === me.room && ev.data.data) onRemoteChat(decodePkt(ev.data.data, me.room));
     };
   }
 
@@ -25206,152 +25151,100 @@ if (document.readyState === "loading") {
     const tac = window.azTacState;
     if (!tac || !tac.ws || tac.ws._azHubHooked) return;
     tac.ws._azHubHooked = true;
-
-    const origOnMessage = tac.ws.onmessage;
+    const orig = tac.ws.onmessage;
     tac.ws.onmessage = function (ev) {
       try {
         const buf = new Uint8Array(ev.data);
         if (buf.length >= 4 && (buf[0] & 0xf0) === 0x30) {
-          let idx = 1;
-          while (idx < buf.length && (buf[idx] & 0x80)) idx++;
-          idx++;
-          if (idx + 2 <= buf.length) {
-            const tLen = (buf[idx] << 8) | buf[idx + 1];
-            const topicStr = new TextDecoder().decode(buf.slice(idx + 2, idx + 2 + tLen));
-            idx += 2 + tLen;
-            if ((buf[0] & 0x06) > 0) idx += 2;
-            if (idx < buf.length && topicStr.indexOf('/pcm/') === -1) {
-              const me = getMyOperatorIdentity();
-              const pkt = decodeMqttPkt(new TextDecoder().decode(buf.slice(idx)), me.room);
-              handleRemoteChatPacket(pkt);
-            }
+          let idx = 1; while (idx < buf.length && (buf[idx] & 0x80)) idx++; idx++;
+          const tLen = (buf[idx] << 8) | buf[idx + 1];
+          const topic = new TextDecoder().decode(buf.slice(idx + 2, idx + 2 + tLen));
+          idx += 2 + tLen + ((buf[0] & 0x06) > 0 ? 2 : 0);
+          if (idx < buf.length && topic.indexOf('/pcm/') === -1) {
+            onRemoteChat(decodePkt(new TextDecoder().decode(buf.slice(idx)), getMyOperatorIdentity().room));
           }
         }
       } catch (e) {}
-
-      if (typeof origOnMessage === 'function') {
-        origOnMessage.call(this, ev);
-      }
+      if (typeof orig === 'function') orig.call(this, ev);
     };
   }, 800);
 
-  // Compressão rápida de foto para envio leve via rede tática
-  function compressAndSendHubPhoto(file) {
-    if (!file) return;
+  function compressAndSendPhoto(file) {
     const reader = new FileReader();
     reader.onload = function (ev) {
       const img = new Image();
       img.onload = function () {
-        const maxDim = 480;
-        const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
-        const canvas = document.createElement('canvas');
-        canvas.width = Math.round(img.width * scale);
-        canvas.height = Math.round(img.height * scale);
-        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-        const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.55);
-        const captionInput = document.getElementById('azHubChatInput');
-        const cap = captionInput ? captionInput.value.trim() : '';
-        if (captionInput) captionInput.value = '';
-        transmitGroupChatPayload({ kind: 'chat_photo', imageData: compressedDataUrl, text: cap });
+        const sc = Math.min(1, 460 / Math.max(img.width, img.height));
+        const cv = document.createElement('canvas');
+        cv.width = Math.round(img.width * sc);
+        cv.height = Math.round(img.height * sc);
+        cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+        const inp = document.getElementById('azHubChatInput');
+        const cap = inp ? inp.value.trim() : '';
+        if (inp) inp.value = '';
+        sendToGroupRoom({ kind: 'chat_photo', imageData: cv.toDataURL('image/jpeg', 0.55), text: cap });
       };
       img.src = ev.target.result;
     };
     reader.readAsDataURL(file);
   }
 
-  // Gravação e envio de mensagem de áudio no chat do grupo
-  async function toggleHubVoiceNoteRecording() {
+  async function toggleHubVoiceRec() {
     const micBtn = document.getElementById('azHubMicBtn');
     if (hubRecordingAudio) {
       hubRecordingAudio = false;
       if (micBtn) micBtn.classList.remove('is-rec');
-      if (hubMediaRec && hubMediaRec.state !== 'inactive') {
-        try { hubMediaRec.stop(); } catch (e) {}
-      }
+      if (hubMediaRec && hubMediaRec.state !== 'inactive') { try { hubMediaRec.stop(); } catch (e) {} }
       return;
     }
-
     try {
       hubMediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mime = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
-        ? 'audio/webm;codecs=opus'
-        : (MediaRecorder.isTypeSupported('audio/mp4') ? 'audio/mp4' : '');
-      hubMediaRec = mime
-        ? new MediaRecorder(hubMediaStream, { mimeType: mime, audioBitsPerSecond: 16000 })
-        : new MediaRecorder(hubMediaStream);
-
+      const mime = MediaRecorder.isTypeSupported('audio/webm;codecs=opus') ? 'audio/webm;codecs=opus' : '';
+      hubMediaRec = mime ? new MediaRecorder(hubMediaStream, { mimeType: mime, audioBitsPerSecond: 16000 }) : new MediaRecorder(hubMediaStream);
       const chunks = [];
-      hubMediaRec.ondataavailable = function (e) {
-        if (e.data && e.data.size > 0) chunks.push(e.data);
-      };
+      hubMediaRec.ondataavailable = function (e) { if (e.data && e.data.size > 0) chunks.push(e.data); };
       hubMediaRec.onstop = function () {
-        if (hubMediaStream) {
-          try { hubMediaStream.getTracks().forEach(function (t) { t.stop(); }); } catch (e) {}
-          hubMediaStream = null;
-        }
-        const blob = new Blob(chunks, { type: hubMediaRec.mimeType || mime || 'audio/webm' });
+        if (hubMediaStream) { try { hubMediaStream.getTracks().forEach(function (t) { t.stop(); }); } catch (e) {} hubMediaStream = null; }
+        const blob = new Blob(chunks, { type: hubMediaRec.mimeType || 'audio/webm' });
         if (blob.size > 150) {
-          const reader = new FileReader();
-          reader.onloadend = function () {
-            transmitGroupChatPayload({ kind: 'chat_audio', audioData: String(reader.result || '') });
-          };
-          reader.readAsDataURL(blob);
+          const r = new FileReader();
+          r.onloadend = function () { sendToGroupRoom({ kind: 'chat_audio', audioData: String(r.result || '') }); };
+          r.readAsDataURL(blob);
         }
       };
-
       hubRecordingAudio = true;
       if (micBtn) micBtn.classList.add('is-rec');
-      if (navigator.vibrate) navigator.vibrate(25);
       hubMediaRec.start();
-
-      setTimeout(function () {
-        if (hubRecordingAudio) toggleHubVoiceNoteRecording();
-      }, 20000);
-    } catch (e) {
-      hubRecordingAudio = false;
-      if (micBtn) micBtn.classList.remove('is-rec');
-      if (typeof window.azToast === 'function') window.azToast('Permita o acesso ao microfone para gravar áudio.');
-    }
+      setTimeout(function () { if (hubRecordingAudio) toggleHubVoiceRec(); }, 20000);
+    } catch (e) { hubRecordingAudio = false; }
   }
 
   function ensureHubEquipeDrawer() {
     const me = getMyOperatorIdentity();
     const roomLabel = me.room ? `SALA ${me.room} • ${me.qra}` : `${me.qra} (OFFLINE)`;
-
     let modal = document.getElementById('azHubEquipeModal');
     if (modal) {
-      const titleEl = document.getElementById('azHubEquipeHeaderTitle');
-      if (titleEl) titleEl.textContent = `HUB DA EQUIPE • ${roomLabel}`;
+      const t = document.getElementById('azHubEquipeHeaderTitle');
+      if (t) t.textContent = `HUB DA EQUIPE • ${roomLabel}`;
       renderOperatorColorPickers();
       return;
     }
 
     modal = document.createElement('div');
     modal.id = 'azHubEquipeModal';
-    modal.style.cssText = 'display:none; position:fixed; inset:0; z-index:100090; background:rgba(0,0,0,0.8); backdrop-filter:blur(4px); align-items:flex-end; justify-content:center;';
+    modal.style.cssText = 'display:none; position:fixed; inset:0; z-index:100095; background:rgba(0,0,0,0.82); backdrop-filter:blur(4px); align-items:flex-end; justify-content:center;';
     modal.innerHTML = `
-      <div style="width:100%; max-width:520px; height:80vh; background:#0D0D0D; border-top:1.5px solid #C5A869; border-radius:16px 16px 0 0; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 -8px 30px rgba(0,0,0,0.9);">
+      <div style="width:100%; max-width:520px; height:80vh; background:#0D0D0D; border-top:1.5px solid #C5A869; border-radius:16px 16px 0 0; display:flex; flex-direction:column; overflow:hidden;">
         <div style="display:flex; align-items:center; justify-content:space-between; padding:10px 14px; background:#161616; border-bottom:1px solid rgba(197,168,105,0.28);">
-          <div style="display:flex; align-items:center; gap:8px; min-width:0;">
-            <span style="width:8px; height:8px; border-radius:50%; background:${me.room ? '#4ADE80' : '#F59E0B'}; display:inline-block; flex-shrink:0;"></span>
-            <strong id="azHubEquipeHeaderTitle" style="color:#C5A869; font-size:12px; letter-spacing:0.05em; text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">HUB DA EQUIPE • ${roomLabel}</strong>
-          </div>
-          <button type="button" id="azCloseHubEquipeBtn" style="background:#0D0D0D; border:1px solid rgba(197,168,105,0.4); color:#C5A869; border-radius:8px; padding:4px 10px; font-size:11px; font-weight:700; flex-shrink:0;">FECHAR</button>
+          <strong id="azHubEquipeHeaderTitle" style="color:#C5A869; font-size:12px; text-transform:uppercase;">HUB DA EQUIPE • ${roomLabel}</strong>
+          <button type="button" id="azCloseHubEquipeBtn" style="background:#0D0D0D; border:1px solid rgba(197,168,105,0.4); color:#C5A869; border-radius:8px; padding:4px 10px; font-size:11px; font-weight:700;">FECHAR</button>
         </div>
-
         <div style="display:flex; align-items:center; justify-content:space-between; padding:6px 14px; background:#111111; border-bottom:1px solid rgba(197,168,105,0.18);">
-          <span style="font-size:10px; font-weight:800; color:#9E9A8F; text-transform:uppercase;">Cor do Operador:</span>
+          <span style="font-size:10px; font-weight:800; color:#9E9A8F;">COR DO OPERADOR:</span>
           <div class="az-color-picker-row az-dynamic-color-row"></div>
         </div>
-
-        <div id="azHubChatFeed" style="flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:8px; font-size:13px; color:#E5E5E5;">
-          <div style="background:#161616; border:1px solid rgba(197,168,105,0.2); border-radius:10px; padding:8px 12px; align-self:flex-start; max-width:85%;">
-            <div style="font-size:10px; color:#C5A869; font-weight:700; margin-bottom:2px;">SISTEMA • REDE TÁTICA</div>
-            Canal da equipe ativo. Envie texto, mensagens rápidas, fotos ou áudio para todos os operadores da sala.
-          </div>
-        </div>
-
-        <div class="az-hub-quick-row" id="azHubQuickMsgsBar">
+        <div id="azHubChatFeed" style="flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:8px; font-size:13px; color:#E5E5E5;"></div>
+        <div class="az-hub-quick-row">
           <button type="button" class="az-hub-quick-chip" data-hub-qmsg="APOIO">APOIO</button>
           <button type="button" class="az-hub-quick-chip" data-hub-qmsg="NO VISUAL">NO VISUAL</button>
           <button type="button" class="az-hub-quick-chip" data-hub-qmsg="CERCO">CERCO</button>
@@ -25359,93 +25252,64 @@ if (document.readyState === "loading") {
           <button type="button" class="az-hub-quick-chip" data-hub-qmsg="QAP">QAP</button>
           <button type="button" class="az-hub-quick-chip" data-hub-qmsg="SILÊNCIO">SILÊNCIO</button>
         </div>
-
         <form id="azHubChatForm" style="display:flex; align-items:center; gap:6px; padding:9px 10px; background:#161616; border-top:1px solid rgba(197,168,105,0.25);">
-          <button type="button" id="azHubPhotoBtn" class="az-hub-media-btn" title="Enviar Foto">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-          </button>
-          <button type="button" id="azHubMicBtn" class="az-hub-media-btn" title="Gravar / Enviar Áudio">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
-          </button>
+          <button type="button" id="azHubPhotoBtn" class="az-hub-media-btn" title="Foto"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></button>
+          <button type="button" id="azHubMicBtn" class="az-hub-media-btn" title="Áudio"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button>
           <input type="text" id="azHubChatInput" placeholder="Mensagem para a equipe..." autocomplete="off" style="flex:1; min-width:0; background:#0D0D0D; border:1px solid rgba(197,168,105,0.35); border-radius:10px; padding:9px 10px; color:#FFF; font-size:13px; outline:none;" />
-          <button type="submit" style="background:#C5A869; color:#0D0D0D; border:none; border-radius:10px; height:38px; padding:0 14px; font-weight:800; font-size:12px; letter-spacing:0.04em; flex-shrink:0;">ENVIAR</button>
+          <button type="submit" style="background:#C5A869; color:#0D0D0D; border:none; border-radius:10px; height:38px; padding:0 14px; font-weight:800; font-size:12px;">ENVIAR</button>
         </form>
       </div>
     `;
     document.body.appendChild(modal);
-
     renderOperatorColorPickers();
 
-    document.getElementById('azCloseHubEquipeBtn').addEventListener('click', function () {
-      modal.style.display = 'none';
+    document.getElementById('azCloseHubEquipeBtn').addEventListener('click', function () { modal.style.display = 'none'; });
+    modal.addEventListener('click', function (e) { if (e.target === modal) modal.style.display = 'none'; });
+    modal.querySelectorAll('[data-hub-qmsg]').forEach(function (c) {
+      c.addEventListener('click', function () { sendToGroupRoom({ kind: 'msg', text: c.getAttribute('data-hub-qmsg') }); });
     });
-    modal.addEventListener('click', function (e) {
-      if (e.target === modal) modal.style.display = 'none';
-    });
-
-    modal.querySelectorAll('[data-hub-qmsg]').forEach(function (chip) {
-      chip.addEventListener('click', function () {
-        transmitGroupChatPayload({ kind: 'msg', text: chip.getAttribute('data-hub-qmsg') });
-      });
-    });
-
-    document.getElementById('azHubPhotoBtn').addEventListener('click', function () {
-      const inp = document.getElementById('azHubChatPhotoInput');
-      if (inp) inp.click();
-    });
-
-    const photoInp = document.getElementById('azHubChatPhotoInput');
-    if (photoInp && !photoInp.dataset.bound) {
-      photoInp.dataset.bound = '1';
-      photoInp.addEventListener('change', function () {
-        if (this.files && this.files[0]) {
-          compressAndSendHubPhoto(this.files[0]);
-        }
-        this.value = '';
-      });
+    document.getElementById('azHubPhotoBtn').addEventListener('click', function () { document.getElementById('azHubChatPhotoInput')?.click(); });
+    const pInp = document.getElementById('azHubChatPhotoInput');
+    if (pInp && !pInp.dataset.bound) {
+      pInp.dataset.bound = '1';
+      pInp.addEventListener('change', function () { if (this.files && this.files[0]) compressAndSendPhoto(this.files[0]); this.value = ''; });
     }
-
-    document.getElementById('azHubMicBtn').addEventListener('click', toggleHubVoiceNoteRecording);
-
+    document.getElementById('azHubMicBtn').addEventListener('click', toggleHubVoiceRec);
     document.getElementById('azHubChatForm').addEventListener('submit', function (e) {
       e.preventDefault();
-      const input = document.getElementById('azHubChatInput');
-      const txt = (input.value || '').trim();
+      const inp = document.getElementById('azHubChatInput');
+      const txt = (inp.value || '').trim();
       if (!txt) return;
-      input.value = '';
-      transmitGroupChatPayload({ kind: 'msg', text: txt });
+      inp.value = '';
+      sendToGroupRoom({ kind: 'msg', text: txt });
     });
   }
 
-  window.abrirHubEquipe = function () {
+  window.abrirHubEquipe = function (e) {
+    if (e) { e.preventDefault(); e.stopPropagation(); }
     ensureHubEquipeDrawer();
     const modal = document.getElementById('azHubEquipeModal');
     if (modal) modal.style.display = 'flex';
     hubUnreadCount = 0;
-    if (typeof window.atualizarBadgeHub === 'function') {
-      window.atualizarBadgeHub(0);
-    }
-    if (navigator.vibrate) navigator.vibrate(15);
+    if (typeof window.atualizarBadgeHub === 'function') window.atualizarBadgeHub(0);
   };
 
   const hubBtn = document.getElementById('btn-hub-equipe');
   if (hubBtn) {
+    hubBtn.removeAttribute('onclick');
     hubBtn.addEventListener('click', window.abrirHubEquipe);
   }
 
-  // Inicialização e revalidação contínua
   injectDockColorSelector();
-  mountOriginalBottomBarAndHamburgerCfg();
+  mountBottomBarAndHamburgerCfg();
   setupBlueCenterButton();
-
   setTimeout(function () {
     injectDockColorSelector();
-    mountOriginalBottomBarAndHamburgerCfg();
+    mountBottomBarAndHamburgerCfg();
     setupBlueCenterButton();
     applyDefaultLightThemeOnce();
   }, 1200);
 })();
-</script>
-<!-- [AZ-PATCH-FINAL-FIM] --></body>
+</script></body>
 </html>
         
