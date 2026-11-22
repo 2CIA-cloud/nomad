@@ -17467,7 +17467,8 @@ function initAzimuteGeo() {
     extra: { label: "Ponto", color: "#F2F0EA" }
   };
 
-  let mapTheme = localStorage.getItem("az_geo_map_theme") || "dark";
+/* [AZ-08A-TEMA-MAPA] Mapa Claro como padrão + exposição global do mapa */
+let mapTheme = localStorage.getItem("az_geo_map_theme") || "light";
 
   const searchInput = document.getElementById("azGeoSearchInput");
   const searchBtn = document.getElementById("azGeoSearchBtn");
@@ -17550,7 +17551,7 @@ function initAzimuteGeo() {
 
   const map = new maplibregl.Map({
     container: "azGeoMap",
-    style: STYLE_URLS[mapTheme] || STYLE_URLS.dark,
+    style: STYLE_URLS.light,
     center: [-43.9386, -19.9191],
     zoom: 13,
     bearing: 0,
@@ -17559,7 +17560,7 @@ function initAzimuteGeo() {
     touchPitch: true,
     pitchWithRotate: true,
     attributionControl: false
-  });
+  });window.azGeoMap = map;
 
   function syncTiltBadgeUi() {
     if (!tiltBadge) return;
@@ -18388,9 +18389,9 @@ function initAzimuteGeo() {
             targetMap.setPaintProperty(layer.id, "text-halo-blur", 0.4);
             targetMap.setPaintProperty(layer.id, "text-opacity", 1);
           } else {
-            targetMap.setPaintProperty(layer.id, "text-color", "#0A0A0A");
-            targetMap.setPaintProperty(layer.id, "text-halo-color", "#FFFFFF");
-            targetMap.setPaintProperty(layer.id, "text-halo-width", 2.5);
+        targetMap.setPaintProperty(layer.id, "text-color", isMajor ? "#1E3A8A" : "#0F172A");
+          targetMap.setPaintProperty(layer.id, "text-halo-color", "#FFFFFF");
+          targetMap.setPaintProperty(layer.id, "text-halo-width", 2.8);
             targetMap.setPaintProperty(layer.id, "text-opacity", 1);
           }
 
@@ -21060,36 +21061,57 @@ if (document.readyState === "loading") {
     display: none !important;
   }
 
-  /* 3. Botão azul original de centralizar: VISÍVEL APENAS NA ABA GEOLOCALIZAÇÃO */
-  body:not(.az-map-fullscreen) #azGeoCenterFab {
+ /* [AZ-08B-CONTROLES-NATIVOS] Restaura botões originais do mapa e gaveta de Configurações acima do z-index 99980 */
+  body:not(.az-map-fullscreen) #azGeoCenterFab,
+  body:not(.az-map-fullscreen) #azGeoTiltBadge,
+  body:not(.az-map-fullscreen) #azGeoNorthBadge,
+  body:not(.az-map-fullscreen) #azGeoLockBadge {
     display: none !important;
   }
+
   body.az-map-fullscreen #azGeoCenterFab {
     display: inline-flex !important;
     position: fixed !important;
     bottom: 84px !important;
     right: 12px !important;
+    width: 44px !important;
+    height: 44px !important;
+    background: #2563EB !important;
+    border: 2px solid #93C5FD !important;
+    color: #FFFFFF !important;
     z-index: 100043 !important;
   }
 
-  /* 4. Controles nativos do MapLibre (RUMO LIVRE, 2D/3D) abaixo da barra superior */
-  body.az-map-fullscreen #azGeoMap .maplibregl-ctrl-top-right {
-    top: 48px !important;
-    right: 8px !important;
-    z-index: 100039 !important;
-  }
-  body.az-map-fullscreen #azGeoMap .maplibregl-ctrl-top-left {
-    top: 48px !important;
-    left: 8px !important;
-    z-index: 100039 !important;
+  body.az-map-fullscreen #azGeoNorthBadge {
+    display: flex !important;
+    position: fixed !important;
+    top: 52px !important;
+    right: 12px !important;
+    z-index: 100043 !important;
   }
 
-  /* 5. Barra transparente com botões nativos Camadas e Configurações (Girar 90°) */
+  body.az-map-fullscreen #azGeoTiltBadge {
+    display: flex !important;
+    position: fixed !important;
+    top: 94px !important;
+    right: 12px !important;
+    z-index: 100043 !important;
+  }
+
+  body.az-map-fullscreen #azGeoLockBadge {
+    display: flex !important;
+    position: fixed !important;
+    top: 52px !important;
+    right: 54px !important;
+    z-index: 100043 !important;
+  }
+
+  /* Barra inferior transparente com Camadas e Configurações (Claro/Escuro/Satélite/Girar) */
   #azNativeMapBarWrap {
     position: fixed !important;
     bottom: 42px !important;
     left: 12px !important;
-    z-index: 100039 !important;
+    z-index: 100043 !important;
     display: none;
     gap: 6px;
     background: transparent !important;
@@ -21100,8 +21122,26 @@ if (document.readyState === "loading") {
   }
   #azNativeMapBarWrap > button {
     pointer-events: auto !important;
-    z-index: 100040 !important;
+    z-index: 100044 !important;
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.85) !important;
+  }
+
+  /* Gavetas nativas (Configurações e Camadas) abrem flutuando sobre o mapa em tela cheia */
+  body.az-map-fullscreen #azGeoCfgBox.is-open,
+  body.az-map-fullscreen #azGeoLayersBox.is-open,
+  body.az-map-fullscreen #azGeoMunBox.is-open {
+    display: block !important;
+    position: fixed !important;
+    bottom: 84px !important;
+    left: 12px !important;
+    right: 64px !important;
+    max-height: 55vh !important;
+    overflow-y: auto !important;
+    z-index: 100055 !important;
+    background: rgba(13, 13, 13, 0.97) !important;
+    border: 1.5px solid #C5A869 !important;
+    border-radius: 12px !important;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.95) !important;
   }
 
   /* 6. Barra Superior ATAK */
@@ -21946,24 +21986,7 @@ if (document.readyState === "loading") {
   <span id="azPttDragHandle" title="Arraste para mover o PTT">⋮⋮</span>
   <button type="button" id="azFloatingMapPttBtn" title="Toque para falar na rede">PTT</button>
 </div>
-<!-- PILHA DE CONTROLES DO MAPA: 2D, 3D, GIRAR 90°, NORTE E BOTÃO AZUL GPS -->
-<div id="azMapControlsRestored" style="position:fixed; right:12px; bottom:174px; z-index:100045; display:flex; flex-direction:column; align-items:flex-end; gap:8px; pointer-events:auto;">
-  
-  <div style="display:flex; flex-direction:column; background:rgba(13,13,13,0.94); border:1.5px solid #C5A869; border-radius:8px; overflow:hidden; box-shadow:0 4px 14px rgba(0,0,0,0.75);">
-    <button type="button" onclick="azSetMapMode('2D')" style="width:42px; height:36px; background:transparent; border:none; border-bottom:1px solid rgba(197,168,105,0.25); color:#C5A869; font-size:11px; font-weight:800;">2D</button>
-    <button type="button" onclick="azSetMapMode('3D')" style="width:42px; height:36px; background:transparent; border:none; border-bottom:1px solid rgba(197,168,105,0.25); color:#F2F2F2; font-size:11px; font-weight:800;">3D</button>
-    <button type="button" onclick="azRotateMap90()" style="width:42px; height:36px; background:transparent; border:none; border-bottom:1px solid rgba(197,168,105,0.25); color:#F2F2F2; font-size:11px; font-weight:800;">90°</button>
-    <button type="button" onclick="azResetNorth()" style="width:42px; height:34px; background:transparent; border:none; color:#C5A869; font-size:11px; font-weight:800;">N</button>
-  </div>
 
-  <!-- BOTÃO AZUL CENTRALIZAR GPS -->
-  <button type="button" id="btnCentralizarGpsAzul" onclick="azCentralizarGpsAgora()" title="Centralizar no GPS" style="width:44px; height:44px; border-radius:50%; background:#1E88E5; border:2px solid #90CAF9; color:#FFFFFF; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 16px rgba(30,136,229,0.55); cursor:pointer;">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-      <polygon points="3 11 22 2 13 21 11 13 3 11"/>
-    </svg>
-  </button>
-
-</div>
 <!-- Travar Mapa -->
 <button type="button" id="azLockMapDrawBtn">TRAVAR MAPA</button>
 
@@ -23507,7 +23530,7 @@ if (document.readyState === "loading") {
         holdReady = true;
         vibratePattern(45);
         showToast("Solte para abrir opções", 1400);
-      }, 420);
+      }, 850);
     }, true);
 
     container.addEventListener("pointermove", function (ev) {
