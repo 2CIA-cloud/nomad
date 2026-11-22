@@ -20946,20 +20946,48 @@ if (document.readyState === "loading") {
   /* 3. Botão azul original de centralizar: VISÍVEL APENAS NA ABA GEOLOCALIZAÇÃO */
   body:not(.az-map-fullscreen) #azGeoCenterFab {
     display: none !important;
-    visibility: hidden !important;
-    pointer-events: none !important;
   }
   body.az-map-fullscreen #azGeoCenterFab {
     display: inline-flex !important;
-    visibility: visible !important;
-    pointer-events: auto !important;
     position: fixed !important;
-    bottom: 76px !important;
+    bottom: 84px !important;
     right: 12px !important;
     z-index: 100043 !important;
   }
 
-  /* 4. Barra Superior ATAK */
+  /* 4. Controles nativos do MapLibre (RUMO LIVRE, 2D/3D) abaixo da barra superior */
+  body.az-map-fullscreen #azGeoMap .maplibregl-ctrl-top-right {
+    top: 48px !important;
+    right: 8px !important;
+    z-index: 100039 !important;
+  }
+  body.az-map-fullscreen #azGeoMap .maplibregl-ctrl-top-left {
+    top: 48px !important;
+    left: 8px !important;
+    z-index: 100039 !important;
+  }
+
+  /* 5. Barra transparente com botões nativos Camadas e Configurações (Girar 90°) */
+  #azNativeMapBarWrap {
+    position: fixed !important;
+    bottom: 42px !important;
+    left: 12px !important;
+    z-index: 100039 !important;
+    display: none;
+    gap: 6px;
+    background: transparent !important;
+    pointer-events: none;
+  }
+  body.az-map-fullscreen #azNativeMapBarWrap.has-items {
+    display: flex !important;
+  }
+  #azNativeMapBarWrap > button {
+    pointer-events: auto !important;
+    z-index: 100040 !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.85) !important;
+  }
+
+  /* 6. Barra Superior ATAK */
   #azTopHudShell {
     position: fixed !important;
     top: 8px !important;
@@ -21100,7 +21128,7 @@ if (document.readyState === "loading") {
   /* Controles inferiores (Travar Mapa, Desfazer, Encerrar Ferramentas) */
   #azLockMapDrawBtn {
     position: fixed !important;
-    bottom: 124px !important;
+    bottom: 132px !important;
     right: 12px !important;
     z-index: 100044 !important;
     height: 32px !important;
@@ -21125,7 +21153,7 @@ if (document.readyState === "loading") {
 
   #azLeftControlsRow {
     position: fixed !important;
-    bottom: 124px !important;
+    bottom: 132px !important;
     left: 12px !important;
     z-index: 100044 !important;
     display: none;
@@ -21138,7 +21166,7 @@ if (document.readyState === "loading") {
   /* PTT Arrastável */
   #azFloatingPttGroup {
     position: fixed !important;
-    bottom: 76px;
+    bottom: 84px;
     left: 12px;
     z-index: 100044 !important;
     display: none;
@@ -21189,7 +21217,7 @@ if (document.readyState === "loading") {
   /* Ajuste Fino Quadrado 8 Direções (incluindo Diagonais) */
   #azRemoteFineTunePad {
     position: fixed !important;
-    bottom: 132px !important;
+    bottom: 140px !important;
     left: 50% !important;
     transform: translateX(-50%) !important;
     z-index: 100055 !important;
@@ -21287,7 +21315,7 @@ if (document.readyState === "loading") {
     position: fixed !important;
     top: 48px !important;
     right: 8px !important;
-    bottom: 76px !important;
+    bottom: 84px !important;
     width: 300px;
     max-width: calc(100vw - 16px);
     z-index: 100045 !important;
@@ -22067,7 +22095,7 @@ if (document.readyState === "loading") {
     firebaseUrl: localStorage.getItem("az_tac_fb_url") || "",
     ghostEnabled: localStorage.getItem("az_tac_ghost_exit") !== "0",
     wheelEnabledIds: savedWheelIds,
-    pttEngine: localStorage.getItem("az_tac_ptt_engine") || "webm_blocks", // webm_blocks | pcm_binary | webrtc_p2p
+    pttEngine: localStorage.getItem("az_tac_ptt_engine") || "webm_blocks",
     satMode: false,
     teammates: {},
     selectedMateUid: "",
@@ -22106,7 +22134,6 @@ if (document.readyState === "loading") {
     dockOpen: false,
     audioMuted: false,
     audioCtx: null,
-    // Motor 1: WebM Blocks
     pttStream: null,
     pttSegmentTimer: null,
     activeSegmentRec: null,
@@ -22115,11 +22142,9 @@ if (document.readyState === "loading") {
     rxAudioQueue: [],
     rxPlaying: false,
     rxAudioEl: null,
-    // Motor 2: AudioContext PCM 16kHz Binário
     pcmProcessor: null,
     pcmSource: null,
     pcmNextPlayTime: 0,
-    // Motor 3: WebRTC P2P
     rtcPeers: {},
     rtcLocalStream: null,
     hasTelestrationBase: false,
@@ -22185,6 +22210,61 @@ if (document.readyState === "loading") {
 
     const any = hasUndo || tac.rulerActive || tac.drawActive || tac.eraserActive || tac.crumbRouteActive || tac.breadcrumbs.length > 0 || tac.hasActiveRoute || Boolean(tac.circleCenter);
     if (row) row.classList.toggle("is-visible", any);
+  }
+
+  /* =====================================================================
+     CONTROLES NATIVOS DO MAPA (BOTÃO AZUL, CAMADAS, CONFIGURAÇÕES GIRAR 90°)
+     ===================================================================== */
+  let nativeBarWrap = document.getElementById("azNativeMapBarWrap");
+  if (!nativeBarWrap) {
+    nativeBarWrap = document.createElement("div");
+    nativeBarWrap.id = "azNativeMapBarWrap";
+    document.body.appendChild(nativeBarWrap);
+  }
+
+  const centerFabEl = document.getElementById("azGeoCenterFab");
+  if (centerFabEl && !centerFabEl._azCenterFixed) {
+    centerFabEl._azCenterFixed = true;
+    centerFabEl.addEventListener("click", function () {
+      const map = getActiveMap() || window.azGeoMap;
+      if (!map || typeof map.flyTo !== "function") return;
+      if (tac.myPos) {
+        map.flyTo({ center: [tac.myPos.lng, tac.myPos.lat], zoom: Math.max(map.getZoom ? map.getZoom() : 16, 16.5), essential: true });
+        return;
+      }
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (pos) {
+          const lat = pos.coords.latitude;
+          const lng = pos.coords.longitude;
+          tac.myPos = { lat: lat, lng: lng };
+          map.flyTo({ center: [lng, lat], zoom: 16.5, essential: true });
+        }, function () {}, { enableHighAccuracy: true, timeout: 5000 });
+      }
+    });
+  }
+
+  function syncNativeMapControls() {
+    const geoMapEl = document.getElementById("azGeoMap");
+    if (!geoMapEl || !geoMapEl.parentElement) return;
+    const scope = geoMapEl.parentElement;
+
+    scope.querySelectorAll("button").forEach(function (btn) {
+      const txt = (btn.textContent || "").trim().toUpperCase();
+      if (txt === "CAMADAS" || txt === "CONFIGURAÇÕES") {
+        if (btn.parentElement !== nativeBarWrap) {
+          nativeBarWrap.appendChild(btn);
+        }
+      }
+    });
+    nativeBarWrap.classList.toggle("has-items", nativeBarWrap.children.length > 0);
+
+    scope.querySelectorAll("div").forEach(function (div) {
+      if (div === geoMapEl || div.contains(geoMapEl)) return;
+      const txt = (div.textContent || "").toUpperCase();
+      if ((txt.includes("GIRAR") || txt.includes("90°") || txt.includes("INCLINAÇÃO")) && window.getComputedStyle(div).display !== "none") {
+        div.style.zIndex = "100050";
+      }
+    });
   }
 
   /* =====================================================================
@@ -22305,7 +22385,7 @@ if (document.readyState === "loading") {
     if (db) { db.classList.toggle("is-tx", tac.isRecordingPtt); db.textContent = tac.isRecordingPtt ? "NO AR • CLIQUE P/ ENCERRAR" : "TRANSMITIR PTT (OU FONE P2)"; }
   }
 
-  // --- MOTOR 1: BLOCOS WEBM (ATUAL) ---
+  // --- MOTOR 1: BLOCOS WEBM ---
   function dataUrlToBlob(dataUrl) {
     const parts = dataUrl.split(",");
     const mimeMatch = parts[0].match(/:(.*?);/);
@@ -22402,7 +22482,6 @@ if (document.readyState === "loading") {
 
   function broadcastBinaryPcmFrame(pcmBytes) {
     if (!tac.roomCode) return;
-    // Cabeçalho binário leve: [16 bytes uid] + [16 bytes qra] + [pcm Int16 16kHz]
     const header = new Uint8Array(32);
     const enc = new TextEncoder();
     header.set(enc.encode(tac.myId.slice(0, 16)), 0);
@@ -22489,7 +22568,7 @@ if (document.readyState === "loading") {
     if (tac.pcmSource) { try { tac.pcmSource.disconnect(); } catch (_) {} tac.pcmSource = null; }
   }
 
-  // --- MOTOR 3: WEBRTC P2P (TEMPO REAL DIRETO) ---
+  // --- MOTOR 3: WEBRTC P2P ---
   function closeAllRtcPeers() {
     Object.values(tac.rtcPeers).forEach(function (pc) { try { pc.close(); } catch (_) {} });
     tac.rtcPeers = {};
@@ -22557,7 +22636,6 @@ if (document.readyState === "loading") {
     broadcastPacket({ kind: "rtc_tx_state", speaking: false });
   }
 
-  // --- CONTROLADOR UNIFICADO DO BOTÃO PTT ---
   async function startSelectedPtt() {
     if (tac.isRecordingPtt) return;
     unlockAudioOutput();
@@ -22763,12 +22841,10 @@ if (document.readyState === "loading") {
     refreshLeftControls();
   }
 
-  // Borracha seletiva: apaga somente o elemento tocado (traço, migalha, marcador ou perímetro)
   function eraseAtMapPoint(map, screenX, screenY, lngLat) {
     const HIT_PX = 24;
     let erasedSomething = false;
 
-    // 1. Verifica marcadores (pins) próximos ao toque
     for (let i = tac.pins.length - 1; i >= 0; i--) {
       const p = tac.pins[i];
       if (p.isGhost) continue;
@@ -22779,7 +22855,6 @@ if (document.readyState === "loading") {
       }
     }
 
-    // 2. Verifica traços da caneta próximos ao toque
     const beforeStrokes = tac.drawStrokes.length;
     tac.drawStrokes = tac.drawStrokes.filter(function (stroke) {
       return !stroke.some(function (coord) {
@@ -22792,7 +22867,6 @@ if (document.readyState === "loading") {
       erasedSomething = true;
     }
 
-    // 3. Verifica migalhas de rota próximas ao toque
     const beforeCrumbs = tac.breadcrumbs.length;
     tac.breadcrumbs = tac.breadcrumbs.filter(function (c) {
       const pt = map.project([c.lng, c.lat]);
@@ -22803,7 +22877,6 @@ if (document.readyState === "loading") {
       erasedSomething = true;
     }
 
-    // 4. Verifica perímetro (círculo) se tocar na borda ou centro
     if (tac.circleCenter && lngLat) {
       const d = calcDistAndBearing(lngLat.lat, lngLat.lng, tac.circleCenter.lat, tac.circleCenter.lng).dist;
       if (d <= 25 || Math.abs(d - tac.circleRadius) <= 25) {
@@ -23221,7 +23294,6 @@ if (document.readyState === "loading") {
       const py = ev.clientY - r.top;
       const ll = map.unproject([px, py]);
 
-      // Borracha ativa: apaga o que estiver sob o dedo
       if (tac.eraserActive) {
         ev.preventDefault();
         ev.stopPropagation();
@@ -23234,7 +23306,6 @@ if (document.readyState === "loading") {
       document.getElementById("azRadialWheel").classList.remove("is-open");
       if (!ll) return;
 
-      // Caneta livre: inicia novo traço separado
       if (tac.drawActive) {
         ev.preventDefault();
         ev.stopPropagation();
@@ -23244,7 +23315,6 @@ if (document.readyState === "loading") {
         return;
       }
 
-      // Desenhar Rota (Migalhas de Pão)
       if (tac.crumbRouteActive) {
         tac.breadcrumbs.push({ lng: ll.lng, lat: ll.lat });
         renderBreadcrumbRoute(false);
@@ -23467,7 +23537,6 @@ if (document.readyState === "loading") {
     mate.markers.push({ map: mapInst, marker: marker, el: el });
   }
 
-  // Inspeção do Aliado com Distância em metros ou km + Bateria + Sinal
   function renderMateInspectorContent() {
     const modal = document.getElementById("azMateInspectModal");
     const body = document.getElementById("azMateInspectBody");
@@ -23706,7 +23775,7 @@ if (document.readyState === "loading") {
   }
 
   /* =====================================================================
-     GPS CONTÍNUO & CONTENÇÃO ESTRITA DO BOTÃO AZUL NA GEOLOCALIZAÇÃO
+     GPS CONTÍNUO & VISIBILIDADE DA ABA GEOLOCALIZAÇÃO
      ===================================================================== */
   function readLocalBattery() {
     if (!navigator.getBattery) return;
@@ -23737,22 +23806,13 @@ if (document.readyState === "loading") {
 
   function updateHud() {
     disableIncursionCompletely();
+    syncNativeMapControls();
     const vis = isMapTabVisible();
     document.body.classList.toggle("az-map-fullscreen", vis);
     document.getElementById("azTopHudShell").classList.toggle("is-visible", vis);
     document.getElementById("azFloatingPttGroup").classList.toggle("is-visible", vis);
     document.getElementById("azLockMapDrawBtn").classList.toggle("is-visible", vis);
 
-    // Contém #azGeoCenterFab estritamente na aba Geolocalização
-    const centerFab = document.getElementById("azGeoCenterFab");
-    if (centerFab) {
-      if (vis) {
-        if (centerFab.parentElement !== document.body) document.body.appendChild(centerFab);
-        centerFab.style.setProperty("display", "inline-flex", "important");
-      } else {
-        centerFab.style.setProperty("display", "none", "important");
-      }
-    }
     if (!vis) closeDock();
 
     document.getElementById("azHudUnitNetLine").textContent = tac.roomCode ? `PMMG • TURNO ${tac.roomCode}` : "PMMG • REDE RMBH";
