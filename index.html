@@ -696,8 +696,7 @@
                 <div class="w-14 h-14 mx-auto rounded-2xl bg-pmmg-khaki/15 border border-pmmg-khaki/60 flex items-center justify-center text-pmmg-khaki shadow-inner">
                     <i data-lucide="shield-check"class="w-8 h-8"></i>
                 </div>
-                <h2 class="text-3xl font-military tracking-widest text-pmmg-khaki uppercase leading-none">AZIMUTE PMMG</h2>
-                <p class="text-xs text-gray-400">Sistema de Consulta Rápida Restrito • Autenticação de Acesso</p>
+                <h2 class="text-3xl font-military tracking-widest text-pmmg-khaki uppercase leading-none">AZIMUTE</h2>
             </div>
 
             <div class="space-y-4">
@@ -871,13 +870,8 @@
                     </button>
                 </div>
 
-                <!-- Direita: Seletor Rápido App | GRID | PC + Data/Hora + Botões Compactos -->
+                <!-- Direita: Data/Hora + Botões Compactos (Seletor de modo apenas nas Configurações) -->
                 <div class="flex items-center gap-1.5 shrink-0">
-                    <div class="flex items-center bg-pmmg-black p-0.5 rounded-lg border border-pmmg-border text-[10px] shrink-0" title="Modo de Exibição">
-                        <button type="button" onclick="setLayoutMode('app', true)" id="top-btn-mode-app" class="px-1.5 py-1 rounded font-extrabold bg-pmmg-card text-pmmg-khaki border border-pmmg-gold cursor-pointer">App</button>
-                        <button type="button" onclick="setLayoutMode('grid', true)" id="top-btn-mode-grid" class="px-1.5 py-1 rounded font-semibold text-gray-400 hover:text-gray-200 border border-transparent cursor-pointer">GRID</button>
-                        <button type="button" onclick="setLayoutMode('web', true)" id="top-btn-mode-web" class="px-1.5 py-1 rounded font-semibold text-gray-400 hover:text-gray-200 border border-transparent cursor-pointer">PC</button>
-                    </div>
                     <!-- Data e Hora Discreta em Tempo Real (Exibida automaticamente em Modo Tela Cheia) -->
                     <div id="fullscreenDateTimeBadge" class="items-center gap-1.5 px-2.5 h-8 rounded-lg bg-pmmg-black/90 border border-pmmg-border text-[10.5px] font-mono text-gray-300 tracking-tight select-none shrink-0" title="Data e Hora em Tempo Real">
                         <span id="fullscreenDateText" class="text-gray-400">--/--</span>
@@ -1521,8 +1515,12 @@
       width: 100%;
       height: 100%;
       z-index: 1;
+      background: #0D0D0D !important;
       touch-action: none;
       transition: none !important;
+    }
+    .maplibregl-canvas-container, .maplibregl-canvas {
+      background: #0D0D0D !important;
     }
 
     .maplibregl-ctrl-bottom-left,
@@ -1530,22 +1528,19 @@
       display: none !important;
     }
 
+    /* Coluna vertical unificada à esquerda será controlada pelo bloco unificado no fim do arquivo */
     .az-geo-zoom-stack {
-      position: absolute;
-      left: 10px;
-      top: 10px;
-      z-index: 600;
       display: flex;
       flex-direction: column;
       border-radius: 8px;
       overflow: hidden;
-      border: 1px solid var(--geo-border);
-      background: rgba(13, 13, 13, 0.94);
+      border: 1px solid rgba(197, 168, 105, 0.55);
+      background: rgba(13, 13, 13, 0.95);
     }
 
     .az-geo-zoom-stack button {
-      width: 32px;
-      height: 32px;
+      width: 36px;
+      height: 34px;
       background: transparent;
       color: var(--geo-gold);
       border: 0;
@@ -1559,25 +1554,19 @@
       border-bottom: 0;
     }
 
-    /* BOTÃO CENTRALIZAR BLINDADO PARA VERTICAL E HORIZONTAL */
+    /* BOTÃO AZUL DE CENTRALIZAR GPS INTEGRADO NA COLUNA */
     .az-geo-locate-fab {
-      position: absolute !important;
-      right: 12px !important;
-      bottom: 14px !important;
-      left: auto !important;
-      top: auto !important;
-      z-index: 750 !important;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      background: rgba(13, 13, 13, 0.94);
-      border: 1.5px solid rgba(197, 168, 105, 0.95);
-      color: #C5A869;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: rgba(37, 99, 235, 0.94);
+      border: 1.5px solid #93C5FD;
+      color: #FFFFFF;
       display: flex !important;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.78);
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.72);
     }
 
     .az-geo-locate-fab.is-heading-up {
@@ -2610,7 +2599,7 @@
   </style>
 
   <button type="button" id="azGeoDrawerToggle" class="az-geo-drawer-btn" aria-expanded="true" onclick="window.azimuteToggleGeoDrawer()">
-    <span>MAPA INTERATIVO RMBH</span>
+    <span>GEOLOCALIZAÇÃO</span>
     <span id="azGeoDrawerArrow">FECHAR -</span>
   </button>
   <script>
@@ -2632,15 +2621,7 @@
   </script>
 
   <div id="azGeoDrawerBody" class="az-geo-drawer-body is-open">
-    <div class="az-geo-topbar">
-      <div class="az-geo-search-wrap">
-        <input id="azGeoSearchInput" class="az-geo-input" type="text" placeholder="Buscar rua, unidade, hospital, BSC, Deplan..." />
-        <button type="button" id="azGeoSearchBtn" class="az-geo-btn">Buscar</button>
-      </div>
-    </div>
-
-    <div id="azGeoSearchResults" class="az-geo-results"></div>
-
+    <!-- Barra de busca removida em tela reduzida (lupa unificada na coluna do mapa) -->
     <div id="azGeoTbtBar" class="az-geo-tbt-bar">
       <div class="az-geo-tbt-main">
         <span id="azGeoTbtNext" class="az-geo-tbt-next">Siga pela via atual</span>
@@ -2651,25 +2632,11 @@
 
     <div class="az-geo-stage" id="azGeoStage">
       <div id="azGeoMap"></div>
-      <div class="az-geo-zoom-stack">
-        <button type="button" id="azGeoZoomInBtn" aria-label="Aproximar">+</button>
-        <button type="button" id="azGeoZoomOutBtn" aria-label="Afastar">−</button>
-      </div>
       <button type="button" id="azGeoLockBadge" class="az-geo-lock-badge" title="Travar rumo do mapa e do Orbe ao manusear o celular">
         <span>RUMO LIVRE</span>
       </button>
       <button type="button" id="azGeoNorthBadge" class="az-geo-compass-badge" title="Alinhar Norte para cima">N</button>
       <button type="button" id="azGeoTiltBadge" class="az-geo-tilt-badge" title="Alternar perspectiva 2D / 3D (ou use dois dedos no mapa)">2D</button>
-      <button type="button" id="azGeoCenterFab" class="az-geo-locate-fab is-heading-up" aria-label="Centralizar na Minha Posicao" title="Centralizar e Alinhar">
-        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="7"></circle>
-          <circle cx="12" cy="12" r="2"></circle>
-          <line x1="12" y1="2" x2="12" y2="5"></line>
-          <line x1="12" y1="19" x2="12" y2="22"></line>
-          <line x1="2" y1="12" x2="5" y2="12"></line>
-          <line x1="19" y1="12" x2="22" y2="12"></line>
-        </svg>
-      </button>
     </div>
 
     <div id="azGeoRouteBox" class="az-geo-collapsible">
@@ -2692,9 +2659,6 @@
 
     <div class="az-geo-actions">
       <button type="button" id="azGeoIncursionBtn" class="az-geo-btn incursion">Incursão</button>
-      <button type="button" id="azGeoLayersToggleBtn" class="az-geo-btn active">Camadas</button>
-      <button type="button" id="azGeoAddPinBtn" class="az-geo-btn subtle">+ Alfinete</button>
-      <button type="button" id="azGeoClearBtn" class="az-geo-btn subtle">Limpar</button>
       <button type="button" id="azGeoMunToggleBtn" class="az-geo-btn subtle">Municípios</button>
       <button type="button" id="azGeoCfgToggleBtn" class="az-geo-btn subtle" aria-label="Configuracoes">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -2732,19 +2696,19 @@
       </div>
     </div>
 
-    <div id="azGeoMunBox" class="az-geo-collapsible">
-      <div class="az-geo-scroll-row">
-        <button type="button" id="azGeoCitiesLeft" class="az-geo-scroll-btn" aria-label="Rolar esquerda">&lt;</button>
-        <div id="azGeoCities" class="az-geo-cities">
-          <button type="button" class="az-geo-btn subtle" data-lat="-19.9191" data-lng="-43.9386" data-zoom="13">Belo Horizonte</button>
-          <button type="button" class="az-geo-btn subtle" data-lat="-19.9321" data-lng="-44.0539" data-zoom="13">Contagem</button>
-          <button type="button" class="az-geo-btn subtle" data-lat="-19.9678" data-lng="-44.1983" data-zoom="13">Betim</button>
-          <button type="button" class="az-geo-btn subtle" data-lat="-20.0219" data-lng="-44.0589" data-zoom="13">Ibirité</button>
-          <button type="button" class="az-geo-btn subtle" data-lat="-19.8856" data-lng="-43.8069" data-zoom="13">Sabará</button>
-          <button type="button" class="az-geo-btn subtle" data-lat="-19.9858" data-lng="-43.8469" data-zoom="13">Nova Lima</button>
-          <button type="button" class="az-geo-btn subtle" data-lat="-19.7669" data-lng="-44.0869" data-zoom="13">Ribeirão das Neves</button>
-        </div>
-        <button type="button" id="azGeoCitiesRight" class="az-geo-scroll-btn" aria-label="Rolar direita">&gt;</button>
+    <div id="azGeoMunBox" class="az-geo-collapsible" style="background:#141414;border:1.5px solid #C5A869;border-radius:12px;padding:10px;margin-top:6px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #28271F;padding-bottom:6px;margin-bottom:8px;">
+        <span style="font-size:10px;font-weight:900;color:#C5A869;letter-spacing:0.5px;">MUNICÍPIOS DA RMBH</span>
+        <button type="button" onclick="document.getElementById('azGeoMunBox')?.classList.remove('is-open')" style="background:none;border:none;color:#9E9A8F;font-weight:900;cursor:pointer;font-size:13px;">✕</button>
+      </div>
+      <div id="azGeoCities" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;max-height:190px;overflow-y:auto;">
+        <button type="button" class="az-geo-btn subtle" data-lat="-19.9191" data-lng="-43.9386" data-zoom="13">Belo Horizonte</button>
+        <button type="button" class="az-geo-btn subtle" data-lat="-19.9321" data-lng="-44.0539" data-zoom="13">Contagem</button>
+        <button type="button" class="az-geo-btn subtle" data-lat="-19.9678" data-lng="-44.1983" data-zoom="13">Betim</button>
+        <button type="button" class="az-geo-btn subtle" data-lat="-20.0219" data-lng="-44.0589" data-zoom="13">Ibirité</button>
+        <button type="button" class="az-geo-btn subtle" data-lat="-19.8856" data-lng="-43.8069" data-zoom="13">Sabará</button>
+        <button type="button" class="az-geo-btn subtle" data-lat="-19.9858" data-lng="-43.8469" data-zoom="13">Nova Lima</button>
+        <button type="button" class="az-geo-btn subtle" data-lat="-19.7669" data-lng="-44.0869" data-zoom="13">Ribeirão das Neves</button>
       </div>
     </div>
 
@@ -3376,7 +3340,7 @@
             </div>
 
             <!-- 2. FAIXA COMPACTA: APOIO MAIS PRÓXIMO (GPS) (POSICIONADA ABAIXO DE ACESSO RÁPIDO) -->
-            <div id="homeNearestSupportSection" class="bg-pmmg-card border border-pmmg-khaki/50 rounded-2xl p-3 sm:p-3.5 shadow-xl max-w-7xl mx-auto space-y-2.5">
+            <div id="homeNearestSupportSection" style="margin-top: 1.35rem;" class="bg-pmmg-card border border-pmmg-khaki/50 rounded-2xl p-3 sm:p-3.5 shadow-xl max-w-7xl mx-auto space-y-2.5 mt-5">
                 <div class="flex items-center justify-between gap-2 border-b border-pmmg-border pb-1.5">
                     <span class="text-[10px] font-extrabold uppercase tracking-wider text-pmmg-khaki flex items-center gap-1.5">
                         <i data-lucide="radar" class="w-3.5 h-3.5 text-pmmg-gold"></i>Apoio Mais Próximo (GPS)
@@ -7405,47 +7369,73 @@
                 </div>
             </div>
 
+            <!-- CAIXA ÚNICA: RMBH (TODAS AS RPMs AGRUPADAS) -->
+            <div class="bg-pmmg-card/60 border border-pmmg-gold/45 rounded-2xl p-3.5 space-y-3">
+                <div class="flex items-center justify-between border-b border-pmmg-border pb-2">
+                    <h3 class="text-lg sm:text-xl font-military text-pmmg-khaki uppercase tracking-wider leading-none">RMBH</h3>
+                    <span class="text-[10px] font-mono font-bold text-pmmg-gold bg-pmmg-dark px-2 py-0.5 rounded border border-pmmg-gold/40">1ª • 2ª • 3ª RPM</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <!-- 1. 1ª RPM (Capital) -->
+                    <div onclick="showView('rpm1')" class="bg-pmmg-card p-4 rounded-xl tactical-border tactical-card cursor-pointer group flex flex-col justify-between space-y-2.5">
+                        <div class="space-y-1">
+                            <div class="flex justify-between items-center">
+                                <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-khaki font-bold px-2 py-0.5 rounded border border-pmmg-khaki/30 uppercase">1ª RPM • Capital</span>
+                                <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500 group-hover:text-pmmg-khaki transition-colors"></i>
+                            </div>
+                            <h3 class="text-lg sm:text-xl font-military text-pmmg-khaki uppercase font-bold tracking-wide leading-none pt-0.5">1ª RPM • Belo Horizonte</h3>
+                            <p class="text-xs text-gray-400">1º, 5º, 13º, 16º, 22º, 34º, 41º, 49º BPM e BPTran</p>
+                        </div>
+                        <div class="pt-2.5 border-t border-pmmg-border flex justify-between items-center text-xs font-bold text-pmmg-khaki">
+                            <span>9 Unidades</span>
+                            <span class="flex items-center gap-1">Acessar <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
+                        </div>
+                    </div>
+
+                    <!-- 2. 2ª RPM (RMBH) -->
+                    <div onclick="showView('rpm2')" class="bg-pmmg-card p-4 rounded-xl border border-pmmg-gold/60 tactical-card cursor-pointer group flex flex-col justify-between space-y-2.5">
+                        <div class="space-y-1">
+                            <div class="flex justify-between items-center">
+                                <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-gold font-bold px-2 py-0.5 rounded border border-pmmg-gold/30 uppercase">2ª RPM • RMBH</span>
+                                <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500 group-hover:text-pmmg-gold transition-colors"></i>
+                            </div>
+                            <h3 class="text-lg sm:text-xl font-military text-pmmg-gold uppercase font-bold tracking-wide leading-none pt-0.5">2ª RPM • Região Metropolitana</h3>
+                            <p class="text-xs text-gray-400">18º BPM (Completo), 33º, 39º, 40º, 48º, 66º BPM, 6ª e 7ª Cia Ind</p>
+                        </div>
+                        <div class="pt-2.5 border-t border-pmmg-border flex justify-between items-center text-xs font-bold text-pmmg-gold">
+                            <span>8 Unidades • 18º BPM Ativo</span>
+                            <span class="flex items-center gap-1">Acessar <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
+                        </div>
+                    </div>
+
+                    <!-- 3. 3ª RPM -->
+                    <div onclick="showView('rpm3')" class="bg-pmmg-card p-4 rounded-xl tactical-border tactical-card cursor-pointer group flex flex-col justify-between space-y-2.5 opacity-95 hover:opacity-100">
+                        <div class="space-y-1">
+                            <div class="flex justify-between items-center">
+                                <span class="text-[10px] bg-pmmg-dark text-gray-300 font-bold px-2 py-0.5 rounded border border-pmmg-border uppercase">3ª RPM • RMBH / Expansão</span>
+                                <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500 group-hover:text-pmmg-khaki transition-colors"></i>
+                            </div>
+                            <h3 class="text-lg sm:text-xl font-military text-white uppercase font-bold tracking-wide leading-none pt-0.5">3ª RPM • Vetor Norte / Leste</h3>
+                            <p class="text-xs text-gray-400">Santa Luzia, Vespasiano, Lagoa Santa, Sabará e entorno</p>
+                        </div>
+                        <div class="pt-2.5 border-t border-pmmg-border flex justify-between items-center text-xs font-bold text-pmmg-khaki">
+                            <span>Área pronta para receber os dados</span>
+                            <span class="flex items-center gap-1">Acessar <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ABAIXO DA RMBH: ESPECIALIZADAS E ESTÁDIOS -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                <!-- 1. 1ª RPM (Capital) -->
-                <div onclick="showView('rpm1')" class="bg-pmmg-card p-4 rounded-xl tactical-border tactical-card cursor-pointer group flex flex-col justify-between space-y-2.5">
-                    <div class="space-y-1">
-                        <div class="flex justify-between items-center">
-                            <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-khaki font-bold px-2 py-0.5 rounded border border-pmmg-khaki/30 uppercase">1ª RPM • Capital</span>
-                            <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500 group-hover:text-pmmg-khaki transition-colors"></i>
-                        </div>
-                        <h3 class="text-lg sm:text-xl font-military text-pmmg-khaki uppercase font-bold tracking-wide leading-none pt-0.5">1ª RPM • Belo Horizonte</h3>
-                        <p class="text-xs text-gray-400">1º, 5º, 13º, 16º, 22º, 34º, 41º, 49º BPM e BPTran</p>
-                    </div>
-                    <div class="pt-2.5 border-t border-pmmg-border flex justify-between items-center text-xs font-bold text-pmmg-khaki">
-                        <span>9 Unidades</span>
-                        <span class="flex items-center gap-1">Acessar <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
-                    </div>
-                </div>
-
-                <!-- 2. 2ª RPM (RMBH) -->
-                <div onclick="showView('rpm2')" class="bg-pmmg-card p-4 rounded-xl border border-pmmg-gold/60 tactical-card cursor-pointer group flex flex-col justify-between space-y-2.5">
-                    <div class="space-y-1">
-                        <div class="flex justify-between items-center">
-                            <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-gold font-bold px-2 py-0.5 rounded border border-pmmg-gold/30 uppercase">2ª RPM • RMBH</span>
-                            <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500 group-hover:text-pmmg-gold transition-colors"></i>
-                        </div>
-                        <h3 class="text-lg sm:text-xl font-military text-pmmg-gold uppercase font-bold tracking-wide leading-none pt-0.5">2ª RPM • Região Metropolitana</h3>
-                        <p class="text-xs text-gray-400">18º BPM (Completo), 33º, 39º, 40º, 48º, 66º BPM, 6ª e 7ª Cia Ind</p>
-                    </div>
-                    <div class="pt-2.5 border-t border-pmmg-border flex justify-between items-center text-xs font-bold text-pmmg-gold">
-                        <span>8 Unidades • 18º BPM Ativo</span>
-                        <span class="flex items-center gap-1">Acessar <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
-                    </div>
-                </div>
-
-                <!-- 3. UNIDADES ESPECIALIZADAS -->
+                <!-- ESPECIALIZADAS -->
                 <div onclick="showView('especializadas')" class="bg-pmmg-card p-4 rounded-xl tactical-border tactical-card cursor-pointer group flex flex-col justify-between space-y-2.5">
                     <div class="space-y-1">
                         <div class="flex justify-between items-center">
                             <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-khaki font-bold px-2 py-0.5 rounded border border-pmmg-khaki/30 uppercase">CPE / CME / Recobrimento</span>
                             <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500 group-hover:text-pmmg-khaki transition-colors"></i>
                         </div>
-                        <h3 class="text-lg sm:text-xl font-military text-pmmg-khaki uppercase font-bold tracking-wide leading-none pt-0.5">Unidades Especializadas</h3>
+                        <h3 class="text-lg sm:text-xl font-military text-pmmg-khaki uppercase font-bold tracking-wide leading-none pt-0.5">Especializadas</h3>
                         <p class="text-xs text-gray-400">GER, ROTAM, BOPE, Choque, ROCCA, BEPE, BPGd, MAmb, BPMRv e RCAT</p>
                     </div>
                     <div class="pt-2.5 border-t border-pmmg-border flex justify-between items-center text-xs font-bold text-pmmg-khaki">
@@ -7454,18 +7444,18 @@
                     </div>
                 </div>
 
-                <!-- 4. 3ª RPM -->
-                <div onclick="showView('rpm3')" class="bg-pmmg-card p-4 rounded-xl tactical-border tactical-card cursor-pointer group flex flex-col justify-between space-y-2.5 opacity-95 hover:opacity-100">
+                <!-- ESTÁDIOS -->
+                <div onclick="showView('estadios')" class="bg-pmmg-card p-4 rounded-xl tactical-border tactical-card cursor-pointer group flex flex-col justify-between space-y-2.5">
                     <div class="space-y-1">
                         <div class="flex justify-between items-center">
-                            <span class="text-[10px] bg-pmmg-dark text-gray-300 font-bold px-2 py-0.5 rounded border border-pmmg-border uppercase">3ª RPM • RMBH / Expansão</span>
-                            <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500 group-hover:text-pmmg-khaki transition-colors"></i>
+                            <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-gold font-bold px-2 py-0.5 rounded border border-pmmg-gold/30 uppercase">Grandes Eventos</span>
+                            <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500 group-hover:text-pmmg-gold transition-colors"></i>
                         </div>
-                        <h3 class="text-lg sm:text-xl font-military text-white uppercase font-bold tracking-wide leading-none pt-0.5">3ª RPM • Vetor Norte / Leste</h3>
-                        <p class="text-xs text-gray-400">Santa Luzia, Vespasiano, Lagoa Santa, Sabará e entorno</p>
+                        <h3 class="text-lg sm:text-xl font-military text-pmmg-gold uppercase font-bold tracking-wide leading-none pt-0.5">Estádios</h3>
+                        <p class="text-xs text-gray-400">Mineirão, Arena MRV e Independência — Setores, Portões e RPAS</p>
                     </div>
-                    <div class="pt-2.5 border-t border-pmmg-border flex justify-between items-center text-xs font-bold text-pmmg-khaki">
-                        <span>Área pronta para receber os dados</span>
+                    <div class="pt-2.5 border-t border-pmmg-border flex justify-between items-center text-xs font-bold text-pmmg-gold">
+                        <span>3 Arenas</span>
                         <span class="flex items-center gap-1">Acessar <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
                     </div>
                 </div>
@@ -13849,7 +13839,7 @@
             document.getElementById('connSummaryDownPing').textContent = (measuredDownMbps >0 ? measuredDownMbps.toFixed(1) + 'Mbps' : '-- Mbps') + ' / ' + pingFmt;
             document.getElementById('connSummaryTech').textContent = techInfo.label;
 
-            if (typeof showToast === 'function') {
+            if (false && typeof showToast === 'function') {
                 const labelMap = { good: 'Conectividade BOA', moderate: 'Conectividade MODERADA', bad: 'Conectividade RUIM' };
                 showToast(`${labelMap[finalState]} (${downFmt} • ${pingFmt})`);
             }
@@ -21374,26 +21364,50 @@ if (document.readyState === "loading") {
     height: 375px !important;
   }
 
-  /* 3. Botão de centralizar: visível dentro do mapa na aba Geolocalização */
-  body:not(.az-map-fullscreen) #azGeoCenterFab {
-    display: none !important;
-    visibility: hidden !important;
-    pointer-events: none !important;
+  /* 3. Coluna Vertical Unificada à Esquerda (Lupa -> Camadas -> GPS Azul -> Zoom+ -> Zoom- -> Travar Mapa) */
+  #azLeftMapToolsCol {
+    position: fixed !important;
+    top: calc(56px + env(safe-area-inset-top, 0px)) !important;
+    left: 8px !important;
+    z-index: 100044 !important;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    pointer-events: auto;
+  }
+  #azLeftMapToolsCol.is-visible { display: flex !important; }
+  #azLeftMapToolsCol .az-hud-glass-btn {
+    width: 36px !important;
+    height: 36px !important;
   }
   body.az-map-fullscreen #azGeoCenterFab {
     display: inline-flex !important;
     visibility: visible !important;
     pointer-events: auto !important;
-    position: absolute !important;
-    bottom: 14px !important;
-    right: 12px !important;
-    z-index: 750 !important;
+    position: relative !important;
+    top: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: auto !important;
   }
-  body.az-map-expanded #azGeoCenterFab {
+  body:not(.az-map-fullscreen) #azGeoCenterFab {
+    display: none !important;
+  }
+  /* 2D/3D visível em tela reduzida e tela cheia */
+  body.az-map-expanded #azGeoTiltBadge {
     position: fixed !important;
-    bottom: 76px !important;
-    right: 12px !important;
-    z-index: 100043 !important;
+    top: calc(104px + env(safe-area-inset-top, 0px)) !important;
+    right: 10px !important;
+    z-index: 100044 !important;
+    display: flex !important;
+  }
+  body.az-map-expanded #azGeoNorthBadge {
+    position: fixed !important;
+    top: calc(62px + env(safe-area-inset-top, 0px)) !important;
+    right: 10px !important;
+    z-index: 100044 !important;
+    display: flex !important;
   }
 
   /* 4. Barra Superior ATAK */
@@ -21458,11 +21472,12 @@ if (document.readyState === "loading") {
   #azMicroTelemetryHud {
     flex: 1 1 auto;
     min-width: 0;
-    height: 35px;
-    background: rgba(13, 13, 13, 0.94) !important;
-    border: 1px solid rgba(197, 168, 105, 0.45) !important;
+    min-height: 36px;
+    height: auto;
+    background: rgba(13, 13, 13, 0.95) !important;
+    border: 1px solid rgba(197, 168, 105, 0.48) !important;
     border-radius: 7px;
-    padding: 2px 8px;
+    padding: 3px 8px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -21479,11 +21494,11 @@ if (document.readyState === "loading") {
   }
   .az-hud-line-sub {
     font-size: 10.5px;
+    line-height: 1.18;
     font-weight: 800;
     color: #FFFFFF;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: normal;
+    word-break: break-word;
   }
 
   /* Banner CÃO DE CAÇA */
@@ -21589,24 +21604,23 @@ if (document.readyState === "loading") {
     cursor: pointer;
   }
 
-  /* Controles inferiores (Travar Mapa, Desfazer, Encerrar Ferramentas) */
+  /* Controles inferiores (Desfazer, Encerrar Ferramentas) + Travar Mapa na Coluna */
   #azLockMapDrawBtn {
-    position: fixed !important;
-    bottom: 124px !important;
-    right: 12px !important;
-    z-index: 100044 !important;
+    width: 36px !important;
     height: 32px !important;
-    padding: 0 10px !important;
-    border-radius: 8px !important;
-    background: #0D0D0D !important;
+    padding: 0 3px !important;
+    border-radius: 7px !important;
+    background: rgba(13, 13, 13, 0.95) !important;
     color: #C5A869 !important;
-    border: 1.5px solid #C5A869 !important;
-    font-size: 9.5px !important;
+    border: 1.5px solid rgba(197, 168, 105, 0.65) !important;
+    font-size: 7.5px !important;
     font-weight: 900 !important;
+    text-align: center;
+    line-height: 1.05;
     cursor: pointer;
     display: none;
     align-items: center;
-    gap: 5px;
+    justify-content: center;
     opacity: 1 !important;
   }
   #azLockMapDrawBtn.is-visible { display: inline-flex !important; }
@@ -22317,18 +22331,12 @@ if (document.readyState === "loading") {
 <input type="file" id="azNativeCameraInput" accept="image/*" capture="environment" style="display:none;">
 <input type="file" id="azNativeGalleryInput" accept="image/*" style="display:none;">
 
-<!-- Barra Superior -->
+<!-- Barra Superior (Endereço completo + Grupo + Expandir + Hospital + Menu) -->
 <div id="azTopHudShell">
-  <button type="button" class="az-hud-glass-btn" id="azHudSearchToggleBtn" title="Buscar endereço ou coordenada">
-    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-  </button>
   <div id="azMicroTelemetryHud" title="QTH e Rede">
     <div class="az-hud-line-top" id="azHudUnitNetLine">PMMG • REDE RMBH</div>
     <div class="az-hud-line-sub" id="azHudStreetLine">Localizando via...</div>
   </div>
-  <button type="button" class="az-hud-glass-btn" id="azSatToggleBtn" title="Alternar Mapa Satélite">
-    <svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
-  </button>
   <button type="button" class="az-hud-glass-btn" id="azWhatsappGroupOpenBtn" title="Grupo da Equipe (Chat e PTT)" style="width:auto !important;padding:0 8px !important;gap:4px;font-size:10px;font-weight:900;color:#4ADE80 !important;">
     <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
     <span id="azTopGroupBadge">GRUPO</span>
@@ -22337,12 +22345,31 @@ if (document.readyState === "loading") {
     <svg viewBox="0 0 24 24"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
   </button>
   <button type="button" class="az-hud-glass-btn az-hud-hosp-btn" id="azQuickHospitalRouteBtn" title="Rota Hospital Próximo">+</button>
-  <button type="button" class="az-hud-glass-btn" id="azHudEyeToggleBtn" title="Ocultar / Exibir camadas (Tela Limpa)">
-    <svg id="azHudEyeIcon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-  </button>
   <button type="button" class="az-hud-glass-btn" id="azAtakHamburgerBtn" title="Menu Tático">
     <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
   </button>
+</div>
+
+<!-- Coluna Vertical Unificada à Esquerda: 1. Lupa -> 2. Camadas -> 3. GPS Azul -> 4. Zoom+ -> 5. Zoom- -> 6. Travar Mapa -->
+<div id="azLeftMapToolsCol">
+  <button type="button" class="az-hud-glass-btn" id="azHudSearchToggleBtn" title="Buscar endereço ou coordenada">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+  </button>
+  <button type="button" class="az-hud-glass-btn" id="azSatToggleBtn" title="Troca de Camadas (Mapa / Satélite)">
+    <svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+  </button>
+  <button type="button" id="azGeoCenterFab" class="az-geo-locate-fab is-heading-up" aria-label="Centralizar na Minha Posicao" title="Centralizar GPS">
+    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="7"></circle><circle cx="12" cy="12" r="2"></circle>
+      <line x1="12" y1="2" x2="12" y2="5"></line><line x1="12" y1="19" x2="12" y2="22"></line>
+      <line x1="2" y1="12" x2="5" y2="12"></line><line x1="19" y1="12" x2="22" y2="12"></line>
+    </svg>
+  </button>
+  <div class="az-geo-zoom-stack">
+    <button type="button" id="azGeoZoomInBtn" aria-label="Aproximar">+</button>
+    <button type="button" id="azGeoZoomOutBtn" aria-label="Afastar">−</button>
+  </div>
+  <button type="button" id="azLockMapDrawBtn" title="Travar mapa para desenhar">TRAVAR</button>
 </div>
 
 <!-- MODAL DE GRUPO ESTILO WHATSAPP (CHAT, COR EXCLUSIVA SEM ROSA, MEMBROS & PTT) -->
@@ -22608,9 +22635,6 @@ if (document.readyState === "loading") {
   <button type="button" id="azFloatingMapPttBtn" title="Toque para falar na rede">PTT</button>
 </div>
 
-<!-- Travar Mapa -->
-<button type="button" id="azLockMapDrawBtn">TRAVAR MAPA</button>
-
 <button type="button" id="azNavChevronToggleBtn" title="Mostrar/Ocultar teclas inferiores">▲</button>
 
 <!-- Menu Lateral Estilo ATAK -->
@@ -22691,7 +22715,7 @@ if (document.readyState === "loading") {
     </button>
     <button type="button" class="az-grid-tile" data-grid-act="wheel_settings">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-      Opções Roda
+      Opções Anel
     </button>
     <button type="button" class="az-grid-tile" data-grid-act="clear_all">
       <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
@@ -22774,10 +22798,10 @@ if (document.readyState === "loading") {
 <!-- Roda Radial ATAK -->
 <div id="azRadialWheel"></div>
 
-<!-- Modal Personalizar Opções da Roda -->
+<!-- Modal Personalizar Anel Tático -->
 <div id="azWheelConfigModal">
   <div style="display:flex;justify-content:space-between;align-items:center;">
-    <span style="font-size:10.5px;font-weight:900;color:#C5A869;">PERSONALIZAR OPÇÕES DA RODA</span>
+    <span style="font-size:10.5px;font-weight:900;color:#C5A869;">PERSONALIZAR ANEL TÁTICO</span>
     <button type="button" id="azCloseWheelCfgBtn" style="background:none;border:none;color:#9E9A8F;font-weight:900;cursor:pointer;">✕</button>
   </div>
   <div style="font-size:9.5px;color:#9E9A8F;">Selecione os comandos exibidos ao tocar em um ponto:</div>
@@ -22887,11 +22911,13 @@ if (document.readyState === "loading") {
 
   const ALL_WHEEL_ACTIONS = [
     { id: "fine_tune", svg: SVG_ICONS.fine_tune, label: "AJUSTE" },
-    { id: "trash", svg: SVG_ICONS.trash, label: "LIXEIRA", cls: "is-trash" },
+    { id: "trash", svg: SVG_ICONS.trash, label: "EXCLUIR", cls: "is-trash" },
     { id: "route", svg: SVG_ICONS.route, label: "ROTA" },
     { id: "bloodhound", svg: SVG_ICONS.bloodhound, label: "CÃO CAÇA", cls: "is-hunt" },
     { id: "edit", svg: SVG_ICONS.edit, label: "EDITAR" },
-    { id: "photo", svg: SVG_ICONS.photo, label: "FOTO" }
+    { id: "photo", svg: SVG_ICONS.photo, label: "FOTO" },
+    { id: "copy_qth", svg: SVG_ICONS.pin, label: "COORDS" },
+    { id: "ruler", svg: SVG_ICONS.fine_tune, label: "MEDIR" }
   ];
 
   const savedWheelIds = JSON.parse(localStorage.getItem("az_tac_wheel_items") || "null") ||
@@ -24199,10 +24225,22 @@ if (document.readyState === "loading") {
       renderLineOnMaps("az-bloodhound-src", "az-bloodhound-line", [], "#F97316", true, null, null, 4.2);
       return;
     }
-    if (tac.bloodhoundTarget.type === "mate" && tac.teammates[tac.bloodhoundTarget.id]) {
-      const m = tac.teammates[tac.bloodhoundTarget.id];
-      tac.bloodhoundTarget.lat = m.lat;
-      tac.bloodhoundTarget.lng = m.lng;
+    if (tac.bloodhoundTarget.type === "mate") {
+      if (tac.teammates[tac.bloodhoundTarget.id]) {
+        const m = tac.teammates[tac.bloodhoundTarget.id];
+        tac.bloodhoundTarget.lat = m.lat;
+        tac.bloodhoundTarget.lng = m.lng;
+      }
+    } else if (tac.bloodhoundTarget.type === "pin") {
+      const livePin = tac.pins.find(function (p) { return p.id === tac.bloodhoundTarget.id; });
+      if (!livePin) {
+        setBloodhoundTarget(null);
+        return;
+      }
+      tac.bloodhoundTarget.lat = livePin.lat;
+      tac.bloodhoundTarget.lng = livePin.lng;
+      tac.bloodhoundTarget.label = livePin.label;
+      renderBloodhoundTargetMarker(livePin.lat, livePin.lng, livePin.label);
     }
     const map = getActiveMap();
     const oLat = tac.myPos ? tac.myPos.lat : (map ? map.getCenter().lat : tac.bloodhoundTarget.lat);
@@ -24321,6 +24359,15 @@ if (document.readyState === "loading") {
         document.getElementById("azPinEditorModal").classList.add("is-open");
       } else if (actId === "photo") {
         openPhotoModal({ lat: p.lat, lng: p.lng });
+      } else if (actId === "copy_qth") {
+        const cTxt = `${p.lat.toFixed(6)}, ${p.lng.toFixed(6)}`;
+        if (navigator.clipboard) navigator.clipboard.writeText(cTxt).catch(function () {});
+        showToast("Coordenadas copiadas: " + cTxt);
+      } else if (actId === "ruler") {
+        tac.rulerActive = true;
+        tac.rulerCoords = [[p.lng, p.lat]];
+        refreshLeftControls();
+        showToast("Régua iniciada a partir deste ponto.");
       }
     }
   }
@@ -24370,7 +24417,10 @@ if (document.readyState === "loading") {
     document.getElementById("azRemoteFineTunePad").classList.remove("is-open");
     tac.fineTunePin = null;
     tac.fineTuneStartPos = null;
-    if (commit && p) upsertTacticalPin(p, false);
+    if (commit && p) {
+      upsertTacticalPin(p, false);
+      updateBloodhoundVector();
+    }
   }
 
   /* =====================================================================
@@ -24382,6 +24432,7 @@ if (document.readyState === "loading") {
     tac.pins[idx].markers.forEach(function (i) { i.marker.remove(); });
     tac.pins.splice(idx, 1);
     broadcastPacket({ kind: "del_pin", pinId: pinId });
+    updateBloodhoundVector();
     refreshLeftControls();
     showToast("Marcador removido.");
   }
@@ -25166,20 +25217,11 @@ if (document.readyState === "loading") {
     const vis = isMapTabVisible();
     document.body.classList.toggle("az-map-fullscreen", vis);
     document.getElementById("azTopHudShell").classList.toggle("is-visible", vis);
+    const leftCol = document.getElementById("azLeftMapToolsCol");
+    if (leftCol) leftCol.classList.toggle("is-visible", vis);
     document.getElementById("azFloatingPttGroup").classList.toggle("is-visible", vis);
     document.getElementById("azLockMapDrawBtn").classList.toggle("is-visible", vis);
     renderEdgeIndicators();
-
-    // Contém #azGeoCenterFab estritamente na aba Geolocalização
-    const centerFab = document.getElementById("azGeoCenterFab");
-    if (centerFab) {
-      if (vis) {
-        if (centerFab.parentElement !== document.body) document.body.appendChild(centerFab);
-        centerFab.style.setProperty("display", "inline-flex", "important");
-      } else {
-        centerFab.style.setProperty("display", "none", "important");
-      }
-    }
     if (!vis) closeDock();
 
     document.getElementById("azHudUnitNetLine").textContent = tac.roomCode ? `PMMG • TURNO ${tac.roomCode}` : "PMMG • REDE RMBH";
@@ -25370,24 +25412,6 @@ if (document.readyState === "loading") {
 
   // Satélite + Hospital + Menu
   onClick("azSatToggleBtn", toggleSatelliteMode);
-  onClick("azHudEyeToggleBtn", function () {
-    const clean = document.body.classList.toggle("az-map-clean-eye");
-    this.classList.toggle("is-active", clean);
-    const ico = document.getElementById("azHudEyeIcon");
-    if (ico) {
-      ico.innerHTML = clean
-        ? '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>'
-        : '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
-    }
-    const visVal = clean ? "none" : "visible";
-    ["az-tac-freehand-line", "az-tac-circle-fill", "az-tac-circle-line", "az-tac-crumbs-line", "az-tac-ruler-line"].forEach(function (lid) {
-      tac.maps.forEach(function (m) {
-        try { if (m.getLayer(lid)) m.setLayoutProperty(lid, "visibility", visVal); } catch (_) {}
-      });
-    });
-    if (clean) closeDock();
-    showToast(clean ? "Modo Tela Limpa: camadas ocultas" : "Camadas táticas restauradas");
-  });
   onClick("azQuickHospitalRouteBtn", function () { generateRouteToTarget(-19.9277, -43.9317, "HPS João XXIII"); });
   onClick("azAtakHamburgerBtn", function () {
     scanAndCaptureExistingMaps();
@@ -25727,14 +25751,30 @@ if (document.readyState === "loading") {
       e.preventDefault(); e.stopPropagation();
       if (!tac.fineTunePin) return;
       const m = tac.fineTuneStepM || 2;
-      const dLat = m / 111320;
-      const dLng = m / (111320 * Math.max(0.2, Math.cos((tac.fineTunePin.lat * Math.PI) / 180)));
       const dir = btn.getAttribute("data-remote-dir");
-      if (dir.includes("N")) tac.fineTunePin.lat += dLat;
-      if (dir.includes("S")) tac.fineTunePin.lat -= dLat;
-      if (dir.includes("E")) tac.fineTunePin.lng += dLng;
-      if (dir.includes("W")) tac.fineTunePin.lng -= dLng;
+      const activeMap = getActiveMap();
+      if (activeMap && typeof activeMap.project === "function" && typeof activeMap.unproject === "function") {
+        const px = activeMap.project([tac.fineTunePin.lng, tac.fineTunePin.lat]);
+        const metersPerPx = (156543.03392 * Math.cos((tac.fineTunePin.lat * Math.PI) / 180)) / Math.pow(2, activeMap.getZoom());
+        const stepPx = Math.max(2, m / Math.max(0.05, metersPerPx));
+        let dx = 0, dy = 0;
+        if (dir.includes("N")) dy -= stepPx;
+        if (dir.includes("S")) dy += stepPx;
+        if (dir.includes("E")) dx += stepPx;
+        if (dir.includes("W")) dx -= stepPx;
+        const nextLl = activeMap.unproject([px.x + dx, px.y + dy]);
+        tac.fineTunePin.lat = nextLl.lat;
+        tac.fineTunePin.lng = nextLl.lng;
+      } else {
+        const dLat = m / 111320;
+        const dLng = m / (111320 * Math.max(0.2, Math.cos((tac.fineTunePin.lat * Math.PI) / 180)));
+        if (dir.includes("N")) tac.fineTunePin.lat += dLat;
+        if (dir.includes("S")) tac.fineTunePin.lat -= dLat;
+        if (dir.includes("E")) tac.fineTunePin.lng += dLng;
+        if (dir.includes("W")) tac.fineTunePin.lng -= dLng;
+      }
       tac.fineTunePin.markers.forEach(function (it) { if (it.marker) it.marker.setLngLat([tac.fineTunePin.lng, tac.fineTunePin.lat]); });
+      updateBloodhoundVector();
       updateRemoteCoordReadout();
     });
   });
@@ -25756,7 +25796,7 @@ if (document.readyState === "loading") {
       localStorage.setItem("az_tac_wheel_items", JSON.stringify(checks));
     }
     document.getElementById("azWheelConfigModal").classList.remove("is-open");
-    showToast("Opções da roda atualizadas.");
+    showToast("Anel Tático atualizado.");
   });
 
   // Modal Pin / Editar
@@ -25966,9 +26006,20 @@ if (document.readyState === "loading") {
   onClick("azExpandMapScreenBtn", function () {
     const expanded = document.body.classList.toggle("az-map-expanded");
     this.classList.toggle("is-active", expanded);
-    if (window.azGeoMap && typeof window.azGeoMap.resize === "function") {
-      setTimeout(function () { window.azGeoMap.resize(); }, 60);
-    }
+    try {
+      const target = document.documentElement;
+      if (expanded && !document.fullscreenElement && target.requestFullscreen) {
+        Promise.resolve(target.requestFullscreen()).catch(function () {});
+      } else if (!expanded && document.fullscreenElement && document.exitFullscreen) {
+        Promise.resolve(document.exitFullscreen()).catch(function () {});
+      }
+    } catch (_) {}
+    const doResize = function () {
+      if (window.azGeoMap && typeof window.azGeoMap.resize === "function") window.azGeoMap.resize();
+      renderEdgeIndicators();
+    };
+    setTimeout(doResize, 60);
+    setTimeout(doResize, 260);
   });
 
   // ================= MENU DE GRUPO ESTILO WHATSAPP =================
