@@ -126,7 +126,7 @@
 
         /* AJUSTES DOS 3 MODOS DE VISUALIZAÇÃO: App | GRID | PC (SEM DUPLICAÇÃO DE MENUS) */
         body.mode-app {
-            padding-bottom: 5.5rem;
+            padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
         }
         body.mode-app .app-main-container {
             max-width: 640px;
@@ -366,6 +366,7 @@
         #mobileBottomNav {
             background: #0D0D0D !important;
             border-top: 1px solid #26231c !important;
+            padding-bottom: max(0.35rem, env(safe-area-inset-bottom, 0px)) !important;
         }
         #mobileBottomNav button {
             background: #161616 !important;
@@ -21051,12 +21052,14 @@ if (window.__azimuteGeoInitialized) {
         return;
       }
 
-      espectroAnimPhase += 0.035;
-      if (modalOpen) {
-        renderAnimatedEspectroMesh(canvas3d, terrainCenterAlt, espectroAnimPhase);
-      }
-      if (incOpen) {
-        renderAnimatedEspectroMesh(incReliefCanvas, incAltLabelEl, espectroAnimPhase);
+      if (!document.hidden) {
+        espectroAnimPhase += 0.035;
+        if (modalOpen) {
+          renderAnimatedEspectroMesh(canvas3d, terrainCenterAlt, espectroAnimPhase);
+        }
+        if (incOpen) {
+          renderAnimatedEspectroMesh(incReliefCanvas, incAltLabelEl, espectroAnimPhase);
+        }
       }
 
       requestAnimationFrame(frame);
@@ -21432,7 +21435,7 @@ if (document.readyState === "loading") {
 
   #azLeftControlsRow {
     position: fixed !important;
-    bottom: 124px !important;
+    bottom: calc(124px + env(safe-area-inset-bottom, 0px)) !important;
     left: 12px !important;
     z-index: 100044 !important;
     display: none;
@@ -21445,11 +21448,12 @@ if (document.readyState === "loading") {
   /* PTT Arrastável */
   #azFloatingPttGroup {
     position: fixed !important;
-    bottom: 76px;
+    bottom: calc(76px + env(safe-area-inset-bottom, 0px));
     left: 12px;
     z-index: 100044 !important;
     display: none;
     align-items: stretch !important;
+    min-height: 44px;
     border-radius: 999px !important;
     background: #0D0D0D !important;
     border: 2px solid #C5A869 !important;
@@ -21496,7 +21500,7 @@ if (document.readyState === "loading") {
   /* Ajuste Fino Quadrado 8 Direções (incluindo Diagonais) */
   #azRemoteFineTunePad {
     position: fixed !important;
-    bottom: 132px !important;
+    bottom: calc(132px + env(safe-area-inset-bottom, 0px)) !important;
     left: 50% !important;
     transform: translateX(-50%) !important;
     z-index: 100055 !important;
@@ -22437,7 +22441,7 @@ if (document.readyState === "loading") {
     firebaseUrl: localStorage.getItem("az_tac_fb_url") || "",
     ghostEnabled: localStorage.getItem("az_tac_ghost_exit") !== "0",
     wheelEnabledIds: savedWheelIds,
-    pttEngine: localStorage.getItem("az_tac_ptt_engine") || "webm_blocks", // webm_blocks | pcm_binary | webrtc_p2p
+    pttEngine: localStorage.getItem("az_tac_ptt_engine") || "pcm_binary", // webm_blocks | pcm_binary | webrtc_p2p
     satMode: false,
     teammates: {},
     selectedMateUid: "",
@@ -22808,6 +22812,9 @@ if (document.readyState === "loading") {
     unlockAudioOutput();
     const ctx = tac.audioCtx;
     if (!ctx) return;
+    if (ctx.state === "suspended") {
+      ctx.resume().catch(function () {});
+    }
 
     const audioBuf = ctx.createBuffer(1, samples, 16000);
     const ch = audioBuf.getChannelData(0);
@@ -22820,7 +22827,9 @@ if (document.readyState === "loading") {
     src.connect(ctx.destination);
 
     const now = ctx.currentTime;
-    if (tac.pcmNextPlayTime < now) tac.pcmNextPlayTime = now + 0.03;
+    if (!tac.pcmNextPlayTime || tac.pcmNextPlayTime < now || tac.pcmNextPlayTime > now + 1.5) {
+      tac.pcmNextPlayTime = now + 0.04;
+    }
     src.start(tac.pcmNextPlayTime);
     tac.pcmNextPlayTime += audioBuf.duration;
 
@@ -22831,11 +22840,15 @@ if (document.readyState === "loading") {
 
   async function startPcmBinaryStream() {
     unlockAudioOutput();
+    const ctx = tac.audioCtx;
+    if (!ctx) throw new Error("AudioContext indisponível");
+    if (ctx.state === "suspended") {
+      try { await ctx.resume(); } catch (_) {}
+    }
     const stream = await navigator.mediaDevices.getUserMedia({
       audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
     });
     tac.pttStream = stream;
-    const ctx = tac.audioCtx;
     const source = ctx.createMediaStreamSource(stream);
     const processor = ctx.createScriptProcessor(4096, 1, 1);
     const silentGain = ctx.createGain();
@@ -22853,11 +22866,13 @@ if (document.readyState === "loading") {
     silentGain.connect(ctx.destination);
     tac.pcmSource = source;
     tac.pcmProcessor = processor;
+    tac.pcmSilentGain = silentGain;
   }
 
   function stopPcmBinaryStream() {
     if (tac.pcmProcessor) { try { tac.pcmProcessor.disconnect(); } catch (_) {} tac.pcmProcessor = null; }
     if (tac.pcmSource) { try { tac.pcmSource.disconnect(); } catch (_) {} tac.pcmSource = null; }
+    if (tac.pcmSilentGain) { try { tac.pcmSilentGain.disconnect(); } catch (_) {} tac.pcmSilentGain = null; }
   }
 
   // --- MOTOR 3: WEBRTC P2P (TEMPO REAL DIRETO) ---
@@ -22933,6 +22948,11 @@ if (document.readyState === "loading") {
     if (tac.isRecordingPtt) return;
     unlockAudioOutput();
     if (!tac.roomCode) { showToast("Entre na equipe antes de acionar o PTT."); return; }
+    if (!tac.ws || tac.ws.readyState !== 1) {
+      connectLiveRoom();
+      showToast("Rede desconectada — reconectando sala...", 2600, true);
+      return;
+    }
 
     try {
       tac.isRecordingPtt = true;
@@ -22953,11 +22973,16 @@ if (document.readyState === "loading") {
       }
 
       tac.pttAutoStopTimer = setTimeout(stopSelectedPtt, 25000);
-    } catch (_) {
+    } catch (err) {
       tac.isRecordingPtt = false;
       syncPttUi();
       setSpeakerBanner("", false);
-      showToast("Microfone indisponível.", 3000, true);
+      const errName = (err && err.name) || "";
+      let msg = "Microfone indisponível.";
+      if (!window.isSecureContext) msg = "Microfone exige acesso seguro (HTTPS).";
+      else if (errName === "NotAllowedError" || errName === "PermissionDeniedError") msg = "Permissão de microfone negada no navegador.";
+      else if (errName === "NotFoundError" || errName === "DevicesNotFoundError") msg = "Nenhum microfone encontrado no aparelho.";
+      showToast(msg, 3400, true);
     }
   }
 
@@ -23937,10 +23962,35 @@ if (document.readyState === "loading") {
     });
   }
 
+  function pruneStaleTeammates() {
+    const now = Date.now();
+    let changed = false;
+    Object.keys(tac.teammates).forEach(function (uid) {
+      const m = tac.teammates[uid];
+      if (!m || (now - (m.ts || 0)) > 180000) {
+        if (m && m.markers) {
+          m.markers.forEach(function (item) { try { item.marker.remove(); } catch (_) {} });
+        }
+        delete tac.teammates[uid];
+        changed = true;
+      }
+    });
+    if (changed) {
+      renderOnlineMembersList();
+      if (typeof renderWaOnlineMembers === "function") renderWaOnlineMembers();
+    }
+  }
+  setInterval(pruneStaleTeammates, 30000);
+
   function connectLiveRoom() {
     if (!tac.roomCode) return;
+    clearTimeout(tac._mqttReconnectTimer);
+    clearInterval(tac._mqttPingTimer);
     removeGhostForUid(tac.myId);
-    if (tac.ws) { try { tac.ws.close(); } catch (_) {} tac.ws = null; }
+    if (tac.ws) {
+      try { tac.ws._manualClose = true; tac.ws.close(); } catch (_) {}
+      tac.ws = null;
+    }
     const st = document.getElementById("azLiveNetStatus");
     if (st) { st.textContent = "CONECTANDO..."; st.style.color = "#F59E0B"; }
     const hash = roomTopicHash(tac.roomCode);
@@ -23952,6 +24002,7 @@ if (document.readyState === "loading") {
       ws.binaryType = "arraybuffer";
       tac.ws = ws;
       ws.onopen = function () {
+        tac._mqttRetryCount = 0;
         const rem = [0x00, 0x04, 77, 81, 84, 84, 0x04, 0x02, 0x00, 0x3c].concat(mqttEncodeStr(clientId));
         ws.send(new Uint8Array([0x10, ...mqttEncodeVarLen(rem.length), ...rem]));
         setTimeout(function () {
@@ -23960,6 +24011,13 @@ if (document.readyState === "loading") {
           ws.send(new Uint8Array([0x82, ...mqttEncodeVarLen(sub1.length), ...sub1]));
           const sub2 = [0x00, 0x02, ...mqttEncodeStr(pcmTopic), 0x00];
           ws.send(new Uint8Array([0x82, ...mqttEncodeVarLen(sub2.length), ...sub2]));
+
+          clearInterval(tac._mqttPingTimer);
+          tac._mqttPingTimer = setInterval(function () {
+            if (tac.ws && tac.ws.readyState === 1) {
+              try { tac.ws.send(new Uint8Array([0xC0, 0x00])); } catch (_) {}
+            }
+          }, 25000);
 
           if (st) { st.textContent = `AO VIVO: ${tac.roomCode}`; st.style.color = "#4ADE80"; }
           if (tac.myPos) {
@@ -23986,8 +24044,31 @@ if (document.readyState === "loading") {
         const pkt = decodePayload(new TextDecoder().decode(payloadBytes), tac.roomCode);
         if (pkt) handleIncomingPacket(pkt);
       };
-    } catch (_) {}
+      ws.onerror = function () {
+        if (st) { st.textContent = "OSCILAÇÃO DE REDE"; st.style.color = "#F87171"; }
+      };
+      ws.onclose = function () {
+        clearInterval(tac._mqttPingTimer);
+        if (ws._manualClose || !tac.roomCode) return;
+        if (st) { st.textContent = "RECONECTANDO..."; st.style.color = "#F59E0B"; }
+        const tries = Math.min((tac._mqttRetryCount || 0) + 1, 5);
+        tac._mqttRetryCount = tries;
+        const delay = Math.min(15000, tries * 2500);
+        clearTimeout(tac._mqttReconnectTimer);
+        tac._mqttReconnectTimer = setTimeout(function () {
+          if (tac.roomCode && (!tac.ws || tac.ws.readyState !== 1)) connectLiveRoom();
+        }, delay);
+      };
+    } catch (_) {
+      if (st) { st.textContent = "ERRO NA REDE"; st.style.color = "#F87171"; }
+    }
   }
+  window.addEventListener("online", function () {
+    if (tac.roomCode && (!tac.ws || tac.ws.readyState !== 1)) connectLiveRoom();
+  });
+  document.addEventListener("visibilitychange", function () {
+    if (!document.hidden && tac.roomCode && (!tac.ws || tac.ws.readyState !== 1)) connectLiveRoom();
+  });
 
   function broadcastPacket(pkt) {
     pkt.uid = tac.myId; pkt.qra = tac.myQra || "OPERADOR"; pkt.ts = Date.now();
