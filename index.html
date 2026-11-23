@@ -25,6 +25,120 @@
             max-width: 100%;
             max-height: 100%;
         }
+
+        /* ===== BASE TÁTICA INDEPENDENTE DO TAILWIND (FASE 1.1) ===== */
+        html { -webkit-text-size-adjust: 100%; }
+        * { -webkit-tap-highlight-color: transparent; }
+        :where(a), :where(a:link), :where(a:visited), :where(a:hover), :where(a:active) {
+            color: inherit;
+            text-decoration: none;
+        }
+        :where(button, input, select, textarea) {
+            color: inherit;
+            font: inherit;
+        }
+        :where(button) { background-color: transparent; }
+        :where(a, button, [role="button"]):focus { outline: none; }
+        :where(a, button, [role="button"], input, select):focus-visible {
+            outline: 2px solid #C5A869;
+            outline-offset: 2px;
+        }
+        /* Ícones sempre com tamanho explícito (mesmo antes do Lucide/Tailwind carregar) */
+        i[data-lucide] { display: inline-block; width: 1rem; height: 1rem; flex-shrink: 0; }
+        svg.lucide { flex-shrink: 0; }
+        .w-3 { width: .75rem; } .h-3 { height: .75rem; }
+        .w-3\.5 { width: .875rem; } .h-3\.5 { height: .875rem; }
+        .w-4 { width: 1rem; } .h-4 { height: 1rem; }
+        .w-5 { width: 1.25rem; } .h-5 { height: 1.25rem; }
+        .w-6 { width: 1.5rem; } .h-6 { height: 1.5rem; }
+        .w-8 { width: 2rem; } .h-8 { height: 2rem; }
+        .hidden { display: none; }
+        /* Paleta PMMG estática (garante contraste mesmo offline / sem CDN) */
+        .text-pmmg-khaki, .text-pmmg-gold { color: #C5A869; }
+        .text-pmmg-black { color: #0D0D0D; }
+        .text-white { color: #FFFFFF; }
+        .text-gray-200 { color: #E5E7EB; }
+        .text-gray-300 { color: #D1D5DB; }
+        .text-gray-400 { color: #9CA3AF; }
+        .text-red-500 { color: #EF4444; }
+        .text-red-400 { color: #F87171; }
+        .text-emerald-400 { color: #34D399; }
+        .bg-pmmg-black { background-color: #0D0D0D; }
+        .bg-pmmg-dark, .bg-pmmg-card { background-color: #161616; }
+        .bg-pmmg-khaki { background-color: #C5A869; }
+        .bg-pmmg-khakiBadge { background-color: #26231C; }
+        .bg-pmmg-black\/90, .bg-pmmg-black\/95 { background-color: rgba(13,13,13,.92); }
+        .bg-pmmg-dark\/90, .bg-pmmg-dark\/95, .bg-pmmg-card\/90, .bg-pmmg-card\/95 { background-color: rgba(22,22,22,.93); }
+        .border { border-width: 1px; border-style: solid; }
+        .border-2 { border-width: 2px; border-style: solid; }
+        .border-t { border-top-width: 1px; border-top-style: solid; }
+        .border-b { border-bottom-width: 1px; border-bottom-style: solid; }
+        .border-pmmg-border { border-color: #2E2B24; }
+        .border-pmmg-gold, .border-pmmg-khaki { border-color: #C5A869; }
+        .border-pmmg-gold\/30, .border-pmmg-khaki\/30, .border-pmmg-khaki\/25 { border-color: rgba(197,168,105,.3); }
+        .border-pmmg-gold\/40, .border-pmmg-khaki\/40, .border-pmmg-gold\/45, .border-pmmg-khaki\/45 { border-color: rgba(197,168,105,.42); }
+        .border-pmmg-gold\/50, .border-pmmg-khaki\/50 { border-color: rgba(197,168,105,.5); }
+        .border-pmmg-gold\/60, .border-pmmg-khaki\/60, .border-pmmg-gold\/70, .border-pmmg-khaki\/70, .border-pmmg-khaki\/80 { border-color: rgba(197,168,105,.65); }
+        .border-pmmg-border\/60, .border-pmmg-border\/70, .border-pmmg-border\/80 { border-color: rgba(46,43,36,.75); }
+
+        /* Botões de texto da Tela Início sempre legíveis */
+        #btnToggleQuickAccessCustomizer,
+        #homeNearestSupportSection > div:first-child button,
+        #btnToggleNearestSupportTools {
+            color: #C5A869 !important;
+            background-color: #161616 !important;
+            border: 1px solid rgba(197,168,105,.5) !important;
+        }
+        #statusBarGpsIndicator {
+            color: #4ADE80 !important;
+            background-color: #052E1C !important;
+            border: 1px solid rgba(74,222,128,.6) !important;
+        }
+        /* Cards de Acesso Rápido: sem azul/roxo de link em nenhum estado */
+        #homeQuickAccessGrid > a,
+        #homeQuickAccessGrid > a:link,
+        #homeQuickAccessGrid > a:visited,
+        #homeQuickAccessGrid > a:hover,
+        #homeQuickAccessGrid > a:active,
+        #homeQuickAccessGrid > a:focus {
+            color: #E5E7EB !important;
+            background-color: #161616 !important;
+            border: 1px solid rgba(197,168,105,.42) !important;
+            text-decoration: none !important;
+        }
+        #homeQuickAccessGrid > a:active,
+        #homeQuickAccessGrid > button:active { transform: scale(.95); }
+        #homeQuickAccessGrid > a svg,
+        #homeQuickAccessGrid > a i[data-lucide] { color: #C5A869 !important; }
+        /* Links de rota (Rota / ROTA) e botões de hospital no topo */
+        a[href*="google.com/maps"],
+        a[href*="google.com/maps"]:visited { text-decoration: none !important; }
+        #statusBarBtnHosp, #statusBarBtnHosp:visited { color: #EF4444 !important; }
+
+        /* Cabeçalho: BPM sem esmagar em telas estreitas */
+        #statusBarBtnRede { min-width: 0; max-width: 46vw; overflow: hidden; text-overflow: ellipsis; }
+        @media (max-width: 420px) {
+            #mainTopHeader h1 { font-size: 1.35rem !important; letter-spacing: .08em !important; }
+            #headerRedePipe { display: none !important; }
+            #statusBarBtnRede { padding: .35rem .55rem !important; font-size: 11px !important; }
+            #top-btn-mode-app, #top-btn-mode-grid, #top-btn-mode-web { padding: .25rem .35rem !important; font-size: 9.5px !important; }
+            #mainTopHeader .w-8.h-8 { width: 2.1rem !important; height: 2.1rem !important; }
+        }
+
+        /* Rodapé: rótulos curtos, sem cortes, toque confortável */
+        #mobileBottomNav button { min-height: 44px; min-width: 0; }
+        #mobileBottomNav button > span {
+            display: block;
+            max-width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: clip;
+            font-size: 9.5px;
+            letter-spacing: -0.01em;
+            line-height: 1.1;
+        }
+        #mobileBottomNav button > svg,
+        #mobileBottomNav button > i { width: 18px !important; height: 18px !important; }
         #view-regioes .bg-pmmg-card,
         #view-rpm1 .bg-pmmg-card,
         #view-rpm2 .bg-pmmg-card,
@@ -9806,12 +9920,12 @@
             <!-- 2. Unidades -->
             <button type="button" onclick="showView('regioes')" id="bnav-regioes" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-lg transition-all cursor-pointer">
                 <i data-lucide="shield" class="w-4 h-4 mb-0.5"></i>
-                <span class="truncate">Unidades</span>
+                <span class="truncate">Unid.</span>
             </button>
             <!-- 3. Geolocalização -->
             <button type="button" onclick="showView('gps')" id="bnav-gps" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-lg transition-all cursor-pointer">
                 <i data-lucide="locate-fixed" class="w-4 h-4 mb-0.5"></i>
-                <span class="truncate">Geolocal.</span>
+                <span class="truncate">Mapa</span>
             </button>
             <!-- 4. APH/SAÚDE (Cruz Médica clássica fina e simétrica, seguindo o mesmo padrão de cor dos demais botões) -->
             <button type="button" onclick="showView('saude')" id="bnav-saude" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-lg transition-all cursor-pointer">
@@ -9821,7 +9935,7 @@
             <!-- 5. Estádios (Invertido com Saúde / APH) -->
             <button type="button" onclick="showView('estadios')" id="bnav-estadios" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-lg transition-all cursor-pointer">
                 <i data-lucide="trophy" class="w-4 h-4 mb-0.5"></i>
-                <span class="truncate">Estádios</span>
+                <span class="truncate">Estád.</span>
             </button>
             <!-- 6. Recursos -->
             <button type="button" onclick="showView('atalhos')" id="bnav-atalhos" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-lg transition-all cursor-pointer" title="Funções">
@@ -14235,10 +14349,10 @@
 
         const AZIMUTE_FOOTER_NAV_CATALOG = [
             { id: 'home', label: 'Início', icon: 'home', defaultEnabled: true },
-            { id: 'regioes', label: 'Unidades', icon: 'shield', defaultEnabled: true },
-            { id: 'gps', label: 'Geolocalização', icon: 'locate-fixed', defaultEnabled: true },
+            { id: 'regioes', label: 'Unid.', icon: 'shield', defaultEnabled: true },
+            { id: 'gps', label: 'Mapa', icon: 'locate-fixed', defaultEnabled: true },
             { id: 'saude', label: 'APH', icon: 'cross', defaultEnabled: true },
-            { id: 'estadios', label: 'Estádios', icon: 'trophy', defaultEnabled: true },
+            { id: 'estadios', label: 'Estád.', icon: 'trophy', defaultEnabled: true },
             { id: 'atalhos', label: 'Funções', icon: 'folder', defaultEnabled: true },
             { id: 'configuracoes', label: 'Ajustes', icon: 'settings', defaultEnabled: true }
         ];
@@ -18302,6 +18416,13 @@ if (window.__azimuteGeoInitialized) {
       .addTo(map);
   }
 
+  window.azimuteApplyMyArrowColor = function (hex) {
+    if (!hex) return;
+    arrowColor = hex;
+    if (gpsArrowPoly) gpsArrowPoly.setAttribute("fill", hex);
+    if (gpsPulseEl) gpsPulseEl.style.borderColor = hex;
+  };
+
   function startFluidMarkerLoop() {
     if (animLoopRunning) return;
     animLoopRunning = true;
@@ -21276,17 +21397,26 @@ if (document.readyState === "loading") {
   /* 4. Barra Superior ATAK */
   #azTopHudShell {
     position: fixed !important;
-    top: 8px !important;
-    left: 8px !important;
-    right: 8px !important;
+    top: calc(8px + env(safe-area-inset-top, 0px)) !important;
+    left: 6px !important;
+    right: 6px !important;
     z-index: 100040 !important;
     display: none;
     align-items: center;
-    gap: 5px;
+    gap: 4px;
     pointer-events: none;
   }
   #azTopHudShell.is-visible { display: flex !important; }
   #azTopHudShell > * { pointer-events: auto; }
+  @media (max-width: 480px) {
+    #azTopHudShell { gap: 3px; }
+    #azTopHudShell .az-hud-glass-btn { width: 31px !important; height: 34px !important; }
+    #azTopHudShell .az-hud-glass-btn svg { width: 15px; height: 15px; }
+    #azWhatsappGroupOpenBtn { padding: 0 6px !important; font-size: 9px !important; }
+    #azMicroTelemetryHud { padding: 2px 6px; height: 34px; }
+    .az-hud-line-top { font-size: 8.5px; }
+    .az-hud-line-sub { font-size: 10px; }
+  }
 
   .az-hud-glass-btn {
     width: 35px !important;
@@ -21542,9 +21672,25 @@ if (document.readyState === "loading") {
     cursor: pointer;
     opacity: 1 !important;
   }
-  #azFloatingMapPttBtn.is-tx {
+  @keyframes azPttPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.72), inset 0 2px 6px rgba(0, 0, 0, 0.65); }
+    50% { box-shadow: 0 0 0 8px rgba(220, 38, 38, 0), inset 0 2px 6px rgba(0, 0, 0, 0.65); }
+  }
+  #azFloatingMapPttBtn, #azWaPttBtn, #azPttHoldBtn {
+    transition: transform 0.08s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  #azFloatingMapPttBtn:active, #azWaPttBtn:active, #azPttHoldBtn:active {
+    transform: scale(0.94) !important;
+    box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.78) !important;
+  }
+  #azFloatingMapPttBtn.is-tx, #azWaPttBtn.is-tx, #azPttHoldBtn.is-tx {
     background: #DC2626 !important;
     color: #FFFFFF !important;
+    border-color: #FCA5A5 !important;
+    transform: scale(0.94) !important;
+    animation: azPttPulse 1.05s infinite !important;
   }
 
   /* Ajuste Fino Quadrado 8 Direções (incluindo Diagonais) */
@@ -21802,9 +21948,15 @@ if (document.readyState === "loading") {
     border: 1px solid #28271F !important;
     color: #F2F0EA !important;
     border-radius: 999px !important;
-    padding: 3px 8px !important;
-    font-size: 9px !important;
+    padding: 5px 10px !important;
+    font-size: 9.5px !important;
     font-weight: 800 !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 30px;
     cursor: pointer;
   }
 
@@ -22014,7 +22166,7 @@ if (document.readyState === "loading") {
 
   #azNavChevronToggleBtn {
     position: fixed !important;
-    bottom: 66px !important;
+    bottom: calc(66px + env(safe-area-inset-bottom, 0px)) !important;
     right: 8px !important;
     z-index: 100046 !important;
     width: 30px !important;
@@ -22029,6 +22181,11 @@ if (document.readyState === "loading") {
     align-items: center !important;
     justify-content: center !important;
     cursor: pointer;
+  }
+  body.az-map-fullscreen #azNavChevronToggleBtn {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
   }
   body.az-nav-hidden nav,
   body.az-nav-hidden .az-bottom-nav,
@@ -22112,7 +22269,7 @@ if (document.readyState === "loading") {
       <button type="button" id="azWaJoinBtn" class="az-atak-tool-btn is-active" style="height:30px !important;">ENTRAR</button>
     </div>
     <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;">
-      <span style="font-size:9px;font-weight:800;color:#9E9A8F;text-transform:uppercase;">Sua Cor Exclusiva:</span>
+      <span id="azWaColorLabel" style="font-size:9px;font-weight:800;color:#9E9A8F;text-transform:uppercase;">Sua Cor Exclusiva:</span>
       <div id="azWaColorSwatches" style="display:flex;gap:5px;flex-wrap:wrap;"></div>
     </div>
     <div id="azWaMembersChips" style="display:flex;gap:5px;overflow-x:auto;padding-bottom:2px;"></div>
@@ -22473,7 +22630,7 @@ if (document.readyState === "loading") {
     { id: "verde", name: "VERDE", hex: "#22C55E" },
     { id: "laranja", name: "LARANJA", hex: "#F97316" },
     { id: "ciano", name: "CIANO", hex: "#06B6D4" },
-    { id: "roxo", name: "ROXO", hex: "#A855F7" },
+    { id: "roxo", name: "ROXO", hex: "#C084FC" },
     { id: "amarelo", name: "AMARELO", hex: "#EAB308" },
     { id: "safira", name: "SAFIRA", hex: "#6366F1" },
     { id: "branco", name: "BRANCO", hex: "#F8FAFC" }
@@ -22739,8 +22896,10 @@ if (document.readyState === "loading") {
   function syncPttUi() {
     const fb = document.getElementById("azFloatingMapPttBtn");
     const db = document.getElementById("azPttHoldBtn");
-    if (fb) { fb.classList.toggle("is-tx", tac.isRecordingPtt); fb.textContent = tac.isRecordingPtt ? "NO AR (ENCERRAR)" : "PTT"; }
+    const wb = document.getElementById("azWaPttBtn");
+    if (fb) { fb.classList.toggle("is-tx", tac.isRecordingPtt); fb.textContent = tac.isRecordingPtt ? "TX ATIVO" : "PTT"; }
     if (db) { db.classList.toggle("is-tx", tac.isRecordingPtt); db.textContent = tac.isRecordingPtt ? "NO AR • CLIQUE P/ ENCERRAR" : "TRANSMITIR PTT (OU FONE P2)"; }
+    if (wb) { wb.classList.toggle("is-tx", tac.isRecordingPtt); wb.textContent = tac.isRecordingPtt ? "TX ATIVO" : "PTT"; }
   }
 
   // --- MOTOR 1: BLOCOS WEBM (ATUAL) ---
@@ -23070,6 +23229,7 @@ if (document.readyState === "loading") {
     }
     syncPttUi();
     setSpeakerBanner("", false);
+    vibratePattern(20);
   }
 
   /* =====================================================================
@@ -24913,7 +25073,7 @@ if (document.readyState === "loading") {
     wrap.innerHTML = TEAM_PALETTE.map(function (c) {
       const taken = usedColors.has(c.id) && c.id !== tac.myColorId;
       const selected = c.id === tac.myColorId;
-      return `<button type="button" data-wa-color="${c.id}" ${taken ? "disabled" : ""} title="${taken ? c.name + " (Em uso)" : c.name}" style="width:22px;height:22px;border-radius:50%;background:${c.hex};border:${selected ? "2.5px solid #FFFFFF" : "1px solid #28271F"};opacity:${taken ? "0.22" : "1"};cursor:${taken ? "not-allowed" : "pointer"};"></button>`;
+      return `<button type="button" data-wa-color="${c.id}" ${taken ? "disabled" : ""} title="${taken ? c.name + " (Em uso)" : c.name}" style="width:26px;height:26px;border-radius:50%;background:${c.hex};border:${selected ? "2.5px solid #FFFFFF" : "1.5px solid rgba(255,255,255,0.42)"};box-shadow:${selected ? "0 0 0 2px #C5A869" : "none"};opacity:${taken ? "0.22" : "1"};cursor:${taken ? "not-allowed" : "pointer"};"></button>`;
     }).join("");
 
     wrap.querySelectorAll("[data-wa-color]").forEach(function (btn) {
