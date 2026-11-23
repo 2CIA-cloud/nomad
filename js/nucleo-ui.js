@@ -612,22 +612,29 @@ window.resetAllAzimuteSettings = function() {
 /* === [SECAO: MODOS DE EXIBICAO, TELA CHEIA E ACORDEAO LEVE] === */
 window.setLayoutMode = function(mode, notify = true) {
     const body = document.body;
+    const validMode = ['app', 'grid', 'web'].includes(mode) ? mode : (window.innerWidth < 768 ? 'app' : 'web');
     const inactiveCls = 'px-3 py-1.5 rounded-lg font-semibold text-gray-400 border border-transparent hover:text-gray-200 transition-all cursor-pointer';
     const activeCls = 'px-3 py-1.5 rounded-lg font-extrabold bg-pmmg-dark text-pmmg-khaki border border-pmmg-gold shadow-sm transition-all cursor-pointer';
+
     body.classList.remove('mode-app', 'mode-grid', 'mode-web');
     ['app', 'grid', 'web'].forEach(m => {
         const b = document.getElementById('btn-mode-' + m);
-        if (b) b.className = (m === mode) ? activeCls : inactiveCls;
+        if (b) b.className = (m === validMode) ? activeCls : inactiveCls;
     });
-    body.classList.add('mode-' + mode);
+    body.classList.add('mode-' + validMode);
     body.classList.remove('pc-sidebar-closed', 'pc-sidebar-collapsed');
+
     const s = getAzimuteUiSettings();
-    s.manualMode = mode;
+    s.manualMode = validMode;
     saveAzimuteUiSettingsToStorage(s);
-    if (mode === 'grid') {
+
+    if (validMode === 'grid') {
         if (typeof syncGridCockpitVisibility === 'function') syncGridCockpitVisibility(azimuteCurrentViewId || 'home');
         renderQuickAccessGrid();
     }
+    window.syncAjustesInputsFromStorage();
+    if (notify) showToast('Modo ' + validMode.toUpperCase() + ' ativo.');
+};
     window.syncAjustesInputsFromStorage();
     if (notify) showToast('Modo ' + mode.toUpperCase() + ' ativo.');
 };
