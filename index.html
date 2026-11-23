@@ -12265,8 +12265,7 @@
         })();
     </script>
 </body>
-</html>`;
-
+<script>
             const blob = new Blob([offlineDoc], { type: 'text/html;charset=utf-8' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -12275,8 +12274,8 @@
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
-            setTimeout(() =>URL.revokeObjectURL(url), 1500);
-            if (typeof showToast === 'function') showToast('Dados do ' + bpmName + 'baixados para consulta offline!');
+            setTimeout(() => URL.revokeObjectURL(url), 1500);
+            if (typeof showToast === 'function') showToast('Dados do ' + bpmName + ' baixados para consulta offline!');
         };
 
         // ================= BÚSSOLA DIGITAL REAL (DeviceOrientationEvent) =================
@@ -12303,11 +12302,11 @@
                 angle = window.screen.orientation.angle;
             } else if (typeof window.orientation === 'number') {
                 angle = window.orientation;
-            } else if (document.body.classList.contains('mode-grid') || window.innerWidth >window.innerHeight) {
+            } else if (document.body.classList.contains('mode-grid') || window.innerWidth > window.innerHeight) {
                 angle = 90;
             }
             // Se o modo GRID estiver ativo manualmente em tela horizontal e o ângulo reportado for 0, aplica +90°
-            if (angle === 0 && (document.body.classList.contains('mode-grid') && window.innerWidth >window.innerHeight)) {
+            if (angle === 0 && (document.body.classList.contains('mode-grid') && window.innerWidth > window.innerHeight)) {
                 angle = 90;
             }
             const badge = document.getElementById('compassAxisCompBadge');
@@ -12412,7 +12411,7 @@
             }
             if (!azimuteCompassListenersAttached) {
                 azimuteCompassListenersAttached = true;
-                if ('ondeviceorientationabsolute'in window) {
+                if ('ondeviceorientationabsolute' in window) {
                     window.addEventListener('deviceorientationabsolute', handleAzimuteDeviceOrientation, true);
                 }
                 window.addEventListener('deviceorientation', handleAzimuteDeviceOrientation, true);
@@ -12457,7 +12456,7 @@
             }
         };
 
-        window.addEventListener('orientationchange', () =>setTimeout(getAzimuteScreenOrientationOffset, 150));
+        window.addEventListener('orientationchange', () => setTimeout(getAzimuteScreenOrientationOffset, 150));
         window.addEventListener('resize', getAzimuteScreenOrientationOffset);
 
         // Inicia o GPS continuamente assim que o sistema carrega e preenche o Apoio Mais Próximo inicial
@@ -12472,9 +12471,10 @@
             if (typeof window.DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission !== 'function') {
                 attachAzimuteCompassListeners();
             } else {
-                setCompassSensorUnavailable('Toque em "Ativar / Permitir Sensor"para habilitar a bússola.');
+                setCompassSensorUnavailable('Toque em "Ativar / Permitir Sensor" para habilitar a bússola.');
             }
         });
+</script>
     </script>
 
     <!-- MODAL DE CÓDIGOS Q E ALFABETO FONÉTICO -->
