@@ -394,3 +394,11 @@ body.pwa-standalone main#mainContainer > section[id^="view-"] > div:first-child 
     padding-bottom: 0.25rem !important;
     overflow: visible !important;
 }
+body.mode-app [id*="pc-panel"],
+body.mode-app [id*="pcPanel"],
+body.mode-app [id*="menu-pc"],
+body.mode-app [id*="menuPc"],
+body.mode-app .painel-pc,
+body.mode-app .menu-pc {
+    display: none !important;
+}
