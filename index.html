@@ -21353,23 +21353,69 @@ if (document.readyState === "loading") {
   /* Banner CÃO DE CAÇA */
   #azBloodhoundBanner {
     position: fixed !important;
-    top: 48px !important;
+    top: calc(48px + env(safe-area-inset-top, 0px)) !important;
     left: 8px !important;
     right: 8px !important;
     z-index: 100042 !important;
     background: rgba(13, 13, 13, 0.96) !important;
     border: 1.5px solid #F97316 !important;
-    border-radius: 8px;
-    padding: 5px 10px;
+    border-radius: 10px;
+    padding: 6px 10px;
     display: none;
     align-items: center;
     justify-content: space-between;
     gap: 8px;
     color: #FFFFFF;
-    font-size: 10.5px;
-    font-weight: 900;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.85);
   }
   #azBloodhoundBanner.is-open { display: flex !important; }
+  .az-bh-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    flex: 1;
+  }
+  .az-bh-meta {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    gap: 1px;
+  }
+  .az-bh-target-name {
+    font-size: 9.5px;
+    font-weight: 800;
+    color: #C5A869;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .az-bh-telemetry {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  }
+  .az-bh-az {
+    font-size: 15px;
+    font-weight: 900;
+    color: #F97316;
+    line-height: 1.1;
+  }
+  .az-bh-dist {
+    font-size: 15px;
+    font-weight: 900;
+    color: #FFFFFF;
+    line-height: 1.1;
+  }
+  .az-bh-actions {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    shrink: 0;
+  }
 
   /* Busca Lupa */
   #azMapSearchOverlay {
@@ -22093,11 +22139,20 @@ if (document.readyState === "loading") {
 
 <!-- Banner CÃO DE CAÇA -->
 <div id="azBloodhoundBanner">
-  <span style="display:inline-flex;align-items:center;gap:6px;">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F97316" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg>
-    <span id="azBloodhoundInfo">CÃO DE CAÇA: --</span>
-  </span>
-  <button type="button" class="az-atak-tool-btn is-danger" id="azStopBloodhoundBtn" style="height:22px !important;">ENCERRAR</button>
+  <div class="az-bh-left">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F97316" stroke-width="2.2" style="flex-shrink:0;"><circle cx="12" cy="12" r="9"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg>
+    <div class="az-bh-meta">
+      <span class="az-bh-target-name" id="azBloodhoundTargetName">ALVO: --</span>
+      <div class="az-bh-telemetry">
+        <span class="az-bh-az" id="azBloodhoundAzVal">--°</span>
+        <span class="az-bh-dist" id="azBloodhoundDistVal">--</span>
+      </div>
+    </div>
+  </div>
+  <div class="az-bh-actions">
+    <button type="button" class="az-atak-tool-btn" id="azFitBloodhoundBtn" style="height:26px !important;padding:0 8px !important;" title="Enquadrar operador e alvo">VER</button>
+    <button type="button" class="az-atak-tool-btn is-danger" id="azStopBloodhoundBtn" style="height:26px !important;padding:0 8px !important;">ENCERRAR</button>
+  </div>
 </div>
 
 <!-- Lupa Busca -->
@@ -22219,6 +22274,10 @@ if (document.readyState === "loading") {
     <button type="button" class="az-grid-tile" id="azGridRulerTile" data-grid-act="toggle_ruler">
       <svg viewBox="0 0 24 24"><path d="M21.3 8.7L8.7 21.3c-1 1-2.5 1-3.4 0l-2.6-2.6c-1-1-1-2.5 0-3.4L15.3 2.7c1-1 2.5-1 3.4 0l2.6 2.6c1 1 1 2.5 0 3.4z"/></svg>
       Régua
+    </button>
+    <button type="button" class="az-grid-tile" data-grid-act="bloodhound_pick">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg>
+      Cão de Caça
     </button>
     <button type="button" class="az-grid-tile" data-grid-act="wheel_settings">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -23306,11 +23365,61 @@ if (document.readyState === "loading") {
     return { dist: Math.round(dist), bearing: Math.round(((Math.atan2(y, x) * 180) / Math.PI + 360) % 360) };
   }
 
+  function clearBloodhoundMarker() {
+    if (tac.bloodhoundMarker && Array.isArray(tac.bloodhoundMarker)) {
+      tac.bloodhoundMarker.forEach(function (mk) { try { mk.remove(); } catch (_) {} });
+    }
+    tac.bloodhoundMarker = null;
+  }
+
+  function renderBloodhoundTargetMarker(lat, lng, label) {
+    clearBloodhoundMarker();
+    if (typeof maplibregl === "undefined") return;
+    tac.bloodhoundMarker = [];
+    tac.maps.forEach(function (m) {
+      try {
+        const el = document.createElement("div");
+        el.style.cssText = "width:22px;height:22px;border-radius:50%;border:2.5px solid #F97316;background:rgba(249,115,22,0.22);box-shadow:0 0 0 3px rgba(13,13,13,0.85);display:flex;align-items:center;justify-content:center;pointer-events:none;";
+        el.innerHTML = '<div style="width:6px;height:6px;border-radius:50%;background:#F97316;"></div>';
+        const mk = new maplibregl.Marker({ element: el, anchor: "center" }).setLngLat([lng, lat]).addTo(m);
+        tac.bloodhoundMarker.push(mk);
+      } catch (_) {}
+    });
+  }
+
+  function setBloodhoundTarget(targetObj) {
+    tac.bloodhoundTarget = targetObj || null;
+    if (!tac.bloodhoundTarget) {
+      clearBloodhoundMarker();
+    } else if (tac.bloodhoundTarget.type !== "mate") {
+      renderBloodhoundTargetMarker(tac.bloodhoundTarget.lat, tac.bloodhoundTarget.lng, tac.bloodhoundTarget.label);
+    } else {
+      clearBloodhoundMarker();
+    }
+    updateBloodhoundVector();
+  }
+  window.azimuteSetBloodhoundTarget = function (label, lat, lng, type, id) {
+    if (typeof lat !== "number" || typeof lng !== "number" || isNaN(lat) || isNaN(lng)) return;
+    if (typeof window.showView === "function") window.showView("gps");
+    scanAndCaptureExistingMaps();
+    setBloodhoundTarget({
+      type: type || "point",
+      id: id || ("bh_" + Date.now()),
+      label: (label || "ALVO").toString().toUpperCase(),
+      lat: lat,
+      lng: lng
+    });
+    showToast("CÃO DE CAÇA travado: " + (label || "ALVO"));
+  };
+
   function updateBloodhoundVector() {
     const banner = document.getElementById("azBloodhoundBanner");
-    const info = document.getElementById("azBloodhoundInfo");
+    const targetNameEl = document.getElementById("azBloodhoundTargetName");
+    const azEl = document.getElementById("azBloodhoundAzVal");
+    const distEl = document.getElementById("azBloodhoundDistVal");
     if (!tac.bloodhoundTarget) {
       if (banner) banner.classList.remove("is-open");
+      clearBloodhoundMarker();
       renderLineOnMaps("az-bloodhound-src", "az-bloodhound-line", [], "#F97316", true, null, null, 4.2);
       return;
     }
@@ -23323,7 +23432,10 @@ if (document.readyState === "loading") {
     const oLat = tac.myPos ? tac.myPos.lat : (map ? map.getCenter().lat : tac.bloodhoundTarget.lat);
     const oLng = tac.myPos ? tac.myPos.lng : (map ? map.getCenter().lng : tac.bloodhoundTarget.lng);
     const db = calcDistAndBearing(oLat, oLng, tac.bloodhoundTarget.lat, tac.bloodhoundTarget.lng);
-    if (info) info.textContent = `CÃO DE CAÇA → ${tac.bloodhoundTarget.label} | AZIMUTE ${db.bearing}° | DIST ${formatDistance(db.dist)}`;
+    const azStr = String(Math.round(db.bearing)).padStart(3, "0") + "°";
+    if (targetNameEl) targetNameEl.textContent = "ALVO → " + tac.bloodhoundTarget.label;
+    if (azEl) azEl.textContent = "AZ " + azStr;
+    if (distEl) distEl.textContent = formatDistance(db.dist);
     if (banner) banner.classList.add("is-open");
     renderLineOnMaps(
       "az-bloodhound-src",
@@ -23425,8 +23537,8 @@ if (document.readyState === "loading") {
       else if (actId === "trash") deletePinById(p.id);
       else if (actId === "route") generateRouteToTarget(p.lat, p.lng, p.label);
       else if (actId === "bloodhound") {
-        tac.bloodhoundTarget = { type: "pin", id: p.id, label: p.label, lat: p.lat, lng: p.lng };
-        updateBloodhoundVector();
+        setBloodhoundTarget({ type: "pin", id: p.id, label: p.label, lat: p.lat, lng: p.lng });
+        showToast(`CÃO DE CAÇA: ${p.label}`);
       } else if (actId === "edit") {
         tac.editingPinObj = p; tac.pendingPinCoords = { lng: p.lng, lat: p.lat };
         document.getElementById("azPinCustomNameInput").value = p.rawTitle || p.label;
@@ -23670,6 +23782,18 @@ if (document.readyState === "loading") {
         document.getElementById("azPinModalHeader").textContent = tac.pendingPinType === "vtr" ? "MARCAR VIATURA" : "MARCADOR TÁTICO";
         document.getElementById("azPinCustomNameInput").value = "";
         document.getElementById("azPinEditorModal").classList.add("is-open");
+        return;
+      }
+      if (tac.toolMode === "bloodhound_pick") {
+        tac.toolMode = null;
+        setBloodhoundTarget({
+          type: "point",
+          id: "bh_" + Date.now(),
+          label: `${ll.lat.toFixed(5)}, ${ll.lng.toFixed(5)}`,
+          lat: ll.lat,
+          lng: ll.lng
+        });
+        showToast("CÃO DE CAÇA travado no ponto.");
         return;
       }
       if (tac.toolMode === "gpe") {
@@ -24378,13 +24502,29 @@ if (document.readyState === "loading") {
     try {
       const res = await (await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&countrycodes=br&limit=5`)).json();
       list.innerHTML = res.map(function (it, i) {
-        return `<button type="button" class="az-search-res-item" data-sr="${i}">${it.display_name}</button>`;
+        return `<div style="display:flex;gap:4px;align-items:stretch;">
+          <button type="button" class="az-search-res-item" data-sr="${i}" style="flex:1;">${it.display_name}</button>
+          <button type="button" class="az-atak-tool-btn is-active" data-sr-bh="${i}" style="height:auto !important;padding:0 8px !important;border-color:#F97316 !important;color:#F97316 !important;" title="Travar Cão de Caça">ALVO</button>
+        </div>`;
       }).join("");
       list.querySelectorAll("[data-sr]").forEach(function (b) {
         b.addEventListener("click", function () {
           const it = res[parseInt(b.getAttribute("data-sr"), 10)];
           const m = getActiveMap();
           if (m && it) m.flyTo({ center: [parseFloat(it.lon), parseFloat(it.lat)], zoom: 17, essential: true });
+          document.getElementById("azMapSearchOverlay").classList.remove("is-open");
+        });
+      });
+      list.querySelectorAll("[data-sr-bh]").forEach(function (b) {
+        b.addEventListener("click", function () {
+          const it = res[parseInt(b.getAttribute("data-sr-bh"), 10)];
+          if (it) {
+            const shortName = (it.display_name || "ALVO").split(",")[0];
+            setBloodhoundTarget({ type: "point", id: "bh_" + Date.now(), label: shortName.toUpperCase(), lat: parseFloat(it.lat), lng: parseFloat(it.lon) });
+            const m = getActiveMap();
+            if (m) m.flyTo({ center: [parseFloat(it.lon), parseFloat(it.lat)], zoom: 16, essential: true });
+            showToast("CÃO DE CAÇA travado: " + shortName);
+          }
           document.getElementById("azMapSearchOverlay").classList.remove("is-open");
         });
       });
@@ -24427,6 +24567,7 @@ if (document.readyState === "loading") {
         showToast(tac.crumbRouteActive ? "Desenhar Rota ATIVO: clique nos pontos para lançar migalhas" : "Rota de migalhas concluída.");
       } else if (act === "photo_coord_pin") { openPhotoModal(null); }
       else if (act === "circle_tool") { tac.toolMode = "circle_pick"; showToast("Toque no centro do Perímetro no mapa."); }
+      else if (act === "bloodhound_pick") { tac.toolMode = "bloodhound_pick"; showToast("Toque em qualquer ponto do mapa para travar CÃO DE CAÇA."); }
       else if (act === "toggle_sat") { toggleSatelliteMode(); }
       else if (act === "toggle_ruler") {
         tac.rulerActive = !tac.rulerActive;
@@ -24500,7 +24641,19 @@ if (document.readyState === "loading") {
   });
   onClick("azClearRouteBtn", function () { clearRouteFromMaps(); showToast("Rota encerrada."); });
   onClick("azClearCircleBtn", function () { clearCircleFromMaps(false); showToast("Perímetro removido."); });
-  onClick("azStopBloodhoundBtn", function () { tac.bloodhoundTarget = null; updateBloodhoundVector(); showToast("CÃO DE CAÇA encerrado."); });
+  onClick("azFitBloodhoundBtn", function () {
+    const m = getActiveMap();
+    if (!m || !tac.bloodhoundTarget) return;
+    if (tac.myPos && typeof maplibregl !== "undefined") {
+      const bounds = new maplibregl.LngLatBounds();
+      bounds.extend([tac.myPos.lng, tac.myPos.lat]);
+      bounds.extend([tac.bloodhoundTarget.lng, tac.bloodhoundTarget.lat]);
+      m.fitBounds(bounds, { padding: 70, maxZoom: 17, duration: 500 });
+    } else {
+      m.flyTo({ center: [tac.bloodhoundTarget.lng, tac.bloodhoundTarget.lat], zoom: 16, essential: true });
+    }
+  });
+  onClick("azStopBloodhoundBtn", function () { setBloodhoundTarget(null); showToast("CÃO DE CAÇA encerrado."); });
 
   // Slider de Círculo
   document.getElementById("azCircleRadiusSlider").addEventListener("input", function () {
