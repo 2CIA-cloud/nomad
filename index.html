@@ -19,10 +19,23 @@
         html, body {
             background-color: #0D0D0D;
             color: #FFFFFF;
+            overflow-x: hidden;
         }
         svg {
             max-width: 100%;
             max-height: 100%;
+        }
+        #view-regioes .bg-pmmg-card,
+        #view-rpm1 .bg-pmmg-card,
+        #view-rpm2 .bg-pmmg-card,
+        #view-rpm3 .bg-pmmg-card,
+        #view-especializadas .bg-pmmg-card,
+        #view-18bpm .bg-pmmg-card,
+        #view-estadios .bg-pmmg-card,
+        #view-saude .bg-pmmg-card,
+        #view-rpas .bg-pmmg-card {
+            content-visibility: auto;
+            contain-intrinsic-size: auto 180px;
         }
         html.az-fouc-pending body {
             opacity: 0;
@@ -797,7 +810,7 @@
                     autocomplete="off"
                     placeholder="Buscar rua, bairro, drone, gasolina, bnmp, cia..." 
                     class="w-full pl-8 pr-7 py-2 bg-[#161616] text-xs text-white placeholder-[#E0E0E0] opacity-100 rounded-xl border border-pmmg-khaki/60 focus:outline-none focus:border-pmmg-gold transition-all"
-                    oninput="handleGlobalSearch()"
+                    oninput="debouncedGlobalSearch()"
                     onfocus="handleGlobalSearch()"
                 >
                 <button id="clearGlobalSearchBtn" onclick="clearGlobalSearch()" class="hidden absolute right-2.5 top-2 text-gray-400 hover:text-pmmg-khaki p-0.5" title="Limpar pesquisa">
@@ -7272,7 +7285,7 @@
                         autocomplete="off"
                         placeholder="Buscar rua, bairro, cia, batalhão, telefone..."
                         class="w-full pl-8 pr-7 py-2 bg-[#161616] text-xs text-white placeholder-gray-200 opacity-100 rounded-xl border border-pmmg-khaki/60 focus:outline-none focus:border-pmmg-gold transition-all"
-                        oninput="syncUnitsSearchWithGlobal(this.value, 'unidadesSearchResultsDropdown')"
+                        oninput="debouncedSyncUnitsSearchWithGlobal(this.value, 'unidadesSearchResultsDropdown')"
                         onfocus="syncUnitsSearchWithGlobal(this.value, 'unidadesSearchResultsDropdown')"
                     >
                     <button type="button" onclick="clearUnitsLocalSearch('unidadesSearchInput', 'unidadesSearchResultsDropdown')" class="absolute right-2.5 top-2 text-gray-400 hover:text-pmmg-khaki p-0.5" title="Limpar">
@@ -7903,7 +7916,7 @@
                                 id="internalSearch18" 
                                 placeholder="Buscar rua, bairro, cia, ZQC, hospital, ramal..." 
                                 class="w-full pl-8 pr-8 py-1.5 bg-[#161616] text-xs text-white placeholder-gray-200 opacity-100 rounded-lg border border-pmmg-border focus:outline-none focus:border-pmmg-khaki"
-                                onkeyup="filter18BpmContent(); syncUnitsSearchWithGlobal(this.value, 'internal18GlobalDropdown');"
+                                onkeyup="debouncedFilter18AndSync(this.value);"
                             >
                             <button id="clear18SearchBtn" onclick="clear18Search(); clearUnitsLocalSearch('internalSearch18', 'internal18GlobalDropdown');" class="hidden absolute right-2.5 top-2 text-gray-400 hover:text-pmmg-khaki">
                                 <i data-lucide="x" class="w-3.5 h-3.5"></i>
@@ -15390,7 +15403,7 @@ if (viewId === 'gps' && window.azimuteGeoInvalidate) window.azimuteGeoInvalidate
             const topStatusBar = document.getElementById('operationalStatusBar');
             const searchContainer = document.getElementById('homeSearchBoxContainer');
             document.body.classList.toggle('has-home-header', viewId === 'home');
-            if ((window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true) {
+            if (!document.body.classList.contains('pwa-standalone') && ((window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true)) {
                 document.body.classList.add('pwa-standalone');
             }
             if (viewId === 'home') {
@@ -16306,6 +16319,36 @@ if (viewId === 'gps' && window.azimuteGeoInvalidate) window.azimuteGeoInvalidate
 
         let currentSearchResults = [];
 
+        function azimuteRefreshIcons(rootEl) {
+            if (typeof lucide === 'undefined' || !lucide.createIcons) return;
+            try {
+                if (rootEl) {
+                    lucide.createIcons({ root: rootEl });
+                } else {
+                    lucide.createIcons();
+                }
+            } catch (e) {
+                lucide.createIcons();
+            }
+        }
+
+        function azimuteDebounce(fn, waitMs) {
+            let timerId = null;
+            return function(...args) {
+                clearTimeout(timerId);
+                timerId = setTimeout(() => fn.apply(this, args), waitMs);
+            };
+        }
+
+        const debouncedGlobalSearch = azimuteDebounce(() => handleGlobalSearch(), 180);
+        const debouncedSyncUnitsSearchWithGlobal = azimuteDebounce((val, localDropId) => {
+            window.syncUnitsSearchWithGlobal(val, localDropId);
+        }, 180);
+        const debouncedFilter18AndSync = azimuteDebounce((val) => {
+            filter18BpmContent();
+            window.syncUnitsSearchWithGlobal(val, 'internal18GlobalDropdown');
+        }, 180);
+
         function handleGlobalSearch() {
             const inputEl = document.getElementById('globalSearch');
             const dropdown = document.getElementById('globalSearchDropdown');
@@ -16332,7 +16375,7 @@ if (viewId === 'gps' && window.azimuteGeoInvalidate) window.azimuteGeoInvalidate
                     </div>
                 `;
                 dropdown.classList.remove('hidden');
-                if (typeof lucide !== 'undefined') lucide.createIcons();
+                azimuteRefreshIcons(dropdown);
                 return;
             }
 
@@ -16450,7 +16493,7 @@ if (viewId === 'gps' && window.azimuteGeoInvalidate) window.azimuteGeoInvalidate
             }
 
             dropdown.classList.remove('hidden');
-            if (typeof lucide !== 'undefined') lucide.createIcons();
+            azimuteRefreshIcons(dropdown);
         }
 
         function triggerSearchResult(index) {
@@ -16540,7 +16583,11 @@ if (viewId === 'gps' && window.azimuteGeoInvalidate) window.azimuteGeoInvalidate
                 let count = 0;
 
                 cards.forEach(card => {
-                    const text = card.innerText.toLowerCase();
+                    let text = card.dataset.azSearchText;
+                    if (!text) {
+                        text = (card.textContent || '').toLowerCase();
+                        card.dataset.azSearchText = text;
+                    }
                     if (text.includes(query)) {
                         card.classList.remove('hidden');
                         count++;
@@ -16604,7 +16651,7 @@ if (viewId === 'gps' && window.azimuteGeoInvalidate) window.azimuteGeoInvalidate
                 localDrop.innerHTML = gDrop.innerHTML;
                 localDrop.classList.remove('hidden');
                 gDrop.classList.add('hidden');
-                if (typeof lucide !== 'undefined') lucide.createIcons();
+                azimuteRefreshIcons(localDrop);
             } else {
                 localDrop.classList.add('hidden');
             }
