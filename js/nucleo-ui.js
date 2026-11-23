@@ -430,7 +430,35 @@ window.moveFooterButtonItem = function(index, direction) {
     window.applyAzimuteUiSettings();
     window.renderFooterButtonsCustomizerList();
 };
+window.forcarModoAppMobile = function() {
+    if (window.innerWidth < 768) {
+        try {
+            const s = typeof getAzimuteUiSettings === 'function' ? getAzimuteUiSettings() : {};
+            s.manualMode = 'app';
+            s.pcSidebarOpen = false;
+            if (typeof saveAzimuteUiSettingsToStorage === 'function') {
+                saveAzimuteUiSettingsToStorage(s);
+            }
+        } catch (e) {}
 
+        document.body.classList.remove('mode-web', 'pc-sidebar-open', 'pc-sidebar-collapsed');
+        document.body.classList.add('mode-app', 'pc-sidebar-closed');
+
+        ['btn-mode-app', 'btn-mode-grid', 'btn-mode-web'].forEach(id => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            const isApp = id === 'btn-mode-app';
+            el.className = isApp
+                ? 'px-3 py-1.5 rounded-lg font-extrabold bg-pmmg-dark text-pmmg-khaki border border-pmmg-gold shadow-sm transition-all cursor-pointer'
+                : 'px-3 py-1.5 rounded-lg font-semibold text-gray-400 border border-transparent hover:text-gray-200 transition-all cursor-pointer';
+        });
+    }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    window.forcarModoAppMobile();
+    setTimeout(() => window.forcarModoAppMobile(), 400);
+});
 window.syncAjustesInputsFromStorage = function() {
     const s = getAzimuteUiSettings();
     const badgeMode = document.getElementById('ajustesCurrentModeBadge');
