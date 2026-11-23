@@ -27,8 +27,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
 <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
     <script>
-        window.tailwind = window.tailwind || {};
-        window.tailwind.config = {
+        window.azimuteTailwindConfig = {
             theme: {
                 extend: {
                     colors: {
@@ -55,7 +54,7 @@
             }
         }
     </script>
-    <script defer src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.tailwindcss.com" onload="window.tailwind.config = window.azimuteTailwindConfig"></script>
     <style>
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #0F0F0F; }
