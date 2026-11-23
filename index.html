@@ -21794,20 +21794,21 @@ if (document.readyState === "loading") {
   /* Gaveta Lateral Estilo ATAK */
   #azAtakRightDock {
     position: fixed !important;
-    top: 48px !important;
+    top: calc(48px + env(safe-area-inset-top, 0px)) !important;
     right: 8px !important;
-    bottom: 76px !important;
-    width: 300px;
+    bottom: calc(76px + env(safe-area-inset-bottom, 0px)) !important;
+    width: 288px;
     max-width: calc(100vw - 16px);
     z-index: 100045 !important;
     background: rgba(10, 10, 10, 0.97) !important;
     border: 1.5px solid #C5A869 !important;
-    border-radius: 10px;
+    border-radius: 12px;
     padding: 8px;
     display: none;
     flex-direction: column;
     gap: 7px;
     overflow-y: auto;
+    overscroll-behavior: contain;
     color: #F2F0EA;
     box-shadow: 0 12px 36px rgba(0, 0, 0, 0.96);
   }
@@ -21816,29 +21817,32 @@ if (document.readyState === "loading") {
   .az-atak-grid-3x3 {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 4px;
+    gap: 5px;
   }
   .az-grid-tile {
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 3px;
-    height: 54px !important;
+    gap: 4px;
+    min-height: 56px !important;
     background: #141414 !important;
     border: 1px solid #2A2A24 !important;
-    border-radius: 6px !important;
+    border-radius: 8px !important;
     color: #F2F0EA !important;
-    font-size: 8px !important;
-    font-weight: 700 !important;
+    font-size: 9px !important;
+    line-height: 1.1;
+    font-weight: 800 !important;
     text-align: center;
-    padding: 3px 2px !important;
+    padding: 4px 3px !important;
     cursor: pointer;
     opacity: 1 !important;
+    transition: transform 0.08s ease, border-color 0.15s ease;
   }
+  .az-grid-tile:active { transform: scale(0.94); }
   .az-grid-tile svg {
-    width: 18px;
-    height: 18px;
+    width: 19px;
+    height: 19px;
     stroke: #FFFFFF;
     fill: none;
     stroke-width: 1.8;
@@ -21847,6 +21851,93 @@ if (document.readyState === "loading") {
     border-color: #C5A869 !important;
     background: #221E15 !important;
     color: #C5A869 !important;
+  }
+  /* Indicadores de Borda (Colegas e Alvos fora da tela) */
+  #azEdgeIndicatorsLayer {
+    position: fixed !important;
+    inset: 0 !important;
+    pointer-events: none !important;
+    z-index: 100038 !important;
+    display: none;
+  }
+  #azEdgeIndicatorsLayer.is-visible { display: block !important; }
+  .az-edge-arrow-pill {
+    position: fixed;
+    pointer-events: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 7px;
+    border-radius: 999px;
+    background: rgba(13, 13, 13, 0.94);
+    border: 1.5px solid #C5A869;
+    color: #FFFFFF;
+    font-size: 9px;
+    font-weight: 900;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.85);
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .az-edge-arrow-pill:active { transform: translate(-50%, -50%) scale(0.92); }
+
+  /* Marcadores WASP (Varredura Rápida) */
+  .az-wasp-pin {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+  }
+  .az-wasp-pill {
+    padding: 3px 7px;
+    border-radius: 6px;
+    background: #0D0D0D;
+    border: 2px solid #EAB308;
+    color: #FFFFFF;
+    font-size: 9.5px;
+    font-weight: 900;
+    white-space: nowrap;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.9);
+  }
+  body.az-map-clean-eye .az-wasp-pin { display: none !important; }
+
+  /* Modal Grade Rápida (GRG), Geometria, Camadas e Missão */
+  #azGrgModal, #azGeomModal, #azLayersModal, #azMissionModal {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 100062 !important;
+    background: rgba(0, 0, 0, 0.78);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 14px;
+  }
+  #azGrgModal.is-open, #azGeomModal.is-open, #azLayersModal.is-open, #azMissionModal.is-open { display: flex !important; }
+  .az-grg-card {
+    width: 100%;
+    max-width: 340px;
+    background: #141414;
+    border: 1.5px solid #C5A869;
+    border-radius: 12px;
+    padding: 12px;
+    color: #F2F0EA;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.95);
+  }
+
+  /* Modo Tela Limpa (Botão Olhinho) */
+  body.az-map-clean-eye .az-tac-pin,
+  body.az-map-clean-eye .az-crumb-pin,
+  body.az-map-clean-eye .az-geo-zoom-stack,
+  body.az-map-clean-eye .az-geo-tilt-badge,
+  body.az-map-clean-eye .az-geo-lock-badge,
+  body.az-map-clean-eye #azLeftControlsRow,
+  body.az-map-clean-eye #azLockMapDrawBtn {
+    display: none !important;
+    pointer-events: none !important;
   }
   .az-grid-tile.is-prio svg { stroke: #EF4444; }
   .az-grid-tile.is-eraser.is-on {
@@ -22246,6 +22337,9 @@ if (document.readyState === "loading") {
     <svg viewBox="0 0 24 24"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
   </button>
   <button type="button" class="az-hud-glass-btn az-hud-hosp-btn" id="azQuickHospitalRouteBtn" title="Rota Hospital Próximo">+</button>
+  <button type="button" class="az-hud-glass-btn" id="azHudEyeToggleBtn" title="Ocultar / Exibir camadas (Tela Limpa)">
+    <svg id="azHudEyeIcon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+  </button>
   <button type="button" class="az-hud-glass-btn" id="azAtakHamburgerBtn" title="Menu Tático">
     <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
   </button>
@@ -22300,6 +22394,133 @@ if (document.readyState === "loading") {
   </div>
 </div>
 
+<!-- Indicadores de Borda -->
+<div id="azEdgeIndicatorsLayer"></div>
+
+<!-- Modal Grade Rápida Exportável (GRG) -->
+<div id="azGrgModal" role="dialog" aria-label="Grade Rápida Exportável GRG">
+  <div class="az-grg-card">
+    <div style="display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #28271F;padding-bottom:6px;">
+      <span style="font-size:11px;font-weight:900;color:#C5A869;letter-spacing:0.5px;">GRADE RÁPIDA (GRG)</span>
+      <button type="button" id="azCloseGrgModalBtn" style="background:none;border:none;color:#9E9A8F;font-weight:900;cursor:pointer;">✕</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <div>
+        <label style="font-size:9px;font-weight:800;color:#9E9A8F;display:block;margin-bottom:3px;">MALHA (LIN x COL)</label>
+        <select id="azGrgDimSelect" class="az-team-input" style="width:100%;">
+          <option value="4">4 × 4 (A1–D4)</option>
+          <option value="6" selected>6 × 6 (A1–F6)</option>
+          <option value="8">8 × 8 (A1–H8)</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:9px;font-weight:800;color:#9E9A8F;display:block;margin-bottom:3px;">LADO DO QUADRANTE</label>
+        <select id="azGrgCellMetersSelect" class="az-team-input" style="width:100%;">
+          <option value="50">50 m</option>
+          <option value="100" selected>100 m</option>
+          <option value="200">200 m</option>
+          <option value="500">500 m</option>
+        </select>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <button type="button" id="azGrgGenCenterBtn" class="az-atak-tool-btn is-active" style="height:34px;">NO CENTRO DO MAPA</button>
+      <button type="button" id="azGrgGenGpsBtn" class="az-atak-tool-btn" style="height:34px;">NO MEU GPS</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <button type="button" id="azGrgExportPngBtn" class="az-atak-tool-btn" style="height:34px;border-color:#4ADE80 !important;color:#4ADE80 !important;">EXPORTAR IMAGEM</button>
+      <button type="button" id="azGrgCopyDataBtn" class="az-atak-tool-btn" style="height:34px;">COPIAR DADOS</button>
+    </div>
+    <button type="button" id="azGrgClearBtn" class="az-atak-tool-btn is-danger" style="height:32px;width:100%;">REMOVER GRADE DO MAPA</button>
+  </div>
+</div>
+
+<!-- Modal Geometria Tática (Elipse, Retângulo, Alcance + Envio Direcionado) -->
+<div id="azGeomModal" role="dialog" aria-label="Geometria Tática">
+  <div class="az-grg-card">
+    <div style="display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #28271F;padding-bottom:6px;">
+      <span style="font-size:11px;font-weight:900;color:#C5A869;letter-spacing:0.5px;">GEOMETRIA TÁTICA</span>
+      <button type="button" id="azCloseGeomModalBtn" style="background:none;border:none;color:#9E9A8F;font-weight:900;cursor:pointer;">✕</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <div>
+        <label style="font-size:9px;font-weight:800;color:#9E9A8F;display:block;margin-bottom:3px;">FORMA</label>
+        <select id="azGeomShapeSelect" class="az-team-input" style="width:100%;">
+          <option value="rect">Retângulo de Busca</option>
+          <option value="ellipse">Elipse Tática</option>
+          <option value="circle">Círculo de Alcance</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:9px;font-weight:800;color:#9E9A8F;display:block;margin-bottom:3px;">RÓTULO</label>
+        <input type="text" id="azGeomLabelInput" class="az-team-input" placeholder="Ex: SETOR A" maxlength="18" style="width:100%;">
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <div>
+        <label style="font-size:9px;font-weight:800;color:#9E9A8F;display:block;margin-bottom:3px;">LARGURA / RAIO (m)</label>
+        <input type="number" id="azGeomWidthInput" class="az-team-input" value="250" min="20" max="10000" style="width:100%;">
+      </div>
+      <div>
+        <label style="font-size:9px;font-weight:800;color:#9E9A8F;display:block;margin-bottom:3px;">ALTURA (m)</label>
+        <input type="number" id="azGeomHeightInput" class="az-team-input" value="150" min="20" max="10000" style="width:100%;">
+      </div>
+    </div>
+    <div>
+      <label style="font-size:9px;font-weight:800;color:#9E9A8F;display:block;margin-bottom:3px;">ENVIO DIRECIONADO (MQTT)</label>
+      <select id="azGeomTargetSelect" class="az-team-input" style="width:100%;">
+        <option value="ALL">Toda a Sala (Todos)</option>
+      </select>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <button type="button" id="azGeomPlotCenterBtn" class="az-atak-tool-btn is-active" style="height:34px;">PLOTAR NO CENTRO</button>
+      <button type="button" id="azGeomPlotGpsBtn" class="az-atak-tool-btn" style="height:34px;">PLOTAR NO GPS</button>
+    </div>
+    <button type="button" id="azGeomClearBtn" class="az-atak-tool-btn is-danger" style="height:32px;width:100%;">LIMPAR GEOMETRIAS</button>
+  </div>
+</div>
+
+<!-- Modal Camadas: KML/GeoJSON (My Maps) + Croqui/Planta Baixa (Rubber Sheet) -->
+<div id="azLayersModal" role="dialog" aria-label="Camadas KML e Croquis">
+  <div class="az-grg-card">
+    <div style="display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #28271F;padding-bottom:6px;">
+      <span style="font-size:11px;font-weight:900;color:#C5A869;letter-spacing:0.5px;">KML / GEOJSON & CROQUI</span>
+      <button type="button" id="azCloseLayersModalBtn" style="background:none;border:none;color:#9E9A8F;font-weight:900;cursor:pointer;">✕</button>
+    </div>
+    <input type="file" id="azKmlFileInput" accept=".kml,.geojson,.json" style="display:none;">
+    <input type="file" id="azCroquiFileInput" accept="image/*" style="display:none;">
+    <button type="button" id="azImportKmlBtn" class="az-atak-tool-btn is-active" style="height:34px;width:100%;">IMPORTAR KML / GEOJSON (MY MAPS)</button>
+    <button type="button" id="azImportCroquiBtn" class="az-atak-tool-btn" style="height:34px;width:100%;">SOBREPOR CROQUI / PLANTA BAIXA</button>
+    <div>
+      <label style="font-size:9px;font-weight:800;color:#9E9A8F;display:block;margin-bottom:3px;">OPACIDADE DO CROQUI</label>
+      <input type="range" id="azCroquiOpacitySlider" min="15" max="100" value="65" style="width:100%;">
+    </div>
+    <button type="button" id="azClearImportedLayersBtn" class="az-atak-tool-btn is-danger" style="height:32px;width:100%;">LIMPAR CAMADAS IMPORTADAS</button>
+  </div>
+</div>
+
+<!-- Modal Pacote de Missão (JSON) & Extrato Detalhado do Turno -->
+<div id="azMissionModal" role="dialog" aria-label="Pacote de Missão e Extrato do Turno">
+  <div class="az-grg-card">
+    <div style="display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #28271F;padding-bottom:6px;">
+      <span style="font-size:11px;font-weight:900;color:#C5A869;letter-spacing:0.5px;">MISSÃO & EXTRATO DO TURNO</span>
+      <button type="button" id="azCloseMissionModalBtn" style="background:none;border:none;color:#9E9A8F;font-weight:900;cursor:pointer;">✕</button>
+    </div>
+    <input type="file" id="azMissionImportInput" accept=".json" style="display:none;">
+    <div id="azShiftSummaryBox" style="background:#0D0D0D;border:1px solid #28271F;border-radius:8px;padding:8px;font-size:10px;line-height:1.45;font-family:monospace;color:#E5E7EB;">
+      Carregando extrato do turno...
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <button type="button" id="azExportMissionJsonBtn" class="az-atak-tool-btn is-active" style="height:34px;">EXPORTAR MISSÃO</button>
+      <button type="button" id="azImportMissionJsonBtn" class="az-atak-tool-btn" style="height:34px;">IMPORTAR MISSÃO</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <button type="button" id="azExportShiftTxtBtn" class="az-atak-tool-btn" style="height:34px;border-color:#4ADE80 !important;color:#4ADE80 !important;">BAIXAR EXTRATO</button>
+      <button type="button" id="azCopyShiftTxtBtn" class="az-atak-tool-btn" style="height:34px;">COPIAR EXTRATO</button>
+    </div>
+  </div>
+</div>
+
 <!-- Banner CÃO DE CAÇA -->
 <div id="azBloodhoundBanner">
   <div class="az-bh-left">
@@ -22313,6 +22534,7 @@ if (document.readyState === "loading") {
     </div>
   </div>
   <div class="az-bh-actions">
+    <button type="button" class="az-atak-tool-btn" id="azCycleBloodhoundBtn" style="height:26px !important;padding:0 7px !important;display:none;" title="Alternar alvo">ALVOS</button>
     <button type="button" class="az-atak-tool-btn" id="azFitBloodhoundBtn" style="height:26px !important;padding:0 8px !important;" title="Enquadrar operador e alvo">VER</button>
     <button type="button" class="az-atak-tool-btn is-danger" id="azStopBloodhoundBtn" style="height:26px !important;padding:0 8px !important;">ENCERRAR</button>
   </div>
@@ -22338,6 +22560,7 @@ if (document.readyState === "loading") {
   <button type="button" class="az-atak-tool-btn is-danger" id="azClearCrumbRouteBtn" style="display:none;">APAGAR MIGALHAS</button>
   <button type="button" class="az-atak-tool-btn is-danger" id="azClearRouteBtn" style="display:none;">ENCERRAR ROTA</button>
   <button type="button" class="az-atak-tool-btn is-danger" id="azClearCircleBtn" style="display:none;">REMOVER RAIO</button>
+  <button type="button" class="az-atak-tool-btn is-active" id="azFinishWaspBtn" style="display:none;">FIM WASP</button>
 </div>
 
 <!-- Ajuste de Raio -->
@@ -22441,6 +22664,30 @@ if (document.readyState === "loading") {
     <button type="button" class="az-grid-tile" data-grid-act="bloodhound_pick">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg>
       Cão de Caça
+    </button>
+    <button type="button" class="az-grid-tile" id="azGridGrgTile" data-grid-act="grg_tool">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="1"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg>
+      Grade GRG
+    </button>
+    <button type="button" class="az-grid-tile" id="azGridWaspTile" data-grid-act="wasp_tool">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-6 9 6v11a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>
+      Varred. WASP
+    </button>
+    <button type="button" class="az-grid-tile" id="azGridGeomTile" data-grid-act="geom_tool">
+      <svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="3"/></svg>
+      Geometria
+    </button>
+    <button type="button" class="az-grid-tile" id="azGridTopoTile" data-grid-act="topo_tool">
+      <svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M17 7h4v4"/></svg>
+      Curvas Nível
+    </button>
+    <button type="button" class="az-grid-tile" id="azGridLayersTile" data-grid-act="layers_tool">
+      <svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/></svg>
+      KML/Croqui
+    </button>
+    <button type="button" class="az-grid-tile" id="azGridMissionTile" data-grid-act="mission_tool">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Missão/Turno
     </button>
     <button type="button" class="az-grid-tile" data-grid-act="wheel_settings">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -22681,6 +22928,13 @@ if (document.readyState === "loading") {
     circleCenter: null,
     circleRadius: 150,
     bloodhoundTarget: null,
+    bloodhoundList: [],
+    grgConfig: null,
+    waspItems: [],
+    waspCounter: 0,
+    tacticalGeoms: [],
+    topoMode: false,
+    shiftLog: { startedAt: Date.now(), distanceM: 0, lastTrackPos: null, pttCount: 0, pttStartedAt: 0, pttSeconds: 0 },
     pins: [],
     undoHistory: [],
     pendingPinCoords: null,
@@ -22779,8 +23033,10 @@ if (document.readyState === "loading") {
     if (cClr) cClr.style.display = (!tac.crumbRouteActive && tac.breadcrumbs.length > 0) ? "inline-flex" : "none";
     if (rtClr) rtClr.style.display = tac.hasActiveRoute ? "inline-flex" : "none";
     if (ciClr) ciClr.style.display = tac.circleCenter ? "inline-flex" : "none";
+    const wFin = document.getElementById("azFinishWaspBtn");
+    if (wFin) wFin.style.display = tac.toolMode === "wasp_pick" ? "inline-flex" : "none";
 
-    const any = hasUndo || tac.rulerActive || tac.drawActive || tac.eraserActive || tac.crumbRouteActive || tac.breadcrumbs.length > 0 || tac.hasActiveRoute || Boolean(tac.circleCenter);
+    const any = hasUndo || tac.rulerActive || tac.drawActive || tac.eraserActive || tac.crumbRouteActive || tac.breadcrumbs.length > 0 || tac.hasActiveRoute || Boolean(tac.circleCenter) || tac.toolMode === "wasp_pick";
     if (row) row.classList.toggle("is-visible", any);
   }
 
@@ -23180,6 +23436,8 @@ if (document.readyState === "loading") {
 
     try {
       tac.isRecordingPtt = true;
+      tac.shiftLog.pttCount = (tac.shiftLog.pttCount || 0) + 1;
+      tac.shiftLog.pttStartedAt = Date.now();
       syncPttUi();
       setSpeakerBanner(`${tac.myQra || "VOCÊ"}`, true);
       vibratePattern(35);
@@ -23213,6 +23471,10 @@ if (document.readyState === "loading") {
   function stopSelectedPtt() {
     if (!tac.isRecordingPtt) return;
     tac.isRecordingPtt = false;
+    if (tac.shiftLog && tac.shiftLog.pttStartedAt) {
+      tac.shiftLog.pttSeconds += Math.max(1, Math.round((Date.now() - tac.shiftLog.pttStartedAt) / 1000));
+      tac.shiftLog.pttStartedAt = 0;
+    }
     clearTimeout(tac.pttSegmentTimer);
     clearTimeout(tac.pttAutoStopTimer);
 
@@ -23554,15 +23816,363 @@ if (document.readyState === "loading") {
   }
 
   function setBloodhoundTarget(targetObj) {
-    tac.bloodhoundTarget = targetObj || null;
-    if (!tac.bloodhoundTarget) {
+    if (!targetObj) {
+      tac.bloodhoundTarget = null;
+      tac.bloodhoundList = [];
       clearBloodhoundMarker();
-    } else if (tac.bloodhoundTarget.type !== "mate") {
-      renderBloodhoundTargetMarker(tac.bloodhoundTarget.lat, tac.bloodhoundTarget.lng, tac.bloodhoundTarget.label);
     } else {
-      clearBloodhoundMarker();
+      const idx = tac.bloodhoundList.findIndex(function (t) { return t.id === targetObj.id; });
+      if (idx === -1) tac.bloodhoundList.push(Object.assign({}, targetObj));
+      else tac.bloodhoundList[idx] = Object.assign({}, targetObj);
+      tac.bloodhoundTarget = tac.bloodhoundList[tac.bloodhoundList.length - 1];
+      if (tac.bloodhoundTarget.type !== "mate") {
+        renderBloodhoundTargetMarker(tac.bloodhoundTarget.lat, tac.bloodhoundTarget.lng, tac.bloodhoundTarget.label);
+      } else {
+        clearBloodhoundMarker();
+      }
+    }
+    const cycBtn = document.getElementById("azCycleBloodhoundBtn");
+    if (cycBtn) {
+      cycBtn.style.display = tac.bloodhoundList.length > 1 ? "inline-flex" : "none";
+      cycBtn.textContent = "ALVOS (" + tac.bloodhoundList.length + ")";
     }
     updateBloodhoundVector();
+  }
+
+  function renderEdgeIndicators() {
+    const layer = document.getElementById("azEdgeIndicatorsLayer");
+    if (!layer) return;
+    const vis = isMapTabVisible() && !document.body.classList.contains("az-map-clean-eye");
+    layer.classList.toggle("is-visible", vis);
+    if (!vis) return;
+    const map = getActiveMap();
+    if (!map || typeof map.project !== "function") { layer.innerHTML = ""; return; }
+
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const padX = 38, padTop = 64, padBottom = 92;
+    const cx = vw / 2, cy = vh / 2;
+    const items = [];
+
+    Object.values(tac.teammates).forEach(function (m) {
+      if (typeof m.lat === "number" && typeof m.lng === "number") {
+        items.push({ id: m.uid, label: m.qra || "ALIADO", lat: m.lat, lng: m.lng, color: getColorHex(m.colorId) });
+      }
+    });
+    if (tac.bloodhoundTarget && tac.bloodhoundTarget.type !== "mate") {
+      items.push({ id: tac.bloodhoundTarget.id, label: "ALVO", lat: tac.bloodhoundTarget.lat, lng: tac.bloodhoundTarget.lng, color: "#F97316" });
+    }
+
+    const pills = [];
+    items.forEach(function (it) {
+      const pt = map.project([it.lng, it.lat]);
+      if (pt.x >= 16 && pt.x <= vw - 16 && pt.y >= 54 && pt.y <= vh - 78) return;
+      const dx = pt.x - cx, dy = pt.y - cy;
+      const angle = Math.atan2(dy, dx);
+      const halfW = (vw / 2) - padX;
+      const halfHTop = cy - padTop;
+      const halfHBot = (vh - padBottom) - cy;
+      const cos = Math.cos(angle), sin = Math.sin(angle);
+      const tx = cos !== 0 ? Math.abs(halfW / cos) : 1e9;
+      const ty = sin > 0 ? Math.abs(halfHBot / sin) : (sin < 0 ? Math.abs(halfHTop / sin) : 1e9);
+      const t = Math.min(tx, ty);
+      const ex = Math.max(padX, Math.min(vw - padX, cx + cos * t));
+      const ey = Math.max(padTop, Math.min(vh - padBottom, cy + sin * t));
+      const deg = Math.round((angle * 180) / Math.PI) + 90;
+      const refLat = tac.myPos ? tac.myPos.lat : map.getCenter().lat;
+      const refLng = tac.myPos ? tac.myPos.lng : map.getCenter().lng;
+      const distStr = formatDistance(calcDistAndBearing(refLat, refLng, it.lat, it.lng).dist);
+      pills.push(`<button type="button" class="az-edge-arrow-pill" data-edge-lat="${it.lat}" data-edge-lng="${it.lng}" style="left:${ex.toFixed(0)}px;top:${ey.toFixed(0)}px;border-color:${it.color};"><span style="display:inline-block;transform:rotate(${deg}deg);color:${it.color};">▲</span><span>${it.label} ${distStr}</span></button>`);
+    });
+
+    layer.innerHTML = pills.join("");
+    layer.querySelectorAll("[data-edge-lat]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        const lat = parseFloat(b.getAttribute("data-edge-lat"));
+        const lng = parseFloat(b.getAttribute("data-edge-lng"));
+        map.flyTo({ center: [lng, lat], zoom: Math.max(map.getZoom(), 16), essential: true });
+      });
+    });
+  }
+
+  function renderGrgGridOnMaps(cfg) {
+    tac.grgConfig = cfg || null;
+    const gridFeatures = [];
+    const labelFeatures = [];
+    if (cfg) {
+      const n = cfg.dim;
+      const stepM = cfg.cellMeters;
+      const dLat = stepM / 111320;
+      const dLng = stepM / (111320 * Math.max(0.2, Math.cos((cfg.centerLat * Math.PI) / 180)));
+      const startLat = cfg.centerLat + (n / 2) * dLat;
+      const startLng = cfg.centerLng - (n / 2) * dLng;
+      for (let r = 0; r <= n; r++) {
+        const lat = startLat - r * dLat;
+        gridFeatures.push({ type: "Feature", geometry: { type: "LineString", coordinates: [[startLng, lat], [startLng + n * dLng, lat]] } });
+      }
+      for (let c = 0; c <= n; c++) {
+        const lng = startLng + c * dLng;
+        gridFeatures.push({ type: "Feature", geometry: { type: "LineString", coordinates: [[lng, startLat], [lng, startLat - n * dLat]] } });
+      }
+      for (let r = 0; r < n; r++) {
+        const rowChar = String.fromCharCode(65 + r);
+        for (let c = 0; c < n; c++) {
+          labelFeatures.push({
+            type: "Feature",
+            geometry: { type: "Point", coordinates: [startLng + (c + 0.5) * dLng, startLat - (r + 0.5) * dLat] },
+            properties: { code: rowChar + (c + 1) }
+          });
+        }
+      }
+    }
+    const gridGeo = { type: "FeatureCollection", features: gridFeatures };
+    const lblGeo = { type: "FeatureCollection", features: labelFeatures };
+    tac.maps.forEach(function (map) {
+      if (!canDrawOnMap(map)) return;
+      if (map.getSource("az-grg-grid-src")) map.getSource("az-grg-grid-src").setData(gridGeo);
+      else {
+        map.addSource("az-grg-grid-src", { type: "geojson", data: gridGeo });
+        map.addLayer({ id: "az-grg-grid-line", type: "line", source: "az-grg-grid-src", paint: { "line-color": "#C5A869", "line-width": 1.6, "line-opacity": 0.85 } });
+      }
+      if (map.getSource("az-grg-lbl-src")) map.getSource("az-grg-lbl-src").setData(lblGeo);
+      else {
+        map.addSource("az-grg-lbl-src", { type: "geojson", data: lblGeo });
+        map.addLayer({
+          id: "az-grg-lbl-sym",
+          type: "symbol",
+          source: "az-grg-lbl-src",
+          layout: { "text-field": ["get", "code"], "text-size": 12, "text-allow-overlap": true },
+          paint: { "text-color": "#C5A869", "text-halo-color": "#0D0D0D", "text-halo-width": 2 }
+        });
+      }
+    });
+    const tile = document.getElementById("azGridGrgTile");
+    if (tile) tile.classList.toggle("is-on", Boolean(cfg));
+  }
+
+  const WASP_STATES = [
+    { id: "pending", label: "A VERIFICAR", short: "VERIF", color: "#EAB308" },
+    { id: "progress", label: "EM PROGRESSO", short: "PROG", color: "#3B82F6" },
+    { id: "clear", label: "LIMPO", short: "LIMPO", color: "#22C55E" },
+    { id: "alert", label: "ALERTA", short: "ALERTA", color: "#EF4444" }
+  ];
+
+  function upsertWaspMarker(item, fromSync) {
+    scanAndCaptureExistingMaps();
+    if (!item || !item.id || tac.maps.length === 0 || typeof window.maplibregl === "undefined") return;
+    let ex = tac.waspItems.find(function (w) { return w.id === item.id; });
+    const stObj = WASP_STATES.find(function (s) { return s.id === item.state; }) || WASP_STATES[0];
+    if (ex) {
+      ex.state = stObj.id;
+      ex.markers.forEach(function (mk) {
+        const pill = mk.el.querySelector(".az-wasp-pill");
+        if (pill) {
+          pill.style.borderColor = stObj.color;
+          pill.textContent = `${ex.code} • ${stObj.short}`;
+        }
+      });
+    } else {
+      ex = Object.assign({}, item, { state: stObj.id, markers: [] });
+      tac.maps.forEach(function (m) {
+        const el = document.createElement("div");
+        el.className = "az-wasp-pin";
+        el.innerHTML = `<div class="az-wasp-pill" style="border-color:${stObj.color};">${ex.code} • ${stObj.short}</div>`;
+        el.addEventListener("click", function (ev) {
+          ev.stopPropagation();
+          if (tac.eraserActive) {
+            ex.markers.forEach(function (it) { try { it.marker.remove(); } catch (_) {} });
+            tac.waspItems = tac.waspItems.filter(function (w) { return w.id !== ex.id; });
+            return;
+          }
+          const idx = WASP_STATES.findIndex(function (s) { return s.id === ex.state; });
+          const nextSt = WASP_STATES[(idx + 1) % WASP_STATES.length];
+          upsertWaspMarker({ id: ex.id, code: ex.code, lat: ex.lat, lng: ex.lng, state: nextSt.id }, false);
+          vibratePattern(25);
+          showToast(`${ex.code}: ${nextSt.label}`);
+        });
+        const marker = new window.maplibregl.Marker({ element: el, anchor: "center" }).setLngLat([ex.lng, ex.lat]).addTo(m);
+        ex.markers.push({ marker: marker, el: el });
+      });
+      tac.waspItems.push(ex);
+    }
+    if (!fromSync && tac.roomCode) {
+      broadcastPacket({ kind: "wasp_sync", item: { id: ex.id, code: ex.code, lat: ex.lat, lng: ex.lng, state: ex.state } });
+    }
+  }
+
+  function renderTacticalGeomsOnMaps() {
+    const polyFeatures = [];
+    const lblFeatures = [];
+    tac.tacticalGeoms.forEach(function (g) {
+      const steps = g.shape === "rect" ? 4 : 40;
+      const dLat = (g.heightM / (g.shape === "circle" ? 1 : 2)) / 111320;
+      const dLng = (g.widthM / (g.shape === "circle" ? 1 : 2)) / (111320 * Math.max(0.2, Math.cos((g.lat * Math.PI) / 180)));
+      let ring = [];
+      if (g.shape === "rect") {
+        ring = [
+          [g.lng - dLng, g.lat + dLat],
+          [g.lng + dLng, g.lat + dLat],
+          [g.lng + dLng, g.lat - dLat],
+          [g.lng - dLng, g.lat - dLat],
+          [g.lng - dLng, g.lat + dLat]
+        ];
+      } else {
+        const rx = g.shape === "circle" ? (g.widthM / 111320) / Math.max(0.2, Math.cos((g.lat * Math.PI) / 180)) : dLng;
+        const ry = g.shape === "circle" ? (g.widthM / 111320) : dLat;
+        for (let i = 0; i <= steps; i++) {
+          const a = (i / steps) * Math.PI * 2;
+          ring.push([g.lng + Math.cos(a) * rx, g.lat + Math.sin(a) * ry]);
+        }
+      }
+      polyFeatures.push({
+        type: "Feature",
+        geometry: { type: "Polygon", coordinates: [ring] },
+        properties: { color: g.color || "#38BDF8" }
+      });
+      lblFeatures.push({
+        type: "Feature",
+        geometry: { type: "Point", coordinates: [g.lng, g.lat] },
+        properties: { label: g.label || "ÁREA" }
+      });
+    });
+    const polyGeo = { type: "FeatureCollection", features: polyFeatures };
+    const lblGeo = { type: "FeatureCollection", features: lblFeatures };
+    tac.maps.forEach(function (map) {
+      if (!canDrawOnMap(map)) return;
+      if (map.getSource("az-tac-geom-src")) map.getSource("az-tac-geom-src").setData(polyGeo);
+      else {
+        map.addSource("az-tac-geom-src", { type: "geojson", data: polyGeo });
+        map.addLayer({ id: "az-tac-geom-fill", type: "fill", source: "az-tac-geom-src", paint: { "fill-color": ["get", "color"], "fill-opacity": 0.18 } });
+        map.addLayer({ id: "az-tac-geom-line", type: "line", source: "az-tac-geom-src", paint: { "line-color": ["get", "color"], "line-width": 2.2 } });
+      }
+      if (map.getSource("az-tac-geom-lbl-src")) map.getSource("az-tac-geom-lbl-src").setData(lblGeo);
+      else {
+        map.addSource("az-tac-geom-lbl-src", { type: "geojson", data: lblGeo });
+        map.addLayer({
+          id: "az-tac-geom-lbl-sym",
+          type: "symbol",
+          source: "az-tac-geom-lbl-src",
+          layout: { "text-field": ["get", "label"], "text-size": 11, "text-allow-overlap": true },
+          paint: { "text-color": "#FFFFFF", "text-halo-color": "#0D0D0D", "text-halo-width": 2 }
+        });
+      }
+    });
+  }
+
+  function toggleTopoLayer(enable) {
+    tac.topoMode = typeof enable === "boolean" ? enable : !tac.topoMode;
+    tac.maps.forEach(function (map) {
+      if (!canDrawOnMap(map)) return;
+      const srcId = "az-topo-src", layerId = "az-topo-layer";
+      if (tac.topoMode) {
+        if (!map.getSource(srcId)) {
+          map.addSource(srcId, { type: "raster", tiles: ["https://tile.opentopomap.org/{z}/{x}/{y}.png"], tileSize: 256, maxzoom: 17 });
+        }
+        if (!map.getLayer(layerId)) {
+          const layers = (map.getStyle() && map.getStyle().layers) || [];
+          const sym = layers.find(function (l) { return l.type === "symbol"; });
+          map.addLayer({ id: layerId, type: "raster", source: srcId, paint: { "raster-opacity": 0.78 } }, sym ? sym.id : undefined);
+        } else {
+          map.setLayoutProperty(layerId, "visibility", "visible");
+        }
+      } else if (map.getLayer(layerId)) {
+        map.setLayoutProperty(layerId, "visibility", "none");
+      }
+    });
+    const t = document.getElementById("azGridTopoTile");
+    if (t) t.classList.toggle("is-on", tac.topoMode);
+    showToast(tac.topoMode ? "Curvas de Nível (OpenTopoMap) ATIVAS." : "Curvas de Nível ocultadas.");
+  }
+
+  function parseKmlToGeoJson(kmlText) {
+    const doc = new DOMParser().parseFromString(kmlText, "text/xml");
+    const features = [];
+    const parseCoords = function (str) {
+      return (str || "").trim().split(/\s+/).map(function (pair) {
+        const p = pair.split(",");
+        return p.length >= 2 ? [parseFloat(p[0]), parseFloat(p[1])] : null;
+      }).filter(function (c) { return c && !isNaN(c[0]) && !isNaN(c[1]); });
+    };
+    Array.from(doc.getElementsByTagName("Placemark")).forEach(function (pm) {
+      const name = (pm.getElementsByTagName("name")[0]?.textContent || "").trim();
+      const pt = pm.getElementsByTagName("Point")[0];
+      const ls = pm.getElementsByTagName("LineString")[0];
+      const pg = pm.getElementsByTagName("Polygon")[0];
+      if (pt) {
+        const c = parseCoords(pt.getElementsByTagName("coordinates")[0]?.textContent);
+        if (c.length) features.push({ type: "Feature", geometry: { type: "Point", coordinates: c[0] }, properties: { name: name } });
+      } else if (ls) {
+        const c = parseCoords(ls.getElementsByTagName("coordinates")[0]?.textContent);
+        if (c.length >= 2) features.push({ type: "Feature", geometry: { type: "LineString", coordinates: c }, properties: { name: name } });
+      } else if (pg) {
+        const c = parseCoords(pg.getElementsByTagName("coordinates")[0]?.textContent);
+        if (c.length >= 3) features.push({ type: "Feature", geometry: { type: "Polygon", coordinates: [c] }, properties: { name: name } });
+      }
+    });
+    return { type: "FeatureCollection", features: features };
+  }
+
+  function renderImportedGeoJsonOnMaps(fc) {
+    tac.maps.forEach(function (map) {
+      if (!canDrawOnMap(map)) return;
+      if (map.getSource("az-kml-src")) map.getSource("az-kml-src").setData(fc);
+      else {
+        map.addSource("az-kml-src", { type: "geojson", data: fc });
+        map.addLayer({ id: "az-kml-poly", type: "fill", source: "az-kml-src", filter: ["==", "$type", "Polygon"], paint: { "fill-color": "#C5A869", "fill-opacity": 0.22 } });
+        map.addLayer({ id: "az-kml-line", type: "line", source: "az-kml-src", paint: { "line-color": "#C5A869", "line-width": 2.4 } });
+        map.addLayer({ id: "az-kml-pt", type: "circle", source: "az-kml-src", filter: ["==", "$type", "Point"], paint: { "circle-radius": 6, "circle-color": "#C5A869", "circle-stroke-width": 2, "circle-stroke-color": "#0D0D0D" } });
+      }
+    });
+  }
+
+  function buildShiftSummaryText() {
+    const sl = tac.shiftLog || {};
+    const mins = Math.max(1, Math.round((Date.now() - (sl.startedAt || Date.now())) / 60000));
+    const distStr = formatDistance(sl.distanceM || 0);
+    return [
+      `AZIMUTE PMMG — EXTRATO DO TURNO`,
+      `Operador: ${tac.myQra || "OPERADOR"} | Sala: ${tac.roomCode || "LOCAL"}`,
+      `Tempo de Turno: ${mins} min`,
+      `Distância Percorrida: ${distStr}`,
+      `Pinos: ${tac.pins.length} | WASP: ${tac.waspItems.length} | Geometrias: ${tac.tacticalGeoms.length}`,
+      `Rádio PTT: ${sl.pttCount || 0} acionamento(s) (${sl.pttSeconds || 0}s de TX)`
+    ].join("\n");
+  }
+
+  function exportGrgTacticalPng() {
+    if (!tac.grgConfig) { showToast("Gere uma grade GRG antes de exportar."); return; }
+    const n = tac.grgConfig.dim;
+    const size = 760, pad = 60, cell = (size - pad * 2) / n;
+    const cv = document.createElement("canvas");
+    cv.width = size; cv.height = size + 64;
+    const ctx = cv.getContext("2d");
+    ctx.fillStyle = "#0D0D0D";
+    ctx.fillRect(0, 0, cv.width, cv.height);
+    ctx.fillStyle = "#C5A869";
+    ctx.font = "bold 18px monospace";
+    ctx.fillText(`AZIMUTE GRG ${n}x${n} (${tac.grgConfig.cellMeters}m/quad)`, 24, 34);
+    ctx.fillStyle = "#9E9A8F";
+    ctx.font = "12px monospace";
+    ctx.fillText(`CENTRO: ${tac.grgConfig.centerLat.toFixed(5)}, ${tac.grgConfig.centerLng.toFixed(5)} | N ↑`, 24, 54);
+    ctx.strokeStyle = "#C5A869";
+    ctx.lineWidth = 2;
+    for (let i = 0; i <= n; i++) {
+      ctx.beginPath(); ctx.moveTo(pad, pad + 40 + i * cell); ctx.lineTo(size - pad, pad + 40 + i * cell); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(pad + i * cell, pad + 40); ctx.lineTo(pad + i * cell, size - pad + 40); ctx.stroke();
+    }
+    ctx.fillStyle = "#FFFFFF";
+    ctx.font = "bold 16px monospace";
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    for (let r = 0; r < n; r++) {
+      for (let c = 0; c < n; c++) {
+        ctx.fillText(String.fromCharCode(65 + r) + (c + 1), pad + (c + 0.5) * cell, pad + 40 + (r + 0.5) * cell);
+      }
+    }
+    const a = document.createElement("a");
+    a.href = cv.toDataURL("image/png");
+    a.download = `AZIMUTE_GRG_${n}x${n}.png`;
+    a.click();
+    showToast("Grade GRG exportada em imagem PNG.");
   }
   window.azimuteSetBloodhoundTarget = function (label, lat, lng, type, id) {
     if (typeof lat !== "number" || typeof lng !== "number" || isNaN(lat) || isNaN(lng)) return;
@@ -23915,6 +24525,14 @@ if (document.readyState === "loading") {
       map.on("movestart", cancelHold);
       map.on("zoomstart", cancelHold);
       map.on("rotatestart", cancelHold);
+      let _edgeRaf = 0;
+      map.on("move", function () {
+        if (_edgeRaf) return;
+        _edgeRaf = requestAnimationFrame(function () {
+          _edgeRaf = 0;
+          renderEdgeIndicators();
+        });
+      });
     }
 
     container.addEventListener("pointerdown", function (ev) {
@@ -23967,6 +24585,14 @@ if (document.readyState === "loading") {
         document.getElementById("azPinModalHeader").textContent = tac.pendingPinType === "vtr" ? "MARCAR VIATURA" : "MARCADOR TÁTICO";
         document.getElementById("azPinCustomNameInput").value = "";
         document.getElementById("azPinEditorModal").classList.add("is-open");
+        return;
+      }
+      if (tac.toolMode === "wasp_pick") {
+        tac.waspCounter = (tac.waspCounter || 0) + 1;
+        const wCode = "W" + tac.waspCounter;
+        upsertWaspMarker({ id: "wasp_" + Date.now() + "_" + tac.waspCounter, code: wCode, lat: ll.lat, lng: ll.lng, state: "pending" }, false);
+        vibratePattern(30);
+        showToast(`${wCode} marcado (toque no marcador para mudar status).`);
         return;
       }
       if (tac.toolMode === "bloodhound_pick") {
@@ -24449,6 +25075,14 @@ if (document.readyState === "loading") {
       showToast(`ALERTA: ${pkt.qra} EM DESLOCAMENTO RÁPIDO (≥7 km/h)`, 3800);
     } else if (pkt.kind === "pin" && pkt.pin) {
       upsertTacticalPin(pkt.pin, true);
+    } else if (pkt.kind === "wasp_sync" && pkt.item) {
+      upsertWaspMarker(pkt.item, true);
+    } else if (pkt.kind === "geom_sync" && pkt.geom) {
+      if (!pkt.targetUid || pkt.targetUid === "ALL" || pkt.targetUid === tac.myId) {
+        tac.tacticalGeoms.push(pkt.geom);
+        renderTacticalGeomsOnMaps();
+        showToast(`GEOMETRIA RECEBIDA: ${pkt.geom.label}`);
+      }
     } else if (pkt.kind === "del_pin" && pkt.pinId) {
       const idx = tac.pins.findIndex(function (p) { return p.id === pkt.pinId; });
       if (idx !== -1) { tac.pins[idx].markers.forEach(function (i) { i.marker.remove(); }); tac.pins.splice(idx, 1); }
@@ -24534,6 +25168,7 @@ if (document.readyState === "loading") {
     document.getElementById("azTopHudShell").classList.toggle("is-visible", vis);
     document.getElementById("azFloatingPttGroup").classList.toggle("is-visible", vis);
     document.getElementById("azLockMapDrawBtn").classList.toggle("is-visible", vis);
+    renderEdgeIndicators();
 
     // Contém #azGeoCenterFab estritamente na aba Geolocalização
     const centerFab = document.getElementById("azGeoCenterFab");
@@ -24585,6 +25220,17 @@ if (document.readyState === "loading") {
     }
     tac.prevPos = { lat: lat, lng: lng, ts: now };
     tac.myPos = { lat: lat, lng: lng };
+    if (tac.shiftLog) {
+      if (tac.shiftLog.lastTrackPos) {
+        const stepD = calcDistAndBearing(tac.shiftLog.lastTrackPos.lat, tac.shiftLog.lastTrackPos.lng, lat, lng).dist;
+        if (stepD >= 5 && stepD <= 1500) {
+          tac.shiftLog.distanceM += stepD;
+          tac.shiftLog.lastTrackPos = { lat: lat, lng: lng };
+        }
+      } else {
+        tac.shiftLog.lastTrackPos = { lat: lat, lng: lng };
+      }
+    }
     resolveAddr(lat, lng);
     updateBloodhoundVector();
     renderOnlineMembersList();
@@ -24724,6 +25370,24 @@ if (document.readyState === "loading") {
 
   // Satélite + Hospital + Menu
   onClick("azSatToggleBtn", toggleSatelliteMode);
+  onClick("azHudEyeToggleBtn", function () {
+    const clean = document.body.classList.toggle("az-map-clean-eye");
+    this.classList.toggle("is-active", clean);
+    const ico = document.getElementById("azHudEyeIcon");
+    if (ico) {
+      ico.innerHTML = clean
+        ? '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>'
+        : '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+    }
+    const visVal = clean ? "none" : "visible";
+    ["az-tac-freehand-line", "az-tac-circle-fill", "az-tac-circle-line", "az-tac-crumbs-line", "az-tac-ruler-line"].forEach(function (lid) {
+      tac.maps.forEach(function (m) {
+        try { if (m.getLayer(lid)) m.setLayoutProperty(lid, "visibility", visVal); } catch (_) {}
+      });
+    });
+    if (clean) closeDock();
+    showToast(clean ? "Modo Tela Limpa: camadas ocultas" : "Camadas táticas restauradas");
+  });
   onClick("azQuickHospitalRouteBtn", function () { generateRouteToTarget(-19.9277, -43.9317, "HPS João XXIII"); });
   onClick("azAtakHamburgerBtn", function () {
     scanAndCaptureExistingMaps();
@@ -24759,6 +25423,32 @@ if (document.readyState === "loading") {
       } else if (act === "photo_coord_pin") { openPhotoModal(null); }
       else if (act === "circle_tool") { tac.toolMode = "circle_pick"; showToast("Toque no centro do Perímetro no mapa."); }
       else if (act === "bloodhound_pick") { tac.toolMode = "bloodhound_pick"; showToast("Toque em qualquer ponto do mapa para travar CÃO DE CAÇA."); }
+      else if (act === "grg_tool") { document.getElementById("azGrgModal").classList.add("is-open"); }
+      else if (act === "wasp_tool") {
+        tac.toolMode = tac.toolMode === "wasp_pick" ? null : "wasp_pick";
+        document.getElementById("azGridWaspTile").classList.toggle("is-on", tac.toolMode === "wasp_pick");
+        const fw = document.getElementById("azFinishWaspBtn");
+        if (fw) fw.style.display = tac.toolMode === "wasp_pick" ? "inline-flex" : "none";
+        refreshLeftControls();
+        showToast(tac.toolMode === "wasp_pick" ? "Modo Varredura WASP ATIVO: toque no mapa para marcar." : "Modo Varredura WASP encerrado.");
+      }
+      else if (act === "geom_tool") {
+        const sel = document.getElementById("azGeomTargetSelect");
+        if (sel) {
+          sel.innerHTML = '<option value="ALL">Toda a Sala (Todos)</option>' +
+            Object.values(tac.teammates).map(function (m) {
+              return `<option value="${m.uid}">${m.qra || m.uid}</option>`;
+            }).join("");
+        }
+        document.getElementById("azGeomModal").classList.add("is-open");
+      }
+      else if (act === "topo_tool") { toggleTopoLayer(); }
+      else if (act === "layers_tool") { document.getElementById("azLayersModal").classList.add("is-open"); }
+      else if (act === "mission_tool") {
+        const box = document.getElementById("azShiftSummaryBox");
+        if (box) box.textContent = buildShiftSummaryText();
+        document.getElementById("azMissionModal").classList.add("is-open");
+      }
       else if (act === "toggle_sat") { toggleSatelliteMode(); }
       else if (act === "toggle_ruler") {
         tac.rulerActive = !tac.rulerActive;
@@ -24832,6 +25522,180 @@ if (document.readyState === "loading") {
   });
   onClick("azClearRouteBtn", function () { clearRouteFromMaps(); showToast("Rota encerrada."); });
   onClick("azClearCircleBtn", function () { clearCircleFromMaps(false); showToast("Perímetro removido."); });
+  onClick("azFinishWaspBtn", function () {
+    tac.toolMode = null;
+    document.getElementById("azGridWaspTile").classList.remove("is-on");
+    this.style.display = "none";
+    refreshLeftControls();
+    showToast("Modo Varredura WASP encerrado.");
+  });
+  onClick("azCloseGeomModalBtn", function () { document.getElementById("azGeomModal").classList.remove("is-open"); });
+  function plotTacticalGeomAt(lat, lng) {
+    const shape = document.getElementById("azGeomShapeSelect").value || "rect";
+    const label = (document.getElementById("azGeomLabelInput").value || "SETOR").trim().toUpperCase();
+    const widthM = Math.max(20, parseInt(document.getElementById("azGeomWidthInput").value, 10) || 250);
+    const heightM = Math.max(20, parseInt(document.getElementById("azGeomHeightInput").value, 10) || 150);
+    const targetUid = document.getElementById("azGeomTargetSelect").value || "ALL";
+    const g = { id: "geom_" + Date.now(), shape: shape, label: label, widthM: widthM, heightM: heightM, lat: lat, lng: lng, color: getColorHex(tac.myColorId) };
+    tac.tacticalGeoms.push(g);
+    renderTacticalGeomsOnMaps();
+    if (tac.roomCode) broadcastPacket({ kind: "geom_sync", targetUid: targetUid, geom: g });
+    document.getElementById("azGeomModal").classList.remove("is-open");
+    showToast(`Geometria "${label}" plotada.`);
+  }
+  onClick("azGeomPlotCenterBtn", function () {
+    const m = getActiveMap();
+    const c = m ? m.getCenter() : (tac.myPos ? { lat: tac.myPos.lat, lng: tac.myPos.lng } : { lat: -19.9245, lng: -43.9352 });
+    plotTacticalGeomAt(c.lat, c.lng);
+  });
+  onClick("azGeomPlotGpsBtn", function () {
+    if (!tac.myPos) { showToast("Aguardando posição GPS..."); return; }
+    plotTacticalGeomAt(tac.myPos.lat, tac.myPos.lng);
+  });
+  onClick("azGeomClearBtn", function () {
+    tac.tacticalGeoms = [];
+    renderTacticalGeomsOnMaps();
+    document.getElementById("azGeomModal").classList.remove("is-open");
+    showToast("Geometrias removidas.");
+  });
+  onClick("azCloseLayersModalBtn", function () { document.getElementById("azLayersModal").classList.remove("is-open"); });
+  onClick("azImportKmlBtn", function () { document.getElementById("azKmlFileInput").click(); });
+  onClick("azImportCroquiBtn", function () { document.getElementById("azCroquiFileInput").click(); });
+  document.getElementById("azKmlFileInput").addEventListener("change", function () {
+    const file = this.files && this.files[0];
+    this.value = "";
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function () {
+      try {
+        const txt = String(reader.result || "");
+        const fc = file.name.toLowerCase().endsWith(".kml") ? parseKmlToGeoJson(txt) : JSON.parse(txt);
+        renderImportedGeoJsonOnMaps(fc);
+        document.getElementById("azLayersModal").classList.remove("is-open");
+        showToast(`Camada importada (${(fc.features || []).length} itens).`);
+      } catch (_) { showToast("Arquivo KML/GeoJSON inválido."); }
+    };
+    reader.readAsText(file);
+  });
+  document.getElementById("azCroquiFileInput").addEventListener("change", function () {
+    const file = this.files && this.files[0];
+    this.value = "";
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function () {
+      const m = getActiveMap();
+      if (!m || !canDrawOnMap(m)) return;
+      const b = m.getBounds();
+      const coords = [[b.getWest(), b.getNorth()], [b.getEast(), b.getNorth()], [b.getEast(), b.getSouth()], [b.getWest(), b.getSouth()]];
+      if (m.getSource("az-croqui-src")) {
+        m.getSource("az-croqui-src").updateImage({ url: reader.result, coordinates: coords });
+      } else {
+        m.addSource("az-croqui-src", { type: "image", url: reader.result, coordinates: coords });
+        m.addLayer({ id: "az-croqui-layer", type: "raster", source: "az-croqui-src", paint: { "raster-opacity": 0.65 } });
+      }
+      document.getElementById("azLayersModal").classList.remove("is-open");
+      showToast("Croqui sobreposto na área atual do mapa.");
+    };
+    reader.readAsDataURL(file);
+  });
+  document.getElementById("azCroquiOpacitySlider").addEventListener("input", function () {
+    const op = Math.max(0.15, Math.min(1, parseInt(this.value, 10) / 100));
+    tac.maps.forEach(function (m) { try { if (m.getLayer("az-croqui-layer")) m.setPaintProperty("az-croqui-layer", "raster-opacity", op); } catch (_) {} });
+  });
+  onClick("azClearImportedLayersBtn", function () {
+    renderImportedGeoJsonOnMaps({ type: "FeatureCollection", features: [] });
+    tac.maps.forEach(function (m) { try { if (m.getLayer("az-croqui-layer")) m.removeLayer("az-croqui-layer"); if (m.getSource("az-croqui-src")) m.removeSource("az-croqui-src"); } catch (_) {} });
+    document.getElementById("azLayersModal").classList.remove("is-open");
+    showToast("Camadas importadas removidas.");
+  });
+
+  onClick("azCloseMissionModalBtn", function () { document.getElementById("azMissionModal").classList.remove("is-open"); });
+  onClick("azExportMissionJsonBtn", function () {
+    const pkg = {
+      version: "azimute_2.0",
+      exportedAt: new Date().toISOString(),
+      pins: tac.pins.map(function (p) { return { id: p.id, type: p.type, label: p.label, rawTitle: p.rawTitle, colorHex: p.colorHex, lng: p.lng, lat: p.lat }; }),
+      waspItems: tac.waspItems.map(function (w) { return { id: w.id, code: w.code, lat: w.lat, lng: w.lng, state: w.state }; }),
+      tacticalGeoms: tac.tacticalGeoms,
+      grgConfig: tac.grgConfig
+    };
+    const blob = new Blob([JSON.stringify(pkg, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `AZIMUTE_MISSAO_${Date.now()}.json`;
+    a.click();
+    showToast("Pacote de Missão exportado.");
+  });
+  onClick("azImportMissionJsonBtn", function () { document.getElementById("azMissionImportInput").click(); });
+  document.getElementById("azMissionImportInput").addEventListener("change", function () {
+    const file = this.files && this.files[0];
+    this.value = "";
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function () {
+      try {
+        const pkg = JSON.parse(String(reader.result || "{}"));
+        if (Array.isArray(pkg.pins)) pkg.pins.forEach(function (p) { upsertTacticalPin(p, true); });
+        if (Array.isArray(pkg.waspItems)) pkg.waspItems.forEach(function (w) { upsertWaspMarker(w, true); });
+        if (Array.isArray(pkg.tacticalGeoms)) { tac.tacticalGeoms = tac.tacticalGeoms.concat(pkg.tacticalGeoms); renderTacticalGeomsOnMaps(); }
+        if (pkg.grgConfig) renderGrgGridOnMaps(pkg.grgConfig);
+        document.getElementById("azMissionModal").classList.remove("is-open");
+        showToast("Pacote de Missão carregado no mapa.");
+      } catch (_) { showToast("Pacote de Missão inválido."); }
+    };
+    reader.readAsText(file);
+  });
+  onClick("azExportShiftTxtBtn", function () {
+    const blob = new Blob([buildShiftSummaryText()], { type: "text/plain;charset=utf-8" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `AZIMUTE_EXTRATO_TURNO_${Date.now()}.txt`;
+    a.click();
+    showToast("Extrato do turno baixado.");
+  });
+  onClick("azCopyShiftTxtBtn", function () {
+    if (navigator.clipboard) navigator.clipboard.writeText(buildShiftSummaryText()).catch(function () {});
+    showToast("Extrato copiado.");
+  });
+  onClick("azCycleBloodhoundBtn", function () {
+    if (!tac.bloodhoundList || tac.bloodhoundList.length < 2) return;
+    const curIdx = tac.bloodhoundList.findIndex(function (t) { return tac.bloodhoundTarget && t.id === tac.bloodhoundTarget.id; });
+    const next = tac.bloodhoundList[(curIdx + 1) % tac.bloodhoundList.length];
+    tac.bloodhoundTarget = next;
+    if (next.type !== "mate") renderBloodhoundTargetMarker(next.lat, next.lng, next.label);
+    else clearBloodhoundMarker();
+    updateBloodhoundVector();
+  });
+  onClick("azCloseGrgModalBtn", function () { document.getElementById("azGrgModal").classList.remove("is-open"); });
+  onClick("azGrgGenCenterBtn", function () {
+    const m = getActiveMap();
+    const c = m ? m.getCenter() : (tac.myPos ? { lat: tac.myPos.lat, lng: tac.myPos.lng } : { lat: -19.9245, lng: -43.9352 });
+    const dim = parseInt(document.getElementById("azGrgDimSelect").value, 10) || 6;
+    const cellMeters = parseInt(document.getElementById("azGrgCellMetersSelect").value, 10) || 100;
+    renderGrgGridOnMaps({ dim: dim, cellMeters: cellMeters, centerLat: c.lat, centerLng: c.lng });
+    document.getElementById("azGrgModal").classList.remove("is-open");
+    showToast(`Grade GRG ${dim}×${dim} (${cellMeters}m) gerada.`);
+  });
+  onClick("azGrgGenGpsBtn", function () {
+    if (!tac.myPos) { showToast("Aguardando posição GPS..."); return; }
+    const dim = parseInt(document.getElementById("azGrgDimSelect").value, 10) || 6;
+    const cellMeters = parseInt(document.getElementById("azGrgCellMetersSelect").value, 10) || 100;
+    renderGrgGridOnMaps({ dim: dim, cellMeters: cellMeters, centerLat: tac.myPos.lat, centerLng: tac.myPos.lng });
+    document.getElementById("azGrgModal").classList.remove("is-open");
+    showToast(`Grade GRG ${dim}×${dim} gerada no seu GPS.`);
+  });
+  onClick("azGrgExportPngBtn", exportGrgTacticalPng);
+  onClick("azGrgCopyDataBtn", function () {
+    if (!tac.grgConfig) { showToast("Gere uma grade GRG antes."); return; }
+    const txt = `AZIMUTE GRG ${tac.grgConfig.dim}x${tac.grgConfig.dim} (${tac.grgConfig.cellMeters}m) | Centro: ${tac.grgConfig.centerLat.toFixed(5)}, ${tac.grgConfig.centerLng.toFixed(5)}`;
+    if (navigator.clipboard) navigator.clipboard.writeText(txt).catch(function () {});
+    showToast("Dados da grade GRG copiados.");
+  });
+  onClick("azGrgClearBtn", function () {
+    renderGrgGridOnMaps(null);
+    document.getElementById("azGrgModal").classList.remove("is-open");
+    showToast("Grade GRG removida.");
+  });
   onClick("azFitBloodhoundBtn", function () {
     const m = getActiveMap();
     if (!m || !tac.bloodhoundTarget) return;
