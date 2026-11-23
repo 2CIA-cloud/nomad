@@ -2726,10 +2726,18 @@
       </div>
     </div>
 
-    <div id="azGeoMunBox" class="az-geo-collapsible">
+    <div id="azGeoMunBox" class="az-geo-collapsible" style="background:#141414;border:1.5px solid #C5A869;border-radius:12px;padding:10px;margin-top:6px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #28271F;padding-bottom:6px;margin-bottom:8px;">
+        <span style="font-size:10px;font-weight:900;color:#C5A869;letter-spacing:0.5px;">MUNICÍPIOS (MG)</span>
+        <button type="button" onclick="document.getElementById('azGeoMunBox')?.classList.remove('is-open')" style="background:none;border:none;color:#9E9A8F;font-weight:900;cursor:pointer;font-size:13px;">✕</button>
+      </div>
+      <div style="display:flex;gap:5px;margin-bottom:8px;">
+        <input type="text" id="azAddMunInput" class="az-geo-input" placeholder="+ Adicionar município de MG..." style="flex:1;min-width:0;font-size:11px;padding:6px 8px;" />
+        <button type="button" id="azAddMunBtn" class="az-geo-btn" style="padding:0 10px;white-space:nowrap;">+ Adicionar</button>
+      </div>
       <div class="az-geo-scroll-row">
         <button type="button" id="azGeoCitiesLeft" class="az-geo-scroll-btn" aria-label="Rolar esquerda">&lt;</button>
-        <div id="azGeoCities" class="az-geo-cities">
+        <div id="azGeoCities" class="az-geo-cities" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;max-height:190px;overflow-y:auto;width:100%;">
           <button type="button" class="az-geo-btn subtle" data-lat="-19.9191" data-lng="-43.9386" data-zoom="13">Belo Horizonte</button>
           <button type="button" class="az-geo-btn subtle" data-lat="-19.9321" data-lng="-44.0539" data-zoom="13">Contagem</button>
           <button type="button" class="az-geo-btn subtle" data-lat="-19.9678" data-lng="-44.1983" data-zoom="13">Betim</button>
@@ -21386,7 +21394,25 @@ if (document.readyState === "loading") {
     visibility: hidden !important;
   }
 
-  /* 2. Mapa contido no quadro para liberar rolagem da página e exibir o botão Iniciar da rota */
+  /* 2. Tela Cheia 100% via CSS (sem requestFullscreen) + 2D/3D visível nos dois modos */
+  body.az-map-expanded header.sticky,
+  body.az-map-expanded #mobileBottomNav {
+    display: none !important;
+  }
+  body.az-map-expanded #azGeoNorthBadge {
+    position: fixed !important;
+    top: calc(56px + env(safe-area-inset-top, 0px)) !important;
+    right: 10px !important;
+    z-index: 100044 !important;
+    display: flex !important;
+  }
+  body.az-map-expanded #azGeoTiltBadge {
+    position: fixed !important;
+    top: calc(98px + env(safe-area-inset-top, 0px)) !important;
+    right: 10px !important;
+    z-index: 100044 !important;
+    display: flex !important;
+  }
   body.az-map-expanded #azGeoMap {
     position: fixed !important;
     inset: 0 !important;
@@ -21399,6 +21425,23 @@ if (document.readyState === "loading") {
     z-index: 99980 !important;
     display: block !important;
     visibility: visible !important;
+  }
+  @media (orientation: landscape) and (max-height: 500px) {
+    body.kb-landscape-active #mainTopHeader,
+    body.kb-landscape-active #mobileBottomNav,
+    body.kb-landscape-active #azFloatingPttGroup {
+      display: none !important;
+    }
+    body.kb-landscape-active #azWhatsappGroupModal {
+      height: var(--az-vv-h, 100dvh) !important;
+      max-height: var(--az-vv-h, 100dvh) !important;
+      bottom: auto !important;
+    }
+    body.kb-landscape-active #azMapSearchOverlay {
+      top: 6px !important;
+      max-height: calc(var(--az-vv-h, 100dvh) - 12px) !important;
+      overflow-y: auto !important;
+    }
   }
   body.az-map-fullscreen #azGeoStage {
     height: 375px !important;
@@ -21657,11 +21700,12 @@ if (document.readyState === "loading") {
   }
   #azLeftControlsRow.is-visible { display: flex !important; }
 
-  /* PTT Arrastável */
+  /* PTT Arrastável (canto inferior direito livre, acima do rodapé, sem cobrir endereço) */
   #azFloatingPttGroup {
     position: fixed !important;
-    bottom: calc(76px + env(safe-area-inset-bottom, 0px));
-    left: 12px;
+    bottom: calc(82px + env(safe-area-inset-bottom, 0px));
+    right: 12px;
+    left: auto;
     z-index: 100044 !important;
     display: none;
     align-items: stretch !important;
@@ -25163,22 +25207,144 @@ if (document.readyState === "loading") {
     navigator.geolocation.watchPosition(onNewPosition, function () {}, { enableHighAccuracy: true, maximumAge: 1500 });
   }
 
-  // Arrasto do PTT
+  // Arrasto do PTT + Proteção Paisagem (Landscape) + Teclado Virtual Paisagem
   (function () {
     const group = document.getElementById("azFloatingPttGroup");
     const handle = document.getElementById("azPttDragHandle");
     let sx = 0, sy = 0, ol = 0, ot = 0, drag = false;
+    function clampFloatingPttIntoViewport() {
+      if (!group) return;
+      const w = group.offsetWidth || 92;
+      const h = group.offsetHeight || 44;
+      const vw = window.innerWidth;
+      const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+      if (group.style.left || group.style.top) {
+        const curL = parseFloat(group.style.left) || 12;
+        const curT = parseFloat(group.style.top) || (vh - h - 24);
+        group.style.left = Math.min(Math.max(8, vw - w - 8), Math.max(8, curL)) + "px";
+        group.style.top = Math.min(Math.max(50, vh - h - 14), Math.max(50, curT)) + "px";
+        group.style.right = "auto";
+        group.style.bottom = "auto";
+      } else if (vh < 500) {
+        group.style.bottom = "14px";
+        group.style.right = "10px";
+      } else {
+        group.style.bottom = "";
+      }
+    }
     handle.addEventListener("pointerdown", function (e) {
       e.preventDefault(); e.stopPropagation();
       const r = group.getBoundingClientRect(); sx = e.clientX; sy = e.clientY; ol = r.left; ot = r.top; drag = true;
     });
     handle.addEventListener("pointermove", function (e) {
       if (!drag) return;
-      group.style.left = Math.min(window.innerWidth - group.offsetWidth - 6, Math.max(6, ol + (e.clientX - sx))) + "px";
-      group.style.top = Math.min(window.innerHeight - group.offsetHeight - 6, Math.max(46, ot + (e.clientY - sy))) + "px";
+      group.style.left = Math.min(window.innerWidth - group.offsetWidth - 8, Math.max(8, ol + (e.clientX - sx))) + "px";
+      group.style.top = Math.min(window.innerHeight - group.offsetHeight - 14, Math.max(50, ot + (e.clientY - sy))) + "px";
+      group.style.right = "auto";
       group.style.bottom = "auto";
     });
-    handle.addEventListener("pointerup", function () { drag = false; });
+    handle.addEventListener("pointerup", function () { drag = false; clampFloatingPttIntoViewport(); });
+    window.addEventListener("resize", clampFloatingPttIntoViewport);
+    window.addEventListener("orientationchange", function () { setTimeout(clampFloatingPttIntoViewport, 120); });
+
+    function syncKbLandscape() {
+      const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+      document.documentElement.style.setProperty("--az-vv-h", Math.round(vh) + "px");
+      clampFloatingPttIntoViewport();
+    }
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", syncKbLandscape);
+      window.visualViewport.addEventListener("scroll", syncKbLandscape);
+    }
+    document.addEventListener("focusin", function (ev) {
+      const t = ev.target;
+      if (!t || (t.tagName !== "INPUT" && t.tagName !== "TEXTAREA")) return;
+      document.body.classList.add("kb-landscape-active");
+      syncKbLandscape();
+      setTimeout(function () {
+        try { t.scrollIntoView({ block: "nearest", behavior: "smooth" }); } catch (_) {}
+      }, 150);
+    });
+    document.addEventListener("focusout", function () {
+      setTimeout(function () {
+        const ae = document.activeElement;
+        if (!ae || (ae.tagName !== "INPUT" && ae.tagName !== "TEXTAREA")) {
+          document.body.classList.remove("kb-landscape-active");
+          clampFloatingPttIntoViewport();
+        }
+      }, 120);
+    });
+  })();
+
+  // Municípios de MG personalizados (+ Adicionar município com persistência no localStorage)
+  (function () {
+    const KEY = "az_custom_cities_v1";
+    const box = document.getElementById("azGeoCities");
+    const inp = document.getElementById("azAddMunInput");
+    const btn = document.getElementById("azAddMunBtn");
+    if (!box) return;
+    function loadCustom() { try { return JSON.parse(localStorage.getItem(KEY) || "[]"); } catch (_) { return []; } }
+    function saveCustom(arr) { try { localStorage.setItem(KEY, JSON.stringify(arr)); } catch (_) {} }
+    function renderCustomButtons() {
+      box.querySelectorAll("[data-custom-city]").forEach(function (n) { n.remove(); });
+      loadCustom().forEach(function (c, idx) {
+        const wrap = document.createElement("div");
+        wrap.setAttribute("data-custom-city", "1");
+        wrap.style.cssText = "display:flex;gap:3px;align-items:stretch;";
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "az-geo-btn subtle";
+        b.style.cssText = "flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;";
+        b.textContent = c.name;
+        b.addEventListener("click", function () {
+          const m = getActiveMap();
+          if (m) m.flyTo({ center: [c.lng, c.lat], zoom: 13, essential: true });
+          document.getElementById("azGeoMunBox")?.classList.remove("is-open");
+        });
+        const del = document.createElement("button");
+        del.type = "button";
+        del.className = "az-geo-btn subtle";
+        del.style.cssText = "padding:0 7px;color:#F87171;";
+        del.textContent = "✕";
+        del.title = "Remover município";
+        del.addEventListener("click", function () {
+          const arr = loadCustom();
+          arr.splice(idx, 1);
+          saveCustom(arr);
+          renderCustomButtons();
+        });
+        wrap.appendChild(b);
+        wrap.appendChild(del);
+        box.appendChild(wrap);
+      });
+    }
+    renderCustomButtons();
+    if (btn && inp) {
+      btn.addEventListener("click", async function () {
+        const q = (inp.value || "").trim();
+        if (!q) return;
+        btn.disabled = true; btn.textContent = "...";
+        try {
+          const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q + ", Minas Gerais, Brazil")}&limit=1`;
+          const res = await (await fetch(url)).json();
+          if (res && res[0]) {
+            const arr = loadCustom();
+            const shortN = (res[0].display_name || q).split(",")[0].trim();
+            arr.push({ name: shortN, lat: parseFloat(res[0].lat), lng: parseFloat(res[0].lon) });
+            saveCustom(arr);
+            renderCustomButtons();
+            inp.value = "";
+            showToast(`Município "${shortN}" adicionado.`);
+          } else {
+            showToast("Município não encontrado em MG.");
+          }
+        } catch (_) {
+          showToast("Erro ao buscar município.");
+        } finally {
+          btn.disabled = false; btn.textContent = "+ Adicionar";
+        }
+      });
+    }
   })();
 
   // Inicialização
@@ -25774,9 +25940,13 @@ if (document.readyState === "loading") {
   onClick("azExpandMapScreenBtn", function () {
     const expanded = document.body.classList.toggle("az-map-expanded");
     this.classList.toggle("is-active", expanded);
-    if (window.azGeoMap && typeof window.azGeoMap.resize === "function") {
-      setTimeout(function () { window.azGeoMap.resize(); }, 60);
-    }
+    this.title = expanded ? "Sair da Tela Cheia" : "Expandir Mapa";
+    const doResize = function () {
+      if (window.azGeoMap && typeof window.azGeoMap.resize === "function") window.azGeoMap.resize();
+      renderEdgeIndicators();
+    };
+    setTimeout(doResize, 60);
+    setTimeout(doResize, 260);
   });
 
   // ================= MENU DE GRUPO ESTILO WHATSAPP =================
