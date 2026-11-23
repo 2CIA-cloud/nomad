@@ -1302,9 +1302,6 @@
 
         <!-- ================= VIEW EXCLUSIVA: GEOLOCALIZAÇÃO ================= -->
         <section id="view-gps" class="hidden relative overflow-hidden rounded-2xl space-y-4 p-1">
-            <div class="relative z-10 flex items-center justify-between px-1">
-                <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki">Geolocalização</span>
-            </div>
 <div id="az-geo-module" class="az-geo-module relative z-10">
   <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" />
   <style>
@@ -1515,12 +1512,9 @@
       width: 100%;
       height: 100%;
       z-index: 1;
-      background: #0D0D0D !important;
+      background-color: #0D0D0D;
       touch-action: none;
       transition: none !important;
-    }
-    .maplibregl-canvas-container, .maplibregl-canvas {
-      background: #0D0D0D !important;
     }
 
     .maplibregl-ctrl-bottom-left,
@@ -2630,8 +2624,29 @@
       <button type="button" id="azGeoStopRouteBtn" class="az-geo-btn subtle">Encerrar</button>
     </div>
 
-    <div class="az-geo-stage" id="azGeoStage">
+    <div class="az-geo-stage" id="azGeoStage" style="position:relative;overflow:hidden;">
       <div id="azGeoMap"></div>
+      <!-- Coluna Vertical Unificada Presa Dentro do Mapa: 1. Lupa -> 2. Camadas -> 3. GPS Azul -> 4. Zoom+ -> 5. Zoom- -> 6. Travar Mapa -->
+      <div id="azLeftMapToolsCol">
+        <button type="button" class="az-hud-glass-btn" id="azHudSearchToggleBtn" title="Buscar endereço ou coordenada">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+        <button type="button" class="az-hud-glass-btn" id="azSatToggleBtn" title="Troca de Camadas (Mapa / Satélite)">
+          <svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+        </button>
+        <button type="button" id="azGeoCenterFab" class="az-geo-locate-fab is-heading-up" aria-label="Centralizar na Minha Posicao" title="Centralizar GPS">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="7"></circle><circle cx="12" cy="12" r="2"></circle>
+            <line x1="12" y1="2" x2="12" y2="5"></line><line x1="12" y1="19" x2="12" y2="22"></line>
+            <line x1="2" y1="12" x2="5" y2="12"></line><line x1="19" y1="12" x2="22" y2="12"></line>
+          </svg>
+        </button>
+        <div class="az-geo-zoom-stack">
+          <button type="button" id="azGeoZoomInBtn" aria-label="Aproximar">+</button>
+          <button type="button" id="azGeoZoomOutBtn" aria-label="Afastar">−</button>
+        </div>
+        <button type="button" id="azLockMapDrawBtn" title="Travar mapa para desenhar">TRAVAR MAPA</button>
+      </div>
       <button type="button" id="azGeoLockBadge" class="az-geo-lock-badge" title="Travar rumo do mapa e do Orbe ao manusear o celular">
         <span>RUMO LIVRE</span>
       </button>
@@ -2698,8 +2713,12 @@
 
     <div id="azGeoMunBox" class="az-geo-collapsible" style="background:#141414;border:1.5px solid #C5A869;border-radius:12px;padding:10px;margin-top:6px;">
       <div style="display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #28271F;padding-bottom:6px;margin-bottom:8px;">
-        <span style="font-size:10px;font-weight:900;color:#C5A869;letter-spacing:0.5px;">MUNICÍPIOS DA RMBH</span>
+        <span style="font-size:10px;font-weight:900;color:#C5A869;letter-spacing:0.5px;">MUNICÍPIOS (MG)</span>
         <button type="button" onclick="document.getElementById('azGeoMunBox')?.classList.remove('is-open')" style="background:none;border:none;color:#9E9A8F;font-weight:900;cursor:pointer;font-size:13px;">✕</button>
+      </div>
+      <div style="display:flex;gap:5px;margin-bottom:8px;">
+        <input type="text" id="azAddMunInput" class="az-geo-input" placeholder="+ Adicionar município de MG..." style="flex:1;min-width:0;font-size:11px;padding:6px 8px;" />
+        <button type="button" id="azAddMunBtn" class="az-geo-btn" style="padding:0 10px;white-space:nowrap;">+ Adicionar</button>
       </div>
       <div id="azGeoCities" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;max-height:190px;overflow-y:auto;">
         <button type="button" class="az-geo-btn subtle" data-lat="-19.9191" data-lng="-43.9386" data-zoom="13">Belo Horizonte</button>
@@ -7369,13 +7388,16 @@
                 </div>
             </div>
 
-            <!-- CAIXA ÚNICA: RMBH (TODAS AS RPMs AGRUPADAS) -->
+            <!-- CAIXA ÚNICA: RMBH (INICIA FECHADA/RECOLHIDA POR PADRÃO) -->
             <div class="bg-pmmg-card/60 border border-pmmg-gold/45 rounded-2xl p-3.5 space-y-3">
-                <div class="flex items-center justify-between border-b border-pmmg-border pb-2">
-                    <h3 class="text-lg sm:text-xl font-military text-pmmg-khaki uppercase tracking-wider leading-none">RMBH</h3>
-                    <span class="text-[10px] font-mono font-bold text-pmmg-gold bg-pmmg-dark px-2 py-0.5 rounded border border-pmmg-gold/40">1ª • 2ª • 3ª RPM</span>
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <button type="button" onclick="(function(){ var b=document.getElementById('rmbhUnitsBody'), c=document.getElementById('rmbhChevron'); if(!b) return; var open=b.classList.toggle('hidden'); if(c) c.style.transform = open ? 'rotate(0deg)' : 'rotate(180deg)'; })()" class="w-full flex items-center justify-between text-left cursor-pointer">
+                    <div class="flex items-center gap-2">
+                        <h3 class="text-lg sm:text-xl font-military text-pmmg-khaki uppercase tracking-wider leading-none">RMBH</h3>
+                        <span class="text-[10px] font-mono font-bold text-pmmg-gold bg-pmmg-dark px-2 py-0.5 rounded border border-pmmg-gold/40">1ª • 2ª • 3ª RPM</span>
+                    </div>
+                    <i data-lucide="chevron-down" id="rmbhChevron" class="w-4 h-4 text-pmmg-gold transition-transform"></i>
+                </button>
+                <div id="rmbhUnitsBody" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-pmmg-border">
                     <!-- 1. 1ª RPM (Capital) -->
                     <div onclick="showView('rpm1')" class="bg-pmmg-card p-4 rounded-xl tactical-border tactical-card cursor-pointer group flex flex-col justify-between space-y-2.5">
                         <div class="space-y-1">
@@ -15069,9 +15091,6 @@
                 } catch (e) {}
             }
             updateFullscreenButtonsUi();
-            if (typeof showToast === 'function') {
-                showToast(azimuteImmersiveMode ? 'Tela Expandida ativada!' : 'Tela Expandida desativada.');
-            }
         };
 
         document.addEventListener('fullscreenchange', updateFullscreenButtonsUi);
@@ -17816,6 +17835,8 @@ if (window.__azimuteGeoInitialized) {
     bearing: 0,
     pitch: 0,
     maxPitch: 65,
+    fadeDuration: 0,
+    pixelRatio: Math.min(window.devicePixelRatio || 1, 2.5),
     touchPitch: true,
     pitchWithRotate: true,
     attributionControl: false
@@ -18755,12 +18776,30 @@ if (window.__azimuteGeoInitialized) {
           type: "circle",
           source: "az-local-src",
           paint: {
-            "circle-radius": ["interpolate", ["linear"], ["zoom"], 11, 5.5, 16, 8.5],
-            "circle-color": ["get", "color"],
-            "circle-stroke-color": "#0D0D0D",
-            "circle-stroke-width": 2
+            "circle-radius": ["case", ["==", ["get", "category"], "hospitais"], 10.5, ["interpolate", ["linear"], ["zoom"], 11, 5.5, 16, 8.5]],
+            "circle-color": ["case", ["==", ["get", "category"], "hospitais"], "#DC2626", ["get", "color"]],
+            "circle-stroke-color": ["case", ["==", ["get", "category"], "hospitais"], "#FFFFFF", "#0D0D0D"],
+            "circle-stroke-width": ["case", ["==", ["get", "category"], "hospitais"], 1.8, 2]
           }
         });
+      }
+      if (!map.getLayer("az-local-hosp-h")) {
+        map.addLayer({
+          id: "az-local-hosp-h",
+          type: "symbol",
+          source: "az-local-src",
+          filter: ["==", ["get", "category"], "hospitais"],
+          layout: {
+            "text-field": "H",
+            "text-size": 12,
+            "text-allow-overlap": true,
+            "text-ignore-placement": true
+          },
+          paint: {
+            "text-color": "#FFFFFF"
+          }
+        });
+      }
 
         map.addLayer({
           id: "az-local-labels",
@@ -19165,7 +19204,7 @@ if (window.__azimuteGeoInitialized) {
     card.title = "Toque para abrir ESPECTRO (malha altimetrica 3D das vias)";
     card.innerHTML = `
       <div class="az-quad-inline-head">
-        <span class="az-quad-inline-title">ORBE • 360° (130M)</span>
+        <span class="az-quad-inline-title">ORBE • 360° (16 SETORES • 350M)</span>
         <div style="display:flex; align-items:center; gap:6px;">
           <button type="button" id="azOrbeRecenterBtn" class="az-orbe-sonar-btn" title="Emitir pulso e recentralizar ORBE">
             <span class="az-orbe-sonar-dot"></span>
@@ -19352,8 +19391,10 @@ if (window.__azimuteGeoInitialized) {
 
   function hideSearchResults() {
     if (!searchResultsEl) return;
-    searchResultsEl.classList.remove("is-open");
-    searchResultsEl.innerHTML = "";
+    if (searchResultsEl) {
+      searchResultsEl.classList.remove("is-open");
+      searchResultsEl.innerHTML = "";
+    }
   }
 
   function calcDistanceKm(lat1, lng1, lat2, lng2) {
@@ -19487,6 +19528,9 @@ if (window.__azimuteGeoInitialized) {
     userTouchPauseUntil = Date.now() + 5000;
   });
 
+  map.on("touchstart", () => { document.body.classList.add("az-map-interacting"); });
+  map.on("touchend", () => { document.body.classList.remove("az-map-interacting"); });
+  map.on("touchcancel", () => { document.body.classList.remove("az-map-interacting"); });
   let _azRotateRaf = 0;
   map.on("rotate", () => {
     if (_azRotateRaf) return;
@@ -19500,6 +19544,7 @@ if (window.__azimuteGeoInitialized) {
   });
 
   map.on("rotateend", () => {
+    document.body.classList.remove("az-map-interacting");
     recomputeQuadranteSectors(false);
   });
 
@@ -20109,7 +20154,8 @@ if (window.__azimuteGeoInitialized) {
     if (followGps) setFollowState(false);
   });
 
-  clearBtn.addEventListener("click", () => {
+  if (clearBtn) {
+    clearBtn.addEventListener("click", () => {
     if (destMarker) {
       destMarker.remove();
       destMarker = null;
@@ -20127,10 +20173,11 @@ if (window.__azimuteGeoInitialized) {
     if (startNavBtn) startNavBtn.style.display = "none";
     if (tbtBar) tbtBar.classList.remove("is-active");
     window.azimuteUpdateRadarHudVisibility();
-    targetEl.innerHTML = "Destino: <strong>Nenhum</strong>";
-    statusEl.textContent = lastPos ? "GPS ativo" : "Aguardando GPS...";
-    drawOrbeVectorAndRing();
-  });
+      targetEl.innerHTML = "Destino: <strong>Nenhum</strong>";
+      statusEl.textContent = lastPos ? "GPS ativo" : "Aguardando GPS...";
+      drawOrbeVectorAndRing();
+    });
+  }
 
   function formatNominatimItem(item, fallbackQuery) {
     const addr = item.address || {};
@@ -20224,6 +20271,7 @@ if (window.__azimuteGeoInitialized) {
   }
 
   async function runSearch() {
+    if (!searchInput) return;
     const q = (searchInput.value || "").trim();
     if (!q) return;
 
@@ -20304,13 +20352,15 @@ if (window.__azimuteGeoInitialized) {
     }
   }
 
-  searchBtn.addEventListener("click", runSearch);
-  searchInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      runSearch();
-    }
-  });
+  if (searchBtn) searchBtn.addEventListener("click", runSearch);
+  if (searchInput) {
+    searchInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        runSearch();
+      }
+    });
+  }
 
   let compassListening = false;
   function handleOrientationEvent(e, isAbsolute) {
@@ -20419,7 +20469,7 @@ if (window.__azimuteGeoInitialized) {
   }
 
   async function queryOverpassGet(lat, lng) {
-    const query = `[out:json][timeout:6];way(around:130,${lat.toFixed(6)},${lng.toFixed(6)})["highway"]["name"];out geom;`;
+    const query = `[out:json][timeout:7];way(around:350,${lat.toFixed(6)},${lng.toFixed(6)})["highway"]["name"];out geom;`;
     const encoded = encodeURIComponent(query);
 
     for (const mirror of OVERPASS_MIRRORS) {
@@ -20761,13 +20811,13 @@ if (window.__azimuteGeoInitialized) {
       ctx.stroke();
     }
 
-    const sectorTags = ["FRENTE", "F-DIR", "DIREITA", "R-DIR", "RETAG.", "R-ESQ", "ESQUERDA", "F-ESQ"];
+    const sectorTags = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSO", "SO", "OSO", "O", "ONO", "NO", "NNO"];
 
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 16; i++) {
       const st = cached8Sectors[i];
-      const centerDeg = i * 45;
-      const startRad = ((centerDeg - 20.5 - 90) * Math.PI) / 180;
-      const endRad = ((centerDeg + 20.5 - 90) * Math.PI) / 180;
+      const centerDeg = i * 22.5;
+      const startRad = ((centerDeg - 9.5 - 90) * Math.PI) / 180;
+      const endRad = ((centerDeg + 9.5 - 90) * Math.PI) / 180;
 
       let arcColor = "#24231C";
       let arcWidth = 4.5;
@@ -20926,19 +20976,20 @@ if (window.__azimuteGeoInitialized) {
       }
     }
 
+    if (document.body.classList.contains("az-map-interacting")) return;
     lastQuadHeading = refHeading;
     lastQuadUpdateTime = now;
 
-    const octants = [null, null, null, null, null, null, null, null];
+    const sectors16 = new Array(16).fill(null);
     cachedNearbyStreets.forEach((st) => {
       const absBearing = calcBearingDeg(lastPos[0], lastPos[1], st.lat, st.lng);
       const rel = normalizeAngle(absBearing - refHeading);
-      const idx = Math.floor(normalizeAngle(rel + 22.5) / 45) % 8;
-      if (!octants[idx] || st.distKm < octants[idx].distKm) {
-        octants[idx] = st;
+      const idx = Math.floor(normalizeAngle(rel + 11.25) / 22.5) % 16;
+      if (!sectors16[idx] || st.distKm < sectors16[idx].distKm) {
+        sectors16[idx] = st;
       }
     });
-    cached8Sectors = octants;
+    cached8Sectors = sectors16;
 
     const sectors = { front: null, right: null, rear: null, left: null };
     cachedNearbyStreets.forEach((st) => {
@@ -21288,10 +21339,16 @@ if (window.__azimuteGeoInitialized) {
 
   window.azimuteGeoInvalidate = function () {
     requestAnimationFrame(() => {
-      map.resize();
+      try { map.resize(); if (map.triggerRepaint) map.triggerRepaint(); } catch (_) {}
+      ensureQuadranteCardMounted();
       updateCalibratorReadout();
+      drawOrbeVectorAndRing();
       recomputeQuadranteSectors(true);
     });
+    setTimeout(() => {
+      try { map.resize(); if (map.triggerRepaint) map.triggerRepaint(); } catch (_) {}
+      drawOrbeVectorAndRing();
+    }, 140);
   };
 
   window.azimuteGeoSetPoints = function (pointsArray) {
@@ -21321,14 +21378,26 @@ if (window.__azimuteGeoInitialized) {
   }
 }
 
+function preloadMapLibreScriptOnly() {
+  if (typeof maplibregl === "undefined" && !document.getElementById("az-maplibre-loader")) {
+    const s = document.createElement("script");
+    s.id = "az-maplibre-loader";
+    s.src = "https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js";
+    s.onload = () => {
+      if (typeof azimuteCurrentViewId !== "undefined" && azimuteCurrentViewId === "gps" && !window.__azimuteGeoInitialized) {
+        initAzimuteGeo();
+      }
+    };
+    document.head.appendChild(s);
+  }
+  if (typeof azimuteCurrentViewId !== "undefined" && azimuteCurrentViewId === "gps" && !window.__azimuteGeoInitialized) {
+    initAzimuteGeo();
+  }
+}
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", () => {
-    if (typeof azimuteCurrentViewId !== "undefined" && azimuteCurrentViewId === "gps") {
-      initAzimuteGeo();
-    }
-  });
-} else if (typeof azimuteCurrentViewId !== "undefined" && azimuteCurrentViewId === "gps") {
-  initAzimuteGeo();
+  document.addEventListener("DOMContentLoaded", () => setTimeout(preloadMapLibreScriptOnly, 250));
+} else {
+  setTimeout(preloadMapLibreScriptOnly, 250);
 }
 </script>
 <!-- INÍCIO BLOCO AZIMUTE TÁTICO -->
@@ -21346,7 +21415,17 @@ if (document.readyState === "loading") {
     visibility: hidden !important;
   }
 
-  /* 2. Mapa contido no quadro para liberar rolagem da página e exibir o botão Iniciar da rota */
+  /* 2. Tela Cheia 100% via CSS (sem requestFullscreen nativo que gera aviso branco do navegador) */
+  body.az-map-fullscreen #azGeoDrawerToggle {
+    display: none !important;
+  }
+  body.az-map-fullscreen:not(.az-map-expanded) #view-gps {
+    padding-top: calc(50px + env(safe-area-inset-top, 0px)) !important;
+  }
+  body.az-map-expanded header.sticky,
+  body.az-map-expanded #mobileBottomNav {
+    display: none !important;
+  }
   body.az-map-expanded #azGeoMap {
     position: fixed !important;
     inset: 0 !important;
@@ -21364,19 +21443,24 @@ if (document.readyState === "loading") {
     height: 375px !important;
   }
 
-  /* 3. Coluna Vertical Unificada à Esquerda (Lupa -> Camadas -> GPS Azul -> Zoom+ -> Zoom- -> Travar Mapa) */
+  /* 3. Coluna Vertical Unificada Presa Dentro do Container do Mapa */
   #azLeftMapToolsCol {
+    position: absolute !important;
+    top: 48px !important;
+    left: 8px !important;
+    z-index: 760 !important;
+    display: flex !important;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+    pointer-events: auto;
+  }
+  body.az-map-expanded #azLeftMapToolsCol {
     position: fixed !important;
     top: calc(56px + env(safe-area-inset-top, 0px)) !important;
     left: 8px !important;
     z-index: 100044 !important;
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    gap: 5px;
-    pointer-events: auto;
   }
-  #azLeftMapToolsCol.is-visible { display: flex !important; }
   #azLeftMapToolsCol .az-hud-glass-btn {
     width: 36px !important;
     height: 36px !important;
@@ -21604,21 +21688,23 @@ if (document.readyState === "loading") {
     cursor: pointer;
   }
 
-  /* Controles inferiores (Desfazer, Encerrar Ferramentas) + Travar Mapa na Coluna */
+  /* Controles inferiores (Desfazer, Encerrar Ferramentas) + Travar Mapa limpo na Coluna */
   #azLockMapDrawBtn {
-    width: 36px !important;
-    height: 32px !important;
-    padding: 0 3px !important;
+    width: auto !important;
+    min-width: 36px !important;
+    height: 30px !important;
+    padding: 0 8px !important;
+    white-space: nowrap !important;
     border-radius: 7px !important;
     background: rgba(13, 13, 13, 0.95) !important;
     color: #C5A869 !important;
     border: 1.5px solid rgba(197, 168, 105, 0.65) !important;
-    font-size: 7.5px !important;
+    font-size: 9px !important;
     font-weight: 900 !important;
     text-align: center;
-    line-height: 1.05;
+    line-height: 1;
     cursor: pointer;
-    display: none;
+    display: inline-flex !important;
     align-items: center;
     justify-content: center;
     opacity: 1 !important;
@@ -21641,11 +21727,12 @@ if (document.readyState === "loading") {
   }
   #azLeftControlsRow.is-visible { display: flex !important; }
 
-  /* PTT Arrastável */
+  /* PTT Arrastável (canto inferior direito livre, acima do rodapé, sem cobrir endereço) */
   #azFloatingPttGroup {
     position: fixed !important;
-    bottom: calc(76px + env(safe-area-inset-bottom, 0px));
-    left: 12px;
+    bottom: calc(82px + env(safe-area-inset-bottom, 0px));
+    right: 12px;
+    left: auto;
     z-index: 100044 !important;
     display: none;
     align-items: stretch !important;
@@ -21866,6 +21953,31 @@ if (document.readyState === "loading") {
     background: #221E15 !important;
     color: #C5A869 !important;
   }
+  /* Fluidez 60fps durante toque/giro + Modo Teclado Paisagem */
+  body.az-map-interacting .az-geo-compass-badge,
+  body.az-map-interacting .az-smooth-svg,
+  body.az-map-interacting .az-tac-pin {
+    transition: none !important;
+  }
+  @media (orientation: landscape) and (max-height: 500px) {
+    body.kb-landscape-active #mainTopHeader,
+    body.kb-landscape-active #mobileBottomNav,
+    body.kb-landscape-active #azFloatingPttGroup,
+    body.kb-landscape-active #azLeftMapToolsCol {
+      display: none !important;
+    }
+    body.kb-landscape-active #azWhatsappGroupModal {
+      height: var(--az-vv-h, 100dvh) !important;
+      max-height: var(--az-vv-h, 100dvh) !important;
+      bottom: auto !important;
+    }
+    body.kb-landscape-active #azMapSearchOverlay {
+      top: 6px !important;
+      max-height: calc(var(--az-vv-h, 100dvh) - 12px) !important;
+      overflow-y: auto !important;
+    }
+  }
+
   /* Indicadores de Borda (Colegas e Alvos fora da tela) */
   #azEdgeIndicatorsLayer {
     position: fixed !important;
@@ -22341,35 +22453,13 @@ if (document.readyState === "loading") {
     <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
     <span id="azTopGroupBadge">GRUPO</span>
   </button>
-  <button type="button" class="az-hud-glass-btn" id="azExpandMapScreenBtn" title="Expandir / Minimizar Mapa">
+  <button type="button" class="az-hud-glass-btn" id="azExpandMapScreenBtn" title="Expandir / Sair da Tela Cheia">
     <svg viewBox="0 0 24 24"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
   </button>
   <button type="button" class="az-hud-glass-btn az-hud-hosp-btn" id="azQuickHospitalRouteBtn" title="Rota Hospital Próximo">+</button>
   <button type="button" class="az-hud-glass-btn" id="azAtakHamburgerBtn" title="Menu Tático">
     <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
   </button>
-</div>
-
-<!-- Coluna Vertical Unificada à Esquerda: 1. Lupa -> 2. Camadas -> 3. GPS Azul -> 4. Zoom+ -> 5. Zoom- -> 6. Travar Mapa -->
-<div id="azLeftMapToolsCol">
-  <button type="button" class="az-hud-glass-btn" id="azHudSearchToggleBtn" title="Buscar endereço ou coordenada">
-    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-  </button>
-  <button type="button" class="az-hud-glass-btn" id="azSatToggleBtn" title="Troca de Camadas (Mapa / Satélite)">
-    <svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
-  </button>
-  <button type="button" id="azGeoCenterFab" class="az-geo-locate-fab is-heading-up" aria-label="Centralizar na Minha Posicao" title="Centralizar GPS">
-    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="12" cy="12" r="7"></circle><circle cx="12" cy="12" r="2"></circle>
-      <line x1="12" y1="2" x2="12" y2="5"></line><line x1="12" y1="19" x2="12" y2="22"></line>
-      <line x1="2" y1="12" x2="5" y2="12"></line><line x1="19" y1="12" x2="22" y2="12"></line>
-    </svg>
-  </button>
-  <div class="az-geo-zoom-stack">
-    <button type="button" id="azGeoZoomInBtn" aria-label="Aproximar">+</button>
-    <button type="button" id="azGeoZoomOutBtn" aria-label="Afastar">−</button>
-  </div>
-  <button type="button" id="azLockMapDrawBtn" title="Travar mapa para desenhar">TRAVAR</button>
 </div>
 
 <!-- MODAL DE GRUPO ESTILO WHATSAPP (CHAT, COR EXCLUSIVA SEM ROSA, MEMBROS & PTT) -->
@@ -22715,7 +22805,7 @@ if (document.readyState === "loading") {
     </button>
     <button type="button" class="az-grid-tile" data-grid-act="wheel_settings">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-      Opções Anel
+      OPÇÕES
     </button>
     <button type="button" class="az-grid-tile" data-grid-act="clear_all">
       <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
@@ -22798,10 +22888,10 @@ if (document.readyState === "loading") {
 <!-- Roda Radial ATAK -->
 <div id="azRadialWheel"></div>
 
-<!-- Modal Personalizar Anel Tático -->
+<!-- Modal Personalizar OPÇÕES -->
 <div id="azWheelConfigModal">
   <div style="display:flex;justify-content:space-between;align-items:center;">
-    <span style="font-size:10.5px;font-weight:900;color:#C5A869;">PERSONALIZAR ANEL TÁTICO</span>
+    <span style="font-size:10.5px;font-weight:900;color:#C5A869;">PERSONALIZAR OPÇÕES</span>
     <button type="button" id="azCloseWheelCfgBtn" style="background:none;border:none;color:#9E9A8F;font-weight:900;cursor:pointer;">✕</button>
   </div>
   <div style="font-size:9.5px;color:#9E9A8F;">Selecione os comandos exibidos ao tocar em um ponto:</div>
@@ -23533,25 +23623,41 @@ if (document.readyState === "loading") {
     if (!canDrawOnMap(map)) return;
     const srcId = "az-sat-src";
     const layerId = "az-sat-layer";
+    const lblSrcId = "az-sat-lbl-src";
+    const lblLayerId = "az-sat-lbl-layer";
     if (enable) {
       if (!map.getSource(srcId)) {
         map.addSource(srcId, {
           type: "raster",
-          tiles: ["https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"],
+          tiles: ["https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}"],
           tileSize: 256,
-          maxzoom: 19
+          maxzoom: 20
         });
       }
       if (!map.getLayer(layerId)) {
         const layers = (map.getStyle() && map.getStyle().layers) || [];
         const sym = layers.find(function (l) { return l.type === "symbol"; });
-        map.addLayer({ id: layerId, type: "raster", source: srcId, paint: { "raster-opacity": 0.96 } }, sym ? sym.id : undefined);
+        map.addLayer({ id: layerId, type: "raster", source: srcId, paint: { "raster-opacity": 0.98 } }, sym ? sym.id : undefined);
       } else {
         map.setLayoutProperty(layerId, "visibility", "visible");
-        map.setPaintProperty(layerId, "raster-opacity", 0.96);
+        map.setPaintProperty(layerId, "raster-opacity", 0.98);
       }
-    } else if (map.getLayer(layerId)) {
-      map.setLayoutProperty(layerId, "visibility", "none");
+      if (!map.getSource(lblSrcId)) {
+        map.addSource(lblSrcId, {
+          type: "raster",
+          tiles: ["https://a.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}@2x.png"],
+          tileSize: 256,
+          maxzoom: 19
+        });
+      }
+      if (!map.getLayer(lblLayerId)) {
+        map.addLayer({ id: lblLayerId, type: "raster", source: lblSrcId, paint: { "raster-opacity": 0.92 } });
+      } else {
+        map.setLayoutProperty(lblLayerId, "visibility", "visible");
+      }
+    } else {
+      if (map.getLayer(layerId)) map.setLayoutProperty(layerId, "visibility", "none");
+      if (map.getLayer(lblLayerId)) map.setLayoutProperty(lblLayerId, "visibility", "none");
     }
   }
 
@@ -23921,8 +24027,17 @@ if (document.readyState === "loading") {
     });
   }
 
+  function getGrgContrastColors() {
+    const theme = localStorage.getItem("az_geo_map_theme") || "light";
+    const isLightBg = !tac.satMode && theme === "light";
+    return isLightBg
+      ? { line: "#0D0D0D", text: "#0D0D0D", halo: "#FFFFFF" }
+      : { line: "#FFFFFF", text: "#FFFFFF", halo: "#0D0D0D" };
+  }
+
   function renderGrgGridOnMaps(cfg) {
     tac.grgConfig = cfg || null;
+    const pal = getGrgContrastColors();
     const gridFeatures = [];
     const labelFeatures = [];
     if (cfg) {
@@ -23955,20 +24070,27 @@ if (document.readyState === "loading") {
     const lblGeo = { type: "FeatureCollection", features: labelFeatures };
     tac.maps.forEach(function (map) {
       if (!canDrawOnMap(map)) return;
-      if (map.getSource("az-grg-grid-src")) map.getSource("az-grg-grid-src").setData(gridGeo);
-      else {
+      if (map.getSource("az-grg-grid-src")) {
+        map.getSource("az-grg-grid-src").setData(gridGeo);
+        if (map.getLayer("az-grg-grid-line")) map.setPaintProperty("az-grg-grid-line", "line-color", pal.line);
+      } else {
         map.addSource("az-grg-grid-src", { type: "geojson", data: gridGeo });
-        map.addLayer({ id: "az-grg-grid-line", type: "line", source: "az-grg-grid-src", paint: { "line-color": "#C5A869", "line-width": 1.6, "line-opacity": 0.85 } });
+        map.addLayer({ id: "az-grg-grid-line", type: "line", source: "az-grg-grid-src", paint: { "line-color": pal.line, "line-width": 1.8, "line-opacity": 0.9 } });
       }
-      if (map.getSource("az-grg-lbl-src")) map.getSource("az-grg-lbl-src").setData(lblGeo);
-      else {
+      if (map.getSource("az-grg-lbl-src")) {
+        map.getSource("az-grg-lbl-src").setData(lblGeo);
+        if (map.getLayer("az-grg-lbl-sym")) {
+          map.setPaintProperty("az-grg-lbl-sym", "text-color", pal.text);
+          map.setPaintProperty("az-grg-lbl-sym", "text-halo-color", pal.halo);
+        }
+      } else {
         map.addSource("az-grg-lbl-src", { type: "geojson", data: lblGeo });
         map.addLayer({
           id: "az-grg-lbl-sym",
           type: "symbol",
           source: "az-grg-lbl-src",
           layout: { "text-field": ["get", "code"], "text-size": 12, "text-allow-overlap": true },
-          paint: { "text-color": "#C5A869", "text-halo-color": "#0D0D0D", "text-halo-width": 2 }
+          paint: { "text-color": pal.text, "text-halo-color": pal.halo, "text-halo-width": 2 }
         });
       }
     });
@@ -25291,22 +25413,147 @@ if (document.readyState === "loading") {
     navigator.geolocation.watchPosition(onNewPosition, function () {}, { enableHighAccuracy: true, maximumAge: 1500 });
   }
 
-  // Arrasto do PTT
+  // Arrasto do PTT + Proteção Paisagem (Landscape) + Teclado Virtual Paisagem
   (function () {
     const group = document.getElementById("azFloatingPttGroup");
     const handle = document.getElementById("azPttDragHandle");
     let sx = 0, sy = 0, ol = 0, ot = 0, drag = false;
+    function clampFloatingPttIntoViewport() {
+      if (!group) return;
+      const w = group.offsetWidth || 92;
+      const h = group.offsetHeight || 44;
+      const vw = window.innerWidth;
+      const vh = (window.visualViewport ? window.visualViewport.height : window.innerHeight);
+      if (group.style.left || group.style.top) {
+        const curL = parseFloat(group.style.left) || 12;
+        const curT = parseFloat(group.style.top) || (vh - h - 24);
+        group.style.left = Math.min(Math.max(8, vw - w - 8), Math.max(8, curL)) + "px";
+        group.style.top = Math.min(Math.max(50, vh - h - 14), Math.max(50, curT)) + "px";
+        group.style.bottom = "auto";
+      } else if (vh < 500) {
+        group.style.bottom = "14px";
+        group.style.left = "10px";
+      } else {
+        group.style.bottom = "";
+      }
+    }
     handle.addEventListener("pointerdown", function (e) {
       e.preventDefault(); e.stopPropagation();
       const r = group.getBoundingClientRect(); sx = e.clientX; sy = e.clientY; ol = r.left; ot = r.top; drag = true;
     });
     handle.addEventListener("pointermove", function (e) {
       if (!drag) return;
-      group.style.left = Math.min(window.innerWidth - group.offsetWidth - 6, Math.max(6, ol + (e.clientX - sx))) + "px";
-      group.style.top = Math.min(window.innerHeight - group.offsetHeight - 6, Math.max(46, ot + (e.clientY - sy))) + "px";
+      group.style.left = Math.min(window.innerWidth - group.offsetWidth - 8, Math.max(8, ol + (e.clientX - sx))) + "px";
+      group.style.top = Math.min(window.innerHeight - group.offsetHeight - 14, Math.max(50, ot + (e.clientY - sy))) + "px";
       group.style.bottom = "auto";
     });
-    handle.addEventListener("pointerup", function () { drag = false; });
+    handle.addEventListener("pointerup", function () { drag = false; clampFloatingPttIntoViewport(); });
+    window.addEventListener("resize", clampFloatingPttIntoViewport);
+    window.addEventListener("orientationchange", function () { setTimeout(clampFloatingPttIntoViewport, 120); });
+
+    // Gerenciador de Teclado Paisagem (visualViewport)
+    function syncKbLandscape() {
+      const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+      document.documentElement.style.setProperty("--az-vv-h", Math.round(vh) + "px");
+      clampFloatingPttIntoViewport();
+    }
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", syncKbLandscape);
+      window.visualViewport.addEventListener("scroll", syncKbLandscape);
+    }
+    document.addEventListener("focusin", function (ev) {
+      const t = ev.target;
+      if (!t || (t.tagName !== "INPUT" && t.tagName !== "TEXTAREA")) return;
+      document.body.classList.add("kb-landscape-active");
+      syncKbLandscape();
+      setTimeout(function () {
+        try { t.scrollIntoView({ block: "nearest", behavior: "smooth" }); } catch (_) {}
+      }, 150);
+    });
+    document.addEventListener("focusout", function () {
+      setTimeout(function () {
+        const ae = document.activeElement;
+        if (!ae || (ae.tagName !== "INPUT" && ae.tagName !== "TEXTAREA")) {
+          document.body.classList.remove("kb-landscape-active");
+          clampFloatingPttIntoViewport();
+        }
+      }, 120);
+    });
+  })();
+
+  // Municípios de MG personalizados (+ Adicionar município com persistência no localStorage)
+  (function () {
+    const KEY = "az_custom_cities_v1";
+    const box = document.getElementById("azGeoCities");
+    const inp = document.getElementById("azAddMunInput");
+    const btn = document.getElementById("azAddMunBtn");
+    if (!box) return;
+    function loadCustom() {
+      try { return JSON.parse(localStorage.getItem(KEY) || "[]"); } catch (_) { return []; }
+    }
+    function saveCustom(arr) {
+      try { localStorage.setItem(KEY, JSON.stringify(arr)); } catch (_) {}
+    }
+    function renderCustomButtons() {
+      box.querySelectorAll("[data-custom-city]").forEach(function (n) { n.remove(); });
+      loadCustom().forEach(function (c, idx) {
+        const wrap = document.createElement("div");
+        wrap.setAttribute("data-custom-city", "1");
+        wrap.style.cssText = "display:flex;gap:3px;align-items:stretch;";
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "az-geo-btn subtle";
+        b.style.cssText = "flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;";
+        b.textContent = c.name;
+        b.addEventListener("click", function () {
+          const m = getActiveMap();
+          if (m) m.flyTo({ center: [c.lng, c.lat], zoom: 13, essential: true });
+          document.getElementById("azGeoMunBox")?.classList.remove("is-open");
+        });
+        const del = document.createElement("button");
+        del.type = "button";
+        del.className = "az-geo-btn subtle";
+        del.style.cssText = "padding:0 7px;color:#F87171;";
+        del.textContent = "✕";
+        del.title = "Remover município";
+        del.addEventListener("click", function () {
+          const arr = loadCustom();
+          arr.splice(idx, 1);
+          saveCustom(arr);
+          renderCustomButtons();
+        });
+        wrap.appendChild(b);
+        wrap.appendChild(del);
+        box.appendChild(wrap);
+      });
+    }
+    renderCustomButtons();
+    if (btn && inp) {
+      btn.addEventListener("click", async function () {
+        const q = (inp.value || "").trim();
+        if (!q) return;
+        btn.disabled = true; btn.textContent = "...";
+        try {
+          const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q + ", Minas Gerais, Brazil")}&limit=1`;
+          const res = await (await fetch(url)).json();
+          if (res && res[0]) {
+            const arr = loadCustom();
+            const shortN = (res[0].display_name || q).split(",")[0].trim();
+            arr.push({ name: shortN, lat: parseFloat(res[0].lat), lng: parseFloat(res[0].lon) });
+            saveCustom(arr);
+            renderCustomButtons();
+            inp.value = "";
+            showToast(`Município "${shortN}" adicionado.`);
+          } else {
+            showToast("Município não encontrado em MG.");
+          }
+        } catch (_) {
+          showToast("Erro ao buscar município.");
+        } finally {
+          btn.disabled = false; btn.textContent = "+ Adicionar";
+        }
+      });
+    }
   })();
 
   // Inicialização
@@ -25364,10 +25611,10 @@ if (document.readyState === "loading") {
     document.getElementById("azHudSearchToggleBtn").classList.remove("is-active");
   });
   onClick("azRunAddressSearchBtn", async function () {
-    const q = (document.getElementById("azMapAddressInput").value || "").trim();
+    const qRaw = (document.getElementById("azMapAddressInput").value || "").trim();
     const list = document.getElementById("azAddressResultsList");
-    if (!q) return;
-    const cm = q.match(/-?\d{1,3}\.\d+/g);
+    if (!qRaw) return;
+    const cm = qRaw.match(/-?\d{1,3}\.\d+/g);
     if (cm && cm.length >= 2) {
       const lat = parseFloat(cm[0]), lng = parseFloat(cm[1]);
       if (!isNaN(lat) && !isNaN(lng)) {
@@ -25377,32 +25624,101 @@ if (document.readyState === "loading") {
         return;
       }
     }
-    list.innerHTML = `<div style="font-size:9.5px;color:#C5A869;">Buscando...</div>`;
+    const normTxt = function (s) {
+      return (s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        .replace(/\b(r\.|r)\s+/g, "rua ").replace(/\b(av\.|av)\s+/g, "avenida ")
+        .replace(/\b(al\.|al)\s+/g, "alameda ").replace(/\b(tv\.|tv)\s+/g, "travessa ")
+        .replace(/\b(pc\.|pç\.|pc|pç)\s+/g, "praca ").trim();
+    };
+    const qNorm = normTxt(qRaw);
+    const tokens = qNorm.split(/\s+/).filter(Boolean);
+    const refLat = tac.myPos ? tac.myPos.lat : -19.9167;
+    const refLng = tac.myPos ? tac.myPos.lng : -43.9345;
+
+    list.innerHTML = `<div style="font-size:9.5px;color:#C5A869;">Buscando na RMBH...</div>`;
     try {
-      const res = await (await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&countrycodes=br&limit=5`)).json();
-      list.innerHTML = res.map(function (it, i) {
+      const fetchPhoton = async function (term) {
+        const u = `https://photon.komoot.io/api/?q=${encodeURIComponent(term)}&lat=${refLat}&lon=${refLng}&limit=6`;
+        const j = await (await fetch(u)).json();
+        return (j.features || []).map(function (f) {
+          const p = f.properties || {};
+          const c = (f.geometry && f.geometry.coordinates) || [0, 0];
+          const title = [p.name || p.street, p.housenumber].filter(Boolean).join(", ") || p.district || p.city || term;
+          const sub = [p.district || p.suburb, p.city || p.state].filter(Boolean).join(" — ");
+          return { title: title, sub: sub, lat: c[1], lng: c[0], normAll: normTxt(title + " " + sub) };
+        });
+      };
+      const fetchNom = async function (term) {
+        const u = `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&q=${encodeURIComponent(term + ", Minas Gerais, Brazil")}&countrycodes=br&limit=6`;
+        const arr = await (await fetch(u)).json();
+        return (Array.isArray(arr) ? arr : []).map(function (it) {
+          const a = it.address || {};
+          const title = [a.road || it.name || it.display_name.split(",")[0], a.house_number].filter(Boolean).join(", ");
+          const sub = [a.suburb || a.neighbourhood, a.city || a.town || a.municipality].filter(Boolean).join(" — ");
+          return { title: title, sub: sub || it.display_name, lat: parseFloat(it.lat), lng: parseFloat(it.lon), normAll: normTxt(title + " " + sub + " " + it.display_name) };
+        });
+      };
+
+      let items = await fetchPhoton(qNorm + " belo horizonte rmbh");
+      let bairroHint = "";
+      if (items.length === 0 && tokens.length >= 2) {
+        bairroHint = tokens[tokens.length - 1];
+        const streetPart = tokens.slice(0, -1).join(" ");
+        const [pRes, nRes] = await Promise.all([fetchPhoton(streetPart + " " + bairroHint), fetchNom(streetPart)]);
+        items = pRes.concat(nRes);
+      } else if (items.length < 3) {
+        const nRes = await fetchNom(qNorm);
+        items = items.concat(nRes);
+      }
+
+      const seen = new Set();
+      const unique = [];
+      items.forEach(function (it) {
+        if (isNaN(it.lat) || isNaN(it.lng)) return;
+        const key = it.lat.toFixed(4) + "," + it.lng.toFixed(4);
+        if (seen.has(key)) return;
+        seen.add(key);
+        const distM = calcDistAndBearing(refLat, refLng, it.lat, it.lng).dist;
+        const roadKm = (distM / 1000) * 1.3;
+        const etaMin = Math.max(1, Math.round((roadKm / 32) * 60));
+        const matchBairro = bairroHint && it.normAll.includes(bairroHint) ? 1 : (tokens.every(function (tk) { return it.normAll.includes(tk); }) ? 1 : 0);
+        unique.push(Object.assign({}, it, { distM: distM, etaMin: etaMin, matchBairro: matchBairro }));
+      });
+      unique.sort(function (a, b) {
+        if (b.matchBairro !== a.matchBairro) return b.matchBairro - a.matchBairro;
+        return a.distM - b.distM;
+      });
+      const top = unique.slice(0, 8);
+      if (!top.length) {
+        list.innerHTML = `<div style="font-size:9.5px;color:#9E9A8F;">Nenhum endereço encontrado.</div>`;
+        return;
+      }
+      list.innerHTML = top.map(function (it, i) {
+        const badge = `${formatDistance(it.distM)} • ~${it.etaMin} min`;
         return `<div style="display:flex;gap:4px;align-items:stretch;">
-          <button type="button" class="az-search-res-item" data-sr="${i}" style="flex:1;">${it.display_name}</button>
+          <button type="button" class="az-search-res-item" data-sr="${i}" style="flex:1;display:flex;justify-content:space-between;align-items:center;gap:6px;">
+            <span style="min-width:0;overflow:hidden;text-overflow:ellipsis;"><strong>${it.title}</strong><br><span style="font-size:8.5px;color:#9E9A8F;">${it.sub}</span></span>
+            <span style="font-size:8.5px;font-weight:900;color:#C5A869;white-space:nowrap;">${badge}</span>
+          </button>
           <button type="button" class="az-atak-tool-btn is-active" data-sr-bh="${i}" style="height:auto !important;padding:0 8px !important;border-color:#F97316 !important;color:#F97316 !important;" title="Travar Cão de Caça">ALVO</button>
         </div>`;
       }).join("");
       list.querySelectorAll("[data-sr]").forEach(function (b) {
         b.addEventListener("click", function () {
-          const it = res[parseInt(b.getAttribute("data-sr"), 10)];
+          const it = top[parseInt(b.getAttribute("data-sr"), 10)];
           const m = getActiveMap();
-          if (m && it) m.flyTo({ center: [parseFloat(it.lon), parseFloat(it.lat)], zoom: 17, essential: true });
+          if (m && it) m.flyTo({ center: [it.lng, it.lat], zoom: 17, essential: true });
           document.getElementById("azMapSearchOverlay").classList.remove("is-open");
         });
       });
       list.querySelectorAll("[data-sr-bh]").forEach(function (b) {
         b.addEventListener("click", function () {
-          const it = res[parseInt(b.getAttribute("data-sr-bh"), 10)];
+          const it = top[parseInt(b.getAttribute("data-sr-bh"), 10)];
           if (it) {
-            const shortName = (it.display_name || "ALVO").split(",")[0];
-            setBloodhoundTarget({ type: "point", id: "bh_" + Date.now(), label: shortName.toUpperCase(), lat: parseFloat(it.lat), lng: parseFloat(it.lon) });
+            setBloodhoundTarget({ type: "point", id: "bh_" + Date.now(), label: (it.title || "ALVO").toUpperCase(), lat: it.lat, lng: it.lng });
             const m = getActiveMap();
-            if (m) m.flyTo({ center: [parseFloat(it.lon), parseFloat(it.lat)], zoom: 16, essential: true });
-            showToast("CÃO DE CAÇA travado: " + shortName);
+            if (m) m.flyTo({ center: [it.lng, it.lat], zoom: 16, essential: true });
+            showToast("CÃO DE CAÇA travado: " + it.title);
           }
           document.getElementById("azMapSearchOverlay").classList.remove("is-open");
         });
@@ -25411,7 +25727,10 @@ if (document.readyState === "loading") {
   });
 
   // Satélite + Hospital + Menu
-  onClick("azSatToggleBtn", toggleSatelliteMode);
+  onClick("azSatToggleBtn", function () {
+    toggleSatelliteMode();
+    if (tac.grgConfig) renderGrgGridOnMaps(tac.grgConfig);
+  });
   onClick("azQuickHospitalRouteBtn", function () { generateRouteToTarget(-19.9277, -43.9317, "HPS João XXIII"); });
   onClick("azAtakHamburgerBtn", function () {
     scanAndCaptureExistingMaps();
@@ -25796,7 +26115,7 @@ if (document.readyState === "loading") {
       localStorage.setItem("az_tac_wheel_items", JSON.stringify(checks));
     }
     document.getElementById("azWheelConfigModal").classList.remove("is-open");
-    showToast("Anel Tático atualizado.");
+    showToast("OPÇÕES atualizadas.");
   });
 
   // Modal Pin / Editar
@@ -26006,14 +26325,7 @@ if (document.readyState === "loading") {
   onClick("azExpandMapScreenBtn", function () {
     const expanded = document.body.classList.toggle("az-map-expanded");
     this.classList.toggle("is-active", expanded);
-    try {
-      const target = document.documentElement;
-      if (expanded && !document.fullscreenElement && target.requestFullscreen) {
-        Promise.resolve(target.requestFullscreen()).catch(function () {});
-      } else if (!expanded && document.fullscreenElement && document.exitFullscreen) {
-        Promise.resolve(document.exitFullscreen()).catch(function () {});
-      }
-    } catch (_) {}
+    this.title = expanded ? "Sair da Tela Cheia" : "Expandir Mapa";
     const doResize = function () {
       if (window.azGeoMap && typeof window.azGeoMap.resize === "function") window.azGeoMap.resize();
       renderEdgeIndicators();
