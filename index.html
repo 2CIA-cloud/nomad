@@ -16926,7 +16926,7 @@ if (viewId === 'gps' && window.azimuteGeoInvalidate) window.azimuteGeoInvalidate
         window.startVoiceCommand = function startVoiceCommand() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRecognition) {
-                alert('Seu navegador não suporta comandos de voz.');
+                if (typeof showToast === 'function') showToast('Seu navegador não suporta comandos de voz.');
                 return;
             }
             const recognition = new SpeechRecognition();
@@ -16961,7 +16961,11 @@ if (viewId === 'gps' && window.azimuteGeoInvalidate) window.azimuteGeoInvalidate
                 if (typeof showToast === 'function') showToast('Não foi possível reconhecer a voz.');
             };
 
-            recognition.start();
+            try {
+                recognition.start();
+            } catch (_) {
+                if (typeof showToast === 'function') showToast('Não foi possível iniciar o comando de voz.');
+            }
         }
 
         
