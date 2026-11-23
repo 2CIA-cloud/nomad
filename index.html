@@ -20271,6 +20271,7 @@ if (window.__azimuteGeoInitialized) {
   }
 
   async function runSearch() {
+    if (!searchInput) return;
     const q = (searchInput.value || "").trim();
     if (!q) return;
 
