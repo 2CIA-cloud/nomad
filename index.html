@@ -1512,12 +1512,9 @@
       width: 100%;
       height: 100%;
       z-index: 1;
-      background: #0D0D0D !important;
+      background-color: #0D0D0D;
       touch-action: none;
       transition: none !important;
-    }
-    .maplibregl-canvas-container, .maplibregl-canvas {
-      background: #0D0D0D !important;
     }
 
     .maplibregl-ctrl-bottom-left,
@@ -17839,6 +17836,7 @@ if (window.__azimuteGeoInitialized) {
     pitch: 0,
     maxPitch: 65,
     fadeDuration: 0,
+    pixelRatio: Math.min(window.devicePixelRatio || 1, 2.5),
     touchPitch: true,
     pitchWithRotate: true,
     attributionControl: false
@@ -19393,8 +19391,10 @@ if (window.__azimuteGeoInitialized) {
 
   function hideSearchResults() {
     if (!searchResultsEl) return;
-    searchResultsEl.classList.remove("is-open");
-    searchResultsEl.innerHTML = "";
+    if (searchResultsEl) {
+      searchResultsEl.classList.remove("is-open");
+      searchResultsEl.innerHTML = "";
+    }
   }
 
   function calcDistanceKm(lat1, lng1, lat2, lng2) {
@@ -20154,7 +20154,8 @@ if (window.__azimuteGeoInitialized) {
     if (followGps) setFollowState(false);
   });
 
-  clearBtn.addEventListener("click", () => {
+  if (clearBtn) {
+    clearBtn.addEventListener("click", () => {
     if (destMarker) {
       destMarker.remove();
       destMarker = null;
@@ -20172,10 +20173,11 @@ if (window.__azimuteGeoInitialized) {
     if (startNavBtn) startNavBtn.style.display = "none";
     if (tbtBar) tbtBar.classList.remove("is-active");
     window.azimuteUpdateRadarHudVisibility();
-    targetEl.innerHTML = "Destino: <strong>Nenhum</strong>";
-    statusEl.textContent = lastPos ? "GPS ativo" : "Aguardando GPS...";
-    drawOrbeVectorAndRing();
-  });
+      targetEl.innerHTML = "Destino: <strong>Nenhum</strong>";
+      statusEl.textContent = lastPos ? "GPS ativo" : "Aguardando GPS...";
+      drawOrbeVectorAndRing();
+    });
+  }
 
   function formatNominatimItem(item, fallbackQuery) {
     const addr = item.address || {};
@@ -20349,13 +20351,15 @@ if (window.__azimuteGeoInitialized) {
     }
   }
 
-  searchBtn.addEventListener("click", runSearch);
-  searchInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      runSearch();
-    }
-  });
+  if (searchBtn) searchBtn.addEventListener("click", runSearch);
+  if (searchInput) {
+    searchInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        runSearch();
+      }
+    });
+  }
 
   let compassListening = false;
   function handleOrientationEvent(e, isAbsolute) {
@@ -21334,10 +21338,12 @@ if (window.__azimuteGeoInitialized) {
 
   window.azimuteGeoInvalidate = function () {
     requestAnimationFrame(() => {
-      map.resize();
+      try { map.resize(); } catch (_) {}
+      ensureQuadranteCardMounted();
       updateCalibratorReadout();
       recomputeQuadranteSectors(true);
     });
+    setTimeout(() => { try { map.resize(); } catch (_) {} }, 120);
   };
 
   window.azimuteGeoSetPoints = function (pointsArray) {
@@ -21395,6 +21401,12 @@ if (document.readyState === "loading") {
   }
 
   /* 2. Tela Cheia 100% via CSS (sem requestFullscreen nativo que gera aviso branco do navegador) */
+  body.az-map-fullscreen #azGeoDrawerToggle {
+    display: none !important;
+  }
+  body.az-map-fullscreen:not(.az-map-expanded) #view-gps {
+    padding-top: calc(50px + env(safe-area-inset-top, 0px)) !important;
+  }
   body.az-map-expanded header.sticky,
   body.az-map-expanded #mobileBottomNav {
     display: none !important;
@@ -21700,11 +21712,12 @@ if (document.readyState === "loading") {
   }
   #azLeftControlsRow.is-visible { display: flex !important; }
 
-  /* PTT Arrastável */
+  /* PTT Arrastável (canto inferior direito livre, acima do rodapé, sem cobrir endereço) */
   #azFloatingPttGroup {
     position: fixed !important;
-    bottom: calc(76px + env(safe-area-inset-bottom, 0px));
-    left: 12px;
+    bottom: calc(82px + env(safe-area-inset-bottom, 0px));
+    right: 12px;
+    left: auto;
     z-index: 100044 !important;
     display: none;
     align-items: stretch !important;
@@ -23595,25 +23608,41 @@ if (document.readyState === "loading") {
     if (!canDrawOnMap(map)) return;
     const srcId = "az-sat-src";
     const layerId = "az-sat-layer";
+    const lblSrcId = "az-sat-lbl-src";
+    const lblLayerId = "az-sat-lbl-layer";
     if (enable) {
       if (!map.getSource(srcId)) {
         map.addSource(srcId, {
           type: "raster",
-          tiles: ["https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"],
+          tiles: ["https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}"],
           tileSize: 256,
-          maxzoom: 19
+          maxzoom: 20
         });
       }
       if (!map.getLayer(layerId)) {
         const layers = (map.getStyle() && map.getStyle().layers) || [];
         const sym = layers.find(function (l) { return l.type === "symbol"; });
-        map.addLayer({ id: layerId, type: "raster", source: srcId, paint: { "raster-opacity": 0.96 } }, sym ? sym.id : undefined);
+        map.addLayer({ id: layerId, type: "raster", source: srcId, paint: { "raster-opacity": 0.98 } }, sym ? sym.id : undefined);
       } else {
         map.setLayoutProperty(layerId, "visibility", "visible");
-        map.setPaintProperty(layerId, "raster-opacity", 0.96);
+        map.setPaintProperty(layerId, "raster-opacity", 0.98);
       }
-    } else if (map.getLayer(layerId)) {
-      map.setLayoutProperty(layerId, "visibility", "none");
+      if (!map.getSource(lblSrcId)) {
+        map.addSource(lblSrcId, {
+          type: "raster",
+          tiles: ["https://a.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}@2x.png"],
+          tileSize: 256,
+          maxzoom: 19
+        });
+      }
+      if (!map.getLayer(lblLayerId)) {
+        map.addLayer({ id: lblLayerId, type: "raster", source: lblSrcId, paint: { "raster-opacity": 0.92 } });
+      } else {
+        map.setLayoutProperty(lblLayerId, "visibility", "visible");
+      }
+    } else {
+      if (map.getLayer(layerId)) map.setLayoutProperty(layerId, "visibility", "none");
+      if (map.getLayer(lblLayerId)) map.setLayoutProperty(lblLayerId, "visibility", "none");
     }
   }
 
@@ -25567,10 +25596,10 @@ if (document.readyState === "loading") {
     document.getElementById("azHudSearchToggleBtn").classList.remove("is-active");
   });
   onClick("azRunAddressSearchBtn", async function () {
-    const q = (document.getElementById("azMapAddressInput").value || "").trim();
+    const qRaw = (document.getElementById("azMapAddressInput").value || "").trim();
     const list = document.getElementById("azAddressResultsList");
-    if (!q) return;
-    const cm = q.match(/-?\d{1,3}\.\d+/g);
+    if (!qRaw) return;
+    const cm = qRaw.match(/-?\d{1,3}\.\d+/g);
     if (cm && cm.length >= 2) {
       const lat = parseFloat(cm[0]), lng = parseFloat(cm[1]);
       if (!isNaN(lat) && !isNaN(lng)) {
@@ -25580,32 +25609,101 @@ if (document.readyState === "loading") {
         return;
       }
     }
-    list.innerHTML = `<div style="font-size:9.5px;color:#C5A869;">Buscando...</div>`;
+    const normTxt = function (s) {
+      return (s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        .replace(/\b(r\.|r)\s+/g, "rua ").replace(/\b(av\.|av)\s+/g, "avenida ")
+        .replace(/\b(al\.|al)\s+/g, "alameda ").replace(/\b(tv\.|tv)\s+/g, "travessa ")
+        .replace(/\b(pc\.|pç\.|pc|pç)\s+/g, "praca ").trim();
+    };
+    const qNorm = normTxt(qRaw);
+    const tokens = qNorm.split(/\s+/).filter(Boolean);
+    const refLat = tac.myPos ? tac.myPos.lat : -19.9167;
+    const refLng = tac.myPos ? tac.myPos.lng : -43.9345;
+
+    list.innerHTML = `<div style="font-size:9.5px;color:#C5A869;">Buscando na RMBH...</div>`;
     try {
-      const res = await (await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&countrycodes=br&limit=5`)).json();
-      list.innerHTML = res.map(function (it, i) {
+      const fetchPhoton = async function (term) {
+        const u = `https://photon.komoot.io/api/?q=${encodeURIComponent(term)}&lat=${refLat}&lon=${refLng}&limit=6`;
+        const j = await (await fetch(u)).json();
+        return (j.features || []).map(function (f) {
+          const p = f.properties || {};
+          const c = (f.geometry && f.geometry.coordinates) || [0, 0];
+          const title = [p.name || p.street, p.housenumber].filter(Boolean).join(", ") || p.district || p.city || term;
+          const sub = [p.district || p.suburb, p.city || p.state].filter(Boolean).join(" — ");
+          return { title: title, sub: sub, lat: c[1], lng: c[0], normAll: normTxt(title + " " + sub) };
+        });
+      };
+      const fetchNom = async function (term) {
+        const u = `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&q=${encodeURIComponent(term + ", Minas Gerais, Brazil")}&countrycodes=br&limit=6`;
+        const arr = await (await fetch(u)).json();
+        return (Array.isArray(arr) ? arr : []).map(function (it) {
+          const a = it.address || {};
+          const title = [a.road || it.name || it.display_name.split(",")[0], a.house_number].filter(Boolean).join(", ");
+          const sub = [a.suburb || a.neighbourhood, a.city || a.town || a.municipality].filter(Boolean).join(" — ");
+          return { title: title, sub: sub || it.display_name, lat: parseFloat(it.lat), lng: parseFloat(it.lon), normAll: normTxt(title + " " + sub + " " + it.display_name) };
+        });
+      };
+
+      let items = await fetchPhoton(qNorm + " belo horizonte rmbh");
+      let bairroHint = "";
+      if (items.length === 0 && tokens.length >= 2) {
+        bairroHint = tokens[tokens.length - 1];
+        const streetPart = tokens.slice(0, -1).join(" ");
+        const [pRes, nRes] = await Promise.all([fetchPhoton(streetPart + " " + bairroHint), fetchNom(streetPart)]);
+        items = pRes.concat(nRes);
+      } else if (items.length < 3) {
+        const nRes = await fetchNom(qNorm);
+        items = items.concat(nRes);
+      }
+
+      const seen = new Set();
+      const unique = [];
+      items.forEach(function (it) {
+        if (isNaN(it.lat) || isNaN(it.lng)) return;
+        const key = it.lat.toFixed(4) + "," + it.lng.toFixed(4);
+        if (seen.has(key)) return;
+        seen.add(key);
+        const distM = calcDistAndBearing(refLat, refLng, it.lat, it.lng).dist;
+        const roadKm = (distM / 1000) * 1.3;
+        const etaMin = Math.max(1, Math.round((roadKm / 32) * 60));
+        const matchBairro = bairroHint && it.normAll.includes(bairroHint) ? 1 : (tokens.every(function (tk) { return it.normAll.includes(tk); }) ? 1 : 0);
+        unique.push(Object.assign({}, it, { distM: distM, etaMin: etaMin, matchBairro: matchBairro }));
+      });
+      unique.sort(function (a, b) {
+        if (b.matchBairro !== a.matchBairro) return b.matchBairro - a.matchBairro;
+        return a.distM - b.distM;
+      });
+      const top = unique.slice(0, 8);
+      if (!top.length) {
+        list.innerHTML = `<div style="font-size:9.5px;color:#9E9A8F;">Nenhum endereço encontrado.</div>`;
+        return;
+      }
+      list.innerHTML = top.map(function (it, i) {
+        const badge = `${formatDistance(it.distM)} • ~${it.etaMin} min`;
         return `<div style="display:flex;gap:4px;align-items:stretch;">
-          <button type="button" class="az-search-res-item" data-sr="${i}" style="flex:1;">${it.display_name}</button>
+          <button type="button" class="az-search-res-item" data-sr="${i}" style="flex:1;display:flex;justify-content:space-between;align-items:center;gap:6px;">
+            <span style="min-width:0;overflow:hidden;text-overflow:ellipsis;"><strong>${it.title}</strong><br><span style="font-size:8.5px;color:#9E9A8F;">${it.sub}</span></span>
+            <span style="font-size:8.5px;font-weight:900;color:#C5A869;white-space:nowrap;">${badge}</span>
+          </button>
           <button type="button" class="az-atak-tool-btn is-active" data-sr-bh="${i}" style="height:auto !important;padding:0 8px !important;border-color:#F97316 !important;color:#F97316 !important;" title="Travar Cão de Caça">ALVO</button>
         </div>`;
       }).join("");
       list.querySelectorAll("[data-sr]").forEach(function (b) {
         b.addEventListener("click", function () {
-          const it = res[parseInt(b.getAttribute("data-sr"), 10)];
+          const it = top[parseInt(b.getAttribute("data-sr"), 10)];
           const m = getActiveMap();
-          if (m && it) m.flyTo({ center: [parseFloat(it.lon), parseFloat(it.lat)], zoom: 17, essential: true });
+          if (m && it) m.flyTo({ center: [it.lng, it.lat], zoom: 17, essential: true });
           document.getElementById("azMapSearchOverlay").classList.remove("is-open");
         });
       });
       list.querySelectorAll("[data-sr-bh]").forEach(function (b) {
         b.addEventListener("click", function () {
-          const it = res[parseInt(b.getAttribute("data-sr-bh"), 10)];
+          const it = top[parseInt(b.getAttribute("data-sr-bh"), 10)];
           if (it) {
-            const shortName = (it.display_name || "ALVO").split(",")[0];
-            setBloodhoundTarget({ type: "point", id: "bh_" + Date.now(), label: shortName.toUpperCase(), lat: parseFloat(it.lat), lng: parseFloat(it.lon) });
+            setBloodhoundTarget({ type: "point", id: "bh_" + Date.now(), label: (it.title || "ALVO").toUpperCase(), lat: it.lat, lng: it.lng });
             const m = getActiveMap();
-            if (m) m.flyTo({ center: [parseFloat(it.lon), parseFloat(it.lat)], zoom: 16, essential: true });
-            showToast("CÃO DE CAÇA travado: " + shortName);
+            if (m) m.flyTo({ center: [it.lng, it.lat], zoom: 16, essential: true });
+            showToast("CÃO DE CAÇA travado: " + it.title);
           }
           document.getElementById("azMapSearchOverlay").classList.remove("is-open");
         });
