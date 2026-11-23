@@ -15,16 +15,20 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="AZIMUTE">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://unpkg.com">
+    <link rel="dns-prefetch" href="https://www.gstatic.com">
     <!-- Tailwind CSS -->
-    <script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=BY1ygJok_r27AK1u06vugEeqoqy7pTuKROhGuQ65p1aY0rl18gHuNG0bA7mU3_pKDudw9Vo6APgJ_lXKstlPBVTccuI9e4DzxBmzqDxnOoNI8fTcTygI9G4jZnXyfDi_w1gU1LCNCTeLSnp3lbF7getNo9-KcpBD1YY-Aw31vEsN2Igq51utRPtow80juqm4Qxpz5cqf2zWfIcIThNAjnzrrgQdeWEW8Y_TdaZjBYOhxAUW4JPRXMUJtEM9gV415lBjVMRu96VJZZ8dJXFE8VYz1MGtMsr7-Y4nPhyr00UHCeoE_mZPoEyQZm-is63dK" charset="UTF-8"></script><script src="https://cdn.tailwindcss.com"></script>
     <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script defer src="https://unpkg.com/lucide@latest"></script>
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Teko:wght@600;700&display=swap"rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
     <script>
-        tailwind.config = {
+        window.tailwind = window.tailwind || {};
+        window.tailwind.config = {
             theme: {
                 extend: {
                     colors: {
@@ -51,6 +55,7 @@
             }
         }
     </script>
+    <script defer src="https://cdn.tailwindcss.com"></script>
     <style>
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #0F0F0F; }
@@ -15431,6 +15436,9 @@ if (viewId === 'gps' && window.azimuteGeoInvalidate) window.azimuteGeoInvalidate
                 void target.offsetWidth;
                 target.classList.add('app-screen-animate');
             }
+            if (viewId === 'gps' && typeof initAzimuteGeo === 'function') {
+                setTimeout(initAzimuteGeo, 30);
+            }
 
             const isRegiaoSub = ['regioes', 'rpm1', 'rpm2', 'rpm3', '18bpm', 'skeleton', 'especializadas'].includes(viewId);
 
@@ -17440,13 +17448,25 @@ window.buscarUnidadePorBairro = function (termo) {
 carregarUnidades1RPM();
 </script>
 
-<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 <script>
 function initAzimuteGeo() {
   const mapEl = document.getElementById("azGeoMap");
   if (!mapEl) return;
+if (window.__azimuteGeoInitialized) {
+  if (window.azGeoMap && typeof window.azGeoMap.resize === "function") {
+    window.azGeoMap.resize();
+  }
+  return;
+}
   if (typeof maplibregl === "undefined") {
-    window.addEventListener("load", initAzimuteGeo, { once: true });
+  let maplibreScript = document.getElementById("az-maplibre-loader");
+  if (!maplibreScript) {
+    maplibreScript = document.createElement("script");
+    maplibreScript.id = "az-maplibre-loader";
+    maplibreScript.src = "https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js";
+    maplibreScript.onload = () => initAzimuteGeo();
+    document.head.appendChild(maplibreScript);
+  }
     return;
   }
   if (mapEl.dataset.azReady === "1") return;
@@ -17601,6 +17621,8 @@ function initAzimuteGeo() {
     pitchWithRotate: true,
     attributionControl: false
   });
+  window.azGeoMap = map;
+  window.__azimuteGeoInitialized = true;
 
   function syncTiltBadgeUi() {
     if (!tiltBadge) return;
@@ -21085,8 +21107,12 @@ function initAzimuteGeo() {
 }
 
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initAzimuteGeo);
-} else {
+  document.addEventListener("DOMContentLoaded", () => {
+    if (typeof azimuteCurrentViewId !== "undefined" && azimuteCurrentViewId === "gps") {
+      initAzimuteGeo();
+    }
+  });
+} else if (typeof azimuteCurrentViewId !== "undefined" && azimuteCurrentViewId === "gps") {
   initAzimuteGeo();
 }
 </script>
