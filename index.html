@@ -696,8 +696,7 @@
                 <div class="w-14 h-14 mx-auto rounded-2xl bg-pmmg-khaki/15 border border-pmmg-khaki/60 flex items-center justify-center text-pmmg-khaki shadow-inner">
                     <i data-lucide="shield-check"class="w-8 h-8"></i>
                 </div>
-                <h2 class="text-3xl font-military tracking-widest text-pmmg-khaki uppercase leading-none">AZIMUTE PMMG</h2>
-                <p class="text-xs text-gray-400">Sistema de Consulta Rápida Restrito • Autenticação de Acesso</p>
+                <h2 class="text-3xl font-military tracking-widest text-pmmg-khaki uppercase leading-none">AZIMUTE</h2>
             </div>
 
             <div class="space-y-4">
@@ -871,13 +870,8 @@
                     </button>
                 </div>
 
-                <!-- Direita: Seletor Rápido App | GRID | PC + Data/Hora + Botões Compactos -->
+                <!-- Direita: Data/Hora + Botões Compactos (Seletor de modo exclusivo nas Configurações) -->
                 <div class="flex items-center gap-1.5 shrink-0">
-                    <div class="flex items-center bg-pmmg-black p-0.5 rounded-lg border border-pmmg-border text-[10px] shrink-0" title="Modo de Exibição">
-                        <button type="button" onclick="setLayoutMode('app', true)" id="top-btn-mode-app" class="px-1.5 py-1 rounded font-extrabold bg-pmmg-card text-pmmg-khaki border border-pmmg-gold cursor-pointer">App</button>
-                        <button type="button" onclick="setLayoutMode('grid', true)" id="top-btn-mode-grid" class="px-1.5 py-1 rounded font-semibold text-gray-400 hover:text-gray-200 border border-transparent cursor-pointer">GRID</button>
-                        <button type="button" onclick="setLayoutMode('web', true)" id="top-btn-mode-web" class="px-1.5 py-1 rounded font-semibold text-gray-400 hover:text-gray-200 border border-transparent cursor-pointer">PC</button>
-                    </div>
                     <!-- Data e Hora Discreta em Tempo Real (Exibida automaticamente em Modo Tela Cheia) -->
                     <div id="fullscreenDateTimeBadge" class="items-center gap-1.5 px-2.5 h-8 rounded-lg bg-pmmg-black/90 border border-pmmg-border text-[10.5px] font-mono text-gray-300 tracking-tight select-none shrink-0" title="Data e Hora em Tempo Real">
                         <span id="fullscreenDateText" class="text-gray-400">--/--</span>
@@ -3376,7 +3370,7 @@
             </div>
 
             <!-- 2. FAIXA COMPACTA: APOIO MAIS PRÓXIMO (GPS) (POSICIONADA ABAIXO DE ACESSO RÁPIDO) -->
-            <div id="homeNearestSupportSection" class="bg-pmmg-card border border-pmmg-khaki/50 rounded-2xl p-3 sm:p-3.5 shadow-xl max-w-7xl mx-auto space-y-2.5">
+            <div id="homeNearestSupportSection" style="margin-top: 1.35rem;" class="bg-pmmg-card border border-pmmg-khaki/50 rounded-2xl p-3 sm:p-3.5 shadow-xl max-w-7xl mx-auto space-y-2.5 mt-5">
                 <div class="flex items-center justify-between gap-2 border-b border-pmmg-border pb-1.5">
                     <span class="text-[10px] font-extrabold uppercase tracking-wider text-pmmg-khaki flex items-center gap-1.5">
                         <i data-lucide="radar" class="w-3.5 h-3.5 text-pmmg-gold"></i>Apoio Mais Próximo (GPS)
@@ -7405,47 +7399,76 @@
                 </div>
             </div>
 
+            <!-- CAIXA ÚNICA: RMBH (INICIA FECHADA/RECOLHIDA POR PADRÃO) -->
+            <div class="bg-pmmg-card/60 border border-pmmg-gold/45 rounded-2xl p-3.5 space-y-3">
+                <button type="button" onclick="(function(){ var b=document.getElementById('rmbhUnitsBody'), c=document.getElementById('rmbhChevron'); if(!b) return; var closed=b.classList.toggle('hidden'); if(c) c.style.transform = closed ? 'rotate(0deg)' : 'rotate(180deg)'; })()" class="w-full flex items-center justify-between text-left cursor-pointer">
+                    <div class="flex items-center gap-2">
+                        <h3 class="text-lg sm:text-xl font-military text-pmmg-khaki uppercase tracking-wider leading-none">RMBH</h3>
+                        <span class="text-[10px] font-mono font-bold text-pmmg-gold bg-pmmg-dark px-2 py-0.5 rounded border border-pmmg-gold/40">1ª • 2ª • 3ª RPM</span>
+                    </div>
+                    <i data-lucide="chevron-down" id="rmbhChevron" class="w-4 h-4 text-pmmg-gold transition-transform"></i>
+                </button>
+                <div id="rmbhUnitsBody" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-pmmg-border">
+                    <!-- 1. 1ª RPM (Capital) -->
+                    <div onclick="showView('rpm1')" class="bg-pmmg-card p-4 rounded-xl tactical-border tactical-card cursor-pointer group flex flex-col justify-between space-y-2.5">
+                        <div class="space-y-1">
+                            <div class="flex justify-between items-center">
+                                <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-khaki font-bold px-2 py-0.5 rounded border border-pmmg-khaki/30 uppercase">1ª RPM • Capital</span>
+                                <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500 group-hover:text-pmmg-khaki transition-colors"></i>
+                            </div>
+                            <h3 class="text-lg sm:text-xl font-military text-pmmg-khaki uppercase font-bold tracking-wide leading-none pt-0.5">1ª RPM • Belo Horizonte</h3>
+                            <p class="text-xs text-gray-400">1º, 5º, 13º, 16º, 22º, 34º, 41º, 49º BPM e BPTran</p>
+                        </div>
+                        <div class="pt-2.5 border-t border-pmmg-border flex justify-between items-center text-xs font-bold text-pmmg-khaki">
+                            <span>9 Unidades</span>
+                            <span class="flex items-center gap-1">Acessar <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
+                        </div>
+                    </div>
+
+                    <!-- 2. 2ª RPM (RMBH) -->
+                    <div onclick="showView('rpm2')" class="bg-pmmg-card p-4 rounded-xl border border-pmmg-gold/60 tactical-card cursor-pointer group flex flex-col justify-between space-y-2.5">
+                        <div class="space-y-1">
+                            <div class="flex justify-between items-center">
+                                <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-gold font-bold px-2 py-0.5 rounded border border-pmmg-gold/30 uppercase">2ª RPM • RMBH</span>
+                                <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500 group-hover:text-pmmg-gold transition-colors"></i>
+                            </div>
+                            <h3 class="text-lg sm:text-xl font-military text-pmmg-gold uppercase font-bold tracking-wide leading-none pt-0.5">2ª RPM • Região Metropolitana</h3>
+                            <p class="text-xs text-gray-400">18º BPM (Completo), 33º, 39º, 40º, 48º, 66º BPM, 6ª e 7ª Cia Ind</p>
+                        </div>
+                        <div class="pt-2.5 border-t border-pmmg-border flex justify-between items-center text-xs font-bold text-pmmg-gold">
+                            <span>8 Unidades • 18º BPM Ativo</span>
+                            <span class="flex items-center gap-1">Acessar <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
+                        </div>
+                    </div>
+
+                    <!-- 3. 3ª RPM -->
+                    <div onclick="showView('rpm3')" class="bg-pmmg-card p-4 rounded-xl tactical-border tactical-card cursor-pointer group flex flex-col justify-between space-y-2.5 opacity-95 hover:opacity-100">
+                        <div class="space-y-1">
+                            <div class="flex justify-between items-center">
+                                <span class="text-[10px] bg-pmmg-dark text-gray-300 font-bold px-2 py-0.5 rounded border border-pmmg-border uppercase">3ª RPM • RMBH / Expansão</span>
+                                <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500 group-hover:text-pmmg-khaki transition-colors"></i>
+                            </div>
+                            <h3 class="text-lg sm:text-xl font-military text-white uppercase font-bold tracking-wide leading-none pt-0.5">3ª RPM • Vetor Norte / Leste</h3>
+                            <p class="text-xs text-gray-400">Santa Luzia, Vespasiano, Lagoa Santa, Sabará e entorno</p>
+                        </div>
+                        <div class="pt-2.5 border-t border-pmmg-border flex justify-between items-center text-xs font-bold text-pmmg-khaki">
+                            <span>Área pronta para receber os dados</span>
+                            <span class="flex items-center gap-1">Acessar <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ABAIXO DA RMBH: ESPECIALIZADAS E ESTÁDIOS -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                <!-- 1. 1ª RPM (Capital) -->
-                <div onclick="showView('rpm1')" class="bg-pmmg-card p-4 rounded-xl tactical-border tactical-card cursor-pointer group flex flex-col justify-between space-y-2.5">
-                    <div class="space-y-1">
-                        <div class="flex justify-between items-center">
-                            <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-khaki font-bold px-2 py-0.5 rounded border border-pmmg-khaki/30 uppercase">1ª RPM • Capital</span>
-                            <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500 group-hover:text-pmmg-khaki transition-colors"></i>
-                        </div>
-                        <h3 class="text-lg sm:text-xl font-military text-pmmg-khaki uppercase font-bold tracking-wide leading-none pt-0.5">1ª RPM • Belo Horizonte</h3>
-                        <p class="text-xs text-gray-400">1º, 5º, 13º, 16º, 22º, 34º, 41º, 49º BPM e BPTran</p>
-                    </div>
-                    <div class="pt-2.5 border-t border-pmmg-border flex justify-between items-center text-xs font-bold text-pmmg-khaki">
-                        <span>9 Unidades</span>
-                        <span class="flex items-center gap-1">Acessar <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
-                    </div>
-                </div>
-
-                <!-- 2. 2ª RPM (RMBH) -->
-                <div onclick="showView('rpm2')" class="bg-pmmg-card p-4 rounded-xl border border-pmmg-gold/60 tactical-card cursor-pointer group flex flex-col justify-between space-y-2.5">
-                    <div class="space-y-1">
-                        <div class="flex justify-between items-center">
-                            <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-gold font-bold px-2 py-0.5 rounded border border-pmmg-gold/30 uppercase">2ª RPM • RMBH</span>
-                            <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500 group-hover:text-pmmg-gold transition-colors"></i>
-                        </div>
-                        <h3 class="text-lg sm:text-xl font-military text-pmmg-gold uppercase font-bold tracking-wide leading-none pt-0.5">2ª RPM • Região Metropolitana</h3>
-                        <p class="text-xs text-gray-400">18º BPM (Completo), 33º, 39º, 40º, 48º, 66º BPM, 6ª e 7ª Cia Ind</p>
-                    </div>
-                    <div class="pt-2.5 border-t border-pmmg-border flex justify-between items-center text-xs font-bold text-pmmg-gold">
-                        <span>8 Unidades • 18º BPM Ativo</span>
-                        <span class="flex items-center gap-1">Acessar <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
-                    </div>
-                </div>
-
-                <!-- 3. UNIDADES ESPECIALIZADAS -->
+                <!-- ESPECIALIZADAS -->
                 <div onclick="showView('especializadas')" class="bg-pmmg-card p-4 rounded-xl tactical-border tactical-card cursor-pointer group flex flex-col justify-between space-y-2.5">
                     <div class="space-y-1">
                         <div class="flex justify-between items-center">
                             <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-khaki font-bold px-2 py-0.5 rounded border border-pmmg-khaki/30 uppercase">CPE / CME / Recobrimento</span>
                             <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500 group-hover:text-pmmg-khaki transition-colors"></i>
                         </div>
-                        <h3 class="text-lg sm:text-xl font-military text-pmmg-khaki uppercase font-bold tracking-wide leading-none pt-0.5">Unidades Especializadas</h3>
+                        <h3 class="text-lg sm:text-xl font-military text-pmmg-khaki uppercase font-bold tracking-wide leading-none pt-0.5">Especializadas</h3>
                         <p class="text-xs text-gray-400">GER, ROTAM, BOPE, Choque, ROCCA, BEPE, BPGd, MAmb, BPMRv e RCAT</p>
                     </div>
                     <div class="pt-2.5 border-t border-pmmg-border flex justify-between items-center text-xs font-bold text-pmmg-khaki">
@@ -7454,18 +7477,18 @@
                     </div>
                 </div>
 
-                <!-- 4. 3ª RPM -->
-                <div onclick="showView('rpm3')" class="bg-pmmg-card p-4 rounded-xl tactical-border tactical-card cursor-pointer group flex flex-col justify-between space-y-2.5 opacity-95 hover:opacity-100">
+                <!-- ESTÁDIOS -->
+                <div onclick="showView('estadios')" class="bg-pmmg-card p-4 rounded-xl tactical-border tactical-card cursor-pointer group flex flex-col justify-between space-y-2.5">
                     <div class="space-y-1">
                         <div class="flex justify-between items-center">
-                            <span class="text-[10px] bg-pmmg-dark text-gray-300 font-bold px-2 py-0.5 rounded border border-pmmg-border uppercase">3ª RPM • RMBH / Expansão</span>
-                            <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500 group-hover:text-pmmg-khaki transition-colors"></i>
+                            <span class="text-[10px] bg-pmmg-khakiBadge text-pmmg-gold font-bold px-2 py-0.5 rounded border border-pmmg-gold/30 uppercase">Grandes Eventos</span>
+                            <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500 group-hover:text-pmmg-gold transition-colors"></i>
                         </div>
-                        <h3 class="text-lg sm:text-xl font-military text-white uppercase font-bold tracking-wide leading-none pt-0.5">3ª RPM • Vetor Norte / Leste</h3>
-                        <p class="text-xs text-gray-400">Santa Luzia, Vespasiano, Lagoa Santa, Sabará e entorno</p>
+                        <h3 class="text-lg sm:text-xl font-military text-pmmg-gold uppercase font-bold tracking-wide leading-none pt-0.5">Estádios</h3>
+                        <p class="text-xs text-gray-400">Mineirão, Arena MRV e Independência — Setores, Portões e RPAS</p>
                     </div>
-                    <div class="pt-2.5 border-t border-pmmg-border flex justify-between items-center text-xs font-bold text-pmmg-khaki">
-                        <span>Área pronta para receber os dados</span>
+                    <div class="pt-2.5 border-t border-pmmg-border flex justify-between items-center text-xs font-bold text-pmmg-gold">
+                        <span>3 Arenas</span>
                         <span class="flex items-center gap-1">Acessar <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
                     </div>
                 </div>
@@ -13849,7 +13872,7 @@
             document.getElementById('connSummaryDownPing').textContent = (measuredDownMbps >0 ? measuredDownMbps.toFixed(1) + 'Mbps' : '-- Mbps') + ' / ' + pingFmt;
             document.getElementById('connSummaryTech').textContent = techInfo.label;
 
-            if (typeof showToast === 'function') {
+            if (false && typeof showToast === 'function') {
                 const labelMap = { good: 'Conectividade BOA', moderate: 'Conectividade MODERADA', bad: 'Conectividade RUIM' };
                 showToast(`${labelMap[finalState]} (${downFmt} • ${pingFmt})`);
             }
@@ -15079,9 +15102,6 @@
                 } catch (e) {}
             }
             updateFullscreenButtonsUi();
-            if (typeof showToast === 'function') {
-                showToast(azimuteImmersiveMode ? 'Tela Expandida ativada!' : 'Tela Expandida desativada.');
-            }
         };
 
         document.addEventListener('fullscreenchange', updateFullscreenButtonsUi);
