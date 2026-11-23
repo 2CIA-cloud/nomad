@@ -4,12 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>AZIMUTE - Sistema Geral de Consulta Rápida (PMMG)</title>
-    <link rel="manifest"href="manifest.json">
-    <meta name="theme-color"content="#0F0F0F">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="icon-512x512.png">
+    <meta name="theme-color" content="#0D0D0D">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="AZIMUTE">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=BY1ygJok_r27AK1u06vugEeqoqy7pTuKROhGuQ65p1aY0rl18gHuNG0bA7mU3_pKDudw9Vo6APgJ_lXKstlPBVTccuI9e4DzxBmzqDxnOoNI8fTcTygI9G4jZnXyfDi_w1gU1LCNCTeLSnp3lbF7getNo9-KcpBD1YY-Aw31vEsN2Igq51utRPtow80juqm4Qxpz5cqf2zWfIcIThNAjnzrrgQdeWEW8Y_TdaZjBYOhxAUW4JPRXMUJtEM9gV415lBjVMRu96VJZZ8dJXFE8VYz1MGtMsr7-Y4nPhyr00UHCeoE_mZPoEyQZm-is63dK" charset="UTF-8"></script><script src="https://cdn.tailwindcss.com"></script>
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- Fonts -->
@@ -272,6 +279,29 @@
         }
         main#mainContainer > section[id^="view-"].azimute-active-view {
             display: block !important;
+        }
+        main#mainContainer > section#view-home.azimute-active-view {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 1.15rem !important;
+        }
+        #homeQuickAccessSection {
+            margin-bottom: 0.25rem !important;
+        }
+        #homeNearestSupportSection {
+            margin-top: 0.25rem !important;
+        }
+        /* POLIMENTO NATIVO DE APP: TOQUE TÁTIL E TRANSIÇÃO RÁPIDA */
+        button, a[class*="rounded"] {
+            -webkit-tap-highlight-color: transparent;
+        }
+        button:active, a[class*="rounded"]:active {
+            transform: scale(0.97);
+            transition: transform 0.08s ease;
+        }
+        body.is-fullscreen #operationalStatusBar {
+            padding-top: 0.25rem !important;
+            padding-bottom: 0.25rem !important;
         }
         .hidden:not(.sm\:inline):not(.lg\:flex) {
             display: none !important;
@@ -660,8 +690,13 @@
                     </button>
                 </div>
 
-                <!-- Direita: Data/Hora Discreta (visível em Tela Cheia) + Botões Compactos Somente Ícone (Cruz Vermelha, Recarregar e Tela Cheia) -->
+                <!-- Direita: Seletor Rápido App | GRID | PC + Data/Hora + Botões Compactos -->
                 <div class="flex items-center gap-1.5 shrink-0">
+                    <div class="flex items-center bg-pmmg-black p-0.5 rounded-lg border border-pmmg-border text-[10px] shrink-0" title="Modo de Exibição">
+                        <button type="button" onclick="setLayoutMode('app', true)" id="top-btn-mode-app" class="px-1.5 py-1 rounded font-extrabold bg-pmmg-card text-pmmg-khaki border border-pmmg-gold cursor-pointer">App</button>
+                        <button type="button" onclick="setLayoutMode('grid', true)" id="top-btn-mode-grid" class="px-1.5 py-1 rounded font-semibold text-gray-400 hover:text-gray-200 border border-transparent cursor-pointer">GRID</button>
+                        <button type="button" onclick="setLayoutMode('web', true)" id="top-btn-mode-web" class="px-1.5 py-1 rounded font-semibold text-gray-400 hover:text-gray-200 border border-transparent cursor-pointer">PC</button>
+                    </div>
                     <!-- Data e Hora Discreta em Tempo Real (Exibida automaticamente em Modo Tela Cheia) -->
                     <div id="fullscreenDateTimeBadge" class="items-center gap-1.5 px-2.5 h-8 rounded-lg bg-pmmg-black/90 border border-pmmg-border text-[10.5px] font-mono text-gray-300 tracking-tight select-none shrink-0" title="Data e Hora em Tempo Real">
                         <span id="fullscreenDateText" class="text-gray-400">--/--</span>
@@ -2398,9 +2433,9 @@
     }
   </style>
 
-  <button type="button" id="azGeoDrawerToggle" class="az-geo-drawer-btn" aria-expanded="false" onclick="window.azimuteToggleGeoDrawer()">
+  <button type="button" id="azGeoDrawerToggle" class="az-geo-drawer-btn" aria-expanded="true" onclick="window.azimuteToggleGeoDrawer()">
     <span>MAPA INTERATIVO RMBH</span>
-    <span id="azGeoDrawerArrow">ABRIR +</span>
+    <span id="azGeoDrawerArrow">FECHAR -</span>
   </button>
   <script>
     window.azimuteToggleGeoDrawer = function () {
@@ -2420,7 +2455,7 @@
     };
   </script>
 
-  <div id="azGeoDrawerBody" class="az-geo-drawer-body">
+  <div id="azGeoDrawerBody" class="az-geo-drawer-body is-open">
     <div class="az-geo-topbar">
       <div class="az-geo-search-wrap">
         <input id="azGeoSearchInput" class="az-geo-input" type="text" placeholder="Buscar rua, unidade, hospital, BSC, Deplan..." />
@@ -2790,6 +2825,12 @@
                     </div>
                 </div>
 
+                <!-- BOTÃO LATERAL DE ROLAGEM RÁPIDA NA ABA GEOLOCALIZAÇÃO -->
+                <button type="button" id="azGeoQuickScrollSideBtn" onclick="toggleAzGeoQuickScroll()" class="fixed right-2 top-1/2 -translate-y-1/2 z-[900] w-9 h-12 rounded-xl bg-pmmg-dark/95 hover:bg-pmmg-card text-pmmg-khaki border border-pmmg-gold/70 shadow-2xl flex flex-col items-center justify-center gap-0.5 cursor-pointer" title="Rolar página para baixo / cima">
+                    <i data-lucide="chevrons-down" id="azGeoQuickScrollIcon" class="w-4 h-4 text-pmmg-gold"></i>
+                    <span id="azGeoQuickScrollLbl" class="text-[8px] font-extrabold uppercase">Descer</span>
+                </button>
+
                 <!-- 1. CAIXA "CLIMA LOCAL" (FECHADA POR PADRÃO, COM CONDIÇÃO E TEMPERATURA ABAIXO À DIREITA, SEM RÓTULOS EXTRAS) -->
                 <div id="localWeatherSummaryCard" class="bg-pmmg-card/90 backdrop-blur-sm border border-sky-500/45 rounded-2xl overflow-hidden shadow-xl transition-all">
                     <button type="button" onclick="toggleGeoWeatherBox()" id="btnToggleGeoWeatherBox" class="w-full p-4 sm:p-5 flex items-center justify-between gap-3 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
@@ -2842,8 +2883,8 @@
                             <h3 class="text-xl font-military text-white uppercase tracking-wide leading-none">CONECTIVIDADE</h3>
                         </div>
                         <div class="flex items-center gap-2.5 shrink-0">
-                            <span id="connSummaryStateBadge" class="px-2.5 py-1 rounded-lg text-xs font-mono font-extrabold uppercase bg-pmmg-khakiBadge text-pmmg-khaki border border-pmmg-khaki/50 transition-all">
-                                Medindo...
+                            <span id="connSummaryStateBadge" class="px-2.5 py-1 rounded-lg text-xs font-mono font-extrabold uppercase bg-pmmg-dark text-gray-300 border border-pmmg-border transition-all">
+                                Verificando...
                             </span>
                             <i data-lucide="chevron-down" id="iconGeoConnectivityChevron" class="w-4 h-4 text-pmmg-gold transition-transform duration-200"></i>
                         </div>
@@ -12101,6 +12142,8 @@
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
+        let azimuteAudioCtx = null;
+
         function getAzimuteAudioContext() {
             if (!azimuteAudioCtx) {
                 const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -13599,11 +13642,11 @@
 
             setProg(100, 'Diagnóstico concluído!');
 
-            // Determinação do Estado Visual (VERDE: BOA | AMARELO: MODERADA | VERMELHO: RUIM)
+            // Determinação do Estado Visual calibrada para rede móvel 4G/5G e Wi-Fi
             let finalState = 'bad';
-            if (rtts.length === 0 || packetLossPct >40 || measuredDownMbps < 1.0 || (avgPing !== null && avgPing >320)) {
+            if (rtts.length === 0 || packetLossPct > 50 || measuredDownMbps < 0.6 || (avgPing !== null && avgPing > 650)) {
                 finalState = 'bad';
-            } else if (measuredDownMbps >= 5.0 && avgPing <= 120 && packetLossPct === 0) {
+            } else if (measuredDownMbps >= 1.8 && avgPing <= 320 && packetLossPct <= 20) {
                 finalState = 'good';
             } else {
                 finalState = 'moderate';
@@ -14751,6 +14794,14 @@
             const btnApp = document.getElementById('btn-mode-app');
             const btnGrid = document.getElementById('btn-mode-grid');
             const btnWeb = document.getElementById('btn-mode-web');
+            const topApp = document.getElementById('top-btn-mode-app');
+            const topGrid = document.getElementById('top-btn-mode-grid');
+            const topWeb = document.getElementById('top-btn-mode-web');
+            const topActive = 'px-1.5 py-1 rounded font-extrabold bg-pmmg-card text-pmmg-khaki border border-pmmg-gold cursor-pointer';
+            const topInactive = 'px-1.5 py-1 rounded font-semibold text-gray-400 hover:text-gray-200 border border-transparent cursor-pointer';
+            if (topApp) topApp.className = mode === 'app' ? topActive : topInactive;
+            if (topGrid) topGrid.className = mode === 'grid' ? topActive : topInactive;
+            if (topWeb) topWeb.className = mode === 'web' ? topActive : topInactive;
 
             const inactiveCls = 'px-3 py-1.5 rounded-lg font-semibold text-gray-400 border border-transparent hover:text-gray-200 transition-all cursor-pointer';
             const activeCls = 'px-3 py-1.5 rounded-lg font-extrabold bg-pmmg-dark text-pmmg-khaki border border-pmmg-gold shadow-sm transition-all cursor-pointer';
@@ -14807,9 +14858,11 @@
         }
         setInterval(updateAzimuteFullscreenClock, 1000);
 
-        // MODO TELA CHEIA EXCLUSIVAMENTE MANUAL (BOTÃO #btnHeaderFullscreen)
+        let azimuteImmersiveMode = false;
+
+        // MODO TELA CHEIA INSTANTÂNEO VIA CSS (SEM AVISO PRETO DO NAVEGADOR E SEM ATRASO)
         function isAzimuteCurrentlyFullscreen() {
-            return !!(document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement);
+            return azimuteImmersiveMode || !!(document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement);
         }
 
         function updateFullscreenButtonsUi() {
@@ -14842,30 +14895,16 @@
             if (ev && typeof ev.stopPropagation === 'function') {
                 ev.stopPropagation();
             }
-            const docEl = document.documentElement;
-            const isFull = isAzimuteCurrentlyFullscreen();
-            if (!isFull) {
-                if (docEl.requestFullscreen) {
-                    docEl.requestFullscreen().then(updateFullscreenButtonsUi).catch(() => {});
-                } else if (docEl.webkitRequestFullscreen) {
-                    docEl.webkitRequestFullscreen();
-                    setTimeout(updateFullscreenButtonsUi, 100);
-                } else if (docEl.msRequestFullscreen) {
-                    docEl.msRequestFullscreen();
-                    setTimeout(updateFullscreenButtonsUi, 100);
-                }
-                if (typeof showToast === 'function') showToast('Modo Tela Cheia ativado!');
-            } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen().then(updateFullscreenButtonsUi).catch(() => {});
-                } else if (document.webkitExitFullscreen) {
-                    document.webkitExitFullscreen();
-                    setTimeout(updateFullscreenButtonsUi, 100);
-                } else if (document.msExitFullscreen) {
-                    document.msExitFullscreen();
-                    setTimeout(updateFullscreenButtonsUi, 100);
-                }
-                if (typeof showToast === 'function') showToast('Tela Cheia desativada.');
+            azimuteImmersiveMode = !azimuteImmersiveMode;
+            if (!azimuteImmersiveMode && (document.fullscreenElement || document.webkitFullscreenElement)) {
+                try {
+                    if (document.exitFullscreen) document.exitFullscreen();
+                    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+                } catch (e) {}
+            }
+            updateFullscreenButtonsUi();
+            if (typeof showToast === 'function') {
+                showToast(azimuteImmersiveMode ? 'Tela Expandida ativada!' : 'Tela Expandida desativada.');
             }
         };
 
@@ -15447,6 +15486,13 @@ if (viewId === 'gps' && window.azimuteGeoInvalidate) window.azimuteGeoInvalidate
             } else if (viewId === 'gps') {
                 if (activeBadge) activeBadge.classList.remove('hidden');
                 if (activeName) activeName.textContent = 'Geolocalização';
+                const dBody = document.getElementById('azGeoDrawerBody');
+                const dArrow = document.getElementById('azGeoDrawerArrow');
+                if (dBody && !dBody.classList.contains('is-open')) {
+                    dBody.classList.add('is-open');
+                    if (dArrow) dArrow.textContent = 'FECHAR -';
+                }
+                if (window.azimuteGeoInvalidate) setTimeout(window.azimuteGeoInvalidate, 80);
             } else if (viewId === 'estadios') {
                 if (activeBadge) activeBadge.classList.remove('hidden');
                 if (activeName) activeName.textContent = 'Estádios';
@@ -16827,26 +16873,138 @@ if (viewId === 'gps' && window.azimuteGeoInvalidate) window.azimuteGeoInvalidate
             });
         }
 
-        // Carrega as "Gavetas"do arquivo externo dados.json
-        async function loadExternalDadosJson() {
-            try {
-                const res = await fetch('./dados.json?v=' + Date.now());
-                if (res.ok) {
-                    AZIMUTE_DB = await res.json();
-                }
-            } catch (e) {
-                console.log('Usando cache local para dados.json');
+        // Carrega e unifica todos os JSONs de Batalhões do repositório (1ª RPM, 2ª RPM, 1º BPM, 22º BPM, etc.)
+        function normalizeBattalionRecord(raw, defaultCity) {
+            if (!raw || typeof raw !== 'object') return null;
+            const nome = (raw.nome || raw.unidade || raw.batalhao || '').trim();
+            if (!nome) return null;
+
+            const ciasRaw = Array.isArray(raw.companhias) ? raw.companhias : [];
+            const companhias = ciasRaw.map(c => ({
+                nome: c.nome || c.cia || 'Cia PM',
+                setor: c.setor || c.nome || '',
+                endereco: c.endereco || c.sede || '',
+                telefone: c.telefone || (Array.isArray(c.telefones) ? c.telefones.join(' / ') : (c.telefones || '')),
+                bairros: Array.isArray(c.bairros) ? c.bairros : [],
+                vias: Array.isArray(c.vias) ? c.vias : (Array.isArray(c.corredores) ? c.corredores : [])
+            }));
+
+            const saudeDelegacias = [];
+            if (Array.isArray(raw.saude_delegacias)) saudeDelegacias.push(...raw.saude_delegacias);
+            if (Array.isArray(raw.delegacias_apoio)) {
+                raw.delegacias_apoio.forEach(d => saudeDelegacias.push({
+                    tipo: 'Delegacia / Deplan',
+                    nome: d.nome || d.unidade || 'Delegacia de Apoio',
+                    endereco: d.endereco || '',
+                    telefone: d.telefone || ''
+                }));
             }
+            if (Array.isArray(raw.hospitais)) {
+                raw.hospitais.forEach(h => saudeDelegacias.push({
+                    tipo: 'Saúde / Hospital',
+                    nome: h.nome || 'Hospital / UPA',
+                    endereco: h.endereco || '',
+                    telefone: h.telefone || ''
+                }));
+            }
+
+            const apoioAbastecimento = Array.isArray(raw.apoio_abastecimento) ? [...raw.apoio_abastecimento] : [];
+            if (Array.isArray(raw.bscs)) {
+                raw.bscs.forEach(b => apoioAbastecimento.push({
+                    nome: b.nome || 'Base de Segurança Comunitária (BSC)',
+                    endereco: b.endereco || '',
+                    maps_url: 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent((b.endereco || b.nome || '') + ' MG')
+                }));
+            }
+
+            return {
+                nome,
+                cidade: raw.cidade || defaultCity || 'RMBH',
+                regiao: raw.regiao || raw.rpm || defaultCity || 'RMBH',
+                rede_radio: raw.rede_radio || ('REDE: ' + nome),
+                endereco_sede: raw.endereco_sede || raw.sede || raw.endereco || '',
+                telefone_sou: raw.telefone_sou || raw.telefone || '',
+                status: 'Dados Carregados • ' + companhias.length + ' Cia(s)',
+                companhias,
+                apoio_abastecimento: apoioAbastecimento,
+                divisas: raw.divisas || (Array.isArray(raw.limites) ? raw.limites.join(' • ') : ''),
+                saude_delegacias: saudeDelegacias,
+                contatos: Array.isArray(raw.contatos) ? raw.contatos : []
+            };
+        }
+
+        async function loadExternalDadosJson() {
+            const mergedUnits = new Map();
+            try {
+                const cached = localStorage.getItem('azimute_unified_units_cache_v1');
+                if (cached) {
+                    const arr = JSON.parse(cached);
+                    if (Array.isArray(arr)) arr.forEach(u => mergedUnits.set(u.nome.toLowerCase(), u));
+                }
+            } catch (e) {}
+
+            const files = [
+                './dados.json',
+                './unidades_1rpm.json',
+                './unidades_1bpm.json',
+                './batalhao_22.json',
+                './hospitais_1bpm.json',
+                './bsc_1bpm.json',
+                './deplan_1bpm.json'
+            ];
+
+            await Promise.all(files.map(async (fileUrl) => {
+                try {
+                    const res = await fetch(fileUrl + '?v=' + Date.now());
+                    if (!res.ok) return;
+                    const json = await res.json();
+                    if (!json || typeof json !== 'object') return;
+
+                    const candidates = [];
+                    if (Array.isArray(json.rpm1)) candidates.push(...json.rpm1);
+                    if (Array.isArray(json.rpm2)) candidates.push(...json.rpm2);
+                    if (Array.isArray(json.unidades)) candidates.push(...json.unidades);
+                    if (json.unidade || json.nome) candidates.push(json);
+                    if (!Array.isArray(json)) {
+                        Object.values(json).forEach(val => {
+                            if (val && typeof val === 'object' && (val.unidade || val.nome || val.companhias)) {
+                                candidates.push(val);
+                            }
+                        });
+                    }
+
+                    candidates.forEach(item => {
+                        const norm = normalizeBattalionRecord(item, fileUrl.includes('1rpm') || fileUrl.includes('1bpm') || fileUrl.includes('22') ? 'Belo Horizonte' : 'RMBH');
+                        if (norm) {
+                            const key = norm.nome.toLowerCase();
+                            const prev = mergedUnits.get(key);
+                            if (!prev || norm.companhias.length >= prev.companhias.length) {
+                                mergedUnits.set(key, norm);
+                            }
+                        }
+                    });
+                } catch (e) {}
+            }));
+
+            const finalList = Array.from(mergedUnits.values());
+            AZIMUTE_DB = { all: finalList, rpm1: finalList, rpm2: [] };
+            try {
+                localStorage.setItem('azimute_unified_units_cache_v1', JSON.stringify(finalList));
+            } catch (e) {}
         }
         loadExternalDadosJson();
 
-        // Sobrescreve openBattalionPlaceholder para abrir a Área pronta para receber os dados com os dados do dados.json
+        // Sobrescreve openBattalionPlaceholder para abrir qualquer Batalhão com seus dados reais
         const originalOpenPlaceholder = window.openBattalionPlaceholder;
-        window.openBattalionPlaceholder = function(unitName, city, address) {
+        window.openBattalionPlaceholder = async function(unitName, city, address) {
+            if (!AZIMUTE_DB || !AZIMUTE_DB.all || AZIMUTE_DB.all.length === 0) {
+                await loadExternalDadosJson();
+            }
             let foundUnit = null;
-            if (AZIMUTE_DB) {
-                const allUnits = [...(AZIMUTE_DB.rpm1 || []), ...(AZIMUTE_DB.rpm2 || [])];
-                foundUnit = allUnits.find(u =>u.nome.toLowerCase() === unitName.toLowerCase());
+            if (AZIMUTE_DB && Array.isArray(AZIMUTE_DB.all)) {
+                const targetNorm = unitName.toLowerCase().replace(/[^a-z0-9]/g, '');
+                foundUnit = AZIMUTE_DB.all.find(u => u.nome.toLowerCase().replace(/[^a-z0-9]/g, '') === targetNorm)
+                    || AZIMUTE_DB.all.find(u => u.nome.toLowerCase().includes(unitName.toLowerCase()));
             }
 
             currentDrawerUnit = foundUnit || {
@@ -17087,7 +17245,7 @@ if (viewId === 'gps' && window.azimuteGeoInvalidate) window.azimuteGeoInvalidate
                     { box: 'saudeSmartHospitalExpandableBody', close: () => window.toggleSaudeSmartHospitalBox && window.toggleSaudeSmartHospitalBox(false) },
                     { box: 'offlineAphGuideExpandableBody', close: () => window.toggleOfflineAphGuideBox && window.toggleOfflineAphGuideBox(false) },
                     { box: 'aphMarchProtocolExpandableBody', close: () => window.toggleAphMarchProtocolBox && window.toggleAphMarchProtocolBox(false) },
-                    { box: 'rcpMetronomeModuleExpandableBody', close: () => window.toggleRcpMetronomeModuleBox && window.toggleRcpMetronomeModuleBox(false) },
+                    { box: 'rcpMetronomeExpandableBody', close: () => window.toggleRcpMetronomeModuleBox && window.toggleRcpMetronomeModuleBox(false) },
                     { box: 'saudeAssistantIaExpandableBody', close: () => window.toggleSaudeAssistantIaBox && window.toggleSaudeAssistantIaBox(false) },
                     { box: 'saudeHospitalNetworkListExpandableBody', close: () => window.toggleSaudeHospitalNetworkListBox && window.toggleSaudeHospitalNetworkListBox(false) }
                 ],
@@ -17350,7 +17508,7 @@ function initAzimuteGeo() {
     extra: { label: "Ponto", color: "#F2F0EA" }
   };
 
-  let mapTheme = localStorage.getItem("az_geo_map_theme") || "dark";
+  let mapTheme = localStorage.getItem("az_geo_map_theme") || "light";
 
   const searchInput = document.getElementById("azGeoSearchInput");
   const searchBtn = document.getElementById("azGeoSearchBtn");
@@ -18206,7 +18364,7 @@ function initAzimuteGeo() {
 
       if (isDark) {
         if (layer.type === "background") {
-          try { targetMap.setPaintProperty(layer.id, "background-color", "#121519"); } catch (e) {}
+          try { targetMap.setPaintProperty(layer.id, "background-color", "#141820"); } catch (e) {}
         } else if (layer.type === "fill") {
           if (srcLayer.includes("water") || id.includes("water") || id.includes("river") || id.includes("lake")) {
             try { targetMap.setPaintProperty(layer.id, "fill-color", "#164670"); } catch (e) {}
@@ -18224,7 +18382,7 @@ function initAzimuteGeo() {
               targetMap.setPaintProperty(layer.id, "fill-opacity", 0.85);
             } catch (e) {}
           } else if (srcLayer.includes("building") || id.includes("building")) {
-            try { targetMap.setPaintProperty(layer.id, "fill-color", "#20252E"); } catch (e) {}
+            try { targetMap.setPaintProperty(layer.id, "fill-color", "#232934"); } catch (e) {}
           }
         } else if (layer.type === "line") {
           if (srcLayer.includes("water") || id.includes("water") || id.includes("river") || id.includes("stream")) {
@@ -18237,19 +18395,28 @@ function initAzimuteGeo() {
           ) {
             try {
               if (id.includes("casing")) {
-                targetMap.setPaintProperty(layer.id, "line-color", "#050709");
+                targetMap.setPaintProperty(layer.id, "line-color", "#080A0E");
               } else if (id.includes("motorway") || id.includes("trunk") || id.includes("primary")) {
-                targetMap.setPaintProperty(layer.id, "line-color", "#B89752");
+                targetMap.setPaintProperty(layer.id, "line-color", "#D4AF37");
               } else if (id.includes("secondary") || id.includes("tertiary")) {
-                targetMap.setPaintProperty(layer.id, "line-color", "#707A8A");
+                targetMap.setPaintProperty(layer.id, "line-color", "#8E9AAF");
               } else {
-                targetMap.setPaintProperty(layer.id, "line-color", "#4E5766");
+                targetMap.setPaintProperty(layer.id, "line-color", "#6B768A");
               }
             } catch (e) {}
           }
         }
+      } else if (!isSat && layer.type === "line") {
+        if (srcLayer.includes("transportation") || id.includes("road") || id.includes("street") || id.includes("highway")) {
+          try {
+            if (id.includes("casing")) targetMap.setPaintProperty(layer.id, "line-color", "#64748B");
+            else if (id.includes("motorway") || id.includes("trunk") || id.includes("primary")) targetMap.setPaintProperty(layer.id, "line-color", "#F59E0B");
+            else targetMap.setPaintProperty(layer.id, "line-color", "#FFFFFF");
+          } catch (e) {}
+        }
       }
-        if (layer.type === "symbol") {
+
+      if (layer.type === "symbol") {
         const isRoadText =
           srcLayer.includes("transportation_name") ||
           id.includes("highway") ||
@@ -18264,16 +18431,24 @@ function initAzimuteGeo() {
           id.includes("major");
 
         try {
-          if (isDark || isSat) {
-            targetMap.setPaintProperty(layer.id, "text-color", isMajor ? "#F8DE94" : "#FFFFFF");
+          targetMap.setLayoutProperty(layer.id, "visibility", "visible");
+          if (isSat) {
+            targetMap.setPaintProperty(layer.id, "text-color", isMajor ? "#FDE047" : "#FFFFFF");
             targetMap.setPaintProperty(layer.id, "text-halo-color", "#000000");
-            targetMap.setPaintProperty(layer.id, "text-halo-width", 2.8);
-            targetMap.setPaintProperty(layer.id, "text-halo-blur", 0.4);
+            targetMap.setPaintProperty(layer.id, "text-halo-width", 3.5);
+            targetMap.setPaintProperty(layer.id, "text-halo-blur", 0.2);
+            targetMap.setPaintProperty(layer.id, "text-opacity", 1);
+          } else if (isDark) {
+            targetMap.setPaintProperty(layer.id, "text-color", isMajor ? "#FDE68A" : "#FFFFFF");
+            targetMap.setPaintProperty(layer.id, "text-halo-color", "#000000");
+            targetMap.setPaintProperty(layer.id, "text-halo-width", 3.2);
+            targetMap.setPaintProperty(layer.id, "text-halo-blur", 0.2);
             targetMap.setPaintProperty(layer.id, "text-opacity", 1);
           } else {
-            targetMap.setPaintProperty(layer.id, "text-color", "#0A0A0A");
+            targetMap.setPaintProperty(layer.id, "text-color", "#000000");
             targetMap.setPaintProperty(layer.id, "text-halo-color", "#FFFFFF");
-            targetMap.setPaintProperty(layer.id, "text-halo-width", 2.5);
+            targetMap.setPaintProperty(layer.id, "text-halo-width", 3.2);
+            targetMap.setPaintProperty(layer.id, "text-halo-blur", 0.1);
             targetMap.setPaintProperty(layer.id, "text-opacity", 1);
           }
 
@@ -18282,9 +18457,9 @@ function initAzimuteGeo() {
               "interpolate",
               ["linear"],
               ["zoom"],
-              11, 11.5,
-              14, 13.5,
-              17, 16.5
+              11, 12.5,
+              14, 14.5,
+              17, 17.5
             ]);
           }
         } catch (e) {}
@@ -20887,16 +21062,22 @@ function initAzimuteGeo() {
     refreshAllMapMarkersLayer();
   };
 
+  let locObsTimer = null;
   const locObserver = new MutationObserver(() => {
-    ensureQuadranteCardMounted();
-    syncFromMainAzimuteGps(false);
-    const synced = readSyncedStreetFromLocationCard();
-    if (synced && synced !== cachedCurrentStreet) {
-      cachedCurrentStreet = synced;
-      recomputeQuadranteSectors(true);
-    }
+    if (locObsTimer) return;
+    locObsTimer = setTimeout(() => {
+      locObsTimer = null;
+      ensureQuadranteCardMounted();
+      syncFromMainAzimuteGps(false);
+      const synced = readSyncedStreetFromLocationCard();
+      if (synced && synced !== cachedCurrentStreet) {
+        cachedCurrentStreet = synced;
+        recomputeQuadranteSectors(true);
+      }
+    }, 650);
   });
-  locObserver.observe(document.body, { childList: true, subtree: true, characterData: true });
+  const hudLocTarget = document.getElementById("azimuteLiveGpsHud") || document.body;
+  locObserver.observe(hudLocTarget, { childList: true, subtree: true, characterData: true });
 
   if (document.getElementById("azGeoDrawerBody")?.classList.contains("is-open")) {
     map.resize();
@@ -20924,12 +21105,12 @@ if (document.readyState === "loading") {
     visibility: hidden !important;
   }
 
-  /* 2. Mapa em tela cheia */
-  body.az-map-fullscreen #azGeoMap {
+  /* 2. Mapa contido no quadro para liberar rolagem da página e exibir o botão Iniciar da rota */
+  body.az-map-expanded #azGeoMap {
     position: fixed !important;
     inset: 0 !important;
     width: 100vw !important;
-    height: 100vh !important;
+    height: 100dvh !important;
     margin: 0 !important;
     padding: 0 !important;
     border: none !important;
@@ -20938,12 +21119,11 @@ if (document.readyState === "loading") {
     display: block !important;
     visibility: visible !important;
   }
-  body.az-map-fullscreen #azGeoSearchBox,
-  body.az-map-fullscreen .az-geo-search-row {
-    display: none !important;
+  body.az-map-fullscreen #azGeoStage {
+    height: 375px !important;
   }
 
-  /* 3. Botão azul original de centralizar: VISÍVEL APENAS NA ABA GEOLOCALIZAÇÃO */
+  /* 3. Botão de centralizar: visível dentro do mapa na aba Geolocalização */
   body:not(.az-map-fullscreen) #azGeoCenterFab {
     display: none !important;
     visibility: hidden !important;
@@ -20953,6 +21133,12 @@ if (document.readyState === "loading") {
     display: inline-flex !important;
     visibility: visible !important;
     pointer-events: auto !important;
+    position: absolute !important;
+    bottom: 14px !important;
+    right: 12px !important;
+    z-index: 750 !important;
+  }
+  body.az-map-expanded #azGeoCenterFab {
     position: fixed !important;
     bottom: 76px !important;
     right: 12px !important;
@@ -21537,7 +21723,7 @@ if (document.readyState === "loading") {
     touch-action: none;
   }
 
-  /* Ícones Militares no Mapa + Migalhas de Pão + Ondas de Sinal */
+  /* Ícones Militares no Mapa + Migalhas de Pão + Ondas de Sinal + Afundamento Tátil */
   .az-tac-pin {
     position: relative;
     display: flex;
@@ -21546,6 +21732,10 @@ if (document.readyState === "loading") {
     cursor: pointer;
     user-select: none;
     z-index: 60;
+    transition: transform 0.1s ease;
+  }
+  .az-tac-pin:active {
+    transform: scale(0.91);
   }
   .az-tac-pin-badge {
     display: inline-flex;
@@ -21649,7 +21839,7 @@ if (document.readyState === "loading") {
 
   #azNavChevronToggleBtn {
     position: fixed !important;
-    bottom: 8px !important;
+    bottom: 66px !important;
     right: 8px !important;
     z-index: 100046 !important;
     width: 30px !important;
@@ -21671,6 +21861,9 @@ if (document.readyState === "loading") {
   body.az-nav-hidden [class*="bottom-nav"],
   body.az-nav-hidden #azBottomNav {
     display: none !important;
+  }
+  body.az-nav-hidden #azNavChevronToggleBtn {
+    bottom: 10px !important;
   }
 
   #azTacHudToast {
@@ -21711,10 +21904,66 @@ if (document.readyState === "loading") {
   <button type="button" class="az-hud-glass-btn" id="azSatToggleBtn" title="Alternar Mapa Satélite">
     <svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
   </button>
+  <button type="button" class="az-hud-glass-btn" id="azWhatsappGroupOpenBtn" title="Grupo da Equipe (Chat e PTT)" style="width:auto !important;padding:0 8px !important;gap:4px;font-size:10px;font-weight:900;color:#4ADE80 !important;">
+    <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <span id="azTopGroupBadge">GRUPO</span>
+  </button>
+  <button type="button" class="az-hud-glass-btn" id="azExpandMapScreenBtn" title="Expandir / Minimizar Mapa">
+    <svg viewBox="0 0 24 24"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+  </button>
   <button type="button" class="az-hud-glass-btn az-hud-hosp-btn" id="azQuickHospitalRouteBtn" title="Rota Hospital Próximo">+</button>
   <button type="button" class="az-hud-glass-btn" id="azAtakHamburgerBtn" title="Menu Tático">
     <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
   </button>
+</div>
+
+<!-- MODAL DE GRUPO ESTILO WHATSAPP (CHAT, COR EXCLUSIVA SEM ROSA, MEMBROS & PTT) -->
+<div id="azWhatsappGroupModal" style="display:none;position:fixed;inset:0;z-index:100060;background:#0D0D0D;flex-direction:column;color:#F2F0EA;">
+  <div style="background:#161616;border-bottom:1.5px solid #C5A869;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px;">
+    <div style="display:flex;align-items:center;gap:8px;min-width:0;">
+      <button type="button" id="azCloseWaGroupBtn" class="az-atak-tool-btn" style="height:30px !important;">← VOLTAR</button>
+      <div style="min-width:0;">
+        <div id="azWaGroupTitle" style="font-size:13px;font-weight:900;color:#C5A869;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">GRUPO TÁTICO AZIMUTE</div>
+        <div id="azWaGroupSubtitle" style="font-size:10px;color:#4ADE80;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Conecte-se a uma sala (ex: PMMG01)</div>
+      </div>
+    </div>
+    <span id="azWaOnlinePill" style="font-size:10px;font-weight:900;background:#0D0D0D;border:1px solid #4ADE80;color:#4ADE80;padding:3px 8px;border-radius:999px;flex-shrink:0;">0 ONLINE</span>
+  </div>
+
+  <div style="background:#121212;border-bottom:1px solid #28271F;padding:8px 12px;display:flex;flex-direction:column;gap:6px;">
+    <div style="display:flex;gap:5px;">
+      <input type="text" id="azWaQraInput" class="az-team-input" placeholder="Seu QRA" maxlength="16" autocomplete="off">
+      <input type="text" id="azWaRoomInput" class="az-team-input" placeholder="Sala (ex: PMMG01)" maxlength="14" autocomplete="off">
+      <button type="button" id="azWaJoinBtn" class="az-atak-tool-btn is-active" style="height:30px !important;">ENTRAR</button>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;">
+      <span style="font-size:9px;font-weight:800;color:#9E9A8F;text-transform:uppercase;">Sua Cor Exclusiva:</span>
+      <div id="azWaColorSwatches" style="display:flex;gap:5px;flex-wrap:wrap;"></div>
+    </div>
+    <div id="azWaMembersChips" style="display:flex;gap:5px;overflow-x:auto;padding-bottom:2px;"></div>
+  </div>
+
+  <div id="azWaChatMessages" style="flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;background:#0D0D0D;">
+    <div style="text-align:center;font-size:10.5px;color:#9E9A8F;background:#161616;border:1px solid #28271F;padding:8px 12px;border-radius:10px;align-self:center;">
+      Entre na sala com seu QRA e cor exclusiva para trocar mensagens, coordenadas e áudio PTT com a equipe.
+    </div>
+  </div>
+
+  <div style="background:#161616;border-top:1px solid #28271F;padding:8px 10px;display:flex;flex-direction:column;gap:6px;">
+    <div style="display:flex;gap:4px;overflow-x:auto;padding-bottom:2px;">
+      <button type="button" class="az-qra-chip" data-wa-quick="APOIO">APOIO</button>
+      <button type="button" class="az-qra-chip" data-wa-quick="NO VISUAL">NO VISUAL</button>
+      <button type="button" class="az-qra-chip" data-wa-quick="CERCO">CERCO</button>
+      <button type="button" class="az-qra-chip" data-wa-quick="QAP">QAP</button>
+      <button type="button" class="az-qra-chip" data-wa-quick="ATENÇÃO">ATENÇÃO</button>
+      <button type="button" id="azWaShareQthBtn" class="az-qra-chip" style="border-color:#C5A869 !important;color:#C5A869 !important;">ENVIAR MEU QTH</button>
+    </div>
+    <div style="display:flex;gap:6px;align-items:center;">
+      <input type="text" id="azWaMsgInput" class="az-team-input" placeholder="Mensagem para o grupo..." maxlength="140" autocomplete="off" style="height:38px !important;font-size:12px !important;">
+      <button type="button" id="azWaSendTextBtn" class="az-atak-tool-btn is-active" style="height:38px !important;padding:0 12px !important;">ENVIAR</button>
+      <button type="button" id="azWaPttBtn" class="az-atak-tool-btn" style="height:38px !important;padding:0 12px !important;border-color:#C5A869 !important;color:#C5A869 !important;font-weight:900 !important;">PTT</button>
+    </div>
+  </div>
 </div>
 
 <!-- Banner CÃO DE CAÇA -->
@@ -22169,7 +22418,8 @@ if (document.readyState === "loading") {
     const rtClr = document.getElementById("azClearRouteBtn");
     const ciClr = document.getElementById("azClearCircleBtn");
 
-    const hasUndo = tac.undoHistory.length > 0 ||
+    // Exibe barra de ferramentas apenas enquanto alguma ferramenta está ativa (não fica fixa ao colar Pin)
+    const hasUndo =
       (tac.rulerActive && tac.rulerCoords.length > 0) ||
       (tac.drawActive && tac.drawStrokes.length > 0) ||
       (tac.crumbRouteActive && tac.breadcrumbs.length > 0);
@@ -22648,10 +22898,24 @@ if (document.readyState === "loading") {
 
   function toggleSatelliteMode() {
     tac.satMode = !tac.satMode;
-    tac.maps.forEach(function (m) { applySatelliteLayer(m, tac.satMode); });
+    tac.maps.forEach(function (m) {
+      applySatelliteLayer(m, tac.satMode);
+      const style = m.getStyle && m.getStyle();
+      if (style && Array.isArray(style.layers)) {
+        style.layers.forEach(function (layer) {
+          if (layer.type === "symbol") {
+            try {
+              m.setPaintProperty(layer.id, "text-color", tac.satMode ? "#FFFFFF" : "#000000");
+              m.setPaintProperty(layer.id, "text-halo-color", tac.satMode ? "#000000" : "#FFFFFF");
+              m.setPaintProperty(layer.id, "text-halo-width", 3.4);
+            } catch (_) {}
+          }
+        });
+      }
+    });
     document.getElementById("azSatToggleBtn").classList.toggle("is-active", tac.satMode);
     document.getElementById("azGridSatTile").classList.toggle("is-on", tac.satMode);
-    showToast(tac.satMode ? "Camada Satélite ATIVADA" : "Mapa Tático Escuro ATIVADO", 2200);
+    showToast(tac.satMode ? "Camada Satélite ATIVADA" : "Mapa Padrão ATIVADO", 2200);
   }
 
   function buildCircleGeoJson(lng, lat, rMeters) {
@@ -23290,11 +23554,21 @@ if (document.readyState === "loading") {
 
       holdReady = false;
       sx = ev.clientX; sy = ev.clientY; downLngLat = ll;
+      const clientXSnap = ev.clientX;
+      const clientYSnap = ev.clientY;
       holdTimer = setTimeout(function () {
         holdReady = true;
-        vibratePattern(45);
-        showToast("Solte para abrir opções", 1400);
-      }, 420);
+        vibratePattern([45, 30, 45]);
+        tac.wheelMode = "new_press";
+        tac.pendingPinCoords = { lng: downLngLat.lng, lat: downLngLat.lat };
+        buildRadialWheelSlots("new_press");
+        const w = document.getElementById("azRadialWheel");
+        if (w) {
+          w.style.left = Math.min(window.innerWidth - 128, Math.max(128, clientXSnap)) + "px";
+          w.style.top = Math.min(window.innerHeight - 128, Math.max(128, clientYSnap)) + "px";
+          w.classList.add("is-open");
+        }
+      }, 700);
     }, true);
 
     container.addEventListener("pointermove", function (ev) {
@@ -23406,6 +23680,7 @@ if (document.readyState === "loading") {
       vibratePattern([180, 90, 180]);
       showToast(`PONTO: ${data.label}`, 3400, data.type === "gpe");
     } else {
+      vibratePattern(35);
       broadcastPacket({ kind: "pin", pin: { id: data.id, type: data.type, label: data.label, rawTitle: data.rawTitle, colorHex: data.colorHex, photoUrl: data.photoUrl || "", lng: data.lng, lat: data.lat } });
       showToast(`Marcado: ${data.label}`);
     }
@@ -24241,14 +24516,229 @@ if (document.readyState === "loading") {
     showToast("Sessão encerrada.");
   });
 
+  // ================= ROLAGEM LATERAL NA GEOLOCALIZAÇÃO =================
+  let azGeoScrolledDown = false;
+  window.toggleAzGeoQuickScroll = function () {
+    const icon = document.getElementById("azGeoQuickScrollIcon");
+    const lbl = document.getElementById("azGeoQuickScrollLbl");
+    if (!azGeoScrolledDown) {
+      const target = document.getElementById("localWeatherSummaryCard") || document.getElementById("azimuteLiveGpsHud");
+      if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+      azGeoScrolledDown = true;
+      if (icon) icon.setAttribute("data-lucide", "chevrons-up");
+      if (lbl) lbl.textContent = "Subir";
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      azGeoScrolledDown = false;
+      if (icon) icon.setAttribute("data-lucide", "chevrons-down");
+      if (lbl) lbl.textContent = "Descer";
+    }
+    if (typeof lucide !== "undefined") lucide.createIcons();
+  };
+
+  onClick("azExpandMapScreenBtn", function () {
+    const expanded = document.body.classList.toggle("az-map-expanded");
+    this.classList.toggle("is-active", expanded);
+    if (window.azGeoMap && typeof window.azGeoMap.resize === "function") {
+      setTimeout(function () { window.azGeoMap.resize(); }, 60);
+    }
+  });
+
+  // ================= MENU DE GRUPO ESTILO WHATSAPP =================
+  const waChatHistory = [];
+
+  function renderWaColorSwatches() {
+    const wrap = document.getElementById("azWaColorSwatches");
+    if (!wrap) return;
+    const usedColors = new Set(Object.values(tac.teammates).map(function (m) { return m.colorId; }));
+    wrap.innerHTML = TEAM_PALETTE.map(function (c) {
+      const taken = usedColors.has(c.id) && c.id !== tac.myColorId;
+      const selected = c.id === tac.myColorId;
+      return `<button type="button" data-wa-color="${c.id}" ${taken ? "disabled" : ""} title="${taken ? c.name + " (Em uso)" : c.name}" style="width:22px;height:22px;border-radius:50%;background:${c.hex};border:${selected ? "2.5px solid #FFFFFF" : "1px solid #28271F"};opacity:${taken ? "0.22" : "1"};cursor:${taken ? "not-allowed" : "pointer"};"></button>`;
+    }).join("");
+
+    wrap.querySelectorAll("[data-wa-color]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        const cid = btn.getAttribute("data-wa-color");
+        if (usedColors.has(cid) && cid !== tac.myColorId) {
+          showToast("Cor já em uso por outro operador da equipe.");
+          return;
+        }
+        tac.myColorId = cid;
+        localStorage.setItem("az_tac_my_color", cid);
+        renderWaColorSwatches();
+        if (tac.myPos && tac.roomCode) {
+          broadcastPacket({ kind: "pos", lat: tac.myPos.lat, lng: tac.myPos.lng, colorId: tac.myColorId, batteryPct: tac.myBatteryPct });
+        }
+      });
+    });
+  }
+
+  function appendWaChatMessage(msgObj) {
+    waChatHistory.push(msgObj);
+    if (waChatHistory.length > 80) waChatHistory.shift();
+    const box = document.getElementById("azWaChatMessages");
+    if (!box) return;
+
+    const isMine = msgObj.uid === tac.myId;
+    const hex = getColorHex(msgObj.colorId);
+    const timeStr = new Date(msgObj.ts || Date.now()).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    const bubble = document.createElement("div");
+    bubble.style.cssText = isMine
+      ? "align-self:flex-end;max-width:82%;background:#1C1A14;border:1px solid #C5A869;border-radius:12px 12px 2px 12px;padding:7px 10px;font-size:11.5px;"
+      : `align-self:flex-start;max-width:82%;background:#161616;border:1px solid ${hex};border-radius:12px 12px 12px 2px;padding:7px 10px;font-size:11.5px;`;
+
+    const coordLink = (typeof msgObj.lat === "number" && typeof msgObj.lng === "number")
+      ? `<button type="button" data-focus-lat="${msgObj.lat}" data-focus-lng="${msgObj.lng}" style="margin-top:4px;display:inline-block;background:#0D0D0D;color:#C5A869;border:1px solid #C5A869;border-radius:6px;padding:2px 7px;font-size:9.5px;font-weight:800;cursor:pointer;">VER NO MAPA (${msgObj.lat.toFixed(4)}, ${msgObj.lng.toFixed(4)})</button>`
+      : "";
+
+    bubble.innerHTML =
+      `<div style="display:flex;justify-content:space-between;gap:8px;margin-bottom:2px;">` +
+        `<strong style="font-size:9.5px;color:${isMine ? "#C5A869" : hex};">${isMine ? (tac.myQra || "VOCÊ") : msgObj.qra}</strong>` +
+        `<span style="font-size:8.5px;color:#9E9A8F;font-family:monospace;">${timeStr}</span>` +
+      `</div>` +
+      `<div style="color:#F2F0EA;line-height:1.35;word-break:break-word;">${msgObj.text}</div>` +
+      coordLink;
+
+    const mapBtn = bubble.querySelector("[data-focus-lat]");
+    if (mapBtn) {
+      mapBtn.addEventListener("click", function () {
+        const lat = parseFloat(mapBtn.getAttribute("data-focus-lat"));
+        const lng = parseFloat(mapBtn.getAttribute("data-focus-lng"));
+        document.getElementById("azWhatsappGroupModal").style.display = "none";
+        const m = getActiveMap();
+        if (m) m.flyTo({ center: [lng, lat], zoom: 17, essential: true });
+      });
+    }
+
+    box.appendChild(bubble);
+    box.scrollTop = box.scrollHeight;
+  }
+
+  function syncWaGroupHeaderAndMembers() {
+    const mates = Object.values(tac.teammates);
+    const pill = document.getElementById("azWaOnlinePill");
+    const topBadge = document.getElementById("azTopGroupBadge");
+    const title = document.getElementById("azWaGroupTitle");
+    const sub = document.getElementById("azWaGroupSubtitle");
+    const chips = document.getElementById("azWaMembersChips");
+
+    if (pill) pill.textContent = `${mates.length} ONLINE`;
+    if (topBadge) topBadge.textContent = tac.roomCode ? `${tac.roomCode} (${mates.length})` : "GRUPO";
+    if (title) title.textContent = tac.roomCode ? `EQUIPE • ${tac.roomCode}` : "GRUPO TÁTICO AZIMUTE";
+    if (sub) {
+      sub.textContent = mates.length > 0
+        ? "Online: " + mates.map(function (m) { return m.qra; }).join(", ")
+        : (tac.roomCode ? "Aguardando outros operadores na sala..." : "Informe seu QRA e código da sala");
+    }
+    if (chips) {
+      chips.innerHTML = mates.map(function (m) {
+        const dStr = tac.myPos ? " • " + formatDistance(calcDistAndBearing(tac.myPos.lat, tac.myPos.lng, m.lat, m.lng).dist) : "";
+        return `<button type="button" data-wa-mate="${m.uid}" style="background:#0D0D0D;border:1px solid ${getColorHex(m.colorId)};color:#F2F0EA;border-radius:999px;padding:3px 9px;font-size:9.5px;font-weight:800;white-space:nowrap;cursor:pointer;">${m.qra}${dStr}</button>`;
+      }).join("");
+      chips.querySelectorAll("[data-wa-mate]").forEach(function (b) {
+        b.addEventListener("click", function () {
+          const m = tac.teammates[b.getAttribute("data-wa-mate")];
+          if (m) {
+            document.getElementById("azWhatsappGroupModal").style.display = "none";
+            openMateInspector(m);
+          }
+        });
+      });
+    }
+    renderWaColorSwatches();
+  }
+
+  const _origHandleIncoming = handleIncomingPacket;
+  handleIncomingPacket = async function (pkt) {
+    await _origHandleIncoming(pkt);
+    if (pkt && pkt.uid !== tac.myId) {
+      if (pkt.kind === "msg" && pkt.text) {
+        appendWaChatMessage({ uid: pkt.uid, qra: pkt.qra, colorId: pkt.colorId || "ciano", text: pkt.text, lat: pkt.lat, lng: pkt.lng, ts: pkt.ts });
+      }
+      syncWaGroupHeaderAndMembers();
+    }
+  };
+
+  onClick("azWhatsappGroupOpenBtn", function () {
+    const modal = document.getElementById("azWhatsappGroupModal");
+    if (!modal) return;
+    document.getElementById("azWaQraInput").value = tac.myQra || "";
+    document.getElementById("azWaRoomInput").value = tac.roomCode || "PMMG01";
+    syncWaGroupHeaderAndMembers();
+    modal.style.display = "flex";
+  });
+
+  onClick("azCloseWaGroupBtn", function () {
+    document.getElementById("azWhatsappGroupModal").style.display = "none";
+  });
+
+  onClick("azWaJoinBtn", function () {
+    unlockAudioOutput();
+    const qra = (document.getElementById("azWaQraInput").value || "").trim().toUpperCase();
+    const room = (document.getElementById("azWaRoomInput").value || "").trim().toUpperCase();
+    if (!qra || !room) { showToast("Preencha QRA e Sala."); return; }
+    tac.myQra = qra;
+    tac.roomCode = room;
+    document.getElementById("azMyQraInput").value = qra;
+    document.getElementById("azRoomCodeInput").value = room;
+    localStorage.setItem("az_tac_my_qra", qra);
+    localStorage.setItem("az_tac_room", room);
+    connectLiveRoom();
+    syncWaGroupHeaderAndMembers();
+    showToast(`Conectado na sala ${room}`);
+  });
+
+  function sendWaGroupText(customText, includeCoords) {
+    const inp = document.getElementById("azWaMsgInput");
+    const txt = (customText !== undefined ? customText : (inp ? inp.value : "")).trim();
+    if (!txt) return;
+    if (!tac.roomCode) { showToast("Entre na sala antes de enviar."); return; }
+    const payload = { kind: "msg", text: txt, colorId: tac.myColorId };
+    if (includeCoords && tac.myPos) {
+      payload.lat = tac.myPos.lat;
+      payload.lng = tac.myPos.lng;
+    }
+    broadcastPacket(payload);
+    appendWaChatMessage({ uid: tac.myId, qra: tac.myQra || "VOCÊ", colorId: tac.myColorId, text: txt, lat: payload.lat, lng: payload.lng, ts: Date.now() });
+    if (inp && customText === undefined) inp.value = "";
+  }
+
+  onClick("azWaSendTextBtn", function () { sendWaGroupText(); });
+  const waInpEl = document.getElementById("azWaMsgInput");
+  if (waInpEl) {
+    waInpEl.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") { e.preventDefault(); sendWaGroupText(); }
+    });
+  }
+  document.querySelectorAll("[data-wa-quick]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      sendWaGroupText(b.getAttribute("data-wa-quick"), false);
+    });
+  });
+  onClick("azWaShareQthBtn", function () {
+    if (!tac.myPos) { showToast("Aguardando sinal GPS..."); return; }
+    const street = document.getElementById("azHudStreetLine")?.textContent || "Posição atual";
+    sendWaGroupText(`QTH ATUAL: ${street}`, true);
+  });
+  onClick("azWaPttBtn", function (e) {
+    e.preventDefault();
+    tac.isRecordingPtt ? stopSelectedPtt() : startSelectedPtt();
+    this.style.background = tac.isRecordingPtt ? "#DC2626" : "#0D0D0D";
+    this.style.color = tac.isRecordingPtt ? "#FFFFFF" : "#C5A869";
+  });
+
   if (tac.roomCode && tac.myQra) connectLiveRoom();
   scanAndCaptureExistingMaps();
   updateHud();
   monitorGps();
-  setInterval(function () { scanAndCaptureExistingMaps(); updateHud(); }, 900);
-  setInterval(monitorGps, 3500);
+  setInterval(function () {
+    if (tac.maps.length === 0) scanAndCaptureExistingMaps();
+    updateHud();
+    syncWaGroupHeaderAndMembers();
+  }, 3500);
+  setInterval(monitorGps, 4500);
 })();
 </script>
 <!-- FIM BLOCO AZIMUTE TÁTICO --></body>
 </html>
-        
