@@ -4,7 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>AZIMUTE - Sistema Geral de Consulta Rápida (PMMG)</title>
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" id="azimuteManifestLink" href="manifest.json">
+    <script>
+      (function () {
+        try {
+          if (window.screen && window.screen.orientation && typeof window.screen.orientation.unlock === "function") {
+            try { window.screen.orientation.unlock(); } catch (_) {}
+          }
+          window.addEventListener("load", function () {
+            try {
+              if (window.screen && window.screen.orientation && typeof window.screen.orientation.unlock === "function") {
+                window.screen.orientation.unlock();
+              }
+            } catch (_) {}
+          });
+          var mLink = document.getElementById("azimuteManifestLink");
+          if (mLink && location.protocol.indexOf("http") === 0 && typeof Blob !== "undefined" && URL && URL.createObjectURL) {
+            fetch("./manifest.json", { cache: "no-store" }).then(function (r) {
+              return r.ok ? r.json() : null;
+            }).then(function (m) {
+              if (!m || typeof m !== "object") return;
+              m.orientation = "any";
+              if (m.start_url) { try { m.start_url = new URL(m.start_url, location.href).href; } catch (_) {} }
+              if (m.scope) { try { m.scope = new URL(m.scope, location.href).href; } catch (_) {} }
+              if (Array.isArray(m.icons)) {
+                m.icons = m.icons.map(function (ic) {
+                  var copy = Object.assign({}, ic);
+                  try { if (copy.src) copy.src = new URL(copy.src, location.href).href; } catch (_) {}
+                  return copy;
+                });
+              }
+              var blob = new Blob([JSON.stringify(m)], { type: "application/manifest+json" });
+              mLink.setAttribute("href", URL.createObjectURL(blob));
+            }).catch(function () {});
+          }
+        } catch (_) {}
+      })();
+    </script>
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
@@ -1302,9 +1338,6 @@
 
         <!-- ================= VIEW EXCLUSIVA: GEOLOCALIZAÇÃO ================= -->
         <section id="view-gps" class="hidden relative overflow-hidden rounded-2xl space-y-4 p-1">
-            <div class="relative z-10 flex items-center justify-between px-1">
-                <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki">Geolocalização</span>
-            </div>
 <div id="az-geo-module" class="az-geo-module relative z-10">
   <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" />
   <style>
@@ -1354,7 +1387,7 @@
     }
 
     .az-geo-topbar {
-      display: flex;
+      display: none !important;
       gap: 6px;
       margin-bottom: 8px;
     }
@@ -1522,6 +1555,41 @@
     .maplibregl-ctrl-bottom-left,
     .maplibregl-ctrl-bottom-right {
       display: none !important;
+    }
+
+    #azGeoLeftOverlayCol {
+      position: absolute;
+      left: 10px;
+      top: 10px;
+      z-index: 650;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+      pointer-events: none;
+    }
+    #azGeoLeftOverlayCol > * {
+      pointer-events: auto;
+    }
+    #azGeoLeftOverlayCol .az-geo-zoom-stack {
+      position: relative;
+      left: auto;
+      top: auto;
+    }
+    #azGeoLeftOverlayCol #azHudSearchToggleBtn,
+    #azGeoLeftOverlayCol #azSatToggleBtn {
+      width: 32px !important;
+      height: 32px !important;
+      border-radius: 8px !important;
+      border: 1px solid var(--geo-border) !important;
+      background: rgba(13, 13, 13, 0.94) !important;
+      color: var(--geo-gold) !important;
+    }
+    #azGeoLeftOverlayCol #azHudSearchToggleBtn.is-active,
+    #azGeoLeftOverlayCol #azSatToggleBtn.is-active {
+      background: #C5A869 !important;
+      color: #0D0D0D !important;
+      border-color: #FFFFFF !important;
     }
 
     .az-geo-zoom-stack {
@@ -2643,17 +2711,34 @@
       <button type="button" id="azGeoStopRouteBtn" class="az-geo-btn subtle">Encerrar</button>
     </div>
 
+    <div id="azTopHudSlot"></div>
+
     <div class="az-geo-stage" id="azGeoStage">
       <div id="azGeoMap"></div>
-      <div class="az-geo-zoom-stack">
-        <button type="button" id="azGeoZoomInBtn" aria-label="Aproximar">+</button>
-        <button type="button" id="azGeoZoomOutBtn" aria-label="Afastar">−</button>
+      <div id="azGeoLeftOverlayCol">
+        <button type="button" class="az-hud-glass-btn" id="azHudSearchToggleBtn" title="Buscar rua, unidade ou hospital">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+        <div class="az-geo-zoom-stack">
+          <button type="button" id="azGeoZoomInBtn" aria-label="Aproximar">+</button>
+          <button type="button" id="azGeoZoomOutBtn" aria-label="Afastar">−</button>
+        </div>
+        <button type="button" class="az-hud-glass-btn" id="azSatToggleBtn" aria-label="Alternar Mapa Comum e Satélite" title="Alternar Mapa Comum / Satélite">
+          <svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+        </button>
+        <button type="button" id="azLockMapDrawBtn" aria-label="Travar movimento do mapa" title="Travar / Destravar movimento do mapa">
+          <svg id="azLockMapIcon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>
+        </button>
       </div>
       <button type="button" id="azGeoLockBadge" class="az-geo-lock-badge" title="Travar rumo do mapa e do Orbe ao manusear o celular">
         <span>RUMO LIVRE</span>
       </button>
       <button type="button" id="azGeoNorthBadge" class="az-geo-compass-badge" title="Alinhar Norte para cima">N</button>
       <button type="button" id="azGeoTiltBadge" class="az-geo-tilt-badge" title="Alternar perspectiva 2D / 3D (ou use dois dedos no mapa)">2D</button>
+      <div id="azFloatingPttGroup">
+        <span id="azPttDragHandle" title="Arraste para mover o PTT">⋮⋮</span>
+        <button type="button" id="azFloatingMapPttBtn" title="Toque para falar na rede">PTT</button>
+      </div>
       <button type="button" id="azGeoCenterFab" class="az-geo-locate-fab is-heading-up" aria-label="Centralizar na Minha Posicao" title="Centralizar e Alinhar">
         <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="7"></circle>
@@ -2686,7 +2771,7 @@
 
     <div class="az-geo-actions">
       <button type="button" id="azGeoIncursionBtn" class="az-geo-btn incursion">Incursão</button>
-      <button type="button" id="azGeoLayersToggleBtn" class="az-geo-btn active">Camadas</button>
+      <button type="button" id="azGeoLayersToggleBtn" class="az-geo-btn active">Filtros</button>
       <button type="button" id="azGeoAddPinBtn" class="az-geo-btn subtle">+ Alfinete</button>
       <button type="button" id="azGeoClearBtn" class="az-geo-btn subtle">Limpar</button>
       <button type="button" id="azGeoMunToggleBtn" class="az-geo-btn subtle">Municípios</button>
@@ -17233,6 +17318,9 @@ if (viewId === 'gps' && window.azimuteGeoInvalidate) window.azimuteGeoInvalidate
 
             const finalList = Array.from(mergedUnits.values());
             AZIMUTE_DB = { all: finalList, rpm1: finalList, rpm2: [] };
+            if (typeof window.azimuteRefreshGeoDatasets === "function") {
+                window.azimuteRefreshGeoDatasets();
+            }
             try {
                 localStorage.setItem('azimute_unified_units_cache_v1', JSON.stringify(finalList));
             } catch (e) {}
@@ -18794,6 +18882,7 @@ if (window.__azimuteGeoInitialized) {
           id: "az-local-circles",
           type: "circle",
           source: "az-local-src",
+          filter: ["!=", ["get", "category"], "hospitais"],
           paint: {
             "circle-radius": ["interpolate", ["linear"], ["zoom"], 11, 5.5, 16, 8.5],
             "circle-color": ["get", "color"],
@@ -18801,6 +18890,42 @@ if (window.__azimuteGeoInitialized) {
             "circle-stroke-width": 2
           }
         });
+
+        if (!map.getLayer("az-local-hosp-circles")) {
+          map.addLayer({
+            id: "az-local-hosp-circles",
+            type: "circle",
+            source: "az-local-src",
+            filter: ["==", ["get", "category"], "hospitais"],
+            paint: {
+              "circle-radius": ["interpolate", ["linear"], ["zoom"], 11, 8.5, 16, 11.5],
+              "circle-color": "#EF4444",
+              "circle-stroke-color": "#FFFFFF",
+              "circle-stroke-width": 2
+            }
+          });
+        }
+
+        if (!map.getLayer("az-local-hosp-h")) {
+          try {
+            map.addLayer({
+              id: "az-local-hosp-h",
+              type: "symbol",
+              source: "az-local-src",
+              filter: ["==", ["get", "category"], "hospitais"],
+              layout: {
+                "text-field": "H",
+                "text-size": ["interpolate", ["linear"], ["zoom"], 11, 9.5, 16, 13],
+                "text-anchor": "center",
+                "text-allow-overlap": true,
+                "text-ignore-placement": true
+              },
+              paint: {
+                "text-color": "#FFFFFF"
+              }
+            });
+          } catch (_) {}
+        }
 
         map.addLayer({
           id: "az-local-labels",
@@ -18810,7 +18935,7 @@ if (window.__azimuteGeoInitialized) {
           layout: {
             "text-field": ["get", "shortName"],
             "text-size": 11,
-            "text-offset": [0, 1.35],
+            "text-offset": [0, 1.45],
             "text-anchor": "top",
             "text-max-width": 12
           },
@@ -18821,22 +18946,23 @@ if (window.__azimuteGeoInitialized) {
           }
         });
 
-        map.on("mouseenter", "az-local-circles", () => {
-          map.getCanvas().style.cursor = "pointer";
-        });
-        map.on("mouseleave", "az-local-circles", () => {
-          map.getCanvas().style.cursor = "";
-        });
-
-        map.on("click", "az-local-circles", (e) => {
-          if (!e.features || !e.features.length) return;
-          const f = e.features[0];
-          const [lng, lat] = f.geometry.coordinates;
-          const props = f.properties || {};
-          new maplibregl.Popup({ offset: 14 })
-            .setLngLat([lng, lat])
-            .setHTML(buildPopupHtml(props.name || "Ponto", props.subtitle || "", lat, lng, null, props.category || "extra"))
-            .addTo(map);
+        ["az-local-circles", "az-local-hosp-circles"].forEach((layerId) => {
+          map.on("mouseenter", layerId, () => {
+            map.getCanvas().style.cursor = "pointer";
+          });
+          map.on("mouseleave", layerId, () => {
+            map.getCanvas().style.cursor = "";
+          });
+          map.on("click", layerId, (e) => {
+            if (!e.features || !e.features.length) return;
+            const f = e.features[0];
+            const [lng, lat] = f.geometry.coordinates;
+            const props = f.properties || {};
+            new maplibregl.Popup({ offset: 14 })
+              .setLngLat([lng, lat])
+              .setHTML(buildPopupHtml(props.name || "Ponto", props.subtitle || "", lat, lng, null, props.category || "extra"))
+              .addTo(map);
+          });
         });
       }
       return true;
@@ -18950,6 +19076,8 @@ if (window.__azimuteGeoInitialized) {
 
     if (
       blob.includes("hospital") ||
+      blob.includes("hosp.") ||
+      /\bhosp\b/.test(blob) ||
       blob.includes("upa") ||
       blob.includes("pronto socorro") ||
       blob.includes("pronto-socorro") ||
@@ -19148,6 +19276,21 @@ if (window.__azimuteGeoInitialized) {
     );
 
     try {
+      if (typeof AZIMUTE_HOSPITAIS_REFERENCIA_PRINCIPAIS !== "undefined" && Array.isArray(AZIMUTE_HOSPITAIS_REFERENCIA_PRINCIPAIS)) {
+        mergeBucketsIntoDatasets(extractClassifiedRecords(AZIMUTE_HOSPITAIS_REFERENCIA_PRINCIPAIS, "hospitais"));
+      }
+      if (typeof AZIMUTE_HOSPITAIS_RMBH !== "undefined" && Array.isArray(AZIMUTE_HOSPITAIS_RMBH)) {
+        mergeBucketsIntoDatasets(extractClassifiedRecords(AZIMUTE_HOSPITAIS_RMBH, "hospitais"));
+      }
+      if (typeof AZIMUTE_UNIDADES_POLICIAIS !== "undefined" && Array.isArray(AZIMUTE_UNIDADES_POLICIAIS)) {
+        mergeBucketsIntoDatasets(extractClassifiedRecords(AZIMUTE_UNIDADES_POLICIAIS, "unidades"));
+      }
+      if (typeof AZIMUTE_DB !== "undefined" && AZIMUTE_DB) {
+        mergeBucketsIntoDatasets(extractClassifiedRecords(AZIMUTE_DB, "unidades"));
+      }
+      if (typeof UNIDADES_1RPM !== "undefined" && UNIDADES_1RPM && Object.keys(UNIDADES_1RPM).length) {
+        mergeBucketsIntoDatasets(extractClassifiedRecords(UNIDADES_1RPM, "unidades"));
+      }
       Object.keys(window).forEach((k) => {
         if (!/hospital|unidade|bpm|bsc|deplan|saude|dados|apoio/i.test(k)) return;
         const val = window[k];
@@ -19161,6 +19304,8 @@ if (window.__azimuteGeoInitialized) {
     updateLayerCountersUi();
     refreshAllMapMarkersLayer();
   }
+  window.azimuteGetGeoDatasets = () => datasetPoints;
+  window.azimuteRefreshGeoDatasets = loadRepositoryGeoDatasets;
   loadRepositoryGeoDatasets();
 
   if (layersToggleBtn && layersBox) {
@@ -20180,6 +20325,57 @@ if (window.__azimuteGeoInitialized) {
     drawOrbeVectorAndRing();
   });
 
+  function normalizeSearchText(str) {
+    return String(str || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .trim();
+  }
+
+  function formatPhotonItem(feat, fallbackQuery) {
+    const props = (feat && feat.properties) || {};
+    const coords = (feat && feat.geometry && Array.isArray(feat.geometry.coordinates)) ? feat.geometry.coordinates : [];
+    const lng = parseFloat(coords[0]);
+    const lat = parseFloat(coords[1]);
+    if (Number.isNaN(lat) || Number.isNaN(lng)) return null;
+    const road = props.street || props.name || fallbackQuery;
+    const number = props.housenumber ? `, ${props.housenumber}` : "";
+    const title = `${road}${number}`;
+    const bairro = props.district || props.suburb || props.locality || "";
+    const cidade = props.city || props.county || "";
+    const uf = props.state && String(props.state).toLowerCase().includes("minas gerais") ? "MG" : (props.state || "");
+    const parts = [bairro, cidade, uf].filter(Boolean);
+    return {
+      title,
+      subtitle: parts.join(" — "),
+      lat,
+      lng
+    };
+  }
+
+  function isLikelyRmbhOrMg(props) {
+    if (!props) return true;
+    const cc = String(props.countrycode || "").toUpperCase();
+    if (cc && cc !== "BR") return false;
+    const st = normalizeSearchText(props.state || "");
+    if (st && !st.includes("minas gerais") && st !== "mg") return false;
+    return true;
+  }
+
+  function dedupeGeoSearchOptions(list) {
+    const seen = new Set();
+    const out = [];
+    list.forEach((opt) => {
+      if (!opt || typeof opt.lat !== "number" || typeof opt.lng !== "number" || Number.isNaN(opt.lat) || Number.isNaN(opt.lng)) return;
+      const key = `${normalizeSearchText(opt.title)}|${opt.lat.toFixed(3)}|${opt.lng.toFixed(3)}`;
+      if (seen.has(key)) return;
+      seen.add(key);
+      out.push(opt);
+    });
+    return out;
+  }
+
   function formatNominatimItem(item, fallbackQuery) {
     const addr = item.address || {};
     const road = addr.road || addr.pedestrian || addr.footway || addr.path || item.name || fallbackQuery;
@@ -20277,17 +20473,17 @@ if (window.__azimuteGeoInitialized) {
 
     statusEl.textContent = "Buscando opcoes proximas...";
     hideSearchResults();
-    const qNorm = q.toLowerCase();
-    const options = [];
+    const qNorm = normalizeSearchText(q);
+    const rawOptions = [];
 
     ["unidades", "hospitais", "bscs", "deplans"].forEach((cat) => {
       const tag = LAYER_META[cat].label;
       datasetPoints[cat].forEach((p) => {
         if (
-          (p.name && p.name.toLowerCase().includes(qNorm)) ||
-          (p.subtitle && p.subtitle.toLowerCase().includes(qNorm))
+          normalizeSearchText(p.name).includes(qNorm) ||
+          normalizeSearchText(p.subtitle).includes(qNorm)
         ) {
-          options.push({
+          rawOptions.push({
             title: p.name,
             subtitle: `[${tag}] ${p.subtitle || ""}`.trim(),
             lat: p.lat,
@@ -20299,10 +20495,10 @@ if (window.__azimuteGeoInitialized) {
 
     localPoints.forEach((p) => {
       if (
-        (p.name && p.name.toLowerCase().includes(qNorm)) ||
-        (p.subtitle && p.subtitle.toLowerCase().includes(qNorm))
+        normalizeSearchText(p.name).includes(qNorm) ||
+        normalizeSearchText(p.subtitle).includes(qNorm)
       ) {
-        options.push({
+        rawOptions.push({
           title: p.name || q,
           subtitle: p.subtitle || "Ponto AZIMUTE",
           lat: p.lat,
@@ -20311,38 +20507,80 @@ if (window.__azimuteGeoInitialized) {
       }
     });
 
-    try {
-      const fullQuery = q.toLowerCase().includes("minas gerais") ? q : `${q}, Minas Gerais, Brasil`;
-      const url = `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=10&countrycodes=br&viewbox=-44.35,-19.65,-43.65,-20.15&q=${encodeURIComponent(fullQuery)}`;
-      const res = await fetch(url, { headers: { "Accept-Language": "pt-BR" } });
-      const results = await res.json();
+    const refLat = lastPos ? lastPos[0] : -19.9191;
+    const refLng = lastPos ? lastPos[1] : -43.9386;
 
-      if (Array.isArray(results)) {
-        results.forEach((item) => {
-          options.push(formatNominatimItem(item, q));
-        });
+    const fetchWithTimeout = async (url, opts) => {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 5500);
+      try {
+        const res = await fetch(url, Object.assign({}, opts || {}, { signal: ctrl.signal }));
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        return await res.json();
+      } finally {
+        clearTimeout(timer);
       }
-    } catch (err) {
-      if (!options.length) {
-        statusEl.textContent = "Erro na busca (verifique conexao)";
-        return;
-      }
+    };
+
+    const photonUrl = `https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&lat=${refLat.toFixed(4)}&lon=${refLng.toFixed(4)}&limit=8`;
+    const fullQuery = qNorm.includes("minas gerais") || qNorm.includes(" mg") ? q : `${q}, Minas Gerais, Brasil`;
+    const nomUrl = `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=8&countrycodes=br&viewbox=-44.55,-19.45,-43.45,-20.30&q=${encodeURIComponent(fullQuery)}`;
+
+    const settled = await Promise.allSettled([
+      fetchWithTimeout(photonUrl),
+      fetchWithTimeout(nomUrl, { headers: { "Accept-Language": "pt-BR" } })
+    ]);
+
+    let networkOk = false;
+    if (settled[0].status === "fulfilled" && settled[0].value && Array.isArray(settled[0].value.features)) {
+      networkOk = true;
+      settled[0].value.features.forEach((feat) => {
+        if (!isLikelyRmbhOrMg(feat.properties)) return;
+        const fmt = formatPhotonItem(feat, q);
+        if (fmt) rawOptions.push(fmt);
+      });
+    }
+    if (settled[1].status === "fulfilled" && Array.isArray(settled[1].value)) {
+      networkOk = true;
+      settled[1].value.forEach((item) => {
+        rawOptions.push(formatNominatimItem(item, q));
+      });
     }
 
+    if (!rawOptions.length && !qNorm.includes("belo horizonte") && !qNorm.includes("mg")) {
+      try {
+        const fbData = await fetchWithTimeout(`https://photon.komoot.io/api/?q=${encodeURIComponent(q + " Belo Horizonte MG")}&lat=${refLat.toFixed(4)}&lon=${refLng.toFixed(4)}&limit=6`);
+        networkOk = true;
+        if (fbData && Array.isArray(fbData.features)) {
+          fbData.features.forEach((feat) => {
+            if (!isLikelyRmbhOrMg(feat.properties)) return;
+            const fmt = formatPhotonItem(feat, q);
+            if (fmt) rawOptions.push(fmt);
+          });
+        }
+      } catch (_) {}
+    }
+
+    if (!rawOptions.length && !networkOk) {
+      statusEl.textContent = "Erro na busca (verifique conexao)";
+      return;
+    }
+
+    const options = dedupeGeoSearchOptions(rawOptions);
     if (!options.length) {
       statusEl.textContent = "Endereco nao encontrado";
       return;
     }
 
-    if (lastPos) {
-      options.forEach((opt) => {
-        const lineKm = calcDistanceKm(lastPos[0], lastPos[1], opt.lat, opt.lng);
+    options.forEach((opt) => {
+      const lineKm = calcDistanceKm(refLat, refLng, opt.lat, opt.lng);
+      opt.sortKey = lineKm;
+      if (lastPos) {
         opt.estKm = lineKm * 1.25;
         opt.estMin = (opt.estKm / 30) * 60;
-        opt.sortKey = lineKm;
-      });
-      options.sort((a, b) => a.sortKey - b.sortKey);
-    }
+      }
+    });
+    options.sort((a, b) => a.sortKey - b.sortKey);
 
     if (options.length === 1) {
       showDestinationOnMap(options[0].title, options[0].subtitle, options[0].lat, options[0].lng);
@@ -21399,16 +21637,41 @@ if (document.readyState === "loading") {
   body.az-map-expanded #mobileBottomNav {
     display: none !important;
   }
+  body.az-map-expanded #azGeoLeftOverlayCol {
+    position: fixed !important;
+    left: 10px !important;
+    top: calc(52px + env(safe-area-inset-top, 0px)) !important;
+    z-index: 100044 !important;
+  }
+  body.az-map-expanded #azGeoLayersBox.is-open {
+    position: fixed !important;
+    left: 52px !important;
+    top: calc(120px + env(safe-area-inset-top, 0px)) !important;
+    z-index: 100046 !important;
+    max-width: calc(100vw - 110px) !important;
+    background: rgba(13, 13, 13, 0.96) !important;
+    border: 1.5px solid #C5A869 !important;
+    border-radius: 10px !important;
+    padding: 8px !important;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.9) !important;
+  }
+  body.az-map-expanded #azGeoLockBadge {
+    position: fixed !important;
+    top: calc(52px + env(safe-area-inset-top, 0px)) !important;
+    right: 52px !important;
+    z-index: 100044 !important;
+    display: flex !important;
+  }
   body.az-map-expanded #azGeoNorthBadge {
     position: fixed !important;
-    top: calc(56px + env(safe-area-inset-top, 0px)) !important;
+    top: calc(52px + env(safe-area-inset-top, 0px)) !important;
     right: 10px !important;
     z-index: 100044 !important;
     display: flex !important;
   }
   body.az-map-expanded #azGeoTiltBadge {
     position: fixed !important;
-    top: calc(98px + env(safe-area-inset-top, 0px)) !important;
+    top: calc(92px + env(safe-area-inset-top, 0px)) !important;
     right: 10px !important;
     z-index: 100044 !important;
     display: flex !important;
@@ -21426,7 +21689,98 @@ if (document.readyState === "loading") {
     display: block !important;
     visibility: visible !important;
   }
-  @media (orientation: landscape) and (max-height: 500px) {
+  @media (orientation: landscape) and (max-height: 520px) {
+    body.az-map-fullscreen:not(.az-map-expanded) #azGeoStage {
+      height: clamp(235px, 68dvh, 320px) !important;
+    }
+    #azGeoLeftOverlayCol {
+      top: 8px;
+      left: 8px;
+      gap: 4px;
+    }
+    body.az-map-expanded #azGeoLeftOverlayCol {
+      top: calc(46px + env(safe-area-inset-top, 0px)) !important;
+      left: 8px !important;
+    }
+    #azGeoLeftOverlayCol #azHudSearchToggleBtn,
+    #azGeoLeftOverlayCol #azSatToggleBtn,
+    #azLockMapDrawBtn {
+      width: 28px !important;
+      height: 28px !important;
+    }
+    #azGeoLeftOverlayCol #azHudSearchToggleBtn svg,
+    #azGeoLeftOverlayCol #azSatToggleBtn svg,
+    #azLockMapDrawBtn svg {
+      width: 14px !important;
+      height: 14px !important;
+    }
+    #azGeoLeftOverlayCol .az-geo-zoom-stack button {
+      width: 28px;
+      height: 26px;
+      font-size: 15px;
+    }
+    #azFloatingPttGroup {
+      bottom: 10px !important;
+      left: 8px !important;
+      min-height: 32px !important;
+    }
+    body.az-map-expanded #azFloatingPttGroup {
+      bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important;
+      left: 8px !important;
+    }
+    #azFloatingMapPttBtn {
+      height: 32px !important;
+      padding: 0 12px !important;
+      font-size: 10px !important;
+    }
+    #azGeoNorthBadge {
+      width: 30px;
+      height: 30px;
+      top: 8px;
+      right: 8px;
+      font-size: 10px;
+    }
+    #azGeoLockBadge {
+      height: 30px;
+      top: 8px;
+      right: 44px;
+      font-size: 9px;
+      padding: 0 7px;
+    }
+    #azGeoTiltBadge {
+      width: 30px;
+      height: 26px;
+      top: 44px;
+      right: 8px;
+      font-size: 9.5px;
+    }
+    body.az-map-expanded #azGeoNorthBadge {
+      top: calc(46px + env(safe-area-inset-top, 0px)) !important;
+      right: 8px !important;
+    }
+    body.az-map-expanded #azGeoLockBadge {
+      top: calc(46px + env(safe-area-inset-top, 0px)) !important;
+      right: 44px !important;
+    }
+    body.az-map-expanded #azGeoTiltBadge {
+      top: calc(82px + env(safe-area-inset-top, 0px)) !important;
+      right: 8px !important;
+    }
+    body.az-map-fullscreen #azGeoCenterFab,
+    body.az-map-expanded #azGeoCenterFab {
+      width: 38px !important;
+      height: 38px !important;
+      bottom: 10px !important;
+      right: 8px !important;
+    }
+    #azMapSearchOverlay {
+      top: calc(46px + env(safe-area-inset-top, 0px)) !important;
+      max-height: calc(100dvh - 56px) !important;
+      overflow-y: auto !important;
+    }
+    .az-search-results-list {
+      max-height: 118px;
+    }
     body.kb-landscape-active #mainTopHeader,
     body.kb-landscape-active #mobileBottomNav,
     body.kb-landscape-active #azFloatingPttGroup {
@@ -21444,7 +21798,7 @@ if (document.readyState === "loading") {
     }
   }
   body.az-map-fullscreen #azGeoStage {
-    height: 375px !important;
+    height: 375px;
   }
 
   /* 3. Botão de centralizar: visível dentro do mapa na aba Geolocalização */
@@ -21458,15 +21812,15 @@ if (document.readyState === "loading") {
     visibility: visible !important;
     pointer-events: auto !important;
     position: absolute !important;
-    bottom: 14px !important;
-    right: 12px !important;
+    bottom: 12px !important;
+    right: 10px !important;
     z-index: 750 !important;
   }
   body.az-map-expanded #azGeoCenterFab {
     position: fixed !important;
-    bottom: 76px !important;
-    right: 12px !important;
-    z-index: 100043 !important;
+    bottom: calc(18px + env(safe-area-inset-bottom, 0px)) !important;
+    right: 10px !important;
+    z-index: 100044 !important;
   }
 
   /* 4. Barra Superior ATAK */
@@ -21480,6 +21834,15 @@ if (document.readyState === "loading") {
     align-items: center;
     gap: 4px;
     pointer-events: none;
+  }
+  body:not(.az-map-expanded) #azTopHudSlot #azTopHudShell {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    z-index: 20 !important;
+    width: 100% !important;
+    margin: 0 0 8px 0 !important;
   }
   #azTopHudShell.is-visible { display: flex !important; }
   #azTopHudShell > * { pointer-events: auto; }
@@ -21629,7 +21992,7 @@ if (document.readyState === "loading") {
   /* Busca Lupa */
   #azMapSearchOverlay {
     position: fixed !important;
-    top: 48px !important;
+    top: calc(96px + env(safe-area-inset-top, 0px)) !important;
     left: 8px !important;
     right: 8px !important;
     z-index: 100047 !important;
@@ -21641,6 +22004,9 @@ if (document.readyState === "loading") {
     flex-direction: column;
     gap: 6px;
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.96);
+  }
+  body.az-map-expanded #azMapSearchOverlay {
+    top: calc(48px + env(safe-area-inset-top, 0px)) !important;
   }
   #azMapSearchOverlay.is-open { display: flex !important; }
   .az-search-results-list {
@@ -21662,36 +22028,41 @@ if (document.readyState === "loading") {
     cursor: pointer;
   }
 
-  /* Controles inferiores (Travar Mapa, Desfazer, Encerrar Ferramentas) */
+  /* Cadeado Travar Tela abaixo de Camadas na coluna esquerda */
   #azLockMapDrawBtn {
-    position: fixed !important;
-    bottom: 124px !important;
-    right: 12px !important;
-    z-index: 100044 !important;
+    position: relative !important;
+    top: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: auto !important;
+    z-index: 650 !important;
+    width: 32px !important;
     height: 32px !important;
-    padding: 0 10px !important;
+    padding: 0 !important;
     border-radius: 8px !important;
-    background: #0D0D0D !important;
+    background: rgba(13, 13, 13, 0.94) !important;
     color: #C5A869 !important;
-    border: 1.5px solid #C5A869 !important;
-    font-size: 9.5px !important;
+    border: 1px solid #C5A869 !important;
+    font-size: 10px !important;
     font-weight: 900 !important;
     cursor: pointer;
     display: none;
     align-items: center;
-    gap: 5px;
+    justify-content: center;
     opacity: 1 !important;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.72) !important;
   }
   #azLockMapDrawBtn.is-visible { display: inline-flex !important; }
   #azLockMapDrawBtn.is-locked {
     background: #C5A869 !important;
     color: #0D0D0D !important;
+    border-color: #FFFFFF !important;
   }
 
   #azLeftControlsRow {
     position: fixed !important;
-    bottom: calc(124px + env(safe-area-inset-bottom, 0px)) !important;
-    left: 12px !important;
+    bottom: calc(64px + env(safe-area-inset-bottom, 0px)) !important;
+    left: 10px !important;
     z-index: 100044 !important;
     display: none;
     flex-wrap: wrap;
@@ -21700,41 +22071,40 @@ if (document.readyState === "loading") {
   }
   #azLeftControlsRow.is-visible { display: flex !important; }
 
-  /* PTT Arrastável (canto inferior direito livre, acima do rodapé, sem cobrir endereço) */
+  /* PTT Fixado na lateral ESQUERDA DENTRO do mapa, bem abaixo dos botões superiores */
   #azFloatingPttGroup {
-    position: fixed !important;
-    bottom: calc(82px + env(safe-area-inset-bottom, 0px));
-    right: 12px;
-    left: auto;
-    z-index: 100044 !important;
+    position: absolute !important;
+    bottom: 12px !important;
+    left: 10px !important;
+    right: auto !important;
+    top: auto !important;
+    z-index: 750 !important;
     display: none;
     align-items: stretch !important;
-    min-height: 44px;
+    min-height: 36px;
     border-radius: 999px !important;
     background: #0D0D0D !important;
-    border: 2px solid #C5A869 !important;
-    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.96) !important;
+    border: 1.8px solid #C5A869 !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.92) !important;
     overflow: hidden !important;
     user-select: none;
     opacity: 1 !important;
   }
+  body.az-map-expanded #azFloatingPttGroup {
+    position: fixed !important;
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px)) !important;
+    left: 10px !important;
+    right: auto !important;
+    top: auto !important;
+    z-index: 100044 !important;
+  }
   #azFloatingPttGroup.is-visible { display: inline-flex !important; }
   #azPttDragHandle {
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    width: 30px !important;
-    background: #1C1A14 !important;
-    color: #C5A869 !important;
-    font-size: 13px !important;
-    font-weight: 900 !important;
-    border-right: 1.5px solid #28271F !important;
-    cursor: grab;
-    touch-action: none;
+    display: none !important;
   }
   #azFloatingMapPttBtn {
-    height: 42px !important;
-    padding: 0 16px !important;
+    height: 36px !important;
+    padding: 0 14px !important;
     background: #0D0D0D !important;
     border: none !important;
     color: #C5A869 !important;
@@ -22393,16 +22763,10 @@ if (document.readyState === "loading") {
 
 <!-- Barra Superior -->
 <div id="azTopHudShell">
-  <button type="button" class="az-hud-glass-btn" id="azHudSearchToggleBtn" title="Buscar endereço ou coordenada">
-    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-  </button>
   <div id="azMicroTelemetryHud" title="QTH e Rede">
     <div class="az-hud-line-top" id="azHudUnitNetLine">PMMG • REDE RMBH</div>
     <div class="az-hud-line-sub" id="azHudStreetLine">Localizando via...</div>
   </div>
-  <button type="button" class="az-hud-glass-btn" id="azSatToggleBtn" title="Alternar Mapa Satélite">
-    <svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
-  </button>
   <button type="button" class="az-hud-glass-btn" id="azWhatsappGroupOpenBtn" title="Grupo da Equipe (Chat e PTT)" style="width:auto !important;padding:0 8px !important;gap:4px;font-size:10px;font-weight:900;color:#4ADE80 !important;">
     <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
     <span id="azTopGroupBadge">GRUPO</span>
@@ -22411,9 +22775,6 @@ if (document.readyState === "loading") {
     <svg viewBox="0 0 24 24"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
   </button>
   <button type="button" class="az-hud-glass-btn az-hud-hosp-btn" id="azQuickHospitalRouteBtn" title="Rota Hospital Próximo">+</button>
-  <button type="button" class="az-hud-glass-btn" id="azHudEyeToggleBtn" title="Ocultar / Exibir camadas (Tela Limpa)">
-    <svg id="azHudEyeIcon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-  </button>
   <button type="button" class="az-hud-glass-btn" id="azAtakHamburgerBtn" title="Menu Tático">
     <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
   </button>
@@ -22576,7 +22937,7 @@ if (document.readyState === "loading") {
 <!-- Lupa Busca -->
 <div id="azMapSearchOverlay">
   <div class="az-team-row">
-    <input type="text" id="azMapAddressInput" class="az-team-input" placeholder="Rua, bairro ou -19.92, -43.93" autocomplete="off">
+    <input type="text" id="azMapAddressInput" class="az-team-input" placeholder="Buscar rua, unidade, hospital ou -19.92, -43.93" autocomplete="off">
     <button type="button" class="az-atak-tool-btn is-active" id="azRunAddressSearchBtn">IR</button>
     <button type="button" class="az-atak-tool-btn" id="azCloseAddressSearchBtn">✕</button>
   </div>
@@ -22634,15 +22995,6 @@ if (document.readyState === "loading") {
   <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#4ADE80;"></span>
   <span id="azActiveSpeakerText">OPERADOR TRANSMITINDO</span>
 </div>
-
-<!-- PTT Arrastável -->
-<div id="azFloatingPttGroup">
-  <span id="azPttDragHandle" title="Arraste para mover o PTT">⋮⋮</span>
-  <button type="button" id="azFloatingMapPttBtn" title="Toque para falar na rede">PTT</button>
-</div>
-
-<!-- Travar Mapa -->
-<button type="button" id="azLockMapDrawBtn">TRAVAR MAPA</button>
 
 <button type="button" id="azNavChevronToggleBtn" title="Mostrar/Ocultar teclas inferiores">▲</button>
 
@@ -22712,7 +23064,7 @@ if (document.readyState === "loading") {
     </button>
     <button type="button" class="az-grid-tile" data-grid-act="wheel_settings">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-      Opções Roda
+      OPÇÕES
     </button>
     <button type="button" class="az-grid-tile" data-grid-act="clear_all">
       <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
@@ -22795,10 +23147,10 @@ if (document.readyState === "loading") {
 <!-- Roda Radial ATAK -->
 <div id="azRadialWheel"></div>
 
-<!-- Modal Personalizar Opções da Roda -->
+<!-- Modal Personalizar Opções -->
 <div id="azWheelConfigModal">
   <div style="display:flex;justify-content:space-between;align-items:center;">
-    <span style="font-size:10.5px;font-weight:900;color:#C5A869;">PERSONALIZAR OPÇÕES DA RODA</span>
+    <span style="font-size:10.5px;font-weight:900;color:#C5A869;">PERSONALIZAR OPÇÕES</span>
     <button type="button" id="azCloseWheelCfgBtn" style="background:none;border:none;color:#9E9A8F;font-weight:900;cursor:pointer;">✕</button>
   </div>
   <div style="font-size:9.5px;color:#9E9A8F;">Selecione os comandos exibidos ao tocar em um ponto:</div>
@@ -23565,7 +23917,7 @@ if (document.readyState === "loading") {
       const style = m.getStyle && m.getStyle();
       if (style && Array.isArray(style.layers)) {
         style.layers.forEach(function (layer) {
-          if (layer.type === "symbol") {
+          if (layer.type === "symbol" && layer.id !== "az-local-hosp-h") {
             try {
               m.setPaintProperty(layer.id, "text-color", tac.satMode ? "#FFFFFF" : "#000000");
               m.setPaintProperty(layer.id, "text-halo-color", tac.satMode ? "#000000" : "#FFFFFF");
@@ -23576,8 +23928,10 @@ if (document.readyState === "loading") {
       }
     });
     if (tac.grgConfig) renderGrgGridOnMaps(tac.grgConfig);
-    document.getElementById("azSatToggleBtn").classList.toggle("is-active", tac.satMode);
-    document.getElementById("azGridSatTile").classList.toggle("is-on", tac.satMode);
+    const satBtn = document.getElementById("azSatToggleBtn");
+    if (satBtn) satBtn.classList.toggle("is-active", tac.satMode);
+    const satTile = document.getElementById("azGridSatTile");
+    if (satTile) satTile.classList.toggle("is-on", tac.satMode);
     showToast(tac.satMode ? "Camada Satélite Híbrido ATIVADA" : "Mapa Padrão ATIVADO", 2200);
   }
 
@@ -24172,6 +24526,24 @@ if (document.readyState === "loading") {
       const m = tac.teammates[tac.bloodhoundTarget.id];
       tac.bloodhoundTarget.lat = m.lat;
       tac.bloodhoundTarget.lng = m.lng;
+    } else if (tac.bloodhoundTarget.type === "pin") {
+      const pinRef = tac.pins.find(function (p) { return p.id === tac.bloodhoundTarget.id; });
+      if (pinRef) {
+        tac.bloodhoundTarget.lat = pinRef.lat;
+        tac.bloodhoundTarget.lng = pinRef.lng;
+        if (pinRef.label) tac.bloodhoundTarget.label = pinRef.label;
+        const listRef = tac.bloodhoundList.find(function (t) { return t.id === tac.bloodhoundTarget.id; });
+        if (listRef) {
+          listRef.lat = pinRef.lat;
+          listRef.lng = pinRef.lng;
+          listRef.label = tac.bloodhoundTarget.label;
+        }
+        if (Array.isArray(tac.bloodhoundMarker)) {
+          tac.bloodhoundMarker.forEach(function (mk) {
+            try { mk.setLngLat([pinRef.lng, pinRef.lat]); } catch (_) {}
+          });
+        }
+      }
     }
     const map = getActiveMap();
     const oLat = tac.myPos ? tac.myPos.lat : (map ? map.getCenter().lat : tac.bloodhoundTarget.lat);
@@ -24339,7 +24711,12 @@ if (document.readyState === "loading") {
     document.getElementById("azRemoteFineTunePad").classList.remove("is-open");
     tac.fineTunePin = null;
     tac.fineTuneStartPos = null;
-    if (commit && p) upsertTacticalPin(p, false);
+    if (commit && p) {
+      upsertTacticalPin(p, false);
+    } else if (p && tac.bloodhoundTarget && tac.bloodhoundTarget.type === "pin" && tac.bloodhoundTarget.id === p.id) {
+      updateBloodhoundVector();
+    }
+    renderEdgeIndicators();
   }
 
   /* =====================================================================
@@ -24350,8 +24727,15 @@ if (document.readyState === "loading") {
     if (idx === -1) return;
     tac.pins[idx].markers.forEach(function (i) { i.marker.remove(); });
     tac.pins.splice(idx, 1);
+    if (Array.isArray(tac.bloodhoundList)) {
+      tac.bloodhoundList = tac.bloodhoundList.filter(function (t) { return t.id !== pinId; });
+    }
+    if (tac.bloodhoundTarget && tac.bloodhoundTarget.id === pinId) {
+      setBloodhoundTarget(tac.bloodhoundList && tac.bloodhoundList.length ? tac.bloodhoundList[tac.bloodhoundList.length - 1] : null);
+    }
     broadcastPacket({ kind: "del_pin", pinId: pinId });
     refreshLeftControls();
+    renderEdgeIndicators();
     showToast("Marcador removido.");
   }
 
@@ -24682,6 +25066,23 @@ if (document.readyState === "loading") {
     const marker = new window.maplibregl.Marker({ element: el, anchor: "bottom" }).setLngLat([pinObj.lng, pinObj.lat]).addTo(mapInst);
     pinObj.markers.push({ marker: marker, el: el });
 
+    function syncDraggedPin(isEnd) {
+      const ll = marker.getLngLat();
+      if (!ll) return;
+      pinObj.lat = ll.lat;
+      pinObj.lng = ll.lng;
+      pinObj.markers.forEach(function (it) {
+        if (it.marker && it.marker !== marker) it.marker.setLngLat([pinObj.lng, pinObj.lat]);
+      });
+      if (tac.fineTunePin === pinObj) updateRemoteCoordReadout();
+      if (tac.bloodhoundTarget && tac.bloodhoundTarget.type === "pin" && tac.bloodhoundTarget.id === pinObj.id) {
+        updateBloodhoundVector();
+      }
+      if (isEnd) renderEdgeIndicators();
+    }
+    marker.on("drag", function () { syncDraggedPin(false); });
+    marker.on("dragend", function () { syncDraggedPin(true); });
+
     el.addEventListener("click", function (ev) {
       ev.stopPropagation();
       if (tac.eraserActive && !pinObj.isGhost) {
@@ -24729,6 +25130,18 @@ if (document.readyState === "loading") {
       if (!data.isGhost) tac.undoHistory.push({ type: "pin", pinId: data.id });
     }
     refreshLeftControls();
+    if (Array.isArray(tac.bloodhoundList)) {
+      const bhItem = tac.bloodhoundList.find(function (t) { return t.id === data.id; });
+      if (bhItem) {
+        bhItem.lat = data.lat;
+        bhItem.lng = data.lng;
+        if (data.label) bhItem.label = data.label;
+      }
+    }
+    if (tac.bloodhoundTarget && tac.bloodhoundTarget.type === "pin" && tac.bloodhoundTarget.id === data.id) {
+      updateBloodhoundVector();
+    }
+    renderEdgeIndicators();
     if (fromSync) {
       vibratePattern([180, 90, 180]);
       showToast(`PONTO: ${data.label}`, 3400, data.type === "gpe");
@@ -25134,20 +25547,26 @@ if (document.readyState === "loading") {
     disableIncursionCompletely();
     const vis = isMapTabVisible();
     document.body.classList.toggle("az-map-fullscreen", vis);
-    document.getElementById("azTopHudShell").classList.toggle("is-visible", vis);
+    const topShell = document.getElementById("azTopHudShell");
+    const topSlot = document.getElementById("azTopHudSlot");
+    if (topShell) {
+      if (document.body.classList.contains("az-map-expanded")) {
+        if (topShell.parentElement !== document.body) document.body.appendChild(topShell);
+      } else if (topSlot && topShell.parentElement !== topSlot) {
+        topSlot.appendChild(topShell);
+      }
+      topShell.classList.toggle("is-visible", vis);
+    }
     document.getElementById("azFloatingPttGroup").classList.toggle("is-visible", vis);
     document.getElementById("azLockMapDrawBtn").classList.toggle("is-visible", vis);
     renderEdgeIndicators();
 
-    // Contém #azGeoCenterFab estritamente na aba Geolocalização
+    // Contém #azGeoCenterFab estritamente dentro do mapa (#azGeoStage)
     const centerFab = document.getElementById("azGeoCenterFab");
     if (centerFab) {
-      if (vis) {
-        if (centerFab.parentElement !== document.body) document.body.appendChild(centerFab);
-        centerFab.style.setProperty("display", "inline-flex", "important");
-      } else {
-        centerFab.style.setProperty("display", "none", "important");
-      }
+      const stage = document.getElementById("azGeoStage");
+      if (stage && centerFab.parentElement !== stage) stage.appendChild(centerFab);
+      centerFab.style.setProperty("display", vis ? "inline-flex" : "none", "important");
     }
     if (!vis) closeDock();
 
@@ -25207,45 +25626,25 @@ if (document.readyState === "loading") {
     navigator.geolocation.watchPosition(onNewPosition, function () {}, { enableHighAccuracy: true, maximumAge: 1500 });
   }
 
-  // Arrasto do PTT + Proteção Paisagem (Landscape) + Teclado Virtual Paisagem
+  // PTT Fixo dentro do mapa + Proteção de Teclado Virtual em Paisagem
   (function () {
     const group = document.getElementById("azFloatingPttGroup");
-    const handle = document.getElementById("azPttDragHandle");
-    let sx = 0, sy = 0, ol = 0, ot = 0, drag = false;
     function clampFloatingPttIntoViewport() {
       if (!group) return;
-      const w = group.offsetWidth || 92;
-      const h = group.offsetHeight || 44;
-      const vw = window.innerWidth;
-      const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
-      if (group.style.left || group.style.top) {
-        const curL = parseFloat(group.style.left) || 12;
-        const curT = parseFloat(group.style.top) || (vh - h - 24);
-        group.style.left = Math.min(Math.max(8, vw - w - 8), Math.max(8, curL)) + "px";
-        group.style.top = Math.min(Math.max(50, vh - h - 14), Math.max(50, curT)) + "px";
-        group.style.right = "auto";
-        group.style.bottom = "auto";
-      } else if (vh < 500) {
-        group.style.bottom = "14px";
-        group.style.right = "10px";
-      } else {
-        group.style.bottom = "";
-      }
+      group.style.left = "";
+      group.style.top = "";
+      group.style.right = "";
+      group.style.bottom = "";
     }
-    handle.addEventListener("pointerdown", function (e) {
-      e.preventDefault(); e.stopPropagation();
-      const r = group.getBoundingClientRect(); sx = e.clientX; sy = e.clientY; ol = r.left; ot = r.top; drag = true;
-    });
-    handle.addEventListener("pointermove", function (e) {
-      if (!drag) return;
-      group.style.left = Math.min(window.innerWidth - group.offsetWidth - 8, Math.max(8, ol + (e.clientX - sx))) + "px";
-      group.style.top = Math.min(window.innerHeight - group.offsetHeight - 14, Math.max(50, ot + (e.clientY - sy))) + "px";
-      group.style.right = "auto";
-      group.style.bottom = "auto";
-    });
-    handle.addEventListener("pointerup", function () { drag = false; clampFloatingPttIntoViewport(); });
+    clampFloatingPttIntoViewport();
     window.addEventListener("resize", clampFloatingPttIntoViewport);
-    window.addEventListener("orientationchange", function () { setTimeout(clampFloatingPttIntoViewport, 120); });
+    window.addEventListener("orientationchange", function () {
+      setTimeout(function () {
+        clampFloatingPttIntoViewport();
+        if (window.azGeoMap && typeof window.azGeoMap.resize === "function") window.azGeoMap.resize();
+        renderEdgeIndicators();
+      }, 180);
+    });
 
     function syncKbLandscape() {
       const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
@@ -25367,16 +25766,23 @@ if (document.readyState === "loading") {
   }
   renderOnlineMembersList();
 
-  // Travar Mapa
+  // Travar Mapa (ícone de cadeado abaixo do 2D/3D)
   onClick("azLockMapDrawBtn", function () {
     tac.mapLocked = !tac.mapLocked;
     this.classList.toggle("is-locked", tac.mapLocked);
-    this.textContent = tac.mapLocked ? "MAPA TRAVADO" : "TRAVAR MAPA";
+    this.title = tac.mapLocked ? "Mapa travado (toque para destravar)" : "Travar / Destravar movimento do mapa";
+    const ico = document.getElementById("azLockMapIcon");
+    if (ico) {
+      ico.innerHTML = tac.mapLocked
+        ? '<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>'
+        : '<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/>';
+    }
     tac.maps.forEach(function (m) {
       ["dragPan", "scrollZoom", "doubleClickZoom", "touchZoomRotate", "boxZoom"].forEach(function (h) {
         if (m[h]) (tac.mapLocked || (h === "dragPan" && (tac.drawActive || tac.eraserActive))) ? m[h].disable() : m[h].enable();
       });
     });
+    showToast(tac.mapLocked ? "Mapa travado." : "Mapa destravado.");
   });
 
   // PTT + Testar Som + Voz de Recepção
@@ -25401,6 +25807,16 @@ if (document.readyState === "loading") {
     document.getElementById("azMapSearchOverlay").classList.remove("is-open");
     document.getElementById("azHudSearchToggleBtn").classList.remove("is-active");
   });
+  const hudAddrInpEl = document.getElementById("azMapAddressInput");
+  if (hudAddrInpEl) {
+    hudAddrInpEl.addEventListener("keydown", function (ev) {
+      if (ev.key === "Enter") {
+        ev.preventDefault();
+        const btn = document.getElementById("azRunAddressSearchBtn");
+        if (btn) btn.click();
+      }
+    });
+  }
   onClick("azRunAddressSearchBtn", async function () {
     const q = (document.getElementById("azMapAddressInput").value || "").trim();
     const list = document.getElementById("azAddressResultsList");
@@ -25415,12 +25831,97 @@ if (document.readyState === "loading") {
         return;
       }
     }
-    list.innerHTML = `<div style="font-size:9.5px;color:#C5A869;">Buscando...</div>`;
+    list.innerHTML = `<div style="font-size:9.5px;color:#C5A869;">Buscando na RMBH/MG...</div>`;
+    const refLat = tac.myPos ? tac.myPos.lat : -19.9191;
+    const refLng = tac.myPos ? tac.myPos.lng : -43.9386;
+    const qNorm = q.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    const fetchJsonTimeout = async (url, opts) => {
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), 5500);
+      try {
+        const r = await fetch(url, Object.assign({}, opts || {}, { signal: ctrl.signal }));
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return await r.json();
+      } finally {
+        clearTimeout(t);
+      }
+    };
     try {
-      const res = await (await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&countrycodes=br&limit=5`)).json();
-      list.innerHTML = res.map(function (it, i) {
+      const fullQ = qNorm.includes("minas gerais") || qNorm.includes(" mg") ? q : `${q}, Minas Gerais, Brasil`;
+      const pUrl = `https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&lat=${refLat.toFixed(4)}&lon=${refLng.toFixed(4)}&limit=6`;
+      const nUrl = `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=6&countrycodes=br&viewbox=-44.55,-19.45,-43.45,-20.30&q=${encodeURIComponent(fullQ)}`;
+      const settled = await Promise.allSettled([
+        fetchJsonTimeout(pUrl),
+        fetchJsonTimeout(nUrl, { headers: { "Accept-Language": "pt-BR" } })
+      ]);
+      const items = [];
+      const pushLocalMatch = (name, sub, la, lo, tag) => {
+        if (!name || isNaN(la) || isNaN(lo)) return;
+        const nName = String(name).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+        const nSub = String(sub || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+        if (nName.includes(qNorm) || nSub.includes(qNorm)) {
+          items.push({
+            lat: String(la),
+            lon: String(lo),
+            shortName: name,
+            display_name: `[${tag}] ${name}${sub ? " — " + sub : ""}`
+          });
+        }
+      };
+      if (typeof window.azimuteGetGeoDatasets === "function") {
+        const ds = window.azimuteGetGeoDatasets() || {};
+        const tagMap = { unidades: "Unidade", hospitais: "Hospital", bscs: "BSC", deplans: "Deplan" };
+        Object.keys(tagMap).forEach((cat) => {
+          (ds[cat] || []).forEach((p) => pushLocalMatch(p.name, p.subtitle, p.lat, p.lng, tagMap[cat]));
+        });
+      }
+      if (typeof AZIMUTE_HOSPITAIS_REFERENCIA_PRINCIPAIS !== "undefined" && Array.isArray(AZIMUTE_HOSPITAIS_REFERENCIA_PRINCIPAIS)) {
+        AZIMUTE_HOSPITAIS_REFERENCIA_PRINCIPAIS.forEach((h) => pushLocalMatch(h.nome, h.endereco, h.lat, h.lon, "Hospital"));
+      }
+      if (typeof AZIMUTE_UNIDADES_POLICIAIS !== "undefined" && Array.isArray(AZIMUTE_UNIDADES_POLICIAIS)) {
+        AZIMUTE_UNIDADES_POLICIAIS.forEach((u) => pushLocalMatch(u.nome, u.endereco, u.lat, u.lon, u.tipo === "bsc" ? "BSC" : "Unidade"));
+      }
+      if (settled[0].status === "fulfilled" && settled[0].value && Array.isArray(settled[0].value.features)) {
+        settled[0].value.features.forEach(function (f) {
+          const pr = f.properties || {};
+          const cc = String(pr.countrycode || "").toUpperCase();
+          const st = String(pr.state || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+          if (cc && cc !== "BR") return;
+          if (st && !st.includes("minas gerais") && st !== "mg") return;
+          const coords = (f.geometry && f.geometry.coordinates) || [];
+          const lon = parseFloat(coords[0]), lat = parseFloat(coords[1]);
+          if (isNaN(lat) || isNaN(lon)) return;
+          const head = [pr.street || pr.name, pr.housenumber].filter(Boolean).join(", ");
+          const tail = [pr.district || pr.suburb || pr.locality, pr.city || pr.county].filter(Boolean).join(" - ");
+          items.push({ lat: String(lat), lon: String(lon), shortName: head || q, display_name: [head, tail].filter(Boolean).join(", ") || q });
+        });
+      }
+      if (settled[1].status === "fulfilled" && Array.isArray(settled[1].value)) {
+        settled[1].value.forEach(function (it) {
+          items.push({ lat: it.lat, lon: it.lon, shortName: (it.display_name || "ALVO").split(",")[0], display_name: it.display_name });
+        });
+      }
+      const seen = new Set();
+      const res = [];
+      items.forEach(function (it) {
+        const la = parseFloat(it.lat), lo = parseFloat(it.lon);
+        if (isNaN(la) || isNaN(lo)) return;
+        const k = la.toFixed(3) + "|" + lo.toFixed(3);
+        if (seen.has(k)) return;
+        seen.add(k);
+        const db = calcDistAndBearing(refLat, refLng, la, lo);
+        it._dist = db.dist;
+        res.push(it);
+      });
+      res.sort(function (a, b) { return a._dist - b._dist; });
+      if (!res.length) {
+        list.innerHTML = `<div style="font-size:9.5px;color:#9E9A8F;">Nenhum endereço encontrado na RMBH/MG.</div>`;
+        return;
+      }
+      list.innerHTML = res.slice(0, 6).map(function (it, i) {
+        const eta = tac.myPos ? ` (${formatDistance(it._dist)} • ~${Math.max(1, Math.round((it._dist / 1000) * 2.2))} min)` : "";
         return `<div style="display:flex;gap:4px;align-items:stretch;">
-          <button type="button" class="az-search-res-item" data-sr="${i}" style="flex:1;">${it.display_name}</button>
+          <button type="button" class="az-search-res-item" data-sr="${i}" style="flex:1;">${it.display_name}${eta}</button>
           <button type="button" class="az-atak-tool-btn is-active" data-sr-bh="${i}" style="height:auto !important;padding:0 8px !important;border-color:#F97316 !important;color:#F97316 !important;" title="Travar Cão de Caça">ALVO</button>
         </div>`;
       }).join("");
@@ -25436,7 +25937,7 @@ if (document.readyState === "loading") {
         b.addEventListener("click", function () {
           const it = res[parseInt(b.getAttribute("data-sr-bh"), 10)];
           if (it) {
-            const shortName = (it.display_name || "ALVO").split(",")[0];
+            const shortName = it.shortName || (it.display_name || "ALVO").split(",")[0];
             setBloodhoundTarget({ type: "point", id: "bh_" + Date.now(), label: shortName.toUpperCase(), lat: parseFloat(it.lat), lng: parseFloat(it.lon) });
             const m = getActiveMap();
             if (m) m.flyTo({ center: [parseFloat(it.lon), parseFloat(it.lat)], zoom: 16, essential: true });
@@ -25695,21 +26196,53 @@ if (document.readyState === "loading") {
     showToast(`Perímetro de ${tac.circleRadius}m fixado.`);
   });
 
-  // Ajuste Fino Quadrado (8 Direções incluindo Diagonais)
+  // Ajuste Fino Quadrado (8 Direções relativas à tela atual do mapa)
   document.querySelectorAll("[data-remote-dir]").forEach(function (btn) {
     btn.addEventListener("click", function (e) {
       e.preventDefault(); e.stopPropagation();
       if (!tac.fineTunePin) return;
-      const m = tac.fineTuneStepM || 2;
-      const dLat = m / 111320;
-      const dLng = m / (111320 * Math.max(0.2, Math.cos((tac.fineTunePin.lat * Math.PI) / 180)));
-      const dir = btn.getAttribute("data-remote-dir");
-      if (dir.includes("N")) tac.fineTunePin.lat += dLat;
-      if (dir.includes("S")) tac.fineTunePin.lat -= dLat;
-      if (dir.includes("E")) tac.fineTunePin.lng += dLng;
-      if (dir.includes("W")) tac.fineTunePin.lng -= dLng;
-      tac.fineTunePin.markers.forEach(function (it) { if (it.marker) it.marker.setLngLat([tac.fineTunePin.lng, tac.fineTunePin.lat]); });
+      const stepMeters = tac.fineTuneStepM || 2;
+      const dir = btn.getAttribute("data-remote-dir") || "";
+      let dirX = 0, dirY = 0;
+      if (dir.includes("E")) dirX += 1;
+      if (dir.includes("W")) dirX -= 1;
+      if (dir.includes("N")) dirY += 1;
+      if (dir.includes("S")) dirY -= 1;
+      const norm = Math.hypot(dirX, dirY) || 1;
+      const ux = dirX / norm;
+      const uy = dirY / norm;
+
+      const pin = tac.fineTunePin;
+      const activeM = getActiveMap();
+      let moved = false;
+      if (activeM && typeof activeM.project === "function" && typeof activeM.unproject === "function") {
+        try {
+          const pt = activeM.project([pin.lng, pin.lat]);
+          const gRight = activeM.unproject([pt.x + 24, pt.y]);
+          const gUp = activeM.unproject([pt.x, pt.y - 24]);
+          const rMeters = calcDistAndBearing(pin.lat, pin.lng, gRight.lat, gRight.lng).dist;
+          const uMeters = calcDistAndBearing(pin.lat, pin.lng, gUp.lat, gUp.lng).dist;
+          if (rMeters > 0.01 && uMeters > 0.01) {
+            const sr = (ux * stepMeters) / rMeters;
+            const su = (uy * stepMeters) / uMeters;
+            pin.lat += sr * (gRight.lat - pin.lat) + su * (gUp.lat - pin.lat);
+            pin.lng += sr * (gRight.lng - pin.lng) + su * (gUp.lng - pin.lng);
+            moved = true;
+          }
+        } catch (_) {}
+      }
+      if (!moved) {
+        const dLat = (stepMeters * uy) / 111320;
+        const dLng = (stepMeters * ux) / (111320 * Math.max(0.2, Math.cos((pin.lat * Math.PI) / 180)));
+        pin.lat += dLat;
+        pin.lng += dLng;
+      }
+      pin.markers.forEach(function (it) { if (it.marker) it.marker.setLngLat([pin.lng, pin.lat]); });
       updateRemoteCoordReadout();
+      if (tac.bloodhoundTarget && tac.bloodhoundTarget.type === "pin" && tac.bloodhoundTarget.id === pin.id) {
+        updateBloodhoundVector();
+      }
+      renderEdgeIndicators();
     });
   });
   onClick("azRemoteStepBtn", function (e) {
@@ -25730,7 +26263,7 @@ if (document.readyState === "loading") {
       localStorage.setItem("az_tac_wheel_items", JSON.stringify(checks));
     }
     document.getElementById("azWheelConfigModal").classList.remove("is-open");
-    showToast("Opções da roda atualizadas.");
+    showToast("Opções atualizadas.");
   });
 
   // Modal Pin / Editar
@@ -25941,6 +26474,15 @@ if (document.readyState === "loading") {
     const expanded = document.body.classList.toggle("az-map-expanded");
     this.classList.toggle("is-active", expanded);
     this.title = expanded ? "Sair da Tela Cheia" : "Expandir Mapa";
+    const topShell = document.getElementById("azTopHudShell");
+    const topSlot = document.getElementById("azTopHudSlot");
+    if (topShell) {
+      if (expanded) {
+        if (topShell.parentElement !== document.body) document.body.appendChild(topShell);
+      } else if (topSlot && topShell.parentElement !== topSlot) {
+        topSlot.appendChild(topShell);
+      }
+    }
     const doResize = function () {
       if (window.azGeoMap && typeof window.azGeoMap.resize === "function") window.azGeoMap.resize();
       renderEdgeIndicators();
