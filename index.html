@@ -15,6 +15,37 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="AZIMUTE">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <style id="azimuteCriticalStyle">
+        html, body {
+            background-color: #0D0D0D;
+            color: #FFFFFF;
+        }
+        svg {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        html.az-fouc-pending body {
+            opacity: 0;
+        }
+        html.az-fouc-ready body {
+            opacity: 1;
+            transition: opacity 0.12s ease-out;
+        }
+    </style>
+    <script>
+        (function () {
+            var root = document.documentElement;
+            root.classList.add('az-fouc-pending');
+            var revealed = false;
+            window.__azimuteRevealUI = function () {
+                if (revealed) return;
+                revealed = true;
+                root.classList.remove('az-fouc-pending');
+                root.classList.add('az-fouc-ready');
+            };
+            setTimeout(window.__azimuteRevealUI, 1200);
+        })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://unpkg.com">
@@ -54,7 +85,7 @@
             }
         }
     </script>
-    <script defer src="https://cdn.tailwindcss.com" onload="window.tailwind.config = window.azimuteTailwindConfig"></script>
+    <script defer src="https://cdn.tailwindcss.com" onload="window.tailwind.config = window.azimuteTailwindConfig; requestAnimationFrame(function(){ window.__azimuteRevealUI && window.__azimuteRevealUI(); });" onerror="window.__azimuteRevealUI && window.__azimuteRevealUI();"></script>
     <style>
         html, body {
             background-color: #0D0D0D;
@@ -556,11 +587,11 @@
                         <i data-lucide="lock"class="absolute left-3.5 top-3 w-4 h-4 text-gray-400"></i>
                         <input type="password"id="loginPass"placeholder="•••••••"class="w-full pl-10 pr-10 py-2.5 bg-pmmg-dark text-sm text-white rounded-xl border border-pmmg-border focus:outline-none focus:border-pmmg-khaki font-mono uppercase"autocomplete="current-password">
                         <button type="button"id="btnTogglePassEye"onclick="window.toggleAzimutePasswordEye()"class="absolute right-3 top-2.5 text-gray-400 hover:text-pmmg-khaki p-0.5 transition-colors"title="Mostrar / Ocultar senha">
-                            <svg id="svgEyeOpen"xmlns="http://www.w3.org/2000/svg"viewBox="0 0 24 24"fill="none"stroke="currentColor"stroke-width="2"stroke-linecap="round"stroke-linejoin="round"class="w-4 h-4">
+                            <svg id="svgEyeOpen" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4">
                                 <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/>
-                                <circle cx="12"cy="12"r="3"/>
+                                <circle cx="12" cy="12" r="3"/>
                             </svg>
-                            <svg id="svgEyeClosed"xmlns="http://www.w3.org/2000/svg"viewBox="0 0 24 24"fill="none"stroke="currentColor"stroke-width="2"stroke-linecap="round"stroke-linejoin="round"class="w-4 h-4 hidden">
+                            <svg id="svgEyeClosed" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 hidden">
                                 <path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"/>
                                 <path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"/>
                                 <path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"/>
@@ -728,7 +759,7 @@
 
                     <!-- 1. Botão Cruz Vermelha (Rota Hospital João XXIII) -->
                     <a id="statusBarBtnHosp" href="https://www.google.com/maps/dir/?api=1&destination=-19.9242,-43.9317&travelmode=driving" target="_blank" class="w-8 h-8 rounded-lg bg-pmmg-black hover:bg-pmmg-card border border-pmmg-gold/50 flex items-center justify-center shrink-0 shadow transition-all active:scale-95" title="Rota rápida para o Hospital João XXIII (Lat -19.9242, Lng -43.9317)">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 text-red-500 shrink-0">
+                        <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 text-red-500 shrink-0">
                             <path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6V3z"/>
                         </svg>
                     </a>
@@ -902,13 +933,13 @@
 
             <!-- 3. APH/SAÚDE -->
             <button type="button" onclick="showView('saude')" id="pcsb-btn-saude" class="pc-sb-item w-full px-3 py-2.5 rounded-xl bg-pmmg-dark hover:bg-pmmg-card text-gray-400 border border-pmmg-border font-bold flex items-center gap-3 transition-all" title="APH">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 shrink-0"><path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6V3z"/></svg>
+                <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 shrink-0"><path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6V3z"/></svg>
                 <span class="pc-sb-label truncate">APH</span>
             </button>
 
             <!-- 4. Drones / RPAS -->
             <button type="button" onclick="showView('rpas')" id="pcsb-btn-rpas" class="pc-sb-item w-full px-3 py-2.5 rounded-xl bg-pmmg-dark hover:bg-pmmg-card text-gray-400 border border-pmmg-border font-bold flex items-center gap-3 transition-all" title="Drones / RPAS">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 shrink-0">
+                <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 shrink-0">
                     <rect x="9" y="9" width="6" height="6" rx="1"/>
                     <path d="M9 9 5.5 5.5"/><path d="M15 9l3.5-3.5"/><path d="M9 15l-3.5 3.5"/><path d="M15 15l3.5 3.5"/>
                     <circle cx="4.5" cy="4.5" r="2.5"/><circle cx="19.5" cy="4.5" r="2.5"/><circle cx="4.5" cy="19.5" r="2.5"/><circle cx="19.5" cy="19.5" r="2.5"/>
@@ -1071,7 +1102,7 @@
                             <i data-lucide="radar" class="w-3.5 h-3.5 text-pmmg-gold"></i>APOIO MAIS PRÓXIMO (GPS)
                         </span>
                         <a id="gridBtnHospRoute" href="https://www.google.com/maps/dir/?api=1&destination=-19.9322,-44.0758&travelmode=driving" target="_blank" class="px-2 py-1 rounded bg-[#161616] hover:bg-pmmg-cardHover border border-[#C5A869]/50 flex items-center gap-1.5 text-[10px] font-bold text-gray-200 transition-all active:scale-95 shrink-0" title="Rota para o Hospital Mais Próximo">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3.5 h-3.5 text-red-500 shrink-0">
+                            <svg width="14" height="14" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3.5 h-3.5 text-red-500 shrink-0">
                                 <path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6V3z"/>
                             </svg>
                             <span id="gridSupportHospName" class="truncate max-w-[130px]">Rota Hospitalar</span>
@@ -6263,7 +6294,7 @@
             <div class="flex items-center justify-between gap-2 px-1">
                 <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki">APH / Saúde</span>
                 <button type="button" onclick="openPrioritySosModal()" id="btnModoPrioridadeSaude" class="px-4 py-2 bg-[#161616] hover:bg-pmmg-cardHover active:scale-95 text-white border-2 border-red-500 font-extrabold rounded-xl text-xs flex items-center gap-2 shadow-lg uppercase tracking-wider transition-all cursor-pointer">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 text-red-500 shrink-0">
+                    <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 text-red-500 shrink-0">
                         <path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6V3z"/>
                     </svg>
                     <span>MODO PRIORIDADE</span>
@@ -6306,7 +6337,7 @@
                 <button type="button" onclick="toggleSaudeSmartHospitalBox()" id="btnToggleSaudeSmartHospital" class="w-full p-4 sm:p-5 flex items-center justify-between gap-3 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
                     <div class="flex items-center gap-2.5">
                         <div class="p-2 rounded-xl bg-[#0D0D0D] text-red-500 border border-red-500/50 shrink-0">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-red-500">
+                            <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-red-500">
                                 <path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6V3z"/>
                             </svg>
                         </div>
@@ -6331,7 +6362,7 @@
                     <div class="space-y-2">
                         <div class="flex flex-wrap items-center justify-between gap-2">
                             <span class="text-xs font-extrabold uppercase tracking-widest text-pmmg-khaki flex items-center gap-1.5">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3.5 h-3.5 text-red-500 shrink-0">
+                                <svg width="14" height="14" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3.5 h-3.5 text-red-500 shrink-0">
                                     <path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6V3z"/>
                                 </svg>
                                 HOSPITAL INDICADO:
