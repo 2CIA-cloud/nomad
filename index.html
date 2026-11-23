@@ -2771,7 +2771,7 @@
 
     <div class="az-geo-actions">
       <button type="button" id="azGeoIncursionBtn" class="az-geo-btn incursion">Incursão</button>
-      <button type="button" id="azGeoLayersToggleBtn" class="az-geo-btn active">Filtros</button>
+      <button type="button" id="azGeoLayersToggleBtn" class="az-geo-btn">Filtros</button>
       <button type="button" id="azGeoAddPinBtn" class="az-geo-btn subtle">+ Alfinete</button>
       <button type="button" id="azGeoClearBtn" class="az-geo-btn subtle">Limpar</button>
       <button type="button" id="azGeoMunToggleBtn" class="az-geo-btn subtle">Municípios</button>
@@ -2784,7 +2784,7 @@
       </button>
     </div>
 
-    <div id="azGeoLayersBox" class="az-geo-collapsible is-open">
+    <div id="azGeoLayersBox" class="az-geo-collapsible">
       <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:6px;">
         <div class="az-geo-group" id="azGeoLayerChips">
           <button type="button" class="az-geo-layer-chip is-on" data-layer="unidades">
@@ -15183,22 +15183,41 @@
             updateFullscreenButtonsUi();
         });
 
+        let _azNativeFsActive = false;
         window.toggleAzimuteFullscreen = function(ev) {
             if (ev && typeof ev.stopPropagation === 'function') {
                 ev.stopPropagation();
             }
             azimuteImmersiveMode = !azimuteImmersiveMode;
-            if (!azimuteImmersiveMode && (document.fullscreenElement || document.webkitFullscreenElement)) {
-                try {
-                    if (document.exitFullscreen) document.exitFullscreen();
+            try {
+                if (azimuteImmersiveMode) {
+                    const el = document.documentElement;
+                    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+                        if (el.requestFullscreen) el.requestFullscreen().then(() => { _azNativeFsActive = true; }).catch(() => {});
+                        else if (el.webkitRequestFullscreen) { _azNativeFsActive = true; el.webkitRequestFullscreen(); }
+                    }
+                } else if (document.fullscreenElement || document.webkitFullscreenElement) {
+                    _azNativeFsActive = false;
+                    if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
                     else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
-                } catch (e) {}
-            }
+                }
+            } catch (e) {}
             updateFullscreenButtonsUi();
         };
 
-        document.addEventListener('fullscreenchange', updateFullscreenButtonsUi);
-        document.addEventListener('webkitfullscreenchange', updateFullscreenButtonsUi);
+        function handleNativeFullscreenChange() {
+            const hasNative = !!(document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement);
+            if (hasNative) {
+                _azNativeFsActive = true;
+                azimuteImmersiveMode = true;
+            } else if (_azNativeFsActive) {
+                _azNativeFsActive = false;
+                azimuteImmersiveMode = false;
+            }
+            updateFullscreenButtonsUi();
+        }
+        document.addEventListener('fullscreenchange', handleNativeFullscreenChange);
+        document.addEventListener('webkitfullscreenchange', handleNativeFullscreenChange);
 
         window.toggleGpsClosestHospitalBox = function(forceOpen = null) {
             const box = document.getElementById('gpsClosestHospitalExpandableBody');
@@ -21632,28 +21651,58 @@ if (document.readyState === "loading") {
     visibility: hidden !important;
   }
 
-  /* 2. Tela Cheia 100% via CSS (sem requestFullscreen) + 2D/3D visível nos dois modos */
+  /* 2. Tela Cheia do Mapa 100% isolada (sem vazar cards/ORBE/filtros por cima) */
   body.az-map-expanded header.sticky,
-  body.az-map-expanded #mobileBottomNav {
+  body.az-map-expanded #mobileBottomNav,
+  body.az-map-expanded #azimuteLiveGpsHud,
+  body.az-map-expanded #azGeoDrawerToggle,
+  body.az-map-expanded .az-geo-actions,
+  body.az-map-expanded #azGeoRouteBox,
+  body.az-map-expanded #azGeoLayersBox,
+  body.az-map-expanded #azGeoMunBox,
+  body.az-map-expanded #azGeoCfgBox,
+  body.az-map-expanded #azGeoStatus {
     display: none !important;
+  }
+  body.az-map-expanded #view-gps,
+  body.az-map-expanded #az-geo-module,
+  body.az-map-expanded #azGeoDrawerBody {
+    position: static !important;
+    z-index: auto !important;
+    overflow: visible !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+  }
+  body.az-map-expanded #azGeoStage {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100dvh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    border-radius: 0 !important;
+    z-index: 99980 !important;
+  }
+  body.az-map-expanded #azGeoMap {
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    border-radius: 0 !important;
+    z-index: 1 !important;
+    display: block !important;
+    visibility: visible !important;
   }
   body.az-map-expanded #azGeoLeftOverlayCol {
     position: fixed !important;
     left: 10px !important;
     top: calc(52px + env(safe-area-inset-top, 0px)) !important;
     z-index: 100044 !important;
-  }
-  body.az-map-expanded #azGeoLayersBox.is-open {
-    position: fixed !important;
-    left: 52px !important;
-    top: calc(120px + env(safe-area-inset-top, 0px)) !important;
-    z-index: 100046 !important;
-    max-width: calc(100vw - 110px) !important;
-    background: rgba(13, 13, 13, 0.96) !important;
-    border: 1.5px solid #C5A869 !important;
-    border-radius: 10px !important;
-    padding: 8px !important;
-    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.9) !important;
   }
   body.az-map-expanded #azGeoLockBadge {
     position: fixed !important;
@@ -21675,19 +21724,6 @@ if (document.readyState === "loading") {
     right: 10px !important;
     z-index: 100044 !important;
     display: flex !important;
-  }
-  body.az-map-expanded #azGeoMap {
-    position: fixed !important;
-    inset: 0 !important;
-    width: 100vw !important;
-    height: 100dvh !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    border: none !important;
-    border-radius: 0 !important;
-    z-index: 99980 !important;
-    display: block !important;
-    visibility: visible !important;
   }
   @media (orientation: landscape) and (max-height: 520px) {
     body.az-map-fullscreen:not(.az-map-expanded) #azGeoStage {
@@ -21797,7 +21833,7 @@ if (document.readyState === "loading") {
       overflow-y: auto !important;
     }
   }
-  body.az-map-fullscreen #azGeoStage {
+  body.az-map-fullscreen:not(.az-map-expanded) #azGeoStage {
     height: 375px;
   }
 
