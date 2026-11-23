@@ -1,0 +1,396 @@
+/* === [ARQUIVO: css/tema-azimute.css] === */
+/* === [SECAO: SCROLLBAR E CARDS BASE] === */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #0D0D0D; }
+::-webkit-scrollbar-thumb { background: #2e2b24; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #C5A869; }
+
+.tactical-border { border: 1px solid rgba(197, 168, 105, 0.25); }
+.tactical-card { transition: border-color 0.18s ease, box-shadow 0.18s ease; }
+.tactical-card:hover { border-color: rgba(197, 168, 105, 0.6); box-shadow: 0 4px 18px -6px rgba(0, 0, 0, 0.75); }
+
+/* === [SECAO: ANIMACOES DE TELA LEVES] === */
+@keyframes appScreenSlide {
+    0% { opacity: 0; transform: translateY(6px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+.app-screen-animate {
+    animation: appScreenSlide 0.18s ease-out forwards;
+}
+
+/* === [SECAO: MODO APP] === */
+body.mode-app {
+    padding-bottom: 5.5rem;
+}
+body.mode-app .app-main-container {
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+}
+body.mode-app #topNavBar {
+    display: none !important;
+}
+body.mode-app .subtabs-bar {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 0.4rem !important;
+    min-width: 0 !important;
+    white-space: normal !important;
+}
+body.mode-app .subtabs-bar > button {
+    width: 100%;
+    justify-content: flex-start;
+    text-align: left;
+    line-height: 1.15;
+    padding: 0.55rem 0.65rem;
+    font-size: 11px;
+}
+
+/* === [SECAO: MODO GRID 3 COLUNAS] === */
+#gridModeTacticalCockpit {
+    display: none;
+}
+body.mode-grid {
+    padding-bottom: 0.5rem !important;
+    overflow-x: hidden;
+}
+body.mode-grid header.sticky {
+    position: relative !important;
+    top: auto !important;
+    box-shadow: none !important;
+}
+body.mode-grid header.sticky > div:first-child {
+    padding-top: 0.25rem !important;
+    padding-bottom: 0.25rem !important;
+}
+body.mode-grid #operationalStatusBar,
+body.mode-grid #topNavBar {
+    display: none !important;
+}
+body.mode-grid #mobileBottomNav {
+    position: relative !important;
+    bottom: auto !important;
+    margin-top: 0.35rem;
+    padding-top: 0.25rem !important;
+    padding-bottom: 0.25rem !important;
+    background: #161616 !important;
+    border-top: 1px solid rgba(197, 168, 105, 0.3) !important;
+}
+body.mode-grid #mobileBottomNav > div {
+    max-width: 100% !important;
+}
+body.mode-grid #mobileBottomNav button {
+    flex-direction: row !important;
+    gap: 0.35rem !important;
+    padding: 0.3rem 0.5rem !important;
+    font-size: 10px !important;
+}
+body.mode-grid #mobileBottomNav button i,
+body.mode-grid #mobileBottomNav button svg {
+    margin-bottom: 0 !important;
+    width: 13px !important;
+    height: 13px !important;
+}
+body.mode-grid .app-main-container {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding-top: 0.35rem !important;
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+    margin-left: auto;
+    margin-right: auto;
+}
+body.mode-grid #gridModeTacticalCockpit.grid-cockpit-active:not(.hidden) {
+    display: grid !important;
+    grid-template-columns: minmax(0, 2.3fr) minmax(0, 4.7fr) minmax(0, 5fr) !important;
+    gap: 0.5rem !important;
+    align-items: stretch !important;
+    width: 100% !important;
+    margin-bottom: 0.35rem !important;
+}
+body.mode-grid #gridModeTacticalCockpit.grid-cockpit-active:not(.hidden) > div {
+    min-width: 0 !important;
+    overflow: hidden !important;
+}
+body.mode-grid #gridModeTacticalCockpit:not(.grid-cockpit-active),
+body.mode-grid #gridModeTacticalCockpit.hidden {
+    display: none !important;
+}
+body.mode-grid main#mainContainer > section#view-home.azimute-active-view > #homeNearestSupportSection,
+body.mode-grid main#mainContainer > section#view-home.azimute-active-view > #homeQuickAccessSection > div:first-child,
+body.mode-grid main#mainContainer > section#view-home.azimute-active-view > #homeQuickAccessSection > #homeQuickAccessGrid {
+    display: none !important;
+}
+body.mode-grid .subtabs-bar {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 0.35rem !important;
+    min-width: 0 !important;
+    white-space: normal !important;
+}
+
+/* === [SECAO: CABECALHO E MODO PC SIDEBAR] === */
+header.sticky {
+    z-index: 60 !important;
+}
+#btn-mode-app, #btn-mode-grid, #btn-mode-web, #btnHeaderFullscreen {
+    position: relative;
+    z-index: 70 !important;
+    pointer-events: auto !important;
+    cursor: pointer !important;
+}
+#pcSidebar, #btnFloatingOpenPcSidebar {
+    display: none;
+}
+body.mode-web {
+    padding-bottom: 2rem !important;
+}
+body.mode-web #topNavBar,
+body.mode-web #mobileBottomNav {
+    display: none !important;
+}
+body.mode-web #pcSidebar {
+    display: flex !important;
+    flex-direction: column;
+    position: fixed;
+    top: 86px;
+    left: 0;
+    bottom: 0;
+    width: 265px;
+    z-index: 45;
+    background: #161616;
+    border-right: 1px solid rgba(197, 168, 105, 0.35);
+    box-shadow: 6px 0 24px -4px rgba(0, 0, 0, 0.75);
+    transition: width 0.18s ease, transform 0.18s ease;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+body.mode-web.pc-sidebar-collapsed #pcSidebar {
+    width: 68px;
+}
+body.mode-web.pc-sidebar-collapsed #pcSidebar .pc-sb-label,
+body.mode-web.pc-sidebar-collapsed #pcSidebar .pc-sb-sub,
+body.mode-web.pc-sidebar-collapsed #pcSidebar .pc-sb-chevron,
+body.mode-web.pc-sidebar-collapsed #pcSidebar .pc-sb-footer-text,
+body.mode-web.pc-sidebar-collapsed #pcSidebar #btnClosePcSidebarFull {
+    display: none !important;
+}
+body.mode-web.pc-sidebar-collapsed #pcSidebar .pc-sb-item {
+    justify-content: center !important;
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+}
+body.mode-web.pc-sidebar-closed #pcSidebar {
+    display: none !important;
+}
+body.mode-web.pc-sidebar-closed #btnFloatingOpenPcSidebar {
+    display: flex !important;
+}
+body.mode-web .app-main-container {
+    margin-left: 265px !important;
+    max-width: calc(100% - 265px) !important;
+    width: calc(100% - 265px) !important;
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+    transition: margin-left 0.18s ease, max-width 0.18s ease, width 0.18s ease;
+}
+body.mode-web.pc-sidebar-collapsed .app-main-container {
+    margin-left: 68px !important;
+    max-width: calc(100% - 68px) !important;
+    width: calc(100% - 68px) !important;
+}
+body.mode-web.pc-sidebar-closed .app-main-container {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    max-width: 1280px !important;
+    width: 100% !important;
+}
+@media (orientation: landscape) and (max-height: 600px) {
+    header.sticky {
+        position: relative !important;
+    }
+}
+
+/* === [SECAO: ISOLAMENTO DE ABAS E RODAPE] === */
+main#mainContainer > section[id^="view-"] {
+    display: none !important;
+}
+main#mainContainer > section[id^="view-"].azimute-active-view {
+    display: block !important;
+}
+.hidden:not(.sm\:inline):not(.lg\:flex) {
+    display: none !important;
+}
+#mobileBottomNav {
+    background: #0D0D0D !important;
+    border-top: 1px solid #26231c !important;
+}
+#mobileBottomNav button {
+    background: #161616 !important;
+    color: #8c8c8c !important;
+    border: 1px solid #242424 !important;
+    box-shadow: none !important;
+}
+#mobileBottomNav button i,
+#mobileBottomNav button svg {
+    color: #8c8c8c !important;
+    stroke-width: 1.75;
+}
+#mobileBottomNav button:hover:not(.bnav-active) {
+    background: #1a1a1a !important;
+    color: #b8b8b8 !important;
+    border: 1px solid #2e2e2e !important;
+}
+#mobileBottomNav button:hover:not(.bnav-active) i,
+#mobileBottomNav button:hover:not(.bnav-active) svg {
+    color: #b8b8b8 !important;
+}
+#mobileBottomNav button#bnav-saude:not(.bnav-active) {
+    border: 1px solid rgba(220, 38, 38, 0.38) !important;
+}
+#mobileBottomNav button.bnav-active {
+    background: #1b1915 !important;
+    color: #C5A869 !important;
+    border: 1px solid #C5A869 !important;
+    box-shadow: inset 0 0 0 1px rgba(197, 168, 105, 0.2) !important;
+}
+#mobileBottomNav button.bnav-active i,
+#mobileBottomNav button.bnav-active svg {
+    color: #C5A869 !important;
+}
+#fullscreenDateTimeBadge {
+    display: none;
+}
+body.is-fullscreen #fullscreenDateTimeBadge {
+    display: inline-flex !important;
+}
+
+/* === [SECAO: CAMPOS DE BUSCA E CONTRASTE] === */
+#globalSearch,
+#unidadesSearchInput,
+#rpm1SearchInput,
+#rpm2SearchInput,
+#rpm3SearchInput,
+#espSearchInput,
+#skeletonSearchInput,
+#internalSearch18,
+input[type="search"],
+input[id*="Search"],
+input[id*="search"] {
+    background-color: #161616 !important;
+    color: #FFFFFF !important;
+    -webkit-text-fill-color: #FFFFFF !important;
+    opacity: 1 !important;
+    caret-color: #C5A869 !important;
+    border-color: rgba(197, 168, 105, 0.55) !important;
+}
+#globalSearch::placeholder,
+#unidadesSearchInput::placeholder,
+#rpm1SearchInput::placeholder,
+#rpm2SearchInput::placeholder,
+#rpm3SearchInput::placeholder,
+#espSearchInput::placeholder,
+#skeletonSearchInput::placeholder,
+#internalSearch18::placeholder,
+input[type="search"]::placeholder,
+input[id*="Search"]::placeholder,
+input[id*="search"]::placeholder {
+    color: #E0E0E0 !important;
+    -webkit-text-fill-color: #E0E0E0 !important;
+    opacity: 1 !important;
+}
+#globalSearchDropdown,
+#unidadesSearchResultsDropdown,
+#rpm1SearchDropdown,
+#rpm2SearchDropdown,
+#rpm3SearchDropdown,
+#espSearchDropdown,
+#skeletonSearchDropdown,
+#internal18GlobalDropdown {
+    background-color: #161616 !important;
+    color: #FFFFFF !important;
+    opacity: 1 !important;
+    backdrop-filter: none !important;
+}
+#globalSearchDropdown h4,
+#globalSearchDropdown strong,
+#unidadesSearchResultsDropdown h4,
+#rpm1SearchDropdown h4,
+#rpm2SearchDropdown h4,
+#rpm3SearchDropdown h4,
+#espSearchDropdown h4,
+#skeletonSearchDropdown h4,
+#internal18GlobalDropdown h4 {
+    color: #FFFFFF !important;
+    opacity: 1 !important;
+}
+#globalSearchDropdown p,
+#globalSearchDropdown span {
+    opacity: 1 !important;
+}
+#unidadesSearchResultsDropdown p,
+#rpm1SearchDropdown p,
+#rpm2SearchDropdown p,
+#rpm3SearchDropdown p,
+#espSearchDropdown p,
+#skeletonSearchDropdown p,
+#internal18GlobalDropdown p {
+    color: #E5E7EB !important;
+    opacity: 1 !important;
+}
+
+/* === [SECAO: SAFE AREA PWA E CONTENCAO] === */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+body, main, section, div, article, aside, header, nav,
+h1, h2, h3, h4, h5, h6, p, span, strong, b, em, small, label, li, a, button, td, th,
+.bg-pmmg-card, .bg-pmmg-dark, .bg-pmmg-black, [class*="bg-[#161616]"], [class*="bg-[#0D0D0D]"],
+[class*="rounded-xl"], [class*="rounded-2xl"], [class*="rounded-lg"] {
+    word-wrap: break-word !important;
+    overflow-wrap: anywhere !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+}
+button, a, span, strong, p, h1, h2, h3, h4, h5, h6, label {
+    min-width: 0;
+}
+header#mainTopHeader {
+    padding-top: env(safe-area-inset-top, 0px);
+}
+main#mainContainer {
+    padding-top: calc(1rem + env(safe-area-inset-top, 0px));
+}
+body.has-home-header main#mainContainer {
+    padding-top: 0.75rem;
+}
+@media (display-mode: standalone) {
+    body { padding-top: max(12px, env(safe-area-inset-top, 12px)); }
+    header#mainTopHeader { padding-top: max(12px, env(safe-area-inset-top, 12px)) !important; }
+    main#mainContainer { padding-top: max(16px, calc(0.75rem + env(safe-area-inset-top, 12px))) !important; }
+    body.has-home-header main#mainContainer { padding-top: 0.75rem !important; }
+    main#mainContainer > section[id^="view-"] > div:first-child {
+        display: flex !important;
+        align-items: center !important;
+        min-height: 2rem !important;
+        padding-top: 0.35rem !important;
+        padding-bottom: 0.25rem !important;
+        overflow: visible !important;
+    }
+    main#mainContainer > section[id^="view-"] > div:first-child span {
+        display: inline-block !important;
+        line-height: 1.35 !important;
+        overflow: visible !important;
+    }
+}
+body.pwa-standalone header#mainTopHeader { padding-top: max(12px, env(safe-area-inset-top, 12px)) !important; }
+body.pwa-standalone main#mainContainer { padding-top: max(16px, calc(0.75rem + env(safe-area-inset-top, 12px))) !important; }
+body.pwa-standalone.has-home-header main#mainContainer { padding-top: 0.75rem !important; }
+body.pwa-standalone main#mainContainer > section[id^="view-"] > div:first-child {
+    display: flex !important;
+    align-items: center !important;
+    min-height: 2rem !important;
+    padding-top: 0.35rem !important;
+    padding-bottom: 0.25rem !important;
+    overflow: visible !important;
+}
