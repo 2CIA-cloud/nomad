@@ -9260,7 +9260,124 @@
 
             </div>
         </section>
+<!-- === [SECAO: PAINEL EQUIPE, PTT, MAPA E CAMERA ORBITAR] === -->
+        <section id="view-equipe-mapa" class="hidden space-y-4">
+            <div class="flex items-center justify-between px-1">
+                <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki">Equipe, PTT &amp; Mapa Tatico</span>
+                <button type="button" onclick="showView('home')" class="px-3 py-1 rounded-lg bg-[#161616] text-pmmg-khaki border border-[#C5A869]/50 text-xs font-bold cursor-pointer">
+                    Voltar
+                </button>
+            </div>
 
+            <!-- Sala de Equipe, Cor Unica (Sem Rosa) e PTT -->
+            <div class="bg-[#161616] border border-[#C5A869]/50 rounded-2xl p-4 space-y-3 shadow-xl">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+                    <div>
+                        <label class="text-[10px] uppercase font-bold text-pmmg-khaki block mb-1">Sala</label>
+                        <input type="text" id="teamRoomCodeInput" value="PMMG01" class="w-full px-3 py-2 rounded-xl bg-[#0D0D0D] text-white border border-pmmg-border font-mono uppercase">
+                    </div>
+                    <div>
+                        <label class="text-[10px] uppercase font-bold text-pmmg-khaki block mb-1">QRA</label>
+                        <input type="text" id="teamQraInput" placeholder="Ex: VTR-1801" class="w-full px-3 py-2 rounded-xl bg-[#0D0D0D] text-white border border-pmmg-border font-mono uppercase">
+                    </div>
+                    <div>
+                        <label class="text-[10px] uppercase font-bold text-pmmg-khaki block mb-1">Cor do Operador</label>
+                        <select id="teamColorInput" class="w-full px-3 py-2 rounded-xl bg-[#0D0D0D] text-white border border-pmmg-border font-mono">
+                            <option value="#C5A869">Caqui (#C5A869)</option>
+                            <option value="#38BDF8">Azul Ceu (#38BDF8)</option>
+                            <option value="#34D399">Verde (#34D399)</option>
+                            <option value="#F59E0B">Ambar (#F59E0B)</option>
+                            <option value="#A78BFA">Roxo (#A78BFA)</option>
+                            <option value="#F97316">Laranja (#F97316)</option>
+                            <option value="#22D3EE">Ciano (#22D3EE)</option>
+                            <option value="#EAB308">Dourado (#EAB308)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-2 text-xs">
+                    <button type="button" onclick="connectAzimuteTeamRoom()" class="px-3.5 py-2 rounded-xl bg-[#0D0D0D] text-pmmg-khaki border border-[#C5A869] font-extrabold uppercase cursor-pointer">
+                        Entrar na Sala
+                    </button>
+                    <button type="button" onclick="disconnectAzimuteTeamRoom()" class="px-3.5 py-2 rounded-xl bg-[#0D0D0D] text-gray-300 border border-pmmg-border font-bold uppercase cursor-pointer">
+                        Sair (Marcador Off)
+                    </button>
+                    <button type="button"
+                        onmousedown="startTeamPtt()" onmouseup="stopTeamPtt()" onmouseleave="stopTeamPtt()"
+                        ontouchstart="event.preventDefault(); startTeamPtt()" ontouchend="event.preventDefault(); stopTeamPtt()"
+                        class="ml-auto px-4 py-2 rounded-xl bg-[#0D0D0D] text-pmmg-khaki border-2 border-[#C5A869] font-extrabold uppercase tracking-wider cursor-pointer select-none">
+                        Segurar PTT (<span id="teamPttStatusLabel">PTT PRONTO</span>)
+                    </button>
+                </div>
+
+                <div id="teamOnlineMembersList" class="flex flex-wrap gap-2"></div>
+
+                <div id="teamChatFeed" class="space-y-2 max-h-52 overflow-y-auto"></div>
+
+                <div class="flex items-center gap-2">
+                    <input type="text" id="teamChatMessageInput" onkeydown="if(event.key==='Enter'){event.preventDefault();sendAzimuteTeamMessage();}" placeholder="Mensagem da equipe..." class="flex-1 min-w-0 px-3 py-2 rounded-xl bg-[#0D0D0D] text-xs text-white border border-pmmg-border">
+                    <button type="button" onclick="sendAzimuteTeamMessage()" class="px-3.5 py-2 rounded-xl bg-[#0D0D0D] text-pmmg-khaki border border-[#C5A869]/60 text-xs font-extrabold uppercase cursor-pointer shrink-0">
+                        Enviar
+                    </button>
+                </div>
+
+                <!-- Foto com Marcacao / Desenho -->
+                <div class="pt-2 border-t border-pmmg-border space-y-2 text-xs">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <span class="text-[10px] font-extrabold uppercase text-pmmg-khaki">Foto com Marcacao</span>
+                        <input type="file" accept="image/*" onchange="handleTeamPhotoAttachment(event)" class="text-[11px] text-gray-300">
+                    </div>
+                    <canvas id="teamTelestrationCanvas" class="w-full max-h-56 rounded-xl bg-[#0D0D0D] border border-pmmg-border"></canvas>
+                    <div class="flex justify-end">
+                        <button type="button" onclick="sendTelestratedPhotoToTeam()" class="px-3 py-1.5 rounded-xl bg-[#0D0D0D] text-pmmg-khaki border border-[#C5A869]/60 text-[11px] font-extrabold uppercase cursor-pointer">
+                            Enviar Foto Marcada
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mapa, Camadas, ORBE, ESPECTRO, Ferramentas Taticas e Camera ORBITAR -->
+            <div class="bg-[#161616] border border-[#C5A869]/50 rounded-2xl p-4 space-y-3 shadow-xl">
+                <div class="flex flex-wrap items-center gap-1.5 text-[11px]">
+                    <button type="button" onclick="setAzimuteMapLayer('dark')" class="px-2.5 py-1.5 rounded-lg bg-[#0D0D0D] text-pmmg-khaki border border-pmmg-border font-bold cursor-pointer">Escuro</button>
+                    <button type="button" onclick="setAzimuteMapLayer('light')" class="px-2.5 py-1.5 rounded-lg bg-[#0D0D0D] text-gray-200 border border-pmmg-border font-bold cursor-pointer">Claro</button>
+                    <button type="button" onclick="setAzimuteMapLayer('satellite')" class="px-2.5 py-1.5 rounded-lg bg-[#0D0D0D] text-gray-200 border border-pmmg-border font-bold cursor-pointer">Satelite</button>
+                    <button type="button" onclick="setAzimuteMapLayer('topo')" class="px-2.5 py-1.5 rounded-lg bg-[#0D0D0D] text-gray-200 border border-pmmg-border font-bold cursor-pointer">Relevo</button>
+                    <button type="button" onclick="toggleAzimuteMapLock()" class="px-2.5 py-1.5 rounded-lg bg-[#0D0D0D] text-pmmg-khaki border border-[#C5A869]/50 font-bold cursor-pointer">
+                        <span id="lblMapLockState">Mapa Livre</span>
+                    </button>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-1.5 text-[11px]">
+                    <button type="button" onclick="runOrbeRadarSweep()" class="px-2.5 py-1.5 rounded-lg bg-[#0D0D0D] text-pmmg-khaki border border-[#C5A869]/60 font-extrabold uppercase cursor-pointer">ORBE 360</button>
+                    <button type="button" onclick="analyzeEspectroElevation()" class="px-2.5 py-1.5 rounded-lg bg-[#0D0D0D] text-pmmg-khaki border border-[#C5A869]/60 font-extrabold uppercase cursor-pointer">ESPECTRO</button>
+                    <input type="text" id="tacticalPinLabelInput" placeholder="Rotulo do pino..." class="px-2.5 py-1.5 rounded-lg bg-[#0D0D0D] text-xs text-white border border-pmmg-border min-w-[120px] flex-1">
+                    <button type="button" onclick="addTacticalPin('', 'pin')" class="px-2.5 py-1.5 rounded-lg bg-[#0D0D0D] text-pmmg-khaki border border-[#C5A869] font-extrabold uppercase cursor-pointer">+ Pino</button>
+                    <button type="button" onclick="undoTacticalAction()" class="px-2.5 py-1.5 rounded-lg bg-[#0D0D0D] text-gray-300 border border-pmmg-border font-bold cursor-pointer">Desfazer</button>
+                    <button type="button" onclick="redoTacticalAction()" class="px-2.5 py-1.5 rounded-lg bg-[#0D0D0D] text-gray-300 border border-pmmg-border font-bold cursor-pointer">Refazer</button>
+                </div>
+
+                <!-- Camera ORBITAR sobre Endereco -->
+                <div class="bg-[#0D0D0D] border border-[#C5A869]/40 rounded-xl p-3 space-y-2 text-xs">
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="text-[10px] font-extrabold uppercase text-pmmg-khaki">Camera ORBITAR (Giro sobre Endereco)</span>
+                        <span id="orbitCameraStatusLabel" class="text-[10px] font-mono text-gray-400">ORBITAR PARADA</span>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <input type="text" id="orbitAddressInput" placeholder="Digite rua, numero ou bairro para orbitar..." class="flex-1 min-w-[160px] px-3 py-2 rounded-lg bg-[#161616] text-white border border-pmmg-border">
+                        <button type="button" onclick="startOrbitCameraOnAddress()" class="px-3.5 py-2 rounded-lg bg-[#161616] text-pmmg-khaki border border-[#C5A869] font-extrabold uppercase cursor-pointer">
+                            Orbitar
+                        </button>
+                        <button type="button" onclick="stopOrbitCamera()" class="px-3 py-2 rounded-lg bg-[#161616] text-gray-300 border border-pmmg-border font-bold uppercase cursor-pointer">
+                            Parar
+                        </button>
+                    </div>
+                </div>
+
+                <p id="espectroElevationReadout" class="text-[11px] font-mono text-pmmg-khaki">ESPECTRO • Aguardando leitura</p>
+                <div id="azimuteTacticalMapCanvas" class="w-full h-72 rounded-xl bg-[#0D0D0D] border border-[#C5A869]/40 overflow-hidden z-10"></div>
+            </div>
+        </section>
     </main>
 
     <!-- MENU GLOBAL INFERIOR COM 5 ABAS PADRONIZADAS (MODO APP) -->
@@ -23817,14 +23934,10 @@ if (document.readyState === "loading") {
     showToast("Sessão encerrada.");
   });
 
-  if (tac.roomCode && tac.myQra) connectLiveRoom();
-  scanAndCaptureExistingMaps();
-  updateHud();
-  monitorGps();
-  setInterval(function () { scanAndCaptureExistingMaps(); updateHud(); }, 900);
-  setInterval(monitorGps, 3500);
+
 })();
 </script>
-<!-- FIM BLOCO AZIMUTE TÁTICO --></body>
+<!-- FIM BLOCO AZIMUTE TÁTICO --><script src="./js/nucleo-ui.js"></script>
+<script src="./js/equipe-mapa.js"></script></body>
 </html>
         
