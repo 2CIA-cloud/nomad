@@ -2,9 +2,11 @@
    - APP_CACHE: App Shell (Network-First, atualiza rápido a cada deploy no GitHub)
    - MAP_CACHE: tiles/estilos/sprites/glyphs de mapa (Cache-First, NUNCA apagado em atualização do app)
    - APIs dinâmicas (clima, busca de endereço, rotas, MQTT) passam direto pela rede, sem cache. */
-const APP_CACHE = 'azimute-app-shell-v4.0';
+const APP_CACHE = 'azimute-app-shell-v4.2';
 const MAP_CACHE = 'azimute-map-tiles-v1';
+const SAT_OPAQUE_CACHE = 'azimute-sat-opaque-v1';
 const MAP_MAX_ITEMS = 3500;
+const SAT_OPAQUE_MAX_ITEMS = 60;
 const MAP_TRIM_EVERY = 40;
 
 const APP_SHELL_ASSETS = [
@@ -23,7 +25,8 @@ const MAP_HOST_RULES = [
   /^services\.arcgisonline\.com$/i,
   /(^|\.)basemaps\.cartocdn\.com$/i,
   /(^|\.)tile\.openstreetmap\.org$/i,
-  /(^|\.)tile\.opentopomap\.org$/i
+  /(^|\.)tile\.opentopomap\.org$/i,
+  /^mt[0-3]\.google\.com$/i
 ];
 
 const DYNAMIC_API_RULES = [
@@ -64,8 +67,8 @@ self.addEventListener('activate', function (event) {
   event.waitUntil((async function () {
     const keys = await caches.keys();
     await Promise.all(keys.map(function (key) {
-      if (key === APP_CACHE || key === MAP_CACHE) return Promise.resolve();
-      return caches.delete(key); // remove versões antigas (ex.: azimute-pmmg-v3.2); preserva sempre o MAP_CACHE
+      if (key === APP_CACHE || key === MAP_CACHE || key === SAT_OPAQUE_CACHE) return Promise.resolve();
+      return caches.delete(key); // remove versões antigas; preserva sempre os caches de mapa
     }));
     await self.clients.claim();
   })());
@@ -90,13 +93,12 @@ async function networkFirst(request) {
   }
 }
 
-async function trimMapCache() {
+async function trimCacheTo(cacheName, maxItems) {
   try {
-    const cache = await caches.open(MAP_CACHE);
+    const cache = await caches.open(cacheName);
     const keys = await cache.keys();
-    const excess = keys.length - MAP_MAX_ITEMS;
+    const excess = keys.length - maxItems;
     if (excess > 0) {
-      // keys() retorna em ordem de inserção: remove primeiro os mais antigos
       for (let i = 0; i < excess; i++) {
         await cache.delete(keys[i]);
       }
@@ -105,13 +107,23 @@ async function trimMapCache() {
 }
 
 async function cacheFirstMap(request, event) {
-  const cache = await caches.open(MAP_CACHE);
-  const hit = await cache.match(request);
+  const mapCache = await caches.open(MAP_CACHE);
+  const hit = await mapCache.match(request);
   if (hit) return hit;
+  const satCache = await caches.open(SAT_OPAQUE_CACHE);
+  const satHit = await satCache.match(request);
+  if (satHit) return satHit;
   try {
     const res = await fetch(request);
-    // Só guarda respostas válidas com CORS limpo (nunca opacas: inflam a cota do Chrome)
-    if (res && res.ok && res.status === 200 && res.type !== 'opaque') {
+    if (res && res.type === 'opaque') {
+      const satCopy = res.clone();
+      event.waitUntil((async function () {
+        try {
+          await satCache.put(request, satCopy);
+          await trimCacheTo(SAT_OPAQUE_CACHE, SAT_OPAQUE_MAX_ITEMS);
+        } catch (_) {}
+      })());
+    } else if (res && res.ok && res.status === 200) {
       const copy = res.clone();
       event.waitUntil((async function () {
         try {
@@ -119,9 +131,9 @@ async function cacheFirstMap(request, event) {
           const blob = await copy.blob();
           const headers = new Headers(copy.headers);
           headers.set('x-az-size', String(len || blob.size));
-          await cache.put(request, new Response(blob, { status: 200, statusText: 'OK', headers: headers }));
+          await mapCache.put(request, new Response(blob, { status: 200, statusText: 'OK', headers: headers }));
           mapPutCounter++;
-          if (mapPutCounter % MAP_TRIM_EVERY === 0) await trimMapCache();
+          if (mapPutCounter % MAP_TRIM_EVERY === 0) await trimCacheTo(MAP_CACHE, MAP_MAX_ITEMS);
         } catch (_) {}
       })());
     }
@@ -188,11 +200,40 @@ self.addEventListener('message', function (event) {
       reply({ type: 'MAP_CACHE_STATS', ok: false, stats: { count: 0, bytes: 0, mb: 0, max: MAP_MAX_ITEMS } });
     }));
   } else if (data.type === 'CLEAR_MAP_CACHE') {
-    event.waitUntil(caches.delete(MAP_CACHE).then(function () {
+    event.waitUntil(Promise.all([caches.delete(MAP_CACHE), caches.delete(SAT_OPAQUE_CACHE)]).then(function () {
       reply({ type: 'MAP_CACHE_CLEARED', ok: true });
     }).catch(function () {
       reply({ type: 'MAP_CACHE_CLEARED', ok: false });
     }));
+  } else if (data.type === 'PRECACHE_MAP_URLS' && Array.isArray(data.urls)) {
+    event.waitUntil((async function () {
+      const cache = await caches.open(MAP_CACHE);
+      const urls = data.urls.slice(0, 600);
+      let done = 0, saved = 0;
+      const BATCH = 2;
+      for (let i = 0; i < urls.length; i += BATCH) {
+        const chunk = urls.slice(i, i + BATCH);
+        await Promise.all(chunk.map(async function (u) {
+          try {
+            const hit = await cache.match(u);
+            if (!hit) {
+              const res = await fetch(u, { mode: 'cors' });
+              if (res && res.ok && res.status === 200 && res.type !== 'opaque') {
+                const len = parseInt(res.headers.get('content-length') || '0', 10);
+                const blob = await res.blob();
+                const headers = new Headers(res.headers);
+                headers.set('x-az-size', String(len || blob.size));
+                await cache.put(u, new Response(blob, { status: 200, statusText: 'OK', headers: headers }));
+                saved++;
+              }
+            }
+          } catch (_) {}
+          done++;
+        }));
+      }
+      if (saved > 0) await trimCacheTo(MAP_CACHE, MAP_MAX_ITEMS);
+      reply({ type: 'PRECACHE_DONE', ok: true, done: done, saved: saved });
+    })());
   } else if (data.type === 'SKIP_WAITING') {
     self.skipWaiting();
   }

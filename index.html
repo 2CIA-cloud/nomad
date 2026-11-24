@@ -3240,6 +3240,24 @@
                     </button>
 
                     <div id="offlineMapsGuideContent" class="hidden p-4 sm:p-5 pt-3 border-t border-pmmg-border space-y-3">
+                        <div id="azOfflineSectorCard" class="bg-pmmg-dark p-3 rounded-xl border border-pmmg-gold/55 space-y-2">
+                            <div class="flex flex-wrap items-center justify-between gap-2">
+                                <div>
+                                    <span class="text-xs font-extrabold uppercase text-pmmg-khaki block">Pré-Carregamento Interno (OpenFreeMap + Satélite)</span>
+                                    <span id="azOfflineSectorStatus" class="text-[11px] text-gray-300 block">Ao entrar em Geolocalização, baixa automaticamente a área atual (pausa ao mexer no mapa).</span>
+                                </div>
+                                <div class="flex items-center gap-2 shrink-0">
+                                    <button type="button" id="azOfflineSectorBtn" onclick="window.azStartSectorDownload && window.azStartSectorDownload(true)" class="px-3 py-1.5 rounded-lg bg-pmmg-black hover:bg-pmmg-card text-pmmg-khaki border border-pmmg-gold text-xs font-extrabold cursor-pointer">Baixar Setor Atual</button>
+                                    <button type="button" id="azOfflineSectorCancelBtn" onclick="window.azCancelSectorDownload && window.azCancelSectorDownload()" class="hidden px-2.5 py-1.5 rounded-lg bg-[#1C0C0C] text-red-400 border border-red-500/50 text-xs font-extrabold cursor-pointer">Cancelar</button>
+                                </div>
+                            </div>
+                            <div id="azOfflineSectorProgressWrap" class="hidden space-y-1">
+                                <div class="w-full h-2 bg-pmmg-black rounded-full overflow-hidden border border-pmmg-border">
+                                    <div id="azOfflineSectorFill" class="h-full bg-pmmg-gold transition-all duration-150" style="width:0%"></div>
+                                </div>
+                                <span id="azOfflineSectorProgTxt" class="text-[10px] font-mono text-pmmg-khaki block">0 / 0 blocos</span>
+                            </div>
+                        </div>
                         <div class="flex justify-end">
                             <a href="https://www.google.com/maps" target="_blank" class="px-3 py-1.5 bg-pmmg-dark hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-border rounded-lg text-xs font-bold flex items-center gap-1 shrink-0">
                                 <i data-lucide="external-link" class="w-3.5 h-3.5"></i>Abrir Google Maps
@@ -9861,7 +9879,7 @@
                     <button type="button" onclick="toggleAjustesSectionBox('mapcache')" id="btnToggleAjustesSec-mapcache" class="w-full p-3.5 sm:p-4 flex items-center justify-between gap-2 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
                         <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki flex items-center gap-2">
                             <i data-lucide="map" class="w-4 h-4 text-pmmg-gold shrink-0"></i>
-                            <span>Cache de Mapas (Offline)</span>
+                            <span>2. Cache de Mapas (Offline)</span>
                         </span>
                         <div class="flex items-center gap-2 shrink-0">
                             <span id="lblAjustesSec-mapcache" class="text-[11px] font-bold text-pmmg-khaki">Abrir</span>
@@ -9893,7 +9911,7 @@
                     <button type="button" onclick="toggleAjustesSectionBox('acesso_rapido')" id="btnToggleAjustesSec-acesso_rapido" class="w-full p-3.5 sm:p-4 flex items-center justify-between gap-2 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
                         <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki flex items-center gap-2">
                             <i data-lucide="grid" class="w-4 h-4 text-pmmg-gold shrink-0"></i>
-                            <span>2. Acesso Rápido da Tela Início (Botões e Ordem)</span>
+                            <span>3. Acesso Rápido da Tela Início (Botões e Ordem)</span>
                         </span>
                         <div class="flex items-center gap-2 shrink-0">
                             <span id="lblAjustesSec-acesso_rapido" class="text-[11px] font-bold text-pmmg-khaki">Abrir</span>
@@ -9914,7 +9932,7 @@
                     <button type="button" onclick="toggleAjustesSectionBox('rodape_topo')" id="btnToggleAjustesSec-rodape_topo" class="w-full p-3.5 sm:p-4 flex items-center justify-between gap-2 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
                         <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki flex items-center gap-2">
                             <i data-lucide="panel-bottom" class="w-4 h-4 text-pmmg-gold shrink-0"></i>
-                            <span>3. Rodapé, Botões de Topo e Blocos da Tela Início</span>
+                            <span>4. Rodapé, Botões de Topo e Blocos da Tela Início</span>
                         </span>
                         <div class="flex items-center gap-2 shrink-0">
                             <span id="lblAjustesSec-rodape_topo" class="text-[11px] font-bold text-pmmg-khaki">Abrir</span>
@@ -10029,7 +10047,7 @@
                     <button type="button" onclick="toggleAjustesSectionBox('modo_exibicao')" id="btnToggleAjustesSec-modo_exibicao" class="w-full p-3.5 sm:p-4 flex items-center justify-between gap-2 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
                         <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki flex items-center gap-2">
                             <i data-lucide="monitor-smartphone" class="w-4 h-4 text-pmmg-gold shrink-0"></i>
-                            <span>4. Seletor Manual de Modo de Exibição (App | GRID | PC)</span>
+                            <span>5. Seletor Manual de Modo de Exibição (App | GRID | PC)</span>
                         </span>
                         <div class="flex items-center gap-2 shrink-0">
                             <span id="ajustesCurrentModeBadge" class="text-[10px] font-mono text-gray-400 hidden sm:inline">Modo: App</span>
@@ -10066,7 +10084,7 @@
                     <button type="button" onclick="toggleAjustesSectionBox('acordeao_global')" id="btnToggleAjustesSec-acordeao_global" class="w-full p-3.5 sm:p-4 flex items-center justify-between gap-2 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
                         <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki flex items-center gap-2">
                             <i data-lucide="layers" class="w-4 h-4 text-pmmg-gold shrink-0"></i>
-                            <span>5. Fechador Automático de Caixas</span>
+                            <span>6. Fechador Automático de Caixas</span>
                         </span>
                         <div class="flex items-center gap-2 shrink-0">
                             <span id="lblAjustesSec-acordeao_global" class="text-[11px] font-bold text-pmmg-khaki">Abrir</span>
@@ -15768,6 +15786,7 @@ if (viewId === 'gps' && window.azimuteGeoInvalidate) window.azimuteGeoInvalidate
                     if (typeof window.toggleGpsClosestHospitalBox === 'function') window.toggleGpsClosestHospitalBox(false);
                     if (typeof window.toggleDigitalCompassBox === 'function') window.toggleDigitalCompassBox(false);
                     if (typeof window.toggleOfflineMapsGuideBox === 'function') window.toggleOfflineMapsGuideBox(false);
+                    if (typeof window.azScheduleAutoSectorPrecache === 'function') window.azScheduleAutoSectorPrecache();
                 } else {
                     gpsHud.classList.add('hidden');
                 }
@@ -17338,6 +17357,159 @@ if (viewId === 'gps' && window.azimuteGeoInvalidate) window.azimuteGeoInvalidate
             });
         };
 
+        // Pré-carregamento gentil em segundo plano (OpenFreeMap + Satélite Esri CORS + CartoDB) e download manual de setor
+        (function initOfflineSectorPrecacher() {
+            let precacheCancelled = false;
+            let precacheRunning = false;
+            let mapInteracting = false;
+            let idleResumeTimer = null;
+
+            function setSectorUi(statusText, done, total, active) {
+                const st = document.getElementById('azOfflineSectorStatus');
+                const wrap = document.getElementById('azOfflineSectorProgressWrap');
+                const fill = document.getElementById('azOfflineSectorFill');
+                const txt = document.getElementById('azOfflineSectorProgTxt');
+                const cancelBtn = document.getElementById('azOfflineSectorCancelBtn');
+                const startBtn = document.getElementById('azOfflineSectorBtn');
+                if (st && statusText) st.textContent = statusText;
+                if (wrap) wrap.classList.toggle('hidden', !active && total === 0);
+                if (cancelBtn) cancelBtn.classList.toggle('hidden', !active);
+                if (startBtn) startBtn.disabled = Boolean(active);
+                if (fill && total > 0) fill.style.width = Math.min(100, Math.round((done / total) * 100)) + '%';
+                if (txt && total > 0) txt.textContent = done + ' / ' + total + ' blocos';
+            }
+
+            function latLngToTile(lat, lng, z) {
+                const n = Math.pow(2, z);
+                const x = Math.floor(((lng + 180) / 360) * n);
+                const latRad = (lat * Math.PI) / 180;
+                const y = Math.floor((1 - Math.log(Math.tan(latRad) + 1 / Math.cos(latRad)) / Math.PI) / 2 * n);
+                return { x: Math.max(0, Math.min(n - 1, x)), y: Math.max(0, Math.min(n - 1, y)) };
+            }
+
+            function buildSectorTileUrls(lat, lng, isManualHighDef) {
+                const urls = [
+                    'https://tiles.openfreemap.org/styles/liberty',
+                    'https://tiles.openfreemap.org/styles/dark'
+                ];
+                const seen = new Set(urls);
+                function addUrl(u) {
+                    if (!seen.has(u)) { seen.add(u); urls.push(u); }
+                }
+                const cosLat = Math.max(0.25, Math.cos((lat * Math.PI) / 180));
+                function addGrid(z, radiusKm, template) {
+                    const dLat = radiusKm / 111.32;
+                    const dLng = radiusKm / (111.32 * cosLat);
+                    const tl = latLngToTile(lat + dLat, lng - dLng, z);
+                    const br = latLngToTile(lat - dLat, lng + dLng, z);
+                    for (let x = tl.x; x <= br.x; x++) {
+                        for (let y = tl.y; y <= br.y; y++) {
+                            addUrl(template.replace('{z}', z).replace('{x}', x).replace('{y}', y));
+                            if (urls.length >= (isManualHighDef ? 360 : 170)) return;
+                        }
+                    }
+                }
+                // Camada Clara vetorial (z12-z14 cobrem a cidade inteira com nitidez até z19)
+                [12, 13, 14].forEach(z => addGrid(z, isManualHighDef ? 4.5 : 3.2, 'https://tiles.openfreemap.org/planet/{z}/{x}/{y}.pbf'));
+                // Camada Satélite CORS + rótulos
+                const satZooms = isManualHighDef ? [13, 14, 15, 16, 17] : [13, 14, 15];
+                satZooms.forEach(z => {
+                    const rKm = z >= 16 ? 1.2 : (z === 15 ? 1.8 : 3.0);
+                    addGrid(z, rKm, 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}');
+                    if (z <= 16) addGrid(z, rKm, 'https://a.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}@2x.png');
+                });
+                return urls;
+            }
+
+            function bindPauseListeners() {
+                const m = window.azGeoMap;
+                if (!m || m._azPrecachePauseBound) return;
+                m._azPrecachePauseBound = true;
+                const onStart = () => {
+                    mapInteracting = true;
+                    if (idleResumeTimer) { clearTimeout(idleResumeTimer); idleResumeTimer = null; }
+                };
+                const onEnd = () => {
+                    if (idleResumeTimer) clearTimeout(idleResumeTimer);
+                    idleResumeTimer = setTimeout(() => { mapInteracting = false; }, 1200);
+                };
+                m.on('movestart', onStart);
+                m.on('zoomstart', onStart);
+                m.on('moveend', onEnd);
+                m.on('zoomend', onEnd);
+            }
+
+            window.azCancelSectorDownload = function() {
+                precacheCancelled = true;
+                setSectorUi('Download cancelado.', 0, 0, false);
+            };
+
+            window.azStartSectorDownload = async function(isManual) {
+                if (precacheRunning) return;
+                if (!(navigator.serviceWorker && navigator.serviceWorker.controller)) {
+                    if (isManual && typeof showToast === 'function') showToast('Pré-carga disponível apenas via https (PWA) ou localhost.');
+                    setSectorUi('Requer publicação em https para pré-carregar.', 0, 0, false);
+                    return;
+                }
+                const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+                if (!isManual && conn && (conn.saveData || conn.effectiveType === '2g' || conn.effectiveType === 'slow-2g')) {
+                    return;
+                }
+                let lat = typeof azimuteLastGeoLat === 'number' ? azimuteLastGeoLat : -19.9191;
+                let lng = typeof azimuteLastGeoLon === 'number' ? azimuteLastGeoLon : -43.9386;
+                if (window.azGeoMap && typeof window.azGeoMap.getCenter === 'function') {
+                    const c = window.azGeoMap.getCenter();
+                    if (c && typeof c.lat === 'number') { lat = c.lat; lng = c.lng; }
+                }
+                bindPauseListeners();
+                const urls = buildSectorTileUrls(lat, lng, Boolean(isManual));
+                precacheCancelled = false;
+                precacheRunning = true;
+                let done = 0;
+                const total = urls.length;
+                setSectorUi(isManual ? 'Baixando setor atual em alta definição...' : 'Pré-carregando área atual em segundo plano...', 0, total, true);
+
+                try {
+                    const CHUNK = 8;
+                    for (let i = 0; i < urls.length; i += CHUNK) {
+                        if (precacheCancelled) break;
+                        while (mapInteracting && !precacheCancelled) {
+                            await new Promise(r => setTimeout(r, 350));
+                        }
+                        if (precacheCancelled) break;
+                        const slice = urls.slice(i, i + CHUNK);
+                        await azSwRequest({ type: 'PRECACHE_MAP_URLS', urls: slice }).catch(() => null);
+                        done += slice.length;
+                        setSectorUi(isManual ? 'Salvando blocos no aparelho...' : 'Pré-carregando em segundo plano...', done, total, true);
+                    }
+                    if (!precacheCancelled) {
+                        try { localStorage.setItem('az_map_precache_last_v1', JSON.stringify({ lat, lng, ts: Date.now() })); } catch (_) {}
+                        setSectorUi('Setor pronto para uso offline (' + done + ' blocos verificados).', total, total, false);
+                        if (typeof window.azRefreshMapCacheStats === 'function') window.azRefreshMapCacheStats();
+                        if (isManual && typeof showToast === 'function') showToast('Setor salvo para uso offline!');
+                    }
+                } finally {
+                    precacheRunning = false;
+                }
+            };
+
+            window.azScheduleAutoSectorPrecache = function() {
+                if (precacheRunning) return;
+                if (!(navigator.serviceWorker && navigator.serviceWorker.controller)) return;
+                try {
+                    const last = JSON.parse(localStorage.getItem('az_map_precache_last_v1') || 'null');
+                    const lat = typeof azimuteLastGeoLat === 'number' ? azimuteLastGeoLat : -19.9191;
+                    const lng = typeof azimuteLastGeoLon === 'number' ? azimuteLastGeoLon : -43.9386;
+                    if (last && typeof last.lat === 'number') {
+                        const dLat = (lat - last.lat) * 111.32;
+                        const dLng = (lng - last.lng) * 111.32 * Math.cos((lat * Math.PI) / 180);
+                        if (Math.hypot(dLat, dLng) < 2.0) return;
+                    }
+                } catch (_) {}
+                setTimeout(() => { window.azStartSectorDownload(false); }, 1800);
+            };
+        })();
+
         // Carrega e unifica todos os JSONs de Batalhões do repositório (1ª RPM, 2ª RPM, 1º BPM, 22º BPM, etc.)
         function normalizeBattalionRecord(raw, defaultCity) {
             if (!raw || typeof raw !== 'object') return null;
@@ -18079,7 +18251,9 @@ if (window.__azimuteGeoInitialized) {
     pitch: 0,
     maxPitch: 65,
     fadeDuration: 0,
-    pixelRatio: Math.min(window.devicePixelRatio || 1, 1.35),
+    maxTileCacheSize: 500,
+    maxTileCacheZoomLevels: 6,
+    pixelRatio: Math.min(window.devicePixelRatio || 1, 2.0),
     touchPitch: true,
     pitchWithRotate: true,
     attributionControl: false
@@ -22698,16 +22872,16 @@ if (document.readyState === "loading") {
     flex-shrink: 0;
   }
 
-  /* ==================== MODO DRONE (SEGUIR OPERADOR + VOO LIVRE MODO 02) ==================== */
+  /* ==================== MODO DRONE (BARRA RECOLHÍVEL, EDITÁVEL, GIMBAL & STICKS) ==================== */
   #azDroneHudBar {
     position: fixed !important;
     top: calc(50px + env(safe-area-inset-top, 0px)) !important;
     left: 50% !important;
     transform: translateX(-50%) !important;
     z-index: 100055 !important;
-    width: 344px;
+    width: 350px;
     max-width: calc(100vw - 14px);
-    background: rgba(13, 13, 13, 0.94) !important;
+    background: #0D0D0D !important;
     border: 1.5px solid #38BDF8 !important;
     border-radius: 12px;
     padding: 6px 8px;
@@ -22718,6 +22892,20 @@ if (document.readyState === "loading") {
     color: #F2F0EA;
   }
   #azDroneHudBar.is-open { display: flex !important; }
+  #azDroneHudBar.is-collapsed {
+    width: auto !important;
+    left: 10px !important;
+    transform: none !important;
+    padding: 5px 9px !important;
+    border-radius: 999px !important;
+  }
+  #azDroneHudBar.is-collapsed #azDroneTargetSelect,
+  #azDroneHudBar.is-collapsed #azDroneControlToggleBtn,
+  #azDroneHudBar.is-collapsed #azDroneSettingsBtn,
+  #azDroneHudBar.is-collapsed #azDroneMainToolsRow,
+  #azDroneHudBar.is-collapsed #azDroneGimbalSubpanel {
+    display: none !important;
+  }
   .az-drone-top-row {
     display: flex;
     align-items: center;
@@ -22731,6 +22919,7 @@ if (document.readyState === "loading") {
     font-weight: 900;
     color: #38BDF8;
     flex-shrink: 0;
+    cursor: pointer;
   }
   .az-drone-badge svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; }
   #azDroneTargetSelect {
@@ -22749,10 +22938,19 @@ if (document.readyState === "loading") {
     display: flex;
     align-items: center;
     gap: 4px;
-    flex-wrap: wrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 1px;
+  }
+  .az-drone-act-row::-webkit-scrollbar { display: none; }
+  .az-drone-custom-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
   }
   .az-drone-pill-btn {
-    height: 25px;
+    height: 26px;
     padding: 0 7px;
     border-radius: 6px;
     border: 1px solid #2E2D24;
@@ -22762,14 +22960,16 @@ if (document.readyState === "loading") {
     font-weight: 900;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 3px;
     cursor: pointer;
+    flex-shrink: 0;
     touch-action: manipulation;
   }
-  .az-drone-pill-btn svg { width: 11px; height: 11px; stroke: currentColor; fill: none; stroke-width: 2.1; pointer-events: none; }
+  .az-drone-pill-btn svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2.1; pointer-events: none; }
   .az-drone-pill-btn.is-active {
     border-color: #C5A869;
-    background: rgba(197, 168, 105, 0.2);
+    background: rgba(197, 168, 105, 0.22);
     color: #C5A869;
   }
   .az-drone-pill-btn.is-sky {
@@ -22777,11 +22977,69 @@ if (document.readyState === "loading") {
     background: rgba(56, 189, 248, 0.18);
     color: #38BDF8;
   }
+  .az-drone-pill-btn.is-red-dot {
+    border-color: rgba(239, 68, 68, 0.6);
+    color: #F87171;
+  }
   .az-drone-pill-btn.is-danger {
     border-color: rgba(239, 68, 68, 0.55);
     color: #F87171;
     margin-left: auto;
   }
+  #azDroneGimbalSubpanel {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    background: #141414;
+    border: 1px solid #28271F;
+    border-radius: 8px;
+    padding: 6px 8px;
+  }
+  #azDroneGimbalSubpanel.is-open { display: flex !important; }
+  .az-gimbal-row {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    justify-content: space-between;
+  }
+  .az-drone-popover {
+    position: fixed !important;
+    top: calc(122px + env(safe-area-inset-top, 0px)) !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 100062 !important;
+    width: 318px;
+    max-width: calc(100vw - 16px);
+    max-height: 62vh;
+    overflow-y: auto;
+    background: #141414 !important;
+    border: 1.5px solid #C5A869 !important;
+    border-radius: 12px;
+    padding: 10px;
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    color: #F2F0EA;
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.95);
+  }
+  .az-drone-popover.is-open { display: flex !important; }
+  .az-drone-sens-row {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    background: #0D0D0D;
+    border: 1px solid #28271F;
+    border-radius: 7px;
+    padding: 5px 7px;
+  }
+  .az-drone-sens-head {
+    display: flex;
+    justify-content: space-between;
+    font-size: 9px;
+    font-weight: 800;
+    color: #D4D0C7;
+  }
+  .az-drone-sens-head strong { color: #C5A869; font-family: monospace; }
   #azDroneReticle {
     position: fixed !important;
     top: 50% !important;
@@ -22852,6 +23110,162 @@ if (document.readyState === "loading") {
     transition: transform 0.08s ease-out;
   }
   .az-drone-stick-pad.is-active .az-drone-stick-knob { transition: none; background: radial-gradient(circle at 35% 35%, #7DD3FC, #0284C7); }
+  #azDroneTypeSelect {
+    height: 26px;
+    background: #161616;
+    color: #C5A869;
+    border: 1px solid rgba(197, 168, 105, 0.55);
+    border-radius: 7px;
+    font-size: 9px;
+    font-weight: 900;
+    padding: 0 5px;
+    outline: none;
+    max-width: 112px;
+  }
+  #azDroneHudBar.is-collapsed #azDroneTypeSelect,
+  #azDroneHudBar.is-collapsed #azDroneReconRow,
+  #azDroneHudBar.is-collapsed #azDroneEscoltaRow { display: none !important; }
+  #azDroneReconRow, #azDroneEscoltaRow {
+    display: none;
+    align-items: center;
+    gap: 5px;
+    flex-wrap: wrap;
+    width: 100%;
+    padding-top: 4px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  #azDroneHudBar[data-drone-type="recon"] #azDroneReconRow { display: flex; }
+  #azDroneHudBar[data-drone-type="escolta"] #azDroneEscoltaRow { display: flex; }
+  #azDroneHudBar.is-gimbal #azDroneReconRow,
+  #azDroneHudBar.is-gimbal #azDroneEscoltaRow { display: none !important; }
+  .az-recon-radius-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #161616;
+    border: 1px solid rgba(197, 168, 105, 0.35);
+    border-radius: 7px;
+    padding: 2px 6px;
+    font-size: 9px;
+    font-weight: 800;
+    color: #C5A869;
+  }
+  .az-recon-radius-wrap input[type="range"] { width: 64px; accent-color: #C5A869; }
+  #azSectorAnalysisPanel {
+    position: fixed;
+    right: 10px;
+    bottom: 92px;
+    z-index: 100062;
+    width: 320px;
+    max-width: calc(100vw - 20px);
+    max-height: 58vh;
+    background: #0D0D0D;
+    border: 1.5px solid #C5A869;
+    border-radius: 12px;
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.94);
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    color: #F8FAFC;
+  }
+  #azSectorAnalysisPanel.is-open { display: flex; }
+  #azSectorAnalysisPanel.is-minimized .az-sector-body { display: none; }
+  .az-sector-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    padding: 8px 10px;
+    background: #161616;
+    border-bottom: 1px solid rgba(197, 168, 105, 0.25);
+    font-size: 10px;
+    font-weight: 900;
+    color: #C5A869;
+  }
+  .az-sector-body {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    padding: 8px 10px;
+    overflow: hidden;
+  }
+  .az-sector-summary {
+    background: #161616;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 6px 8px;
+    font-size: 9.5px;
+    line-height: 1.38;
+    color: #CBD5E1;
+  }
+  .az-sector-tabs {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+  }
+  .az-sector-tab {
+    background: #161616;
+    color: #94A3B8;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    padding: 4px 2px;
+    font-size: 9px;
+    font-weight: 900;
+    cursor: pointer;
+    text-align: center;
+  }
+  .az-sector-tab.is-active {
+    background: rgba(197, 168, 105, 0.18);
+    color: #C5A869;
+    border-color: #C5A869;
+  }
+  .az-sector-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    overflow-y: auto;
+    max-height: 210px;
+    padding-right: 2px;
+  }
+  .az-sector-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    padding: 6px 8px;
+    background: #161616;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .az-sector-item:hover { border-color: rgba(197, 168, 105, 0.55); }
+  #azAllyFlyoverBanner, #azReconPulsePill {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100066;
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    pointer-events: none;
+    display: none;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.85);
+  }
+  #azAllyFlyoverBanner {
+    top: 112px;
+    background: #0D0D0D;
+    border: 1.5px solid #4ADE80;
+    color: #4ADE80;
+  }
+  #azReconPulsePill {
+    top: 142px;
+    background: #0D0D0D;
+    border: 1.5px solid #38BDF8;
+    color: #38BDF8;
+  }
+  #azAllyFlyoverBanner.is-open, #azReconPulsePill.is-open { display: inline-flex; align-items: center; gap: 6px; }
   #azTeamCommsModal {
     position: fixed !important;
     top: 50% !important;
@@ -25604,30 +26018,97 @@ if (document.readyState === "loading") {
   </button>
 </div>
 
-<!-- Modo Drone: Barra de Comando + Mira Central + Dois Sticks Virtuais (Padrão Modo 02) -->
-<div id="azDroneHudBar" role="region" aria-label="Modo Drone">
+<!-- Modo Drone: Barra de Comando Recolhível/Editável + Tipos de Drone + Reconhecimento + Gimbal + Popovers -->
+<div id="azDroneHudBar" role="region" aria-label="Modo Drone" data-drone-type="tatico">
   <div class="az-drone-top-row">
-    <span class="az-drone-badge">
+    <button type="button" class="az-drone-badge" id="azDroneBadgeExpand" title="Expandir ou recolher barra do Drone" style="cursor:pointer;border:none;">
       <svg viewBox="0 0 24 24"><circle cx="5" cy="5" r="2.5"/><circle cx="19" cy="5" r="2.5"/><circle cx="5" cy="19" r="2.5"/><circle cx="19" cy="19" r="2.5"/><path d="M7 7l3 3"/><path d="M17 7l-3 3"/><path d="M7 17l3-3"/><path d="M17 17l-3-3"/><rect x="10" y="10" width="4" height="4" rx="1"/></svg>
-      DRONE
-    </span>
+      <span>DRONE</span>
+    </button>
+    <select id="azDroneTypeSelect" title="Tipo de Drone">
+      <option value="tatico">TÁTICO (VOO LIVRE)</option>
+      <option value="escolta">ESCOLTA (EQUIPE)</option>
+      <option value="recon">RECON (SETOR)</option>
+    </select>
     <select id="azDroneTargetSelect" title="Selecionar alvo ou voo livre">
       <option value="__FREE__">VOAR LIVRE (MODO 02)</option>
       <option value="__SELF__">SEGUIR VOCÊ (SEU ÍCONE)</option>
     </select>
     <button type="button" class="az-drone-pill-btn is-sky" id="azDroneControlToggleBtn" title="Assumir controle manual ou seguir operador">ASSUMIR</button>
+    <button type="button" class="az-drone-pill-btn" id="azDroneSettingsBtn" title="Ajustes de sensibilidade, modo de voo, varredura e som DJI" aria-label="Ajustes do Drone">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </button>
+    <button type="button" class="az-drone-pill-btn" id="azDroneCollapseBtn" title="Recolher barra do Drone" aria-label="Recolher barra">
+      <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+    </button>
   </div>
-  <div class="az-drone-act-row">
-    <button type="button" class="az-drone-pill-btn" id="azDroneTiltBtn" title="Alternar 2D / 3D">3D</button>
-    <button type="button" class="az-drone-pill-btn" id="azDroneLayerBtn" title="Alternar camadas do mapa">CAMADA</button>
-    <button type="button" class="az-drone-pill-btn" id="azDroneMarkPinBtn" title="Marcar ponto no local para equipe ver">+ PIN</button>
+  <div id="azDroneEscoltaRow" aria-label="Controles Drone Escolta">
+    <button type="button" class="az-drone-pill-btn" id="azEscoltaAltUpBtn" title="Subir altitude (afastar zoom)">SUBIR</button>
+    <button type="button" class="az-drone-pill-btn" id="azEscoltaAltDownBtn" title="Descer altitude (aproximar zoom)">DESCER</button>
+    <button type="button" class="az-drone-pill-btn is-sky" id="azEscoltaOrbitTeamBtn" title="Orbitar equipe ou aliado selecionado">ORBITAR EQUIPE</button>
+  </div>
+  <div id="azDroneReconRow" aria-label="Controles Drone de Reconhecimento">
+    <button type="button" class="az-drone-pill-btn is-sky" id="azReconCircleBtn" title="Marcar setor circular (toque no mapa)">CÍRCULO</button>
+    <button type="button" class="az-drone-pill-btn" id="azReconRectBtn" title="Marcar quadrante retangular (2 toques no mapa)">RETÂNGULO</button>
+    <span class="az-recon-radius-wrap" id="azReconRadiusWrap" title="Raio do setor circular">
+      <span>R:</span>
+      <input type="range" id="azReconRadiusSlider" min="100" max="750" step="25" value="250" />
+      <span id="azReconRadiusVal">250m</span>
+    </span>
+    <button type="button" class="az-drone-pill-btn is-active" id="azReconSweepBtn" title="Iniciar varredura em grade S">VARRER S</button>
+    <button type="button" class="az-drone-pill-btn" id="azReconOrbitPerimBtn" title="Orbitar perímetro do setor">PERÍM.</button>
+    <button type="button" class="az-drone-pill-btn" id="azReconOrbitPtBtn" title="Orbitar 360° o ponto atual da mira">ORBITAR PT</button>
+    <button type="button" class="az-drone-pill-btn" id="azReconPauseBtn" title="Pausar ou retomar piloto automático">PAUSAR</button>
+    <button type="button" class="az-drone-pill-btn" id="azReconSpeedBtn" title="Velocidade da varredura">1x</button>
+    <button type="button" class="az-drone-pill-btn" id="azReconAltUpBtn" title="Subir altitude">ALT+</button>
+    <button type="button" class="az-drone-pill-btn" id="azReconAltDownBtn" title="Descer altitude">ALT-</button>
+    <button type="button" class="az-drone-pill-btn is-sky" id="azReconAnalysisBtn" title="Abrir painel Análise do Setor">ANÁLISE</button>
+  </div>
+  <div class="az-drone-act-row" id="azDroneMainToolsRow">
+    <button type="button" class="az-drone-pill-btn" id="azDroneRedDotBtn" title="Marcar ponto vermelho tático na mira central">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" fill="#EF4444" stroke="#FFFFFF" stroke-width="2"/></svg>
+      PONTO
+    </button>
+    <button type="button" class="az-drone-pill-btn" id="azDronePegadasBtn" title="Exibir rastro recente (Pegadas 2 km) de operador">
+      <svg viewBox="0 0 24 24"><path d="M4 16v-2.38C4 11.5 2.97 10.5 3 8c.03-2.72 1.49-6 4.5-6C9.37 2 10 3.8 10 5.5c0 3.11-2 5.66-2 8.68V16a2 2 0 1 1-4 0Z"/><path d="M20 20v-2.38c0-2.12 1.03-3.12 1-5.62-.03-2.72-1.49-6-4.5-6C14.63 6 14 7.8 14 9.5c0 3.11 2 5.66 2 8.68V20a2 2 0 1 0 4 0Z"/></svg>
+      PEGADAS
+    </button>
     <button type="button" class="az-drone-pill-btn" id="azDroneK9Btn" title="Acionar Cão de Caça no alvo">K9</button>
     <button type="button" class="az-drone-pill-btn" id="azDroneOrbitBtn" title="Orbitar ponto atual">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><line x1="3.6" y1="9" x2="20.4" y2="9"/><line x1="3.6" y1="15" x2="20.4" y2="15"/><path d="M12 3a13 13 0 0 1 0 18"/><path d="M12 3a13 13 0 0 0 0 18"/></svg>
     </button>
+    <button type="button" class="az-drone-pill-btn" id="azDroneGimbalBtn" title="Abrir sub-tela dedicada do Gimbal">
+      <svg viewBox="0 0 24 24"><path d="M2 12s3-6 10-6 10 6 10 6-3 6-10 6-10-6-10-6Z"/><circle cx="12" cy="12" r="3"/></svg>
+      GIMBAL
+    </button>
+    <div id="azDroneCustomShortcutsWrap" class="az-drone-custom-wrap" aria-label="Atalhos personalizados"></div>
+    <button type="button" class="az-drone-pill-btn" id="azDroneAddShortcutBtn" title="Editar atalhos da barra do Drone" aria-label="Adicionar atalhos">
+      <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </button>
     <button type="button" class="az-drone-pill-btn is-danger" id="azDroneCloseBtn" title="Encerrar Modo Drone">ENCERRAR</button>
   </div>
+  <div id="azDroneGimbalSubpanel" aria-label="Controles do Gimbal">
+    <div class="az-drone-gimbal-row">
+      <span class="az-drone-gimbal-lbl">PITCH</span>
+      <button type="button" class="az-drone-pill-btn" id="azGimbalPitchDownBtn" title="Inclinar câmera para baixo (0°)">▼</button>
+      <input type="range" id="azGimbalPitchSlider" min="0" max="65" step="1" value="52" title="Inclinação do Gimbal (0° a 65°)" />
+      <button type="button" class="az-drone-pill-btn" id="azGimbalPitchUpBtn" title="Elevar horizonte (65°)">▲</button>
+      <span class="az-drone-gimbal-val" id="azGimbalPitchVal">52°</span>
+    </div>
+    <div class="az-drone-gimbal-row">
+      <span class="az-drone-gimbal-lbl">YAW / ZOOM</span>
+      <button type="button" class="az-drone-pill-btn" id="azGimbalYawLeftBtn" title="Girar câmera para esquerda">↺</button>
+      <button type="button" class="az-drone-pill-btn" id="azGimbalYawRightBtn" title="Girar câmera para direita">↻</button>
+      <button type="button" class="az-drone-pill-btn" id="azGimbalZoomOutBtn" title="Afastar zoom">−</button>
+      <button type="button" class="az-drone-pill-btn" id="azGimbalZoomInBtn" title="Aproximar zoom">+</button>
+      <button type="button" class="az-drone-pill-btn is-sky" id="azGimbalResetBtn" title="Nadir 0° e centralizar no alvo">RECENTR.</button>
+      <button type="button" class="az-drone-pill-btn is-danger" id="azGimbalBackBtn" title="Voltar para barra principal">VOLTAR</button>
+    </div>
+  </div>
 </div>
+
+<div id="azAllyFlyoverBanner" role="status" aria-live="polite"></div>
+<div id="azReconPulsePill" role="status" aria-live="polite"></div>
 
 <svg id="azDroneReticle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
   <circle cx="12" cy="12" r="6" stroke-dasharray="2 2"/>
@@ -25641,20 +26122,110 @@ if (document.readyState === "loading") {
 <div id="azDroneSticksLayer" aria-label="Sticks Virtuais Modo 02">
   <div class="az-drone-stick-pad" id="azDroneStickLeft" data-stick="left">
     <div class="az-drone-stick-ring"></div>
-    <span class="az-drone-stick-axis-lbl" style="top:4px;left:50%;transform:translateX(-50%);">ALT +</span>
-    <span class="az-drone-stick-axis-lbl" style="bottom:4px;left:50%;transform:translateX(-50%);">ALT -</span>
-    <span class="az-drone-stick-axis-lbl" style="left:5px;top:50%;transform:translateY(-50%);">↺</span>
-    <span class="az-drone-stick-axis-lbl" style="right:5px;top:50%;transform:translateY(-50%);">↻</span>
+    <span class="az-drone-stick-axis-lbl" id="azDroneLTop" style="top:4px;left:50%;transform:translateX(-50%);">ALT +</span>
+    <span class="az-drone-stick-axis-lbl" id="azDroneLBot" style="bottom:4px;left:50%;transform:translateX(-50%);">ALT -</span>
+    <span class="az-drone-stick-axis-lbl" id="azDroneLLeft" style="left:5px;top:50%;transform:translateY(-50%);">↺</span>
+    <span class="az-drone-stick-axis-lbl" id="azDroneLRight" style="right:5px;top:50%;transform:translateY(-50%);">↻</span>
     <div class="az-drone-stick-knob" id="azDroneKnobLeft"></div>
   </div>
   <div class="az-drone-stick-pad" id="azDroneStickRight" data-stick="right">
     <div class="az-drone-stick-ring"></div>
-    <span class="az-drone-stick-axis-lbl" style="top:4px;left:50%;transform:translateX(-50%);">FRENTE</span>
-    <span class="az-drone-stick-axis-lbl" style="bottom:4px;left:50%;transform:translateX(-50%);">TRÁS</span>
-    <span class="az-drone-stick-axis-lbl" style="left:5px;top:50%;transform:translateY(-50%);">◀</span>
-    <span class="az-drone-stick-axis-lbl" style="right:5px;top:50%;transform:translateY(-50%);">▶</span>
+    <span class="az-drone-stick-axis-lbl" id="azDroneRTop" style="top:4px;left:50%;transform:translateX(-50%);">FRENTE</span>
+    <span class="az-drone-stick-axis-lbl" id="azDroneRBot" style="bottom:4px;left:50%;transform:translateX(-50%);">TRÁS</span>
+    <span class="az-drone-stick-axis-lbl" id="azDroneRLeft" style="left:5px;top:50%;transform:translateY(-50%);">◀</span>
+    <span class="az-drone-stick-axis-lbl" id="azDroneRRight" style="right:5px;top:50%;transform:translateY(-50%);">▶</span>
     <div class="az-drone-stick-knob" id="azDroneKnobRight"></div>
   </div>
+</div>
+
+<!-- Painel Compacto e Recolhível: Análise do Setor (Reconhecimento) -->
+<div id="azSectorAnalysisPanel" role="dialog" aria-label="Análise do Setor">
+  <div class="az-sector-head">
+    <span>ANÁLISE DO SETOR</span>
+    <div style="display:flex;gap:4px;">
+      <button type="button" class="az-drone-pill-btn" id="azSectorMinBtn" title="Recolher/Expandir painel">_</button>
+      <button type="button" class="az-drone-pill-btn is-danger" id="azSectorCloseBtn" title="Fechar análise">FECHAR</button>
+    </div>
+  </div>
+  <div class="az-sector-body">
+    <div class="az-sector-summary" id="azSectorSummaryBox">Defina uma área no modo Recon (Círculo ou Retângulo) para analisar o setor.</div>
+    <div class="az-sector-tabs">
+      <button type="button" class="az-sector-tab is-active" data-sector-tab="avenidas">Avenidas</button>
+      <button type="button" class="az-sector-tab" data-sector-tab="ruas">Ruas</button>
+      <button type="button" class="az-sector-tab" data-sector-tab="becos">Becos</button>
+      <button type="button" class="az-sector-tab" data-sector-tab="escadarias">Escadarias</button>
+    </div>
+    <div class="az-sector-list" id="azSectorListBox"></div>
+  </div>
+</div>
+
+<!-- Popover: Ajustes do Drone (Som DJI, Modo de Voo, Sensibilidade 4 Eixos, Varredura Auto) -->
+<div id="azDroneSettingsPopover" class="az-drone-popover" role="dialog" aria-label="Ajustes do Drone">
+  <div class="az-drone-popover-head">
+    <span>AJUSTES DO DRONE</span>
+    <button type="button" class="az-drone-pill-btn is-danger" id="azDroneSettingsCloseBtn">FECHAR</button>
+  </div>
+  <div class="az-drone-popover-row" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;padding:6px 8px;border:1px solid rgba(255,255,255,0.1);border-radius:8px;">
+    <span style="font-size:11px;font-weight:700;color:#E2E8F0;">Som DJI (Liga / Desliga + Bipe Aliado)</span>
+    <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;">
+      <input type="checkbox" id="azDroneSoundChk" checked />
+      <span style="font-size:10px;color:#C5A869;font-weight:800;">ATIVO</span>
+    </label>
+  </div>
+  <div style="margin-bottom:8px;padding:6px 8px;border:1px solid rgba(255,255,255,0.1);border-radius:8px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+      <span style="font-size:11px;font-weight:700;color:#E2E8F0;">VARREDURA (AUTO) — Becos/Escadarias</span>
+      <input type="checkbox" id="azReconAutoScanChk" checked />
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:6px;">
+      <span style="font-size:10px;color:#94A3B8;font-weight:700;">Desenho:</span>
+      <select id="azReconDrawModeSelect" style="flex:1;background:#161616;color:#E2E8F0;border:1px solid rgba(255,255,255,0.15);border-radius:6px;font-size:10px;padding:3px 6px;">
+        <option value="live">Ver Animação ao Vivo (Padrão)</option>
+        <option value="background">Segundo Plano (Instantâneo)</option>
+      </select>
+    </div>
+    <div style="display:flex;gap:5px;flex-wrap:wrap;">
+      <button type="button" class="az-drone-pill-btn" id="azReconToggleVisBtn">Ocultar Marcações</button>
+      <button type="button" class="az-drone-pill-btn is-danger" id="azReconClearBtn">Limpar</button>
+      <button type="button" class="az-drone-pill-btn is-sky" id="azReconPinSaveBtn">Salvar/Fixar no Mapa</button>
+    </div>
+  </div>
+  <div style="margin-bottom:10px;">
+    <div style="font-size:10px;font-weight:800;color:#94A3B8;margin-bottom:5px;letter-spacing:0.05em;">MODO DE VOO (STICKS)</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;">
+      <button type="button" class="az-drone-pill-btn is-active" data-drone-mode="2">MODO 2</button>
+      <button type="button" class="az-drone-pill-btn" data-drone-mode="1">MODO 1</button>
+      <button type="button" class="az-drone-pill-btn" data-drone-mode="3">MODO 3</button>
+    </div>
+  </div>
+  <div style="margin-bottom:8px;">
+    <div style="font-size:10px;font-weight:800;color:#94A3B8;margin-bottom:5px;letter-spacing:0.05em;">SENSIBILIDADE INDIVIDUAL</div>
+    <div class="az-drone-sens-row"><span>Altitude</span><input type="range" id="azDroneSensAlt" min="0.2" max="2.5" step="0.1" value="1.0" /><span id="azDroneSensAltVal">1.0x</span></div>
+    <div class="az-drone-sens-row"><span>Yaw (Giro)</span><input type="range" id="azDroneSensYaw" min="0.2" max="2.5" step="0.1" value="1.0" /><span id="azDroneSensYawVal">1.0x</span></div>
+    <div class="az-drone-sens-row"><span>Pitch</span><input type="range" id="azDroneSensPitch" min="0.2" max="2.5" step="0.1" value="1.0" /><span id="azDroneSensPitchVal">1.0x</span></div>
+    <div class="az-drone-sens-row"><span>Roll</span><input type="range" id="azDroneSensRoll" min="0.2" max="2.5" step="0.1" value="1.0" /><span id="azDroneSensRollVal">1.0x</span></div>
+  </div>
+  <div style="display:flex;justify-content:flex-end;">
+    <button type="button" class="az-drone-pill-btn" id="azDroneSensResetBtn">Restaurar Padrão</button>
+  </div>
+</div>
+
+<!-- Popover: Editor de Atalhos da Barra (+) -->
+<div id="azDroneShortcutsPopover" class="az-drone-popover" role="dialog" aria-label="Atalhos da Barra do Drone">
+  <div class="az-drone-popover-head">
+    <span>ATALHOS DA BARRA (+)</span>
+    <button type="button" class="az-drone-pill-btn is-danger" id="azDroneShortcutsCloseBtn">FECHAR</button>
+  </div>
+  <div id="azDroneShortcutsList" style="display:flex;flex-direction:column;gap:6px;"></div>
+</div>
+
+<!-- Popover: Pegadas Rápidas (2 km) -->
+<div id="azDronePegadasPopover" class="az-drone-popover" role="dialog" aria-label="Pegadas Rápidas 2 km">
+  <div class="az-drone-popover-head">
+    <span>PEGADAS (RASTRO 2 KM)</span>
+    <button type="button" class="az-drone-pill-btn is-danger" id="azDronePegadasCloseBtn">FECHAR</button>
+  </div>
+  <div id="azDronePegadasList" style="display:flex;flex-direction:column;gap:6px;"></div>
 </div>
 
 <!-- Hub de Comunicação da Equipe & Canal de Áudio (Menu Hambúrguer) -->
@@ -26609,40 +27180,24 @@ if (document.readyState === "loading") {
     if (!canDrawOnMap(map)) return;
     const srcId = "az-sat-src";
     const layerId = "az-sat-layer";
-    const trSrcId = "az-sat-trans-src";
-    const trLayerId = "az-sat-trans-layer";
     const lblSrcId = "az-sat-lbl-src";
     const lblLayerId = "az-sat-lbl-layer";
     if (enable) {
-      // Esri World Imagery + Esri World Transportation (ruas nítidas) + CartoDB Labels: todos com CORS limpo (cacheáveis offline)
       if (!map.getSource(srcId)) {
         map.addSource(srcId, {
           type: "raster",
-          tiles: ["https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"],
+          tiles: ["https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}"],
           tileSize: 256,
-          maxzoom: 19
+          maxzoom: 20
         });
       }
-      const layers = (map.getStyle() && map.getStyle().layers) || [];
-      const sym = layers.find(function (l) { return l.type === "symbol"; });
       if (!map.getLayer(layerId)) {
-        map.addLayer({ id: layerId, type: "raster", source: srcId, paint: { "raster-opacity": 1 } }, sym ? sym.id : undefined);
+        const layers = (map.getStyle() && map.getStyle().layers) || [];
+        const sym = layers.find(function (l) { return l.type === "symbol"; });
+        map.addLayer({ id: layerId, type: "raster", source: srcId, paint: { "raster-opacity": 0.98 } }, sym ? sym.id : undefined);
       } else {
         map.setLayoutProperty(layerId, "visibility", "visible");
-        map.setPaintProperty(layerId, "raster-opacity", 1);
-      }
-      if (!map.getSource(trSrcId)) {
-        map.addSource(trSrcId, {
-          type: "raster",
-          tiles: ["https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}"],
-          tileSize: 256,
-          maxzoom: 19
-        });
-      }
-      if (!map.getLayer(trLayerId)) {
-        map.addLayer({ id: trLayerId, type: "raster", source: trSrcId, paint: { "raster-opacity": 0.95 } }, sym ? sym.id : undefined);
-      } else {
-        map.setLayoutProperty(trLayerId, "visibility", "visible");
+        map.setPaintProperty(layerId, "raster-opacity", 0.98);
       }
       if (!map.getSource(lblSrcId)) {
         map.addSource(lblSrcId, {
@@ -26659,7 +27214,6 @@ if (document.readyState === "loading") {
       }
     } else {
       if (map.getLayer(layerId)) map.setLayoutProperty(layerId, "visibility", "none");
-      if (map.getLayer(trLayerId)) map.setLayoutProperty(trLayerId, "visibility", "none");
       if (map.getLayer(lblLayerId)) map.setLayoutProperty(lblLayerId, "visibility", "none");
     }
   }
@@ -29782,6 +30336,9 @@ if (document.readyState === "loading") {
   }
 
   function buildPinVisualHtml(pinObj, smartCol) {
+    if (pinObj && (pinObj.type === "red_dot" || pinObj.iconId === "red_dot")) {
+      return `<div class="az-tac-pin-badge" style="background:rgba(13,13,13,0.92);color:#FCA5A5;border:1px solid rgba(239,68,68,0.65);">${pinObj.label || "A1"}</div><div class="az-tac-pin-dot" style="background:#EF4444;width:14px;height:14px;border:2px solid #FFFFFF;border-radius:50%;box-shadow:0 0 8px rgba(239,68,68,0.85);"></div>`;
+    }
     const iconId = (pinObj && pinObj.iconId) || "padrao";
     const def = getPinIconDef(iconId);
     let innerIcon = '<div class="az-tac-pin-dot"></div>';
@@ -36028,14 +36585,307 @@ if (document.readyState === "loading") {
     if (ev.key === "Escape" && tac._orbitActive) stopMapOrbit(true);
   });
 
-  // ==================== MODO DRONE (SEGUIR OPERADOR/VOCÊ + VOO LIVRE MODO 02) ====================
+  // ==================== MODO DRONE COMPLETO (ÁUDIO DJI, STICKS, BARRA EDITÁVEL E GIMBAL) ====================
   const droneSticks = { leftX: 0, leftY: 0, rightX: 0, rightY: 0 };
+  const DRONE_CFG_KEY = "az_tac_drone_cfg_v1";
+  const DRONE_BAR_KEY = "az_tac_drone_bar_v1";
+  const DRONE_DEFAULT_CFG = { soundOn: true, flightMode: 2, altSens: 1.0, yawSens: 1.0, pitchSens: 1.0, rollSens: 1.0 };
+  const DRONE_SHORTCUT_CATALOG = [
+    { id: "pin", label: "+ PIN" },
+    { id: "sat", label: "SATÉLITE" },
+    { id: "hospitals", label: "HOSPITAIS" },
+    { id: "batalhoes", label: "BATALHÕES" },
+    { id: "deplans", label: "DEPLAN" },
+    { id: "radar", label: "CLIMA" },
+    { id: "enlace", label: "ENLACE" },
+    { id: "comms", label: "EQUIPE/PTT" }
+  ];
+
+  function loadDroneCfg() {
+    try {
+      const raw = localStorage.getItem(DRONE_CFG_KEY);
+      const parsed = raw ? JSON.parse(raw) : {};
+      return Object.assign({}, DRONE_DEFAULT_CFG, parsed || {});
+    } catch (_) {
+      return Object.assign({}, DRONE_DEFAULT_CFG);
+    }
+  }
+  let droneCfg = loadDroneCfg();
+  function saveDroneCfg() {
+    try { localStorage.setItem(DRONE_CFG_KEY, JSON.stringify(droneCfg)); } catch (_) {}
+  }
+
+  function loadDroneBarShortcuts() {
+    try {
+      const raw = localStorage.getItem(DRONE_BAR_KEY);
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed.filter(function (id) {
+        return DRONE_SHORTCUT_CATALOG.some(function (c) { return c.id === id; });
+      }) : [];
+    } catch (_) {
+      return [];
+    }
+  }
+  let droneBarShortcuts = loadDroneBarShortcuts();
+  function saveDroneBarShortcuts() {
+    try { localStorage.setItem(DRONE_BAR_KEY, JSON.stringify(droneBarShortcuts)); } catch (_) {}
+  }
+
+  // Síntese Web Audio API 100% Offline (Som característico DJI RC-N1/RC230, isolado do PTT)
+  let _azDroneAudioCtx = null;
+  function getDroneAudioCtx() {
+    try {
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!Ctx) return null;
+      if (!_azDroneAudioCtx) _azDroneAudioCtx = new Ctx();
+      if (_azDroneAudioCtx.state === "suspended" && typeof _azDroneAudioCtx.resume === "function") {
+        _azDroneAudioCtx.resume().catch(function () {});
+      }
+      return _azDroneAudioCtx;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function playDjiArpeggio(freqs) {
+    if (!droneCfg.soundOn) return;
+    const ctx = getDroneAudioCtx();
+    if (!ctx) return;
+    try {
+      const now = ctx.currentTime + 0.01;
+      let offset = 0;
+      freqs.forEach(function (freq, idx) {
+        const dur = idx === freqs.length - 1 ? 0.13 : 0.08;
+        const start = now + offset;
+        const end = start + dur;
+        const gain = ctx.createGain();
+        gain.gain.setValueAtTime(0.0001, start);
+        gain.gain.linearRampToValueAtTime(0.11, start + 0.008);
+        gain.gain.setValueAtTime(0.11, Math.max(start + 0.01, end - 0.012));
+        gain.gain.exponentialRampToValueAtTime(0.0001, end);
+        gain.connect(ctx.destination);
+
+        const oscMain = ctx.createOscillator();
+        oscMain.type = "triangle";
+        oscMain.frequency.setValueAtTime(freq, start);
+        oscMain.connect(gain);
+
+        const subGain = ctx.createGain();
+        subGain.gain.setValueAtTime(0.28, start);
+        subGain.connect(gain);
+        const oscHarm = ctx.createOscillator();
+        oscHarm.type = "sine";
+        oscHarm.frequency.setValueAtTime(freq * 2, start);
+        oscHarm.connect(subGain);
+
+        oscMain.start(start);
+        oscHarm.start(start);
+        oscMain.stop(end + 0.01);
+        oscHarm.stop(end + 0.01);
+        offset += dur + 0.02;
+      });
+    } catch (_) {}
+  }
+
+  function playDronePowerOnSound() {
+    playDjiArpeggio([1976, 2489, 2960]);
+  }
+
+  function playDronePowerOffSound() {
+    playDjiArpeggio([2960, 2489, 1976]);
+  }
+
+  function updateDroneStickAxisLabels() {
+    const mode = Number(droneCfg.flightMode) || 2;
+    const setTxt = function (id, txt) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = txt;
+    };
+    if (mode === 1) {
+      setTxt("azDroneLTop", "FRENTE"); setTxt("azDroneLBot", "TRÁS");
+      setTxt("azDroneLLeft", "↺"); setTxt("azDroneLRight", "↻");
+      setTxt("azDroneRTop", "ALT +"); setTxt("azDroneRBot", "ALT -");
+      setTxt("azDroneRLeft", "◀"); setTxt("azDroneRRight", "▶");
+    } else if (mode === 3) {
+      setTxt("azDroneLTop", "FRENTE"); setTxt("azDroneLBot", "TRÁS");
+      setTxt("azDroneLLeft", "◀"); setTxt("azDroneLRight", "▶");
+      setTxt("azDroneRTop", "ALT +"); setTxt("azDroneRBot", "ALT -");
+      setTxt("azDroneRLeft", "↺"); setTxt("azDroneRRight", "↻");
+    } else {
+      setTxt("azDroneLTop", "ALT +"); setTxt("azDroneLBot", "ALT -");
+      setTxt("azDroneLLeft", "↺"); setTxt("azDroneLRight", "↻");
+      setTxt("azDroneRTop", "FRENTE"); setTxt("azDroneRBot", "TRÁS");
+      setTxt("azDroneRLeft", "◀"); setTxt("azDroneRRight", "▶");
+    }
+    const layer = document.getElementById("azDroneSticksLayer");
+    if (layer) layer.setAttribute("aria-label", `Sticks Virtuais Modo 0${mode}`);
+    document.querySelectorAll("#azDroneSettingsPopover [data-drone-mode]").forEach(function (btn) {
+      btn.classList.toggle("is-active", Number(btn.getAttribute("data-drone-mode")) === mode);
+    });
+  }
+
+  function closeAllDronePopovers(exceptId) {
+    ["azDroneSettingsPopover", "azDroneShortcutsPopover", "azDronePegadasPopover"].forEach(function (id) {
+      if (id === exceptId) return;
+      const el = document.getElementById(id);
+      if (el) el.classList.remove("is-open");
+    });
+  }
+
+  function executeDroneShortcutAction(actId) {
+    if (actId === "pin") {
+      const m = getActiveMap();
+      if (!m || typeof m.getCenter !== "function") return;
+      const c = m.getCenter();
+      openPinEditorModal(null, { lng: c.lng, lat: c.lat }, "custom");
+      return;
+    }
+    if (actId === "sat") {
+      if (typeof toggleSatelliteMode === "function") toggleSatelliteMode();
+      return;
+    }
+    if (actId === "enlace") {
+      const tile = document.getElementById("azGridEnlaceTile") || document.getElementById("azDockEnlaceBtn");
+      if (tile) tile.click();
+      return;
+    }
+    if (actId === "comms") {
+      const btn = document.getElementById("azOpenTeamCommsBtn") || document.querySelector('[data-grid-act="comms"]');
+      if (btn) btn.click();
+      return;
+    }
+    const gridBtn = document.querySelector('[data-grid-act="' + actId + '"]');
+    if (gridBtn) gridBtn.click();
+  }
+
+  function renderDroneCustomShortcuts() {
+    const wrap = document.getElementById("azDroneCustomShortcutsWrap");
+    if (!wrap) return;
+    wrap.innerHTML = "";
+    droneBarShortcuts.forEach(function (actId) {
+      const item = DRONE_SHORTCUT_CATALOG.find(function (c) { return c.id === actId; });
+      if (!item) return;
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "az-drone-pill-btn";
+      b.textContent = item.label;
+      b.title = "Atalho: " + item.label;
+      b.addEventListener("click", function () { executeDroneShortcutAction(actId); });
+      wrap.appendChild(b);
+    });
+  }
+
+  function renderDroneShortcutsEditorList() {
+    const list = document.getElementById("azDroneShortcutsList");
+    if (!list) return;
+    list.innerHTML = "";
+    const orderedIds = droneBarShortcuts.concat(
+      DRONE_SHORTCUT_CATALOG.map(function (c) { return c.id; }).filter(function (id) {
+        return !droneBarShortcuts.includes(id);
+      })
+    );
+    orderedIds.forEach(function (actId) {
+      const item = DRONE_SHORTCUT_CATALOG.find(function (c) { return c.id === actId; });
+      if (!item) return;
+      const activeIdx = droneBarShortcuts.indexOf(actId);
+      const isAdded = activeIdx >= 0;
+      const row = document.createElement("div");
+      row.style.cssText = "display:flex;align-items:center;justify-content:space-between;gap:6px;padding:6px 8px;border:1px solid rgba(255,255,255,0.1);border-radius:8px;background:#111318;";
+      row.innerHTML = `<span style="font-size:11px;font-weight:700;color:#E2E8F0;">${item.label}</span><div style="display:flex;gap:4px;"></div>`;
+      const actions = row.lastElementChild;
+      if (isAdded) {
+        const upBtn = document.createElement("button");
+        upBtn.type = "button"; upBtn.className = "az-drone-pill-btn"; upBtn.textContent = "▲";
+        upBtn.disabled = activeIdx === 0;
+        upBtn.addEventListener("click", function () {
+          if (activeIdx <= 0) return;
+          const tmp = droneBarShortcuts[activeIdx - 1];
+          droneBarShortcuts[activeIdx - 1] = droneBarShortcuts[activeIdx];
+          droneBarShortcuts[activeIdx] = tmp;
+          saveDroneBarShortcuts(); renderDroneCustomShortcuts(); renderDroneShortcutsEditorList();
+        });
+        const dnBtn = document.createElement("button");
+        dnBtn.type = "button"; dnBtn.className = "az-drone-pill-btn"; dnBtn.textContent = "▼";
+        dnBtn.disabled = activeIdx === droneBarShortcuts.length - 1;
+        dnBtn.addEventListener("click", function () {
+          if (activeIdx >= droneBarShortcuts.length - 1) return;
+          const tmp = droneBarShortcuts[activeIdx + 1];
+          droneBarShortcuts[activeIdx + 1] = droneBarShortcuts[activeIdx];
+          droneBarShortcuts[activeIdx] = tmp;
+          saveDroneBarShortcuts(); renderDroneCustomShortcuts(); renderDroneShortcutsEditorList();
+        });
+        actions.appendChild(upBtn);
+        actions.appendChild(dnBtn);
+      }
+      const toggleBtn = document.createElement("button");
+      toggleBtn.type = "button";
+      toggleBtn.className = "az-drone-pill-btn " + (isAdded ? "is-danger" : "is-sky");
+      toggleBtn.textContent = isAdded ? "REMOVER" : "ADICIONAR";
+      toggleBtn.addEventListener("click", function () {
+        if (isAdded) {
+          droneBarShortcuts = droneBarShortcuts.filter(function (x) { return x !== actId; });
+        } else {
+          droneBarShortcuts.push(actId);
+        }
+        saveDroneBarShortcuts(); renderDroneCustomShortcuts(); renderDroneShortcutsEditorList();
+      });
+      actions.appendChild(toggleBtn);
+      list.appendChild(row);
+    });
+  }
+
+  function renderDronePegadasPopoverList() {
+    const list = document.getElementById("azDronePegadasList");
+    if (!list) return;
+    list.innerHTML = "";
+    const entries = [{ uid: tac.myUid || "__SELF__", qra: (tac.myQra || "VOCÊ") + " (VOCÊ)", colorId: tac.myColorId, isSelf: true }];
+    Object.values(tac.teammates || {}).forEach(function (mate) {
+      if (!mate || !mate.uid) return;
+      entries.push({ uid: mate.uid, qra: mate.qra || mate.uid, colorId: mate.colorId, isSelf: false });
+    });
+    entries.forEach(function (ent) {
+      const isOn = Boolean(tac.pegadasActive && tac.pegadasActive[ent.uid]);
+      const row = document.createElement("div");
+      row.style.cssText = "display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 8px;border:1px solid rgba(255,255,255,0.1);border-radius:8px;background:#111318;";
+      const nameSpan = document.createElement("span");
+      nameSpan.style.cssText = "font-size:11px;font-weight:700;color:#E2E8F0;";
+      nameSpan.textContent = ent.qra;
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "az-drone-pill-btn " + (isOn ? "is-active" : "is-sky");
+      btn.textContent = isOn ? "OCULTAR 2KM" : "VER 2KM";
+      btn.addEventListener("click", function () {
+        if (typeof togglePegadasForUid === "function") {
+          togglePegadasForUid(ent.uid, ent.qra, ent.colorId);
+        }
+        if (!ent.isSelf && tac.roomCode && tac.pegadasActive && tac.pegadasActive[ent.uid]) {
+          broadcastPacket({ kind: "PEDIR_RASTRO", targetUid: ent.uid });
+        }
+        renderDronePegadasPopoverList();
+      });
+      row.appendChild(nameSpan);
+      row.appendChild(btn);
+      list.appendChild(row);
+    });
+  }
+
+  function syncGimbalReadout() {
+    const m = getActiveMap();
+    const pitch = m && typeof m.getPitch === "function" ? Math.round(m.getPitch()) : 52;
+    const clamped = Math.max(0, Math.min(65, pitch));
+    const slider = document.getElementById("azGimbalPitchSlider");
+    const valEl = document.getElementById("azGimbalPitchVal");
+    if (slider) slider.value = String(clamped);
+    if (valEl) valEl.textContent = `${clamped}°`;
+  }
 
   function refreshDroneTargetsSelect() {
     const sel = document.getElementById("azDroneTargetSelect");
     if (!sel) return;
     const prevVal = tac.droneFollowUid || "__FREE__";
-    let html = '<option value="__FREE__">VOAR LIVRE (MODO 02)</option>';
+    const mode = Number(droneCfg.flightMode) || 2;
+    let html = `<option value="__FREE__">VOAR LIVRE (MODO 0${mode})</option>`;
+    html += `<option value="__TEAM_CENTER__">CENTRO DA EQUIPE</option>`;
     html += `<option value="__SELF__">VOCÊ • ${tac.myQra || "SEU ÍCONE"}</option>`;
     Object.values(tac.teammates || {}).forEach(function (mate) {
       if (!mate || !mate.uid) return;
@@ -36053,6 +36903,16 @@ if (document.readyState === "loading") {
   function getDroneFollowTargetObj() {
     const uid = tac.droneFollowUid;
     if (!uid || uid === "__FREE__") return null;
+    if (uid === "__TEAM_CENTER__") {
+      const pts = [];
+      if (tac.myPos && typeof tac.myPos.lat === "number") pts.push({ lat: tac.myPos.lat, lng: tac.myPos.lng });
+      Object.values(tac.teammates || {}).forEach(function (m) {
+        if (m && typeof m.lat === "number" && typeof m.lng === "number") pts.push({ lat: m.lat, lng: m.lng });
+      });
+      if (!pts.length) return null;
+      const sum = pts.reduce(function (acc, p) { return { lat: acc.lat + p.lat, lng: acc.lng + p.lng }; }, { lat: 0, lng: 0 });
+      return { id: "__TEAM_CENTER__", label: "CENTRO DA EQUIPE", lat: sum.lat / pts.length, lng: sum.lng / pts.length, isSelf: false };
+    }
     if (uid === "__SELF__") {
       if (!tac.myPos || typeof tac.myPos.lat !== "number") return null;
       return { id: "__SELF__", label: tac.myQra || "VOCÊ", lat: tac.myPos.lat, lng: tac.myPos.lng, isSelf: true };
@@ -36083,37 +36943,27 @@ if (document.readyState === "loading") {
     const bar = document.getElementById("azDroneHudBar");
     const ret = document.getElementById("azDroneReticle");
     const sticks = document.getElementById("azDroneSticksLayer");
-    if (bar) bar.classList.toggle("is-open", Boolean(tac.droneMode));
+    const dType = tac.droneType || "tatico";
+    if (bar) {
+      bar.classList.toggle("is-open", Boolean(tac.droneMode));
+      bar.setAttribute("data-drone-type", dType);
+    }
+    const typeSel = document.getElementById("azDroneTypeSelect");
+    if (typeSel && typeSel.value !== dType) typeSel.value = dType;
     if (ret) ret.classList.toggle("is-open", Boolean(tac.droneMode));
-    if (sticks) sticks.classList.toggle("is-open", Boolean(tac.droneMode && tac.droneFreeFlight));
+    if (sticks) sticks.classList.toggle("is-open", Boolean(tac.droneMode && tac.droneFreeFlight && dType === "tatico"));
 
     const ctrlBtn = document.getElementById("azDroneControlToggleBtn");
     if (ctrlBtn) {
+      ctrlBtn.style.display = dType === "recon" ? "none" : "";
       ctrlBtn.textContent = tac.droneFreeFlight ? "SEGUIR" : "ASSUMIR";
       ctrlBtn.classList.toggle("is-active", Boolean(tac.droneFreeFlight));
       ctrlBtn.classList.toggle("is-sky", !tac.droneFreeFlight);
     }
-
-    const m = getActiveMap();
-    const tiltBtn = document.getElementById("azDroneTiltBtn");
-    if (tiltBtn && m && typeof m.getPitch === "function") {
-      const is3d = m.getPitch() >= 20;
-      tiltBtn.textContent = is3d ? "3D" : "2D";
-      tiltBtn.classList.toggle("is-active", is3d);
-    }
-
-    const layerBtn = document.getElementById("azDroneLayerBtn");
-    if (layerBtn) {
-      if (tac.satMode) {
-        layerBtn.textContent = "SATÉLITE";
-        layerBtn.classList.add("is-sky");
-      } else {
-        const darkBtn = document.querySelector('#azGeoMapThemes button[data-theme="dark"]');
-        const isDark = darkBtn && !darkBtn.classList.contains("subtle");
-        layerBtn.textContent = isDark ? "ESCURO" : "CLARO";
-        layerBtn.classList.remove("is-sky");
-      }
-    }
+    const tgtSel = document.getElementById("azDroneTargetSelect");
+    if (tgtSel) tgtSel.style.display = dType === "recon" ? "none" : "";
+    syncGimbalReadout();
+    updateDroneStickAxisLabels();
   }
 
   function stepDroneFlightLoop() {
@@ -36143,14 +36993,29 @@ if (document.readyState === "loading") {
             const c = m.getCenter();
             let bearing = typeof m.getBearing === "function" ? m.getBearing() : 0;
             let zoom = typeof m.getZoom === "function" ? m.getZoom() : 17;
-            // Stick Esquerdo (Modo 02): Horizontal = Yaw suave, Vertical = Altitude (Zoom) suave
-            bearing = ((bearing + lx * 38 * dt) % 360 + 360) % 360;
-            zoom = Math.max(11.5, Math.min(20.0, zoom + ly * 1.15 * dt));
+            const mode = Number(droneCfg.flightMode) || 2;
 
-            // Stick Direito (Modo 02): Vertical = Frente/Trás, Horizontal = Lateral (sensibilidade reduzida e progressiva)
+            let yawIn = lx;
+            let altIn = ly;
+            let pitchIn = ry;
+            let rollIn = rx;
+            if (mode === 1) {
+              yawIn = lx; pitchIn = ly; rollIn = rx; altIn = ry;
+            } else if (mode === 3) {
+              rollIn = lx; pitchIn = ly; yawIn = rx; altIn = ry;
+            }
+
+            const sAlt = Number(droneCfg.altSens) || 1.0;
+            const sYaw = Number(droneCfg.yawSens) || 1.0;
+            const sPitch = Number(droneCfg.pitchSens) || 1.0;
+            const sRoll = Number(droneCfg.rollSens) || 1.0;
+
+            bearing = ((bearing + yawIn * 38 * sYaw * dt) % 360 + 360) % 360;
+            zoom = Math.max(11.5, Math.min(20.0, zoom + altIn * 1.15 * sAlt * dt));
+
             const forwardSpeedMps = Math.max(5, Math.min(220, 14 * Math.pow(2, 17 - zoom)));
-            const fwd = -ry * forwardSpeedMps * dt;
-            const strafe = rx * forwardSpeedMps * dt;
+            const fwd = -pitchIn * forwardSpeedMps * sPitch * dt;
+            const strafe = rollIn * forwardSpeedMps * sRoll * dt;
             const bRad = (bearing * Math.PI) / 180;
             const sRad = ((bearing + 90) * Math.PI) / 180;
             const northM = Math.cos(bRad) * fwd + Math.cos(sRad) * strafe;
@@ -36174,42 +37039,69 @@ if (document.readyState === "loading") {
     if (tac._orbitActive) stopMapOrbit(false);
     if (!tac.droneMode) {
       tac.dronePrevPitch = typeof m.getPitch === "function" ? m.getPitch() : 0;
+      playDronePowerOnSound();
+      if (tac.allyFlyoverAlerted && typeof tac.allyFlyoverAlerted.clear === "function") {
+        tac.allyFlyoverAlerted.clear();
+      } else {
+        tac.allyFlyoverAlerted = new Set();
+      }
     }
     tac.droneMode = true;
-    const picked = targetUid || "__FREE__";
+    if (!tac.droneType) tac.droneType = "tatico";
+    const picked = targetUid || (tac.droneType === "escolta" ? "__TEAM_CENTER__" : "__FREE__");
     tac.droneFollowUid = picked;
-    tac.droneFreeFlight = picked === "__FREE__";
+    tac.droneFreeFlight = tac.droneType === "tatico" && picked === "__FREE__";
     refreshDroneTargetsSelect();
+    renderDroneCustomShortcuts();
+    if (typeof startAllyFlyoverMonitor === "function") startAllyFlyoverMonitor();
 
     if (typeof m.easeTo === "function") {
-      if (!tac.droneFreeFlight) {
+      if (!tac.droneFreeFlight && tac.droneType !== "recon") {
         const tgt = getDroneFollowTargetObj();
         if (tgt) {
           m.easeTo({ center: [tgt.lng, tgt.lat], zoom: Math.max(m.getZoom(), 17), pitch: 58, duration: 480 });
         } else {
-          showToast("Alvo sem GPS ainda — assumindo controle Modo 02.");
+          showToast(`Alvo sem GPS ainda — assumindo controle Modo 0${droneCfg.flightMode}.`);
           tac.droneFreeFlight = true;
         }
       } else if (initialCoords && typeof initialCoords.lng === "number") {
         m.easeTo({ center: [initialCoords.lng, initialCoords.lat], zoom: Math.max(m.getZoom(), 17), pitch: 58, duration: 480 });
       } else if (m.getPitch() < 20) {
-        m.easeTo({ pitch: 58, duration: 400 });
+        m.easeTo({ pitch: tac.droneType === "recon" ? 42 : 58, duration: 400 });
       }
     }
     syncDroneUi();
     if (tac.droneFreeFlight) stepDroneFlightLoop();
-    showToast(tac.droneFreeFlight ? "Modo Drone: Voo Livre (Sticks Modo 02)." : "Modo Drone: acompanhando alvo.");
+    showToast(tac.droneFreeFlight ? `Modo Drone: Voo Livre (Modo 0${droneCfg.flightMode}).` : `Modo Drone (${tac.droneType.toUpperCase()}).`);
   }
 
   function closeDroneMode(restorePitch) {
+    if (tac.droneMode) playDronePowerOffSound();
     tac.droneMode = false;
     tac.droneFreeFlight = false;
     if (tac.droneRaf) {
       cancelAnimationFrame(tac.droneRaf);
       tac.droneRaf = 0;
     }
+    if (typeof stopReconFlight === "function") stopReconFlight(true);
+    if (typeof stopAllyFlyoverMonitor === "function") stopAllyFlyoverMonitor();
+    if (tac.allyFlyoverAlerted && typeof tac.allyFlyoverAlerted.clear === "function") {
+      tac.allyFlyoverAlerted.clear();
+    }
     droneSticks.leftX = 0; droneSticks.leftY = 0;
     droneSticks.rightX = 0; droneSticks.rightY = 0;
+    closeAllDronePopovers(null);
+    const secPanel = document.getElementById("azSectorAnalysisPanel");
+    if (secPanel) secPanel.classList.remove("is-open");
+    const flyBanner = document.getElementById("azAllyFlyoverBanner");
+    if (flyBanner) flyBanner.classList.remove("is-open");
+    const pulsePill = document.getElementById("azReconPulsePill");
+    if (pulsePill) pulsePill.classList.remove("is-open");
+    const bar = document.getElementById("azDroneHudBar");
+    if (bar) {
+      bar.classList.remove("is-collapsed");
+      bar.classList.remove("is-gimbal");
+    }
     syncDroneUi();
     if (restorePitch !== false) {
       const m = getActiveMap();
@@ -36274,6 +37166,9 @@ if (document.readyState === "loading") {
     wireStick(document.getElementById("azDroneStickLeft"), document.getElementById("azDroneKnobLeft"), true);
     wireStick(document.getElementById("azDroneStickRight"), document.getElementById("azDroneKnobRight"), false);
 
+    renderDroneCustomShortcuts();
+    updateDroneStickAxisLabels();
+
     const sel = document.getElementById("azDroneTargetSelect");
     if (sel) {
       sel.addEventListener("change", function () {
@@ -36317,45 +37212,58 @@ if (document.readyState === "loading") {
       } else {
         tac.droneFreeFlight = true;
         stepDroneFlightLoop();
-        showToast("Controle assumido (Sticks Modo 02).");
+        showToast(`Controle assumido (Modo 0${droneCfg.flightMode}).`);
       }
       syncDroneUi();
     });
 
-    onClick("azDroneTiltBtn", function () {
-      const m = getActiveMap();
-      if (!m || typeof m.easeTo !== "function") return;
-      const nextP = m.getPitch() >= 20 ? 0 : 58;
-      m.easeTo({ pitch: nextP, duration: 340 });
-      setTimeout(syncDroneUi, 360);
-      const tiltBtn = document.getElementById("azDroneTiltBtn");
-      if (tiltBtn) {
-        tiltBtn.textContent = nextP >= 20 ? "3D" : "2D";
-        tiltBtn.classList.toggle("is-active", nextP >= 20);
-      }
+    // Barra recolhível
+    onClick("azDroneCollapseBtn", function () {
+      const bar = document.getElementById("azDroneHudBar");
+      if (bar) bar.classList.add("is-collapsed");
+      closeAllDronePopovers(null);
+    });
+    onClick("azDroneBadgeExpand", function () {
+      const bar = document.getElementById("azDroneHudBar");
+      if (bar) bar.classList.toggle("is-collapsed");
     });
 
-    onClick("azDroneLayerBtn", function () {
-      const darkBtn = document.querySelector('#azGeoMapThemes button[data-theme="dark"]');
-      const lightBtn = document.querySelector('#azGeoMapThemes button[data-theme="light"]');
-      if (tac.satMode) {
-        toggleSatelliteMode();
-        if (lightBtn) lightBtn.click();
-      } else if (darkBtn && !darkBtn.classList.contains("subtle")) {
-        toggleSatelliteMode();
-      } else {
-        if (darkBtn) darkBtn.click();
-      }
-      setTimeout(syncDroneUi, 120);
-    });
-
-    onClick("azDroneMarkPinBtn", function () {
+    // Ponto Vermelho Tático rápido na mira central
+    onClick("azDroneRedDotBtn", function () {
       const m = getActiveMap();
       if (!m || typeof m.getCenter !== "function") return;
       const c = m.getCenter();
-      openPinEditorModal(null, { lng: c.lng, lat: c.lat }, "custom");
+      tac.droneRedDotCounter = (Number(tac.droneRedDotCounter) || 0) + 1;
+      const label = "A" + tac.droneRedDotCounter;
+      upsertTacticalPin({
+        id: "rd_" + Date.now(),
+        type: "red_dot",
+        label: label,
+        rawTitle: label,
+        colorHex: "#EF4444",
+        iconId: "red_dot",
+        lng: c.lng,
+        lat: c.lat
+      }, false);
+      showToast(`Ponto ${label} marcado na mira.`);
     });
 
+    // Pegadas 2 km rápido
+    onClick("azDronePegadasBtn", function () {
+      const pop = document.getElementById("azDronePegadasPopover");
+      if (!pop) return;
+      const willOpen = !pop.classList.contains("is-open");
+      closeAllDronePopovers(willOpen ? "azDronePegadasPopover" : null);
+      if (willOpen) {
+        renderDronePegadasPopoverList();
+        pop.classList.add("is-open");
+      } else {
+        pop.classList.remove("is-open");
+      }
+    });
+    onClick("azDronePegadasCloseBtn", function () { closeAllDronePopovers(null); });
+
+    // K9 e Órbita
     onClick("azDroneK9Btn", function () {
       const tgt = !tac.droneFreeFlight ? getDroneFollowTargetObj() : null;
       if (tgt && !tgt.isSelf) {
@@ -36380,8 +37288,1004 @@ if (document.readyState === "loading") {
       startMapOrbitAround(pt.lng, pt.lat);
     });
 
+    // Sub-tela integrada de GIMBAL (jumpTo contínuo 60fps, easeTo no Recentralizar)
+    onClick("azDroneGimbalBtn", function () {
+      const bar = document.getElementById("azDroneHudBar");
+      if (bar) bar.classList.toggle("is-gimbal");
+      closeAllDronePopovers(null);
+      syncGimbalReadout();
+    });
+    onClick("azGimbalBackBtn", function () {
+      const bar = document.getElementById("azDroneHudBar");
+      if (bar) bar.classList.remove("is-gimbal");
+    });
+
+    const gimbalSlider = document.getElementById("azGimbalPitchSlider");
+    if (gimbalSlider) {
+      gimbalSlider.addEventListener("input", function () {
+        const m = getActiveMap();
+        const p = Math.max(0, Math.min(65, Number(this.value) || 0));
+        if (m && typeof m.jumpTo === "function") {
+          try { m.jumpTo({ pitch: p }); } catch (_) {}
+        }
+        const valEl = document.getElementById("azGimbalPitchVal");
+        if (valEl) valEl.textContent = `${Math.round(p)}°`;
+      });
+    }
+
+    function wireHoldRepeat(btnId, stepFn) {
+      const btn = document.getElementById(btnId);
+      if (!btn) return;
+      let timerId = 0;
+      const stop = function () {
+        if (timerId) { clearInterval(timerId); timerId = 0; }
+      };
+      btn.addEventListener("pointerdown", function (ev) {
+        ev.preventDefault();
+        stepFn();
+        stop();
+        timerId = setInterval(stepFn, 40);
+      });
+      btn.addEventListener("pointerup", stop);
+      btn.addEventListener("pointercancel", stop);
+      btn.addEventListener("pointerleave", stop);
+    }
+
+    wireHoldRepeat("azGimbalPitchDownBtn", function () {
+      const m = getActiveMap();
+      if (!m || typeof m.jumpTo !== "function") return;
+      const nextP = Math.max(0, (typeof m.getPitch === "function" ? m.getPitch() : 0) - 2);
+      m.jumpTo({ pitch: nextP });
+      syncGimbalReadout();
+    });
+    wireHoldRepeat("azGimbalPitchUpBtn", function () {
+      const m = getActiveMap();
+      if (!m || typeof m.jumpTo !== "function") return;
+      const nextP = Math.min(65, (typeof m.getPitch === "function" ? m.getPitch() : 0) + 2);
+      m.jumpTo({ pitch: nextP });
+      syncGimbalReadout();
+    });
+    wireHoldRepeat("azGimbalYawLeftBtn", function () {
+      const m = getActiveMap();
+      if (!m || typeof m.jumpTo !== "function") return;
+      const b = typeof m.getBearing === "function" ? m.getBearing() : 0;
+      m.jumpTo({ bearing: ((b - 3) % 360 + 360) % 360 });
+    });
+    wireHoldRepeat("azGimbalYawRightBtn", function () {
+      const m = getActiveMap();
+      if (!m || typeof m.jumpTo !== "function") return;
+      const b = typeof m.getBearing === "function" ? m.getBearing() : 0;
+      m.jumpTo({ bearing: (b + 3) % 360 });
+    });
+    wireHoldRepeat("azGimbalZoomOutBtn", function () {
+      const m = getActiveMap();
+      if (!m || typeof m.jumpTo !== "function") return;
+      const z = typeof m.getZoom === "function" ? m.getZoom() : 17;
+      m.jumpTo({ zoom: Math.max(11.5, z - 0.12) });
+    });
+    wireHoldRepeat("azGimbalZoomInBtn", function () {
+      const m = getActiveMap();
+      if (!m || typeof m.jumpTo !== "function") return;
+      const z = typeof m.getZoom === "function" ? m.getZoom() : 17;
+      m.jumpTo({ zoom: Math.min(20.0, z + 0.12) });
+    });
+
+    onClick("azGimbalResetBtn", function () {
+      const m = getActiveMap();
+      if (!m || typeof m.easeTo !== "function") return;
+      const tgt = getDroneFollowTargetObj();
+      const c = tgt ? [tgt.lng, tgt.lat] : m.getCenter();
+      m.easeTo({ center: c, pitch: 0, duration: 360 });
+      setTimeout(syncGimbalReadout, 380);
+    });
+
+    // Editor de Atalhos (+)
+    onClick("azDroneAddShortcutBtn", function () {
+      const pop = document.getElementById("azDroneShortcutsPopover");
+      if (!pop) return;
+      const willOpen = !pop.classList.contains("is-open");
+      closeAllDronePopovers(willOpen ? "azDroneShortcutsPopover" : null);
+      if (willOpen) {
+        renderDroneShortcutsEditorList();
+        pop.classList.add("is-open");
+      } else {
+        pop.classList.remove("is-open");
+      }
+    });
+    onClick("azDroneShortcutsCloseBtn", function () { closeAllDronePopovers(null); });
+
+    // Ajustes do Drone (Som DJI, Modos de Voo, Sensibilidade 4 eixos)
+    function syncSettingsUi() {
+      const soundChk = document.getElementById("azDroneSoundChk");
+      if (soundChk) soundChk.checked = Boolean(droneCfg.soundOn);
+      const mapIds = [
+        ["azDroneSensAlt", "azDroneSensAltVal", "altSens"],
+        ["azDroneSensYaw", "azDroneSensYawVal", "yawSens"],
+        ["azDroneSensPitch", "azDroneSensPitchVal", "pitchSens"],
+        ["azDroneSensRoll", "azDroneSensRollVal", "rollSens"]
+      ];
+      mapIds.forEach(function (entry) {
+        const inp = document.getElementById(entry[0]);
+        const lbl = document.getElementById(entry[1]);
+        const val = Number(droneCfg[entry[2]]) || 1.0;
+        if (inp) inp.value = val.toFixed(1);
+        if (lbl) lbl.textContent = val.toFixed(1) + "x";
+      });
+      updateDroneStickAxisLabels();
+    }
+
+    onClick("azDroneSettingsBtn", function () {
+      const pop = document.getElementById("azDroneSettingsPopover");
+      if (!pop) return;
+      const willOpen = !pop.classList.contains("is-open");
+      closeAllDronePopovers(willOpen ? "azDroneSettingsPopover" : null);
+      if (willOpen) {
+        syncSettingsUi();
+        pop.classList.add("is-open");
+      } else {
+        pop.classList.remove("is-open");
+      }
+    });
+    onClick("azDroneSettingsCloseBtn", function () { closeAllDronePopovers(null); });
+
+    const soundChk = document.getElementById("azDroneSoundChk");
+    if (soundChk) {
+      soundChk.addEventListener("change", function () {
+        droneCfg.soundOn = Boolean(this.checked);
+        saveDroneCfg();
+        if (droneCfg.soundOn) playDronePowerOnSound();
+      });
+    }
+
+    document.querySelectorAll("#azDroneSettingsPopover [data-drone-mode]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        const m = Number(this.getAttribute("data-drone-mode")) || 2;
+        droneCfg.flightMode = m;
+        saveDroneCfg();
+        updateDroneStickAxisLabels();
+        refreshDroneTargetsSelect();
+        showToast(`Modo de voo alterado para Modo 0${m}.`);
+      });
+    });
+
+    [
+      ["azDroneSensAlt", "azDroneSensAltVal", "altSens"],
+      ["azDroneSensYaw", "azDroneSensYawVal", "yawSens"],
+      ["azDroneSensPitch", "azDroneSensPitchVal", "pitchSens"],
+      ["azDroneSensRoll", "azDroneSensRollVal", "rollSens"]
+    ].forEach(function (entry) {
+      const inp = document.getElementById(entry[0]);
+      const lbl = document.getElementById(entry[1]);
+      if (!inp) return;
+      inp.addEventListener("input", function () {
+        const val = Math.max(0.2, Math.min(2.5, Number(this.value) || 1.0));
+        droneCfg[entry[2]] = val;
+        if (lbl) lbl.textContent = val.toFixed(1) + "x";
+        saveDroneCfg();
+      });
+    });
+
+    onClick("azDroneSensResetBtn", function () {
+      droneCfg = Object.assign({}, DRONE_DEFAULT_CFG);
+      saveDroneCfg();
+      syncSettingsUi();
+      refreshDroneTargetsSelect();
+      showToast("Ajustes do Drone restaurados para o padrão (Modo 02).");
+    });
+
     onClick("azDroneCloseBtn", function () {
       closeDroneMode(true);
+    });
+  })();
+
+  // ==================== BIPE DE SOBREVOÔ ALIADO + TIPOS DE DRONE + RECONHECIMENTO + ANÁLISE ====================
+  function playDroneAllyBeep() {
+    if (!droneCfg.soundOn) return;
+    const ctx = getDroneAudioCtx();
+    if (!ctx) return;
+    try {
+      const now = ctx.currentTime + 0.01;
+      [2350, 2800].forEach(function (freq, idx) {
+        const start = now + idx * 0.075;
+        const end = start + 0.045;
+        const gain = ctx.createGain();
+        gain.gain.setValueAtTime(0.0001, start);
+        gain.gain.linearRampToValueAtTime(0.095, start + 0.006);
+        gain.gain.exponentialRampToValueAtTime(0.0001, end);
+        gain.connect(ctx.destination);
+        const osc = ctx.createOscillator();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(freq, start);
+        osc.connect(gain);
+        osc.start(start);
+        osc.stop(end + 0.01);
+      });
+    } catch (_) {}
+  }
+
+  let _allyFlyoverTimer = 0;
+  let _allyBannerHideTimer = 0;
+  function stopAllyFlyoverMonitor() {
+    if (_allyFlyoverTimer) { clearInterval(_allyFlyoverTimer); _allyFlyoverTimer = 0; }
+    if (_allyBannerHideTimer) { clearTimeout(_allyBannerHideTimer); _allyBannerHideTimer = 0; }
+  }
+  function startAllyFlyoverMonitor() {
+    stopAllyFlyoverMonitor();
+    if (!tac.allyFlyoverAlerted) tac.allyFlyoverAlerted = new Set();
+    _allyFlyoverTimer = setInterval(function () {
+      if (!tac.droneMode) return;
+      const m = getActiveMap();
+      if (!m || typeof m.getCenter !== "function") return;
+      const c = m.getCenter();
+      const mates = Object.values(tac.teammates || {});
+      for (let i = 0; i < mates.length; i++) {
+        const mate = mates[i];
+        if (!mate || !mate.uid || typeof mate.lat !== "number" || typeof mate.lng !== "number") continue;
+        if (tac.allyFlyoverAlerted.has(mate.uid)) continue;
+        const d = calcDistAndBearing(c.lat, c.lng, mate.lat, mate.lng).dist;
+        if (d <= 55) {
+          tac.allyFlyoverAlerted.add(mate.uid);
+          playDroneAllyBeep();
+          const ban = document.getElementById("azAllyFlyoverBanner");
+          if (ban) {
+            ban.textContent = `SOBREVOO ALIADO: ${mate.qra || mate.uid}`;
+            ban.classList.add("is-open");
+            if (_allyBannerHideTimer) clearTimeout(_allyBannerHideTimer);
+            _allyBannerHideTimer = setTimeout(function () { ban.classList.remove("is-open"); }, 2400);
+          }
+          break;
+        }
+      }
+    }, 250);
+  }
+
+  (function initDroneTypesAndReconEngine() {
+    const RECON_CFG_KEY = "az_tac_recon_cfg_v1";
+    const RECON_DEFAULT_CFG = { autoScan: true, drawMode: "live" };
+    let reconCfg = Object.assign({}, RECON_DEFAULT_CFG);
+    try {
+      const saved = JSON.parse(localStorage.getItem(RECON_CFG_KEY) || "{}");
+      if (saved && typeof saved === "object") reconCfg = Object.assign({}, RECON_DEFAULT_CFG, saved);
+    } catch (_) {}
+    function saveReconCfg() {
+      try { localStorage.setItem(RECON_CFG_KEY, JSON.stringify(reconCfg)); } catch (_) {}
+    }
+
+    const state = {
+      shapeMode: "circle", // "circle" | "rect"
+      pickStep: 0,
+      center: null, // { lng, lat }
+      radiusM: 250,
+      rectCornerA: null,
+      rectCornerB: null,
+      waypoints: [],
+      wpIdx: 0,
+      speedMult: 1,
+      paused: false,
+      pattern: "sweep", // "sweep" | "perim"
+      manualZoomUntil: 0,
+      targetZoom: 16.95,
+      pendingFeatures: [],
+      revealedFeatures: [],
+      featuresVisible: true,
+      analysis: { profile: "BAIRRO RESIDENCIAL", neighborhoods: [], avenidas: [], ruas: [], becos: [], escadarias: [], shopsCount: 0, complexity: "Média" },
+      activeTab: "avenidas",
+      mapClickHandler: null,
+      mapDragHandler: null,
+      pulseHideTimer: 0
+    };
+
+    function showReconPulse(msg) {
+      const el = document.getElementById("azReconPulsePill");
+      if (!el) return;
+      el.textContent = msg;
+      el.classList.add("is-open");
+      if (state.pulseHideTimer) clearTimeout(state.pulseHideTimer);
+      state.pulseHideTimer = setTimeout(function () { el.classList.remove("is-open"); }, 1500);
+    }
+
+    function ensureReconMapImages(map) {
+      if (!map || typeof map.hasImage !== "function" || typeof map.addImage !== "function") return;
+      const defs = [
+        {
+          name: "az-recon-ico-escada",
+          col: "#F59E0B",
+          svg: '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10.5" fill="#0D0D0D" stroke="#F59E0B" stroke-width="1.6"/><path d="M6 17h3v-3h3v-3h3V8h3"/><path d="M6 12.5l7.5-7.5"/></svg>'
+        },
+        {
+          name: "az-recon-ico-beco",
+          col: "#38BDF8",
+          svg: '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10.5" fill="#0D0D0D" stroke="#38BDF8" stroke-width="1.6"/><path d="M7 18c0-4.5 5-3 5-7.5S17 7.5 17 6"/><path d="M10.5 18c0-3.5 4-2 4-6.5s4-2 4-5.5" stroke-dasharray="2 2"/></svg>'
+        }
+      ];
+      defs.forEach(function (d) {
+        if (map.hasImage(d.name)) return;
+        try {
+          const img = new Image(28, 28);
+          img.onload = function () {
+            try { if (!map.hasImage(d.name)) map.addImage(d.name, img); } catch (_) {}
+          };
+          img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(d.svg);
+        } catch (_) {}
+      });
+    }
+
+    function ensureReconLayers(map) {
+      if (!canDrawOnMap(map)) return;
+      ensureReconMapImages(map);
+      const emptyGeo = { type: "FeatureCollection", features: [] };
+      if (!map.getSource("az-recon-sector-src")) {
+        map.addSource("az-recon-sector-src", { type: "geojson", data: emptyGeo });
+        map.addLayer({ id: "az-recon-sector-fill", type: "fill", source: "az-recon-sector-src", paint: { "fill-color": "#C5A869", "fill-opacity": 0.08 } });
+        map.addLayer({ id: "az-recon-sector-line", type: "line", source: "az-recon-sector-src", paint: { "line-color": "#C5A869", "line-width": 2.2, "line-dasharray": [3, 2] } });
+      }
+      if (!map.getSource("az-recon-features-src")) {
+        map.addSource("az-recon-features-src", { type: "geojson", data: emptyGeo });
+        map.addLayer({ id: "az-recon-escada-base", type: "line", source: "az-recon-features-src", filter: ["==", ["get", "kind"], "escada"], layout: { "line-cap": "butt", "line-join": "round" }, paint: { "line-color": "#F59E0B", "line-width": 2.2 } });
+        map.addLayer({ id: "az-recon-escada-steps", type: "line", source: "az-recon-features-src", filter: ["==", ["get", "kind"], "escada"], paint: { "line-color": "#F59E0B", "line-width": 8.5, "line-dasharray": [0.35, 0.9] } });
+        map.addLayer({ id: "az-recon-beco-bg", type: "line", source: "az-recon-features-src", filter: ["==", ["get", "kind"], "beco"], layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": "#38BDF8", "line-width": 7, "line-opacity": 0.25 } });
+        map.addLayer({ id: "az-recon-beco-dash", type: "line", source: "az-recon-features-src", filter: ["==", ["get", "kind"], "beco"], layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": "#38BDF8", "line-width": 3, "line-dasharray": [2.2, 1.3] } });
+      }
+      if (!map.getSource("az-recon-pins-src")) {
+        map.addSource("az-recon-pins-src", { type: "geojson", data: emptyGeo });
+        map.addLayer({
+          id: "az-recon-pins-layer",
+          type: "symbol",
+          source: "az-recon-pins-src",
+          layout: {
+            "icon-image": ["match", ["get", "kind"], "escada", "az-recon-ico-escada", "az-recon-ico-beco"],
+            "icon-size": 0.95,
+            "icon-allow-overlap": true,
+            "text-field": ["get", "label"],
+            "text-size": 9,
+            "text-offset": [0, 1.4],
+            "text-optional": true
+          },
+          paint: { "text-color": "#F8FAFC", "text-halo-color": "#0D0D0D", "text-halo-width": 1.4 }
+        });
+      }
+      if (!map.getSource("az-recon-highlight-src")) {
+        map.addSource("az-recon-highlight-src", { type: "geojson", data: emptyGeo });
+        map.addLayer({ id: "az-recon-highlight-line", type: "line", source: "az-recon-highlight-src", paint: { "line-color": "#4ADE80", "line-width": 6, "line-opacity": 0.9 } });
+      }
+    }
+
+    function updateReconGeoJsonLayers() {
+      const m = getActiveMap();
+      if (!m) return;
+      ensureReconLayers(m);
+      const vis = state.featuresVisible ? "visible" : "none";
+      ["az-recon-escada-base", "az-recon-escada-steps", "az-recon-beco-bg", "az-recon-beco-dash", "az-recon-pins-layer"].forEach(function (lid) {
+        if (m.getLayer(lid)) m.setLayoutProperty(lid, "visibility", vis);
+      });
+      const lineFeats = [];
+      const pinFeats = [];
+      state.revealedFeatures.forEach(function (f) {
+        if (!f || !Array.isArray(f.coords) || f.coords.length < 2) return;
+        lineFeats.push({ type: "Feature", geometry: { type: "LineString", coordinates: f.coords }, properties: { id: f.id, kind: f.kind } });
+        pinFeats.push({ type: "Feature", geometry: { type: "Point", coordinates: f.coords[0] }, properties: { id: f.id, kind: f.kind, label: f.name || (f.kind === "escada" ? "ESCADA" : "BECO") } });
+      });
+      if (m.getSource("az-recon-features-src")) m.getSource("az-recon-features-src").setData({ type: "FeatureCollection", features: lineFeats });
+      if (m.getSource("az-recon-pins-src")) m.getSource("az-recon-pins-src").setData({ type: "FeatureCollection", features: pinFeats });
+    }
+
+    function getSectorPolygonCoords() {
+      if (state.shapeMode === "circle" && state.center) {
+        const pts = [];
+        const cosLat = Math.max(0.2, Math.cos((state.center.lat * Math.PI) / 180));
+        for (let i = 0; i <= 48; i++) {
+          const ang = (i / 48) * Math.PI * 2;
+          const dLat = (Math.sin(ang) * state.radiusM) / 111320;
+          const dLng = (Math.cos(ang) * state.radiusM) / (111320 * cosLat);
+          pts.push([state.center.lng + dLng, state.center.lat + dLat]);
+        }
+        return pts;
+      }
+      if (state.shapeMode === "rect" && state.rectCornerA && state.rectCornerB) {
+        const minLng = Math.min(state.rectCornerA.lng, state.rectCornerB.lng);
+        const maxLng = Math.max(state.rectCornerA.lng, state.rectCornerB.lng);
+        const minLat = Math.min(state.rectCornerA.lat, state.rectCornerB.lat);
+        const maxLat = Math.max(state.rectCornerA.lat, state.rectCornerB.lat);
+        return [[minLng, minLat], [maxLng, minLat], [maxLng, maxLat], [minLng, maxLat], [minLng, minLat]];
+      }
+      return null;
+    }
+
+    function getSectorBbox() {
+      const poly = getSectorPolygonCoords();
+      if (!poly || !poly.length) return null;
+      let minLng = Infinity, maxLng = -Infinity, minLat = Infinity, maxLat = -Infinity;
+      poly.forEach(function (pt) {
+        if (pt[0] < minLng) minLng = pt[0];
+        if (pt[0] > maxLng) maxLng = pt[0];
+        if (pt[1] < minLat) minLat = pt[1];
+        if (pt[1] > maxLat) maxLat = pt[1];
+      });
+      return { minLat: minLat, minLng: minLng, maxLat: maxLat, maxLng: maxLng };
+    }
+
+    function drawReconSectorBoundary() {
+      const m = getActiveMap();
+      if (!m) return;
+      ensureReconLayers(m);
+      const poly = getSectorPolygonCoords();
+      const src = m.getSource("az-recon-sector-src");
+      if (!src) return;
+      if (!poly) {
+        src.setData({ type: "FeatureCollection", features: [] });
+        return;
+      }
+      src.setData({ type: "FeatureCollection", features: [{ type: "Feature", geometry: { type: "Polygon", coordinates: [poly] }, properties: {} }] });
+    }
+
+    function generateReconWaypoints(pattern) {
+      const bbox = getSectorBbox();
+      if (!bbox) return [];
+      if (pattern === "perim") {
+        const poly = getSectorPolygonCoords() || [];
+        return poly.map(function (pt) { return { lng: pt[0], lat: pt[1] }; });
+      }
+      const midLat = (bbox.minLat + bbox.maxLat) / 2;
+      const cosLat = Math.max(0.2, Math.cos((midLat * Math.PI) / 180));
+      const heightM = (bbox.maxLat - bbox.minLat) * 111320;
+      const laneStepM = 85;
+      const numLanes = Math.max(2, Math.min(18, Math.ceil(heightM / laneStepM)));
+      const wps = [];
+      for (let i = 0; i <= numLanes; i++) {
+        const t = i / numLanes;
+        const lat = bbox.minLat + t * (bbox.maxLat - bbox.minLat);
+        let minX = bbox.minLng, maxX = bbox.maxLng;
+        if (state.shapeMode === "circle" && state.center) {
+          const dy = (lat - state.center.lat) * 111320;
+          const halfW = Math.sqrt(Math.max(0, state.radiusM * state.radiusM - dy * dy));
+          const dLng = halfW / (111320 * cosLat);
+          minX = state.center.lng - dLng;
+          maxX = state.center.lng + dLng;
+        }
+        if (i % 2 === 0) {
+          wps.push({ lng: minX, lat: lat });
+          wps.push({ lng: maxX, lat: lat });
+        } else {
+          wps.push({ lng: maxX, lat: lat });
+          wps.push({ lng: minX, lat: lat });
+        }
+      }
+      return wps;
+    }
+
+    function classifyAndBuildSectorAnalysis(elements) {
+      const neighborhoods = new Set();
+      const avMap = new Map();
+      const ruaMap = new Map();
+      const becoMap = new Map();
+      const escMap = new Map();
+      let shopsCount = 0;
+      let greenCount = 0;
+      let indCount = 0;
+      let favelaHints = 0;
+
+      elements.forEach(function (el) {
+        const tags = el.tags || {};
+        if (tags.suburb || tags.neighbourhood || tags["addr:suburb"]) {
+          neighborhoods.add(tags.suburb || tags.neighbourhood || tags["addr:suburb"]);
+        }
+        if (tags.place === "suburb" || tags.place === "neighbourhood" || tags.place === "quarter") {
+          if (tags.name) neighborhoods.add(tags.name);
+        }
+        if (tags.shop || tags.amenity) shopsCount++;
+        if (tags.landuse === "industrial" || tags.building === "warehouse" || tags.building === "industrial") indCount++;
+        if (tags.landuse === "forest" || tags.leisure === "park" || tags.natural === "wood") greenCount++;
+
+        const coords = Array.isArray(el.coords) ? el.coords : [];
+        if (coords.length < 2) return;
+        const name = (tags.name || "").trim();
+        const hw = tags.highway || "";
+        const svc = tags.service || "";
+        const fw = tags.footway || "";
+        const mid = coords[Math.floor(coords.length / 2)];
+        const isEscada = hw === "steps" || /escada|escadaria/i.test(name);
+        const isBeco = !isEscada && (
+          hw === "alley" || svc === "alley" || /beco|viela|travessa/i.test(name) ||
+          ((hw === "footway" || hw === "path" || hw === "pedestrian") && fw !== "sidewalk" && fw !== "crossing")
+        );
+
+        if (isEscada) {
+          const key = name || ("Escadaria s/n #" + (escMap.size + 1));
+          if (!escMap.has(key)) escMap.set(key, { name: key, coords: coords, lat: mid[1], lng: mid[0], kind: "escada" });
+          favelaHints++;
+        } else if (isBeco) {
+          const key = name || ("Beco/Viela #" + (becoMap.size + 1));
+          if (!becoMap.has(key)) becoMap.set(key, { name: key, coords: coords, lat: mid[1], lng: mid[0], kind: "beco" });
+          favelaHints++;
+        } else if (hw === "primary" || hw === "secondary" || hw === "trunk" || /^av\.?|^avenida/i.test(name)) {
+          const key = name || ("Avenida #" + (avMap.size + 1));
+          if (!avMap.has(key)) avMap.set(key, { name: key, coords: coords, lat: mid[1], lng: mid[0], kind: "avenida" });
+        } else if (hw === "tertiary" || hw === "residential" || hw === "living_street" || hw === "unclassified") {
+          const key = name || ("Rua s/n #" + (ruaMap.size + 1));
+          if (!ruaMap.has(key)) ruaMap.set(key, { name: key, coords: coords, lat: mid[1], lng: mid[0], kind: "rua" });
+        }
+      });
+
+      const becos = Array.from(becoMap.values());
+      const escadarias = Array.from(escMap.values());
+      const avenidas = Array.from(avMap.values());
+      const ruas = Array.from(ruaMap.values());
+      const totalAlleys = becos.length + escadarias.length;
+      const totalRoads = avenidas.length + ruas.length;
+
+      let profile = "BAIRRO RESIDENCIAL";
+      if (totalAlleys >= 6 && totalAlleys >= totalRoads * 0.45) profile = "AGLOMERADO / VILA";
+      else if (totalAlleys >= 3 && shopsCount >= 5) profile = "ZONA MISTA (RESIDENCIAL + AGLOMERADO)";
+      else if (shopsCount >= 10 || (avenidas.length >= 2 && shopsCount >= 6)) profile = "ÁREA COMERCIAL / CENTRAL";
+      else if (indCount >= 3) profile = "INDUSTRIAL / GALPÕES";
+      else if (greenCount >= 4 && totalRoads <= 3) profile = "ÁREA VERDE / MATA";
+      else if (shopsCount >= 4 && ruas.length >= 3) profile = "ZONA MISTA (RESIDENCIAL + COMERCIAL)";
+
+      let complexity = "Baixa";
+      if (totalAlleys >= 7 || (totalAlleys + totalRoads) >= 24) complexity = "Alta";
+      else if (totalAlleys >= 2 || (totalAlleys + totalRoads) >= 10) complexity = "Média";
+
+      state.analysis = {
+        profile: profile,
+        neighborhoods: Array.from(neighborhoods),
+        avenidas: avenidas,
+        ruas: ruas,
+        becos: becos,
+        escadarias: escadarias,
+        shopsCount: shopsCount,
+        complexity: complexity
+      };
+      renderSectorAnalysisPanel();
+    }
+
+    function renderSectorAnalysisPanel() {
+      const sumEl = document.getElementById("azSectorSummaryBox");
+      const listEl = document.getElementById("azSectorListBox");
+      if (!sumEl || !listEl) return;
+      const a = state.analysis;
+      const bairrosStr = a.neighborhoods.length ? a.neighborhoods.slice(0, 3).join(", ") : "Setor mapeado";
+      sumEl.innerHTML =
+        `<div style="font-weight:900;color:#C5A869;margin-bottom:3px;">PERFIL: ${a.profile}</div>` +
+        `<div><b>Bairros:</b> ${bairrosStr} • <b>Complexidade:</b> ${a.complexity}</div>` +
+        `<div><b>Av.:</b> ${a.avenidas.length} • <b>Ruas:</b> ${a.ruas.length} • <b>Becos:</b> ${a.becos.length} • <b>Escadas:</b> ${a.escadarias.length} • <b>Comércios:</b> ${a.shopsCount}</div>`;
+
+      const items = a[state.activeTab] || [];
+      listEl.innerHTML = "";
+      if (!items.length) {
+        listEl.innerHTML = `<div style="font-size:10px;color:#94A3B8;padding:8px;">Nenhum registro nesta aba para o setor atual.</div>`;
+        return;
+      }
+      items.forEach(function (item) {
+        const row = document.createElement("div");
+        row.className = "az-sector-item";
+        const title = document.createElement("span");
+        title.style.cssText = "font-size:10.5px;font-weight:700;color:#E2E8F0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;";
+        title.textContent = item.name;
+        const routeBtn = document.createElement("button");
+        routeBtn.type = "button";
+        routeBtn.className = "az-drone-pill-btn is-sky";
+        routeBtn.textContent = "Gerar Rota";
+        routeBtn.addEventListener("click", function (ev) {
+          ev.stopPropagation();
+          state.paused = true;
+          const pauseBtn = document.getElementById("azReconPauseBtn");
+          if (pauseBtn) pauseBtn.textContent = "RETOMAR";
+          if (typeof window.azimuteGeoRouteTo === "function") {
+            window.azimuteGeoRouteTo(item.lat, item.lng, item.name, false);
+          } else {
+            showToast("Motor de rotas indisponível nesta tela.");
+          }
+        });
+        row.addEventListener("click", function () {
+          state.paused = true;
+          const pauseBtn = document.getElementById("azReconPauseBtn");
+          if (pauseBtn) pauseBtn.textContent = "RETOMAR";
+          const m = getActiveMap();
+          if (m) {
+            ensureReconLayers(m);
+            if (m.getSource("az-recon-highlight-src")) {
+              m.getSource("az-recon-highlight-src").setData({
+                type: "FeatureCollection",
+                features: [{ type: "Feature", geometry: { type: "LineString", coordinates: item.coords }, properties: {} }]
+              });
+            }
+            if (typeof m.easeTo === "function") {
+              m.easeTo({ center: [item.lng, item.lat], zoom: 17.6, pitch: 48, duration: 480 });
+            }
+          }
+        });
+        row.appendChild(title);
+        row.appendChild(routeBtn);
+        listEl.appendChild(row);
+      });
+    }
+
+    async function fetchSectorOsmOrOffline() {
+      const bbox = getSectorBbox();
+      if (!bbox) return;
+      showReconPulse("Mapeando setor...");
+      const query = `[out:json][timeout:18];(way["highway"~"^(steps|alley|footway|path|pedestrian|primary|secondary|tertiary|residential|living_street|unclassified)$"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});way["service"="alley"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});node["shop"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});node["amenity"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});way["landuse"~"^(industrial|forest)$"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});node["place"~"^(suburb|neighbourhood|quarter)$"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng}););out body geom;`;
+      const endpoints = [
+        "https://overpass-api.de/api/interpreter",
+        "https://overpass.kumi.systems/api/interpreter"
+      ];
+      let elements = null;
+      for (let i = 0; i < endpoints.length; i++) {
+        try {
+          const res = await fetch(endpoints[i], {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+            body: "data=" + encodeURIComponent(query)
+          });
+          if (res.ok) {
+            const json = await res.json();
+            if (json && Array.isArray(json.elements)) {
+              elements = json.elements.map(function (el) {
+                return {
+                  tags: el.tags || {},
+                  coords: Array.isArray(el.geometry) ? el.geometry.map(function (g) { return [g.lon, g.lat]; }) : []
+                };
+              });
+              break;
+            }
+          }
+        } catch (_) {}
+      }
+
+      if (!elements) {
+        showToast("Leitura local (offline)");
+        const m = getActiveMap();
+        elements = [];
+        if (m && typeof m.queryRenderedFeatures === "function") {
+          try {
+            const feats = m.queryRenderedFeatures();
+            feats.forEach(function (f) {
+              if (!f || !f.geometry) return;
+              const props = f.properties || {};
+              let coords = [];
+              if (f.geometry.type === "LineString") coords = f.geometry.coordinates;
+              else if (f.geometry.type === "MultiLineString" && f.geometry.coordinates[0]) coords = f.geometry.coordinates[0];
+              elements.push({
+                tags: { highway: props.class || props.subclass || props.type || "", name: props.name || "" },
+                coords: coords
+              });
+            });
+          } catch (_) {}
+        }
+      }
+
+      classifyAndBuildSectorAnalysis(elements);
+
+      const scanItems = [];
+      state.analysis.escadarias.forEach(function (e, idx) {
+        scanItems.push({ id: "rec_e_" + idx, kind: "escada", name: e.name, coords: e.coords, mid: { lat: e.lat, lng: e.lng } });
+      });
+      state.analysis.becos.forEach(function (b, idx) {
+        scanItems.push({ id: "rec_b_" + idx, kind: "beco", name: b.name, coords: b.coords, mid: { lat: b.lat, lng: b.lng } });
+      });
+
+      if (!reconCfg.autoScan) {
+        state.pendingFeatures = [];
+        state.revealedFeatures = [];
+      } else if (reconCfg.drawMode === "background") {
+        state.pendingFeatures = [];
+        state.revealedFeatures = scanItems;
+        showReconPulse(`Setor mapeado: ${scanItems.length} becos/escadas`);
+      } else {
+        state.pendingFeatures = scanItems;
+        state.revealedFeatures = [];
+      }
+      updateReconGeoJsonLayers();
+    }
+
+    function startReconFlight(pattern) {
+      const m = getActiveMap();
+      if (!m) return;
+      if (!state.center && !state.rectCornerB) {
+        const c = m.getCenter();
+        state.shapeMode = "circle";
+        state.center = { lng: c.lng, lat: c.lat };
+        drawReconSectorBoundary();
+        fetchSectorOsmOrOffline();
+      }
+      state.pattern = pattern || "sweep";
+      state.waypoints = generateReconWaypoints(state.pattern);
+      state.wpIdx = 0;
+      state.paused = false;
+      state.targetZoom = 16.95;
+      const pauseBtn = document.getElementById("azReconPauseBtn");
+      if (pauseBtn) pauseBtn.textContent = "PAUSAR";
+      if (tac.reconRaf) { cancelAnimationFrame(tac.reconRaf); tac.reconRaf = 0; }
+      if (typeof m.easeTo === "function" && state.waypoints[0]) {
+        m.easeTo({ center: [state.waypoints[0].lng, state.waypoints[0].lat], zoom: 16.95, pitch: 42, duration: 500 });
+      }
+      if (!state.mapDragHandler && typeof m.on === "function") {
+        state.mapDragHandler = function () {
+          if (tac.droneMode && tac.droneType === "recon" && !state.paused) {
+            state.paused = true;
+            const pb = document.getElementById("azReconPauseBtn");
+            if (pb) pb.textContent = "RETOMAR";
+            showToast("Piloto automático pausado pelo toque no mapa.");
+          }
+        };
+        m.on("dragstart", state.mapDragHandler);
+      }
+
+      let lastTs = performance.now();
+      function tickRecon(now) {
+        if (!tac.droneMode || tac.droneType !== "recon") { tac.reconRaf = 0; return; }
+        const dt = Math.min(0.08, Math.max(0, (now - lastTs) / 1000));
+        lastTs = now;
+        if (!state.paused && state.waypoints.length > 0 && state.wpIdx < state.waypoints.length) {
+          const c = m.getCenter();
+          const wp = state.waypoints[state.wpIdx];
+          const info = calcDistAndBearing(c.lat, c.lng, wp.lat, wp.lng);
+          const stepM = 34 * state.speedMult * dt;
+          let nextLat = c.lat, nextLng = c.lng;
+          if (info.dist <= Math.max(10, stepM)) {
+            nextLat = wp.lat; nextLng = wp.lng;
+            state.wpIdx++;
+            if (state.wpIdx >= state.waypoints.length) {
+              if (state.pattern === "perim") state.wpIdx = 0;
+              else {
+                state.paused = true;
+                const pb = document.getElementById("azReconPauseBtn");
+                if (pb) pb.textContent = "RETOMAR";
+                showToast("Varredura do setor concluída.");
+              }
+            }
+          } else {
+            const ratio = stepM / info.dist;
+            nextLat = c.lat + (wp.lat - c.lat) * ratio;
+            nextLng = c.lng + (wp.lng - c.lng) * ratio;
+          }
+
+          // Revelação progressiva ao vivo no instante em que a câmera passa sobre o local
+          if (reconCfg.autoScan && reconCfg.drawMode === "live" && state.pendingFeatures.length > 0) {
+            let newlyRevealed = 0;
+            const remaining = [];
+            state.pendingFeatures.forEach(function (pf) {
+              const df = calcDistAndBearing(nextLat, nextLng, pf.mid.lat, pf.mid.lng).dist;
+              if (df <= 115) {
+                state.revealedFeatures.push(pf);
+                newlyRevealed++;
+              } else {
+                remaining.push(pf);
+              }
+            });
+            if (newlyRevealed > 0) {
+              state.pendingFeatures = remaining;
+              updateReconGeoJsonLayers();
+              showReconPulse(`Detectado: +${newlyRevealed} acesso(s)`);
+            }
+          }
+
+          // Auto-Altitude inteligente (pausa se operador ajustou altura manualmente)
+          let z = typeof m.getZoom === "function" ? m.getZoom() : 16.95;
+          if (Date.now() > state.manualZoomUntil) {
+            let nearbyAlleys = 0;
+            state.revealedFeatures.concat(state.pendingFeatures).forEach(function (rf) {
+              if (calcDistAndBearing(nextLat, nextLng, rf.mid.lat, rf.mid.lng).dist <= 95) nearbyAlleys++;
+            });
+            state.targetZoom = nearbyAlleys >= 2 ? 17.55 : 16.75;
+            z = z + (state.targetZoom - z) * Math.min(1, dt * 1.4);
+          }
+
+          if (typeof m.jumpTo === "function") {
+            m.jumpTo({ center: [nextLng, nextLat], zoom: z });
+          }
+        }
+        tac.reconRaf = requestAnimationFrame(tickRecon);
+      }
+      tac.reconRaf = requestAnimationFrame(tickRecon);
+    }
+
+    window.stopReconFlight = function (clearPickHandler) {
+      if (tac.reconRaf) { cancelAnimationFrame(tac.reconRaf); tac.reconRaf = 0; }
+      state.paused = true;
+      const m = getActiveMap();
+      if (clearPickHandler && m && typeof m.off === "function") {
+        if (state.mapClickHandler) { m.off("click", state.mapClickHandler); state.mapClickHandler = null; }
+        if (state.mapDragHandler) { m.off("dragstart", state.mapDragHandler); state.mapDragHandler = null; }
+      }
+    };
+
+    function armSectorPick(mode) {
+      const m = getActiveMap();
+      if (!m || typeof m.on !== "function") return;
+      state.shapeMode = mode;
+      state.pickStep = 0;
+      if (state.mapClickHandler) { m.off("click", state.mapClickHandler); state.mapClickHandler = null; }
+      const rWrap = document.getElementById("azReconRadiusWrap");
+      if (rWrap) rWrap.style.display = mode === "circle" ? "inline-flex" : "none";
+      showToast(mode === "circle" ? "Toque no mapa para definir o centro do círculo." : "Toque 2 cantos opostos no mapa (teto ~1,2 km²).");
+      state.mapClickHandler = function (ev) {
+        if (!tac.droneMode || tac.droneType !== "recon") return;
+        const pt = { lng: ev.lngLat.lng, lat: ev.lngLat.lat };
+        if (mode === "circle") {
+          state.center = pt;
+          m.off("click", state.mapClickHandler); state.mapClickHandler = null;
+          drawReconSectorBoundary();
+          fetchSectorOsmOrOffline();
+        } else {
+          if (state.pickStep === 0) {
+            state.rectCornerA = pt;
+            state.pickStep = 1;
+            showToast("Agora toque no canto oposto do quadrante.");
+          } else {
+            state.rectCornerB = pt;
+            m.off("click", state.mapClickHandler); state.mapClickHandler = null;
+            drawReconSectorBoundary();
+            fetchSectorOsmOrOffline();
+          }
+        }
+      };
+      m.on("click", state.mapClickHandler);
+    }
+
+    const typeSel = document.getElementById("azDroneTypeSelect");
+    if (typeSel) {
+      typeSel.addEventListener("change", function () {
+        const nextType = this.value || "tatico";
+        tac.droneType = nextType;
+        if (nextType === "tatico") {
+          window.stopReconFlight(true);
+          tac.droneFreeFlight = (tac.droneFollowUid === "__FREE__");
+          if (tac.droneFreeFlight) stepDroneFlightLoop();
+        } else if (nextType === "escolta") {
+          window.stopReconFlight(true);
+          if (!tac.droneFollowUid || tac.droneFollowUid === "__FREE__") tac.droneFollowUid = "__TEAM_CENTER__";
+          tac.droneFreeFlight = false;
+          refreshDroneTargetsSelect();
+          followDroneTargetNow(true);
+        } else if (nextType === "recon") {
+          tac.droneFreeFlight = false;
+          if (tac.droneRaf) { cancelAnimationFrame(tac.droneRaf); tac.droneRaf = 0; }
+          const m = getActiveMap();
+          if (m && typeof m.easeTo === "function") m.easeTo({ zoom: 16.95, pitch: 42, duration: 420 });
+        }
+        syncDroneUi();
+      });
+    }
+
+    // Escolta controls
+    onClick("azEscoltaAltUpBtn", function () {
+      const m = getActiveMap();
+      if (m && typeof m.easeTo === "function") m.easeTo({ zoom: Math.max(14.5, m.getZoom() - 0.6), duration: 240 });
+    });
+    onClick("azEscoltaAltDownBtn", function () {
+      const m = getActiveMap();
+      if (m && typeof m.easeTo === "function") m.easeTo({ zoom: Math.min(18.8, m.getZoom() + 0.6), duration: 240 });
+    });
+    onClick("azEscoltaOrbitTeamBtn", function () {
+      const tgt = getDroneFollowTargetObj();
+      const m = getActiveMap();
+      const pt = tgt || (m && m.getCenter());
+      if (pt) startMapOrbitAround(pt.lng, pt.lat);
+    });
+
+    // Recon controls
+    onClick("azReconCircleBtn", function () { armSectorPick("circle"); });
+    onClick("azReconRectBtn", function () { armSectorPick("rect"); });
+    const radSlider = document.getElementById("azReconRadiusSlider");
+    if (radSlider) {
+      radSlider.addEventListener("input", function () {
+        state.radiusM = Math.max(100, Math.min(750, Number(this.value) || 250));
+        const valEl = document.getElementById("azReconRadiusVal");
+        if (valEl) valEl.textContent = state.radiusM + "m";
+        if (state.shapeMode === "circle" && state.center) drawReconSectorBoundary();
+      });
+    }
+    onClick("azReconSweepBtn", function () { startReconFlight("sweep"); });
+    onClick("azReconOrbitPerimBtn", function () { startReconFlight("perim"); });
+    onClick("azReconOrbitPtBtn", function () {
+      state.paused = true;
+      const pb = document.getElementById("azReconPauseBtn");
+      if (pb) pb.textContent = "RETOMAR";
+      const m = getActiveMap();
+      if (m && typeof m.getCenter === "function") {
+        const c = m.getCenter();
+        startMapOrbitAround(c.lng, c.lat);
+      }
+    });
+    onClick("azReconPauseBtn", function () {
+      state.paused = !state.paused;
+      const pb = document.getElementById("azReconPauseBtn");
+      if (pb) pb.textContent = state.paused ? "RETOMAR" : "PAUSAR";
+    });
+    onClick("azReconSpeedBtn", function () {
+      const speeds = [0.5, 1, 2, 3];
+      const idx = (speeds.indexOf(state.speedMult) + 1) % speeds.length;
+      state.speedMult = speeds[idx];
+      const sb = document.getElementById("azReconSpeedBtn");
+      if (sb) sb.textContent = state.speedMult + "x";
+    });
+    onClick("azReconAltUpBtn", function () {
+      const m = getActiveMap();
+      if (!m || typeof m.jumpTo !== "function") return;
+      state.manualZoomUntil = Date.now() + 8000;
+      m.jumpTo({ zoom: Math.max(15.2, m.getZoom() - 0.35) });
+    });
+    onClick("azReconAltDownBtn", function () {
+      const m = getActiveMap();
+      if (!m || typeof m.jumpTo !== "function") return;
+      state.manualZoomUntil = Date.now() + 8000;
+      m.jumpTo({ zoom: Math.min(18.2, m.getZoom() + 0.35) });
+    });
+
+    // Settings: Varredura Auto + Modo de Desenho + Mostrar/Limpar/Fixar
+    const autoScanChk = document.getElementById("azReconAutoScanChk");
+    if (autoScanChk) {
+      autoScanChk.checked = Boolean(reconCfg.autoScan);
+      autoScanChk.addEventListener("change", function () {
+        reconCfg.autoScan = Boolean(this.checked);
+        saveReconCfg();
+      });
+    }
+    const drawModeSel = document.getElementById("azReconDrawModeSelect");
+    if (drawModeSel) {
+      drawModeSel.value = reconCfg.drawMode || "live";
+      drawModeSel.addEventListener("change", function () {
+        reconCfg.drawMode = this.value === "background" ? "background" : "live";
+        saveReconCfg();
+      });
+    }
+    onClick("azReconToggleVisBtn", function () {
+      state.featuresVisible = !state.featuresVisible;
+      this.textContent = state.featuresVisible ? "Ocultar Marcações" : "Mostrar Marcações";
+      updateReconGeoJsonLayers();
+    });
+    onClick("azReconClearBtn", function () {
+      state.pendingFeatures = [];
+      state.revealedFeatures = [];
+      updateReconGeoJsonLayers();
+      showToast("Marcações da varredura limpas.");
+    });
+    onClick("azReconPinSaveBtn", function () {
+      const all = state.revealedFeatures.concat(state.pendingFeatures);
+      if (!all.length) { showToast("Nenhum beco/escadaria detectado para fixar."); return; }
+      if (!Array.isArray(tac.terrainTraces)) tac.terrainTraces = [];
+      all.forEach(function (f) {
+        if (tac.terrainTraces.some(function (t) { return t.id === "pin_" + f.id; })) return;
+        tac.terrainTraces.push({
+          id: "pin_" + f.id,
+          kind: f.kind,
+          label: f.name,
+          coords: f.coords,
+          color: f.kind === "escada" ? "#F59E0B" : "#38BDF8",
+          tags: ["RECON"],
+          notes: "Detectado pelo Drone de Reconhecimento"
+        });
+      });
+      if (typeof saveTerrainTracesToStorage === "function") saveTerrainTracesToStorage();
+      if (typeof renderTerrainTracesOnMaps === "function") renderTerrainTracesOnMaps(true);
+      showToast(`${all.length} acesso(s) fixado(s) no mapa permanente.`);
+    });
+
+    // Painel Análise do Setor
+    onClick("azReconAnalysisBtn", function () {
+      const p = document.getElementById("azSectorAnalysisPanel");
+      if (p) {
+        p.classList.toggle("is-open");
+        renderSectorAnalysisPanel();
+      }
+    });
+    onClick("azSectorMinBtn", function () {
+      const p = document.getElementById("azSectorAnalysisPanel");
+      if (p) p.classList.toggle("is-minimized");
+    });
+    onClick("azSectorCloseBtn", function () {
+      const p = document.getElementById("azSectorAnalysisPanel");
+      if (p) p.classList.remove("is-open");
+    });
+    document.querySelectorAll("#azSectorAnalysisPanel [data-sector-tab]").forEach(function (tab) {
+      tab.addEventListener("click", function () {
+        state.activeTab = this.getAttribute("data-sector-tab") || "avenidas";
+        document.querySelectorAll("#azSectorAnalysisPanel [data-sector-tab]").forEach(function (b) {
+          b.classList.toggle("is-active", b === tab);
+        });
+        renderSectorAnalysisPanel();
+      });
     });
   })();
 
