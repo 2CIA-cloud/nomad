@@ -38391,10 +38391,26 @@ if (document.readyState === "loading") {
       });
     }
 
+    async function fetchWithTimeout(url, opts, timeoutMs, parentSignal) {
+      const ctrl = new AbortController();
+      const timer = setTimeout(function () { try { ctrl.abort(); } catch (_) {} }, timeoutMs || 6000);
+      const onParentAbort = function () { try { ctrl.abort(); } catch (_) {} };
+      if (parentSignal) {
+        if (parentSignal.aborted) { clearTimeout(timer); ctrl.abort(); }
+        else parentSignal.addEventListener("abort", onParentAbort, { once: true });
+      }
+      try {
+        return await fetch(url, Object.assign({}, opts || {}, { signal: ctrl.signal }));
+      } finally {
+        clearTimeout(timer);
+        if (parentSignal) parentSignal.removeEventListener("abort", onParentAbort);
+      }
+    }
+
     async function fetchCarItinerary(orig, dest, signal) {
       try {
         const url = `https://router.project-osrm.org/route/v1/driving/${orig.lng},${orig.lat};${dest.lng},${dest.lat}?overview=full&geometries=geojson&steps=true`;
-        const res = await fetch(url, { signal: signal });
+        const res = await fetchWithTimeout(url, {}, 4500, signal);
         if (!res.ok) return null;
         const json = await res.json();
         const route = json && json.routes && json.routes[0];
@@ -38425,7 +38441,7 @@ if (document.readyState === "loading") {
     async function fetchSectorOsmOrOffline(signal) {
       const bbox = getSectorBbox();
       if (!bbox) return;
-      setReconStatus("MAPEANDO...", null);
+      if (!reconCfg.animMaster) setReconStatus("MAPEANDO...", null);
       const areaKm2 = getSectorAreaKm2();
       const terms = getTargetTerms();
       const targetRegex = terms.map(function (t) { return t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }).join("|");
@@ -38433,9 +38449,9 @@ if (document.readyState === "loading") {
 
       let query = "";
       if (areaKm2 > 3) {
-        query = `[out:json][timeout:18];(way["highway"~"^(steps|alley|primary|secondary|tertiary|residential)$"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});way["service"="alley"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});${targetClause}node["place"~"^(suburb|neighbourhood|quarter)$"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng}););out body geom;`;
+        query = `[out:json][timeout:10];(way["highway"~"^(steps|alley|primary|secondary|tertiary|residential)$"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});way["service"="alley"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});${targetClause}node["place"~"^(suburb|neighbourhood|quarter)$"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng}););out body geom;`;
       } else {
-        query = `[out:json][timeout:18];(way["highway"~"^(steps|alley|footway|path|pedestrian|primary|secondary|tertiary|residential|living_street|unclassified)$"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});way["service"="alley"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});${targetClause}node["shop"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});node["amenity"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});way["landuse"~"^(industrial|forest)$"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});node["place"~"^(suburb|neighbourhood|quarter)$"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng}););out body geom;`;
+        query = `[out:json][timeout:10];(way["highway"~"^(steps|alley|footway|path|pedestrian|primary|secondary|tertiary|residential|living_street|unclassified)$"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});way["service"="alley"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});${targetClause}node["shop"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});node["amenity"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});way["landuse"~"^(industrial|forest)$"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});node["place"~"^(suburb|neighbourhood|quarter)$"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng}););out body geom;`;
       }
 
       const endpoints = [
@@ -38444,14 +38460,14 @@ if (document.readyState === "loading") {
       ];
       let elements = null;
       for (let i = 0; i < endpoints.length; i++) {
+        if (signal && signal.aborted) return;
         try {
-          const res = await fetch(endpoints[i], {
+          const res = await fetchWithTimeout(endpoints[i], {
             method: "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
-            body: "data=" + encodeURIComponent(query),
-            signal: signal
-          });
-          if (res.ok) {
+            body: "data=" + encodeURIComponent(query)
+          }, 5500, signal);
+          if (res && res.ok) {
             const json = await res.json();
             if (json && Array.isArray(json.elements)) {
               elements = json.elements.map(function (el) {
@@ -38464,7 +38480,7 @@ if (document.readyState === "loading") {
             }
           }
         } catch (err) {
-          if (err && err.name === "AbortError") return;
+          if (signal && signal.aborted) return;
         }
       }
 
@@ -38649,12 +38665,10 @@ if (document.readyState === "loading") {
         }
       }
 
-      // Consulta setor (Overpass + fallback offline)
-      await fetchSectorOsmOrOffline(sig);
-      if (sig.aborted) return;
-
-      // Modo Animações DESLIGADAS: entrega análise e marcações imediatamente sem voo
+      // Modo Animações DESLIGADAS: consulta e entrega análise imediatamente sem voo
       if (!reconCfg.animMaster) {
+        await fetchSectorOsmOrOffline(sig);
+        if (sig.aborted) return;
         setReconStatus("CONCLUÍDO", "~00:00");
         playDroneTargetFoundBeep();
         const pEl = document.getElementById("azSectorAnalysisPanel");
@@ -38662,6 +38676,9 @@ if (document.readyState === "loading") {
         showToast("Análise do setor concluída (modo instantâneo).");
         return;
       }
+
+      // Modo Animações LIGADAS: decola imediatamente e consulta Overpass em paralelo (sem travar)
+      fetchSectorOsmOrOffline(sig).catch(function () {});
 
       // Monta missão completa com animações ligadas
       state.waypoints = (reconCfg.animTransit && transitCoords.length)
