@@ -26312,6 +26312,10 @@ if (document.readyState === "loading") {
     <button type="button" id="azCommsJoinBtn" class="az-atak-tool-btn is-active" style="height:29px !important;padding:0 10px !important;">ENTRAR</button>
   </div>
   <div>
+    <label style="font-size:8.5px;font-weight:800;color:#9E9A8F;display:block;margin-bottom:4px;">SUA COR DE OPERADOR</label>
+    <div id="azCommsColorSwatches" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+  </div>
+  <div>
     <label style="font-size:8.5px;font-weight:800;color:#9E9A8F;display:block;margin-bottom:2px;">MOTOR DE ÁUDIO DO PTT</label>
     <select id="azCommsPttSelect" class="az-team-input" style="width:100%;">
       <option value="pcm_binary">AudioContext 16kHz Binário MQTT (Recomendado)</option>
@@ -35003,6 +35007,7 @@ if (document.readyState === "loading") {
 
   function renderAllTeamColorSwatches() {
     renderSwatchesIntoContainer("azDockColorSwatches", 22);
+    renderSwatchesIntoContainer("azCommsColorSwatches", 22);
   }
 
   function renderWaColorSwatches() {
@@ -38194,9 +38199,45 @@ if (document.readyState === "loading") {
       return wps;
     }
 
+    function resolveBairroForPoint(lat, lng, tags) {
+      if (tags) {
+        const direct = (tags["addr:suburb"] || tags.suburb || tags.neighbourhood || "").trim();
+        if (direct) return direct;
+      }
+      const pts = state.neighborhoodPoints || [];
+      if (pts.length > 0 && typeof lat === "number" && typeof lng === "number") {
+        let best = pts[0].name;
+        let bestDist = Infinity;
+        for (let i = 0; i < pts.length; i++) {
+          const d = calcDistAndBearing(lat, lng, pts[i].lat, pts[i].lng).dist;
+          if (d < bestDist) { bestDist = d; best = pts[i].name; }
+        }
+        return best;
+      }
+      return state.destLabel || (state.analysis && state.analysis.neighborhoods && state.analysis.neighborhoods[0]) || "";
+    }
+
     function classifyAndBuildSectorAnalysis(elements) {
       const neighborhoods = new Set();
+      const nbPts = [];
       if (state.destLabel) neighborhoods.add(state.destLabel);
+      elements.forEach(function (el) {
+        const tags = el.tags || {};
+        const nb = (tags.suburb || tags.neighbourhood || tags["addr:suburb"] || "").trim();
+        if (nb) neighborhoods.add(nb);
+        if (tags.place === "suburb" || tags.place === "neighbourhood" || tags.place === "quarter") {
+          if (tags.name) {
+            neighborhoods.add(tags.name);
+            if (typeof el.lat === "number" && typeof el.lon === "number") {
+              nbPts.push({ name: tags.name, lat: el.lat, lng: el.lon });
+            } else if (Array.isArray(el.coords) && el.coords[0]) {
+              nbPts.push({ name: tags.name, lat: el.coords[0][1], lng: el.coords[0][0] });
+            }
+          }
+        }
+      });
+      state.neighborhoodPoints = nbPts;
+
       const avMap = new Map();
       const ruaMap = new Map();
       const becoMap = new Map();
@@ -38209,12 +38250,6 @@ if (document.readyState === "loading") {
 
       elements.forEach(function (el) {
         const tags = el.tags || {};
-        if (tags.suburb || tags.neighbourhood || tags["addr:suburb"]) {
-          neighborhoods.add(tags.suburb || tags.neighbourhood || tags["addr:suburb"]);
-        }
-        if (tags.place === "suburb" || tags.place === "neighbourhood" || tags.place === "quarter") {
-          if (tags.name) neighborhoods.add(tags.name);
-        }
         if (tags.shop || tags.amenity) shopsCount++;
         if (tags.landuse === "industrial" || tags.building === "warehouse" || tags.building === "industrial") indCount++;
         if (tags.landuse === "forest" || tags.leisure === "park" || tags.natural === "wood") greenCount++;
@@ -38226,6 +38261,7 @@ if (document.readyState === "loading") {
         if (!isPointInsideSector(mid[0], mid[1]) && !isPointInsideSector(coords[0][0], coords[0][1])) return;
 
         const name = (tags.name || "").trim();
+        const bairro = resolveBairroForPoint(mid[1], mid[0], tags);
         const hw = tags.highway || "";
         const svc = tags.service || "";
         const fw = tags.footway || "";
@@ -38238,19 +38274,19 @@ if (document.readyState === "loading") {
         let itemObj = null;
         if (isEscada) {
           const key = name || ("Escadaria s/n #" + (escMap.size + 1));
-          itemObj = { name: key, coords: coords, lat: mid[1], lng: mid[0], kind: "escada" };
+          itemObj = { name: key, bairro: bairro, coords: coords, lat: mid[1], lng: mid[0], kind: "escada" };
           if (!escMap.has(key)) escMap.set(key, itemObj);
         } else if (isBeco) {
           const key = name || ("Beco/Viela #" + (becoMap.size + 1));
-          itemObj = { name: key, coords: coords, lat: mid[1], lng: mid[0], kind: "beco" };
+          itemObj = { name: key, bairro: bairro, coords: coords, lat: mid[1], lng: mid[0], kind: "beco" };
           if (!becoMap.has(key)) becoMap.set(key, itemObj);
         } else if (/^(motorway|trunk|primary|secondary)/.test(hw) || /^av\.?|^avenida|^rod\.?|^via\s/i.test(name)) {
           const key = name || ("Avenida/Via #" + (avMap.size + 1));
-          itemObj = { name: key, coords: coords, lat: mid[1], lng: mid[0], kind: "avenida" };
+          itemObj = { name: key, bairro: bairro, coords: coords, lat: mid[1], lng: mid[0], kind: "avenida" };
           if (!avMap.has(key)) avMap.set(key, itemObj);
         } else if (hw || name) {
           const key = name || ("Rua s/n #" + (ruaMap.size + 1));
-          itemObj = { name: key, coords: coords, lat: mid[1], lng: mid[0], kind: "rua" };
+          itemObj = { name: key, bairro: bairro, coords: coords, lat: mid[1], lng: mid[0], kind: "rua" };
           if (!ruaMap.has(key)) ruaMap.set(key, itemObj);
         }
 
@@ -38370,7 +38406,8 @@ if (document.readyState === "loading") {
         row.className = "az-sector-item";
         const title = document.createElement("span");
         title.style.cssText = "font-size:10.5px;font-weight:700;color:#E2E8F0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;";
-        title.textContent = item.label || item.name;
+        const brTag = item.bairro ? ` • ${item.bairro}` : "";
+        title.textContent = item.label || (item.name + brTag);
         const routeBtn = document.createElement("button");
         routeBtn.type = "button";
         routeBtn.className = "az-drone-pill-btn is-sky";
@@ -38473,6 +38510,8 @@ if (document.readyState === "loading") {
               elements = json.elements.map(function (el) {
                 return {
                   tags: el.tags || {},
+                  lat: el.lat,
+                  lon: el.lon,
                   coords: Array.isArray(el.geometry) ? el.geometry.map(function (g) { return [g.lon, g.lat]; }) : []
                 };
               });
@@ -38796,9 +38835,10 @@ if (document.readyState === "loading") {
               const vFeats = m.queryRenderedFeatures();
               let vChanged = false;
               const a = state.analysis;
-              const pushUniq = function (arr, name, coords, lat, lng, kind) {
+              const pushUniq = function (arr, name, coords, lat, lng, kind, vp) {
                 if (arr.some(function (it) { return it.name === name; })) return false;
-                arr.push({ name: name, coords: coords, lat: lat, lng: lng, kind: kind });
+                const br = resolveBairroForPoint(lat, lng, vp);
+                arr.push({ name: name, bairro: br, coords: coords, lat: lat, lng: lng, kind: kind });
                 return true;
               };
               for (let vi = 0; vi < vFeats.length; vi++) {
@@ -38815,13 +38855,13 @@ if (document.readyState === "loading") {
                 const isEsc = cls === "steps" || /escada|escadaria/i.test(nm);
                 const isBeco = !isEsc && (cls === "alley" || /beco|viela|travessa/i.test(nm));
                 if (isEsc && nm) {
-                  if (pushUniq(a.escadarias, nm, coords, mid[1], mid[0], "escada")) vChanged = true;
+                  if (pushUniq(a.escadarias, nm, coords, mid[1], mid[0], "escada", vp)) vChanged = true;
                 } else if (isBeco && nm) {
-                  if (pushUniq(a.becos, nm, coords, mid[1], mid[0], "beco")) vChanged = true;
+                  if (pushUniq(a.becos, nm, coords, mid[1], mid[0], "beco", vp)) vChanged = true;
                 } else if ((/^(motorway|trunk|primary|secondary)/.test(cls) || /^av\.?|^avenida/i.test(nm)) && nm) {
-                  if (pushUniq(a.avenidas, nm, coords, mid[1], mid[0], "avenida")) vChanged = true;
+                  if (pushUniq(a.avenidas, nm, coords, mid[1], mid[0], "avenida", vp)) vChanged = true;
                 } else if (nm && (cls || vf.layer && /road|street|highway|transport/i.test(vf.layer.id || ""))) {
-                  if (pushUniq(a.ruas, nm, coords, mid[1], mid[0], "rua")) vChanged = true;
+                  if (pushUniq(a.ruas, nm, coords, mid[1], mid[0], "rua", vp)) vChanged = true;
                 }
               }
               if (vChanged) {
@@ -39203,13 +39243,13 @@ if (document.readyState === "loading") {
         a.itinerario.forEach(function (it) { lines.push(" -> " + it.label); });
       }
       lines.push("AVENIDAS:");
-      (a.avenidas || []).forEach(function (it) { lines.push(" - " + it.name); });
+      (a.avenidas || []).forEach(function (it) { lines.push(" - " + it.name + (it.bairro ? " • " + it.bairro : "")); });
       lines.push("RUAS:");
-      (a.ruas || []).forEach(function (it) { lines.push(" - " + it.name); });
+      (a.ruas || []).forEach(function (it) { lines.push(" - " + it.name + (it.bairro ? " • " + it.bairro : "")); });
       lines.push("BECOS / VIELAS:");
-      (a.becos || []).forEach(function (it) { lines.push(" - " + it.name); });
+      (a.becos || []).forEach(function (it) { lines.push(" - " + it.name + (it.bairro ? " • " + it.bairro : "")); });
       lines.push("ESCADARIAS:");
-      (a.escadarias || []).forEach(function (it) { lines.push(" - " + it.name); });
+      (a.escadarias || []).forEach(function (it) { lines.push(" - " + it.name + (it.bairro ? " • " + it.bairro : "")); });
 
       const blob = buildSimplePdfBlob(lines);
       const url = URL.createObjectURL(blob);
