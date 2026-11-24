@@ -38244,11 +38244,11 @@ if (document.readyState === "loading") {
           const key = name || ("Beco/Viela #" + (becoMap.size + 1));
           itemObj = { name: key, coords: coords, lat: mid[1], lng: mid[0], kind: "beco" };
           if (!becoMap.has(key)) becoMap.set(key, itemObj);
-        } else if (hw === "primary" || hw === "secondary" || hw === "trunk" || /^av\.?|^avenida/i.test(name)) {
-          const key = name || ("Avenida #" + (avMap.size + 1));
+        } else if (/^(motorway|trunk|primary|secondary)/.test(hw) || /^av\.?|^avenida|^rod\.?|^via\s/i.test(name)) {
+          const key = name || ("Avenida/Via #" + (avMap.size + 1));
           itemObj = { name: key, coords: coords, lat: mid[1], lng: mid[0], kind: "avenida" };
           if (!avMap.has(key)) avMap.set(key, itemObj);
-        } else if (hw === "tertiary" || hw === "residential" || hw === "living_street" || hw === "unclassified") {
+        } else if (hw || name) {
           const key = name || ("Rua s/n #" + (ruaMap.size + 1));
           itemObj = { name: key, coords: coords, lat: mid[1], lng: mid[0], kind: "rua" };
           if (!ruaMap.has(key)) ruaMap.set(key, itemObj);
@@ -38449,9 +38449,9 @@ if (document.readyState === "loading") {
 
       let query = "";
       if (areaKm2 > 3) {
-        query = `[out:json][timeout:10];(way["highway"~"^(steps|alley|primary|secondary|tertiary|residential)$"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});way["service"="alley"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});${targetClause}node["place"~"^(suburb|neighbourhood|quarter)$"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng}););out body geom;`;
+        query = `[out:json][timeout:14];(way["highway"~"^(steps|alley|motorway|trunk|primary|secondary|tertiary|residential|living_street|unclassified|road|.*_link)$"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});way["service"="alley"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});${targetClause}node["place"~"^(suburb|neighbourhood|quarter)$"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng}););out body geom;`;
       } else {
-        query = `[out:json][timeout:10];(way["highway"~"^(steps|alley|footway|path|pedestrian|primary|secondary|tertiary|residential|living_street|unclassified)$"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});way["service"="alley"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});${targetClause}node["shop"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});node["amenity"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});way["landuse"~"^(industrial|forest)$"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});node["place"~"^(suburb|neighbourhood|quarter)$"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng}););out body geom;`;
+        query = `[out:json][timeout:14];(way["highway"~"^(steps|alley|footway|path|pedestrian|motorway|trunk|primary|secondary|tertiary|residential|living_street|unclassified|road|service|.*_link)$"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});way["service"="alley"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});${targetClause}node["shop"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});node["amenity"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});way["landuse"~"^(industrial|forest)$"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});node["place"~"^(suburb|neighbourhood|quarter)$"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng}););out body geom;`;
       }
 
       const endpoints = [
@@ -38466,7 +38466,7 @@ if (document.readyState === "loading") {
             method: "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
             body: "data=" + encodeURIComponent(query)
-          }, 5500, signal);
+          }, 11000, signal);
           if (res && res.ok) {
             const json = await res.json();
             if (json && Array.isArray(json.elements)) {
@@ -38788,6 +38788,47 @@ if (document.readyState === "loading") {
 
           if (typeof window.updateDroneCraftOnMap === "function") {
             window.updateDroneCraftOnMap(nextLng, nextLat, info.bearing, true);
+          }
+
+          // Amostragem contínua em tempo real das ruas/becos/escadas na viewport durante o voo
+          if (!wp.isTransit && !wp.isRth && now - lastEtaTs > 350 && typeof m.queryRenderedFeatures === "function") {
+            try {
+              const vFeats = m.queryRenderedFeatures();
+              let vChanged = false;
+              const a = state.analysis;
+              const pushUniq = function (arr, name, coords, lat, lng, kind) {
+                if (arr.some(function (it) { return it.name === name; })) return false;
+                arr.push({ name: name, coords: coords, lat: lat, lng: lng, kind: kind });
+                return true;
+              };
+              for (let vi = 0; vi < vFeats.length; vi++) {
+                const vf = vFeats[vi];
+                if (!vf || !vf.geometry) continue;
+                const vp = vf.properties || {};
+                const cls = String(vp.class || vp.subclass || vp.type || "");
+                const nm = String(vp.name || vp["name:pt"] || "").trim();
+                if (vf.geometry.type !== "LineString" && vf.geometry.type !== "MultiLineString") continue;
+                const coords = vf.geometry.type === "LineString" ? vf.geometry.coordinates : (vf.geometry.coordinates[0] || []);
+                if (coords.length < 2) continue;
+                const mid = coords[Math.floor(coords.length / 2)];
+                if (!isPointInsideSector(mid[0], mid[1])) continue;
+                const isEsc = cls === "steps" || /escada|escadaria/i.test(nm);
+                const isBeco = !isEsc && (cls === "alley" || /beco|viela|travessa/i.test(nm));
+                if (isEsc && nm) {
+                  if (pushUniq(a.escadarias, nm, coords, mid[1], mid[0], "escada")) vChanged = true;
+                } else if (isBeco && nm) {
+                  if (pushUniq(a.becos, nm, coords, mid[1], mid[0], "beco")) vChanged = true;
+                } else if ((/^(motorway|trunk|primary|secondary)/.test(cls) || /^av\.?|^avenida/i.test(nm)) && nm) {
+                  if (pushUniq(a.avenidas, nm, coords, mid[1], mid[0], "avenida")) vChanged = true;
+                } else if (nm && (cls || vf.layer && /road|street|highway|transport/i.test(vf.layer.id || ""))) {
+                  if (pushUniq(a.ruas, nm, coords, mid[1], mid[0], "rua")) vChanged = true;
+                }
+              }
+              if (vChanged) {
+                const pEl = document.getElementById("azSectorAnalysisPanel");
+                if (pEl && pEl.classList.contains("is-open")) renderSectorAnalysisPanel();
+              }
+            } catch (_) {}
           }
 
           // Alvos nominais (ex.: "Arauto"): bipe + pausa breve ao sobrevoar
@@ -39209,11 +39250,24 @@ if (document.readyState === "loading") {
       showToast("Desenhos do Drone e Cão apagados da tela.");
     });
 
+    const secPanelEl = document.getElementById("azSectorAnalysisPanel");
+    if (secPanelEl) {
+      secPanelEl.addEventListener("pointerdown", function (ev) { ev.stopPropagation(); });
+      secPanelEl.addEventListener("touchstart", function (ev) { ev.stopPropagation(); }, { passive: true });
+    }
+
     onClick("azReconAnalysisBtn", function () {
       const p = document.getElementById("azSectorAnalysisPanel");
       if (p) {
-        p.classList.toggle("is-open");
-        renderSectorAnalysisPanel();
+        const willOpen = !p.classList.contains("is-open");
+        p.classList.toggle("is-open", willOpen);
+        if (willOpen) {
+          const a = state.analysis;
+          if (a.avenidas.length + a.ruas.length + a.becos.length === 0 && (state.center || state.rectCornerB)) {
+            fetchSectorOsmOrOffline(state.abortCtrl ? state.abortCtrl.signal : null).catch(function () {});
+          }
+          renderSectorAnalysisPanel();
+        }
       }
     });
     onClick("azSectorMinBtn", function () {
