@@ -23244,7 +23244,7 @@ if (document.readyState === "loading") {
     cursor: pointer;
   }
   .az-sector-item:hover { border-color: rgba(197, 168, 105, 0.55); }
-  #azAllyFlyoverBanner, #azReconPulsePill {
+  #azAllyFlyoverBanner {
     position: fixed;
     left: 50%;
     transform: translateX(-50%);
@@ -23257,20 +23257,39 @@ if (document.readyState === "loading") {
     pointer-events: none;
     display: none;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.85);
-  }
-  #azAllyFlyoverBanner {
     top: 112px;
     background: #0D0D0D;
     border: 1.5px solid #4ADE80;
     color: #4ADE80;
   }
-  #azReconPulsePill {
-    top: 142px;
-    background: #0D0D0D;
-    border: 1.5px solid #38BDF8;
-    color: #38BDF8;
+  #azAllyFlyoverBanner.is-open { display: inline-flex; align-items: center; gap: 6px; }
+  .az-recon-input {
+    height: 24px;
+    background: #161616;
+    color: #F8FAFC;
+    border: 1px solid rgba(197, 168, 105, 0.45);
+    border-radius: 6px;
+    padding: 0 6px;
+    font-size: 9.5px;
+    font-weight: 700;
+    outline: none;
+    min-width: 0;
   }
-  #azAllyFlyoverBanner.is-open, #azReconPulsePill.is-open { display: inline-flex; align-items: center; gap: 6px; }
+  .az-recon-eta-badge {
+    font-size: 9px;
+    font-weight: 900;
+    color: #38BDF8;
+    background: rgba(56, 189, 248, 0.14);
+    border: 1px solid rgba(56, 189, 248, 0.4);
+    border-radius: 6px;
+    padding: 2px 6px;
+    white-space: nowrap;
+  }
+  .az-sector-tabs {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 3px;
+  }
   #azTeamCommsModal {
     position: fixed !important;
     top: 50% !important;
@@ -26057,21 +26076,35 @@ if (document.readyState === "loading") {
     <button type="button" class="az-drone-pill-btn is-sky" id="azEscoltaOrbitTeamBtn" title="Orbitar equipe ou aliado selecionado">ORBITAR EQUIPE</button>
   </div>
   <div id="azDroneReconRow" aria-label="Controles Drone de Reconhecimento">
-    <button type="button" class="az-drone-pill-btn is-sky" id="azReconCircleBtn" title="Marcar setor circular (toque no mapa)">CÍRCULO</button>
-    <button type="button" class="az-drone-pill-btn" id="azReconRectBtn" title="Marcar quadrante retangular (2 toques no mapa)">RETÂNGULO</button>
-    <span class="az-recon-radius-wrap" id="azReconRadiusWrap" title="Raio do setor circular (até 5 km)">
-      <span>R:</span>
-      <input type="range" id="azReconRadiusSlider" min="100" max="5000" step="100" value="500" />
-      <span id="azReconRadiusVal">500m</span>
-    </span>
-    <button type="button" class="az-drone-pill-btn is-active" id="azReconSweepBtn" title="Iniciar varredura em grade S">VARRER S</button>
-    <button type="button" class="az-drone-pill-btn" id="azReconOrbitPerimBtn" title="Orbitar perímetro do setor">PERÍM.</button>
-    <button type="button" class="az-drone-pill-btn" id="azReconOrbitPtBtn" title="Orbitar 360° o ponto atual da mira">ORBITAR PT</button>
-    <button type="button" class="az-drone-pill-btn" id="azReconPauseBtn" title="Pausar ou retomar piloto automático">PAUSAR</button>
-    <button type="button" class="az-drone-pill-btn" id="azReconSpeedBtn" title="Velocidade da varredura">1x</button>
-    <button type="button" class="az-drone-pill-btn" id="azReconAltUpBtn" title="Subir altitude">ALT+</button>
-    <button type="button" class="az-drone-pill-btn" id="azReconAltDownBtn" title="Descer altitude">ALT-</button>
-    <button type="button" class="az-drone-pill-btn is-sky" id="azReconAnalysisBtn" title="Abrir painel Análise do Setor">ANÁLISE</button>
+    <div style="display:flex;gap:4px;width:100%;align-items:center;">
+      <input type="text" id="azReconDestInput" class="az-recon-input" style="flex:1;" placeholder="Bairro/Setor (ex: Serra, Prado)" autocomplete="off" />
+      <button type="button" class="az-drone-pill-btn is-sky" id="azReconDestSearchBtn" title="Mover área para o bairro digitado">IR</button>
+      <input type="text" id="azReconTargetInput" class="az-recon-input" style="flex:1;" placeholder="Alvo (ex: Arauto)" autocomplete="off" />
+    </div>
+    <div style="display:flex;gap:4px;width:100%;align-items:center;flex-wrap:wrap;">
+      <button type="button" class="az-drone-pill-btn is-sky" id="azReconCircleBtn" title="Área circular (toque no mapa)">CÍRCULO</button>
+      <button type="button" class="az-drone-pill-btn" id="azReconRectBtn" title="Área retangular (2 toques, até 50 km²)">RETÂNG.</button>
+      <span class="az-recon-radius-wrap" id="azReconRadiusWrap" title="Raio do setor circular (até 50 km²)">
+        <span>R:</span>
+        <input type="range" id="azReconRadiusSlider" min="100" max="3990" step="50" value="500" />
+        <span id="azReconRadiusVal">500m (0.8km²)</span>
+      </span>
+      <span class="az-recon-eta-badge" id="azReconEtaBadge" title="Tempo estimado da missão">~00:30</span>
+      <span class="az-recon-eta-badge" id="azReconPhaseBadge" style="color:#C5A869;border-color:rgba(197,168,105,0.45);background:rgba(197,168,105,0.12);">PRONTO</span>
+    </div>
+    <div style="display:flex;gap:4px;width:100%;align-items:center;overflow-x:auto;scrollbar-width:none;">
+      <button type="button" class="az-drone-pill-btn is-active" id="azReconSweepBtn" title="Soltar Drone para varredura em grade S">SOLTAR</button>
+      <button type="button" class="az-drone-pill-btn" id="azReconOrbitPerimBtn" title="Orbitar perímetro do setor">PERÍM.</button>
+      <button type="button" class="az-drone-pill-btn" id="azReconOrbitPtBtn" title="Orbitar 360° o ponto atual">ORB. PT</button>
+      <button type="button" class="az-drone-pill-btn" id="azReconPauseBtn" title="Pausar ou retomar piloto automático">PAUSAR</button>
+      <button type="button" class="az-drone-pill-btn" id="azReconSpeedDownBtn" title="Desacelerar voo">−</button>
+      <span class="az-recon-eta-badge" id="azReconSpeedLabel" style="min-width:34px;text-align:center;">1x</span>
+      <button type="button" class="az-drone-pill-btn" id="azReconSpeedUpBtn" title="Acelerar voo">+</button>
+      <button type="button" class="az-drone-pill-btn" id="azReconAltUpBtn" title="Subir altitude">ALT+</button>
+      <button type="button" class="az-drone-pill-btn" id="azReconAltDownBtn" title="Descer altitude">ALT-</button>
+      <button type="button" class="az-drone-pill-btn" id="azReconRthBtn" title="Retornar imediatamente à origem">RETORNAR</button>
+      <button type="button" class="az-drone-pill-btn is-sky" id="azReconAnalysisBtn" title="Abrir caixa ANÁLISE">ANÁLISE</button>
+    </div>
   </div>
   <div class="az-drone-act-row" id="azDroneMainToolsRow">
     <button type="button" class="az-drone-pill-btn" id="azDroneRedDotBtn" title="Marcar ponto vermelho tático na mira central">
@@ -26116,7 +26149,6 @@ if (document.readyState === "loading") {
 </div>
 
 <div id="azAllyFlyoverBanner" role="status" aria-live="polite"></div>
-<div id="azReconPulsePill" role="status" aria-live="polite"></div>
 
 <svg id="azDroneReticle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
   <circle cx="12" cy="12" r="6" stroke-dasharray="2 2"/>
@@ -26157,12 +26189,14 @@ if (document.readyState === "loading") {
     </div>
   </div>
   <div class="az-sector-body">
+    <div id="azSectorTargetsBox" style="display:none;background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.55);border-radius:8px;padding:6px 8px;"></div>
     <div class="az-sector-summary" id="azSectorSummaryBox">Defina uma área no modo Recon (Círculo ou Retângulo) para analisar o setor.</div>
     <div class="az-sector-tabs">
       <button type="button" class="az-sector-tab is-active" data-sector-tab="avenidas">Avenidas</button>
       <button type="button" class="az-sector-tab" data-sector-tab="ruas">Ruas</button>
       <button type="button" class="az-sector-tab" data-sector-tab="becos">Becos</button>
-      <button type="button" class="az-sector-tab" data-sector-tab="escadarias">Escadarias</button>
+      <button type="button" class="az-sector-tab" data-sector-tab="escadarias">Escadas</button>
+      <button type="button" class="az-sector-tab" data-sector-tab="itinerario">Rota</button>
     </div>
     <div class="az-sector-list" id="azSectorListBox"></div>
   </div>
@@ -26189,6 +26223,22 @@ if (document.readyState === "loading") {
     </label>
   </div>
   <div style="margin-bottom:8px;padding:6px 8px;border:1px solid rgba(255,255,255,0.1);border-radius:8px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;">
+      <span style="font-size:11px;font-weight:700;color:#C5A869;">Animações do Drone (ON / OFF)</span>
+      <input type="checkbox" id="azReconAnimMasterChk" checked />
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;">
+      <span style="font-size:10.5px;font-weight:700;color:#38BDF8;">Ler Itinerário até o Setor (Rota de Carro)</span>
+      <input type="checkbox" id="azReconCarRouteChk" checked />
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;">
+      <span style="font-size:10px;color:#CBD5E1;">Trânsito Ida/Volta Animado</span>
+      <input type="checkbox" id="azReconAnimTransitChk" checked />
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;">
+      <span style="font-size:10px;color:#CBD5E1;">Pausas de Leitura / Altitude</span>
+      <input type="checkbox" id="azReconAnimInspectChk" checked />
+    </div>
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
       <span style="font-size:11px;font-weight:700;color:#E2E8F0;">VARREDURA (AUTO) — Becos/Escadarias</span>
       <input type="checkbox" id="azReconAutoScanChk" checked />
@@ -36742,6 +36792,12 @@ if (document.readyState === "loading") {
     playDjiArpeggio([2489, 2960, 3520]);
   }
 
+  function playDroneTargetFoundBeep() {
+    if (!droneCfg.soundOn) return;
+    triggerDroneVibrate([40, 30, 80]);
+    playDjiArpeggio([1760, 2217, 2637]);
+  }
+
   let _azDroneHumNodes = null;
   function stopDroneRotorHum() {
     if (!_azDroneHumNodes) return;
@@ -37686,7 +37742,14 @@ if (document.readyState === "loading") {
 
   (function initDroneTypesAndReconEngine() {
     const RECON_CFG_KEY = "az_tac_recon_cfg_v1";
-    const RECON_DEFAULT_CFG = { autoScan: true, drawMode: "live" };
+    const RECON_DEFAULT_CFG = {
+      autoScan: true,
+      drawMode: "live",
+      animMaster: true,
+      animTransit: true,
+      animInspect: true,
+      carRoute: true
+    };
     let reconCfg = Object.assign({}, RECON_DEFAULT_CFG);
     try {
       const saved = JSON.parse(localStorage.getItem(RECON_CFG_KEY) || "{}");
@@ -37696,37 +37759,108 @@ if (document.readyState === "loading") {
       try { localStorage.setItem(RECON_CFG_KEY, JSON.stringify(reconCfg)); } catch (_) {}
     }
 
+    const SPEEDS = [0.25, 0.5, 1, 2, 3, 5];
     const state = {
-      shapeMode: "circle", // "circle" | "rect"
+      shapeMode: "circle",
       pickStep: 0,
-      center: null, // { lng, lat }
+      center: null,
       radiusM: 500,
       rectCornerA: null,
       rectCornerB: null,
+      destLabel: "",
+      targetQuery: "",
       waypoints: [],
       wpIdx: 0,
       speedMult: 1,
       paused: false,
-      pattern: "sweep", // "sweep" | "perim"
+      pattern: "sweep",
       manualZoomUntil: 0,
       targetZoom: 16.95,
+      targetPitch: 42,
+      inspectUntil: 0,
+      inspectSpin: false,
+      rthAdded: false,
       pendingFeatures: [],
       revealedFeatures: [],
+      matchedTargets: [],
+      alertedTargetKeys: new Set(),
       featuresVisible: true,
-      analysis: { profile: "BAIRRO RESIDENCIAL", neighborhoods: [], avenidas: [], ruas: [], becos: [], escadarias: [], shopsCount: 0, complexity: "Média" },
+      analysis: {
+        profile: "BAIRRO RESIDENCIAL",
+        neighborhoods: [],
+        avenidas: [],
+        ruas: [],
+        becos: [],
+        escadarias: [],
+        itinerario: [],
+        carDistKm: 0,
+        carDurMin: 0,
+        shopsCount: 0,
+        complexity: "Média"
+      },
       activeTab: "avenidas",
       mapClickHandler: null,
       mapDragHandler: null,
-      pulseHideTimer: 0
+      abortCtrl: null
     };
 
-    function showReconPulse(msg, persistMs) {
-      const el = document.getElementById("azReconPulsePill");
-      if (!el) return;
-      el.textContent = msg;
-      el.classList.add("is-open");
-      if (state.pulseHideTimer) clearTimeout(state.pulseHideTimer);
-      state.pulseHideTimer = setTimeout(function () { el.classList.remove("is-open"); }, persistMs || 1800);
+    function normalizeStr(s) {
+      return String(s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+    }
+
+    function getTargetTerms() {
+      const inp = document.getElementById("azReconTargetInput");
+      const raw = inp ? inp.value : state.targetQuery;
+      state.targetQuery = raw || "";
+      return state.targetQuery.split(",").map(normalizeStr).filter(Boolean);
+    }
+
+    function setReconStatus(phaseTxt, etaTxt) {
+      const ph = document.getElementById("azReconPhaseBadge");
+      const et = document.getElementById("azReconEtaBadge");
+      if (ph && typeof phaseTxt === "string") ph.textContent = phaseTxt;
+      if (et && typeof etaTxt === "string") et.textContent = etaTxt;
+    }
+
+    function formatEtaSec(sec) {
+      const s = Math.max(0, Math.round(sec));
+      const mm = String(Math.floor(s / 60)).padStart(2, "0");
+      const ss = String(s % 60).padStart(2, "0");
+      return "~" + mm + ":" + ss;
+    }
+
+    function getSectorAreaKm2() {
+      if (state.shapeMode === "circle") {
+        const rKm = state.radiusM / 1000;
+        return Math.PI * rKm * rKm;
+      }
+      if (state.rectCornerA && state.rectCornerB) {
+        const midLat = (state.rectCornerA.lat + state.rectCornerB.lat) / 2;
+        const cosLat = Math.max(0.2, Math.cos((midLat * Math.PI) / 180));
+        const hKm = Math.abs(state.rectCornerB.lat - state.rectCornerA.lat) * 111.32;
+        const wKm = Math.abs(state.rectCornerB.lng - state.rectCornerA.lng) * 111.32 * cosLat;
+        return hKm * wKm;
+      }
+      return 0;
+    }
+
+    function updateReconEtaEstimate() {
+      if (!reconCfg.animMaster) {
+        setReconStatus(null, "~00:03");
+        return;
+      }
+      const wps = generateReconWaypoints(state.pattern || "sweep");
+      let totalDist = 0;
+      for (let i = 1; i < wps.length; i++) {
+        totalDist += calcDistAndBearing(wps[i - 1].lat, wps[i - 1].lng, wps[i].lat, wps[i].lng).dist;
+      }
+      if (reconCfg.animTransit && tac.myPos && typeof tac.myPos.lat === "number" && wps[0]) {
+        const dOp = calcDistAndBearing(tac.myPos.lat, tac.myPos.lng, wps[0].lat, wps[0].lng).dist;
+        if (dOp > 40) totalDist += dOp * 2;
+      }
+      const avgSpeed = 48 * (Number(state.speedMult) || 1);
+      const estSec = Math.max(4, totalDist / Math.max(12, avgSpeed));
+      setReconStatus(null, formatEtaSec(estSec));
     }
 
     function makeRealisticDroneSvg(colorHex) {
@@ -37775,7 +37909,7 @@ if (document.readyState === "loading") {
       }
       if (!map.getSource("az-recon-transit-src")) {
         map.addSource("az-recon-transit-src", { type: "geojson", data: emptyGeo });
-        map.addLayer({ id: "az-recon-transit-line", type: "line", source: "az-recon-transit-src", paint: { "line-color": "#38BDF8", "line-width": 2.4, "line-dasharray": [2.5, 2], "line-opacity": 0.85 } });
+        map.addLayer({ id: "az-recon-transit-line", type: "line", source: "az-recon-transit-src", paint: { "line-color": "#38BDF8", "line-width": 2.6, "line-dasharray": [2.5, 1.5], "line-opacity": 0.85 } });
       }
       if (!map.getSource("az-recon-features-src")) {
         map.addSource("az-recon-features-src", { type: "geojson", data: emptyGeo });
@@ -37803,6 +37937,11 @@ if (document.readyState === "loading") {
           },
           paint: { "text-color": "#F8FAFC", "text-halo-color": "#0D0D0D", "text-halo-width": 1.4 }
         });
+      }
+      if (!map.getSource("az-recon-target-src")) {
+        map.addSource("az-recon-target-src", { type: "geojson", data: emptyGeo });
+        map.addLayer({ id: "az-recon-target-glow", type: "line", source: "az-recon-target-src", paint: { "line-color": "#22C55E", "line-width": 9, "line-opacity": 0.38 } });
+        map.addLayer({ id: "az-recon-target-core", type: "line", source: "az-recon-target-src", paint: { "line-color": "#FACC15", "line-width": 3.8 } });
       }
       if (!map.getSource("az-recon-highlight-src")) {
         map.addSource("az-recon-highlight-src", { type: "geojson", data: emptyGeo });
@@ -37896,7 +38035,7 @@ if (document.readyState === "loading") {
       if (!m) return;
       ensureReconLayers(m);
       const vis = state.featuresVisible ? "visible" : "none";
-      ["az-recon-escada-base", "az-recon-escada-steps", "az-recon-beco-bg", "az-recon-beco-dash", "az-recon-pins-layer"].forEach(function (lid) {
+      ["az-recon-escada-base", "az-recon-escada-steps", "az-recon-beco-bg", "az-recon-beco-dash", "az-recon-pins-layer", "az-recon-target-glow", "az-recon-target-core"].forEach(function (lid) {
         if (m.getLayer(lid)) m.setLayoutProperty(lid, "visibility", vis);
       });
       const lineFeats = [];
@@ -37909,8 +38048,26 @@ if (document.readyState === "loading") {
         lineFeats.push({ type: "Feature", geometry: { type: "LineString", coordinates: f.coords }, properties: { id: f.id, kind: f.kind } });
         pinFeats.push({ type: "Feature", geometry: { type: "Point", coordinates: c0 }, properties: { id: f.id, kind: f.kind, angle: angle, label: f.name || (f.kind === "escada" ? "ESCADA" : "BECO") } });
       });
+      const targetFeats = state.matchedTargets.filter(function (t) { return Array.isArray(t.coords) && t.coords.length >= 2; }).map(function (t) {
+        return { type: "Feature", geometry: { type: "LineString", coordinates: t.coords }, properties: { name: t.name } };
+      });
       if (m.getSource("az-recon-features-src")) m.getSource("az-recon-features-src").setData({ type: "FeatureCollection", features: lineFeats });
       if (m.getSource("az-recon-pins-src")) m.getSource("az-recon-pins-src").setData({ type: "FeatureCollection", features: pinFeats });
+      if (m.getSource("az-recon-target-src")) m.getSource("az-recon-target-src").setData({ type: "FeatureCollection", features: targetFeats });
+    }
+
+    function isPointInsideSector(lng, lat) {
+      if (state.shapeMode === "circle" && state.center) {
+        return calcDistAndBearing(state.center.lat, state.center.lng, lat, lng).dist <= state.radiusM;
+      }
+      if (state.shapeMode === "rect" && state.rectCornerA && state.rectCornerB) {
+        const minLng = Math.min(state.rectCornerA.lng, state.rectCornerB.lng);
+        const maxLng = Math.max(state.rectCornerA.lng, state.rectCornerB.lng);
+        const minLat = Math.min(state.rectCornerA.lat, state.rectCornerB.lat);
+        const maxLat = Math.max(state.rectCornerA.lat, state.rectCornerB.lat);
+        return lng >= minLng && lng <= maxLng && lat >= minLat && lat <= maxLat;
+      }
+      return true;
     }
 
     function getSectorPolygonCoords() {
@@ -37954,13 +38111,27 @@ if (document.readyState === "loading") {
       ensureReconLayers(m);
       const poly = getSectorPolygonCoords();
       const src = m.getSource("az-recon-sector-src");
-      if (!src) return;
-      if (!poly) {
-        src.setData({ type: "FeatureCollection", features: [] });
-        return;
+      if (src) {
+        src.setData(!poly ? { type: "FeatureCollection", features: [] } : {
+          type: "FeatureCollection",
+          features: [{ type: "Feature", geometry: { type: "Polygon", coordinates: [poly] }, properties: {} }]
+        });
       }
-      src.setData({ type: "FeatureCollection", features: [{ type: "Feature", geometry: { type: "Polygon", coordinates: [poly] }, properties: {} }] });
+      updateReconEtaEstimate();
     }
+
+    window.initReconSectorAtOrigin = function () {
+      const m = getActiveMap();
+      if (!m) return;
+      const origin = (tac.myPos && typeof tac.myPos.lat === "number" && typeof tac.myPos.lng === "number")
+        ? { lng: tac.myPos.lng, lat: tac.myPos.lat }
+        : m.getCenter();
+      state.shapeMode = "circle";
+      state.center = { lng: origin.lng, lat: origin.lat };
+      state.rectCornerA = null;
+      state.rectCornerB = null;
+      drawReconSectorBoundary();
+    };
 
     function generateReconWaypoints(pattern) {
       const bbox = getSectorBbox();
@@ -37972,25 +38143,25 @@ if (document.readyState === "loading") {
       const midLat = (bbox.minLat + bbox.maxLat) / 2;
       const cosLat = Math.max(0.2, Math.cos((midLat * Math.PI) / 180));
       const heightM = (bbox.maxLat - bbox.minLat) * 111320;
-      const laneStepM = Math.max(85, Math.min(480, Math.round(heightM / 14)));
-      const numLanes = Math.max(2, Math.min(18, Math.ceil(heightM / laneStepM)));
+      const laneStepM = Math.max(85, Math.min(550, Math.round(heightM / 12)));
+      const numLanes = Math.max(2, Math.min(16, Math.ceil(heightM / laneStepM)));
       const wps = [];
       for (let i = 0; i <= numLanes; i++) {
-        const t = i / numLanes;
+        const t = 0.04 + (i / numLanes) * 0.92;
         const lat = bbox.minLat + t * (bbox.maxLat - bbox.minLat);
         let minX = bbox.minLng, maxX = bbox.maxLng;
         if (state.shapeMode === "circle" && state.center) {
           const dy = (lat - state.center.lat) * 111320;
-          const halfW = Math.sqrt(Math.max(0, state.radiusM * state.radiusM - dy * dy));
+          const halfW = Math.sqrt(Math.max(0, state.radiusM * state.radiusM - dy * dy)) * 0.94;
           const dLng = halfW / (111320 * cosLat);
           minX = state.center.lng - dLng;
           maxX = state.center.lng + dLng;
         }
         if (i % 2 === 0) {
-          wps.push({ lng: minX, lat: lat });
+          wps.push({ lng: minX, lat: lat, laneTurn: i > 0 });
           wps.push({ lng: maxX, lat: lat });
         } else {
-          wps.push({ lng: maxX, lat: lat });
+          wps.push({ lng: maxX, lat: lat, laneTurn: i > 0 });
           wps.push({ lng: minX, lat: lat });
         }
       }
@@ -37999,14 +38170,16 @@ if (document.readyState === "loading") {
 
     function classifyAndBuildSectorAnalysis(elements) {
       const neighborhoods = new Set();
+      if (state.destLabel) neighborhoods.add(state.destLabel);
       const avMap = new Map();
       const ruaMap = new Map();
       const becoMap = new Map();
       const escMap = new Map();
+      const targetTerms = getTargetTerms();
+      const matched = [];
       let shopsCount = 0;
       let greenCount = 0;
       let indCount = 0;
-      let favelaHints = 0;
 
       elements.forEach(function (el) {
         const tags = el.tags || {};
@@ -38022,31 +38195,44 @@ if (document.readyState === "loading") {
 
         const coords = Array.isArray(el.coords) ? el.coords : [];
         if (coords.length < 2) return;
+        const mid = coords[Math.floor(coords.length / 2)];
+        // Filtro geométrico rigoroso: somente itens dentro da área colorida
+        if (!isPointInsideSector(mid[0], mid[1]) && !isPointInsideSector(coords[0][0], coords[0][1])) return;
+
         const name = (tags.name || "").trim();
         const hw = tags.highway || "";
         const svc = tags.service || "";
         const fw = tags.footway || "";
-        const mid = coords[Math.floor(coords.length / 2)];
         const isEscada = hw === "steps" || /escada|escadaria/i.test(name);
         const isBeco = !isEscada && (
           hw === "alley" || svc === "alley" || /beco|viela|travessa/i.test(name) ||
           ((hw === "footway" || hw === "path" || hw === "pedestrian") && fw !== "sidewalk" && fw !== "crossing")
         );
 
+        let itemObj = null;
         if (isEscada) {
           const key = name || ("Escadaria s/n #" + (escMap.size + 1));
-          if (!escMap.has(key)) escMap.set(key, { name: key, coords: coords, lat: mid[1], lng: mid[0], kind: "escada" });
-          favelaHints++;
+          itemObj = { name: key, coords: coords, lat: mid[1], lng: mid[0], kind: "escada" };
+          if (!escMap.has(key)) escMap.set(key, itemObj);
         } else if (isBeco) {
           const key = name || ("Beco/Viela #" + (becoMap.size + 1));
-          if (!becoMap.has(key)) becoMap.set(key, { name: key, coords: coords, lat: mid[1], lng: mid[0], kind: "beco" });
-          favelaHints++;
+          itemObj = { name: key, coords: coords, lat: mid[1], lng: mid[0], kind: "beco" };
+          if (!becoMap.has(key)) becoMap.set(key, itemObj);
         } else if (hw === "primary" || hw === "secondary" || hw === "trunk" || /^av\.?|^avenida/i.test(name)) {
           const key = name || ("Avenida #" + (avMap.size + 1));
-          if (!avMap.has(key)) avMap.set(key, { name: key, coords: coords, lat: mid[1], lng: mid[0], kind: "avenida" });
+          itemObj = { name: key, coords: coords, lat: mid[1], lng: mid[0], kind: "avenida" };
+          if (!avMap.has(key)) avMap.set(key, itemObj);
         } else if (hw === "tertiary" || hw === "residential" || hw === "living_street" || hw === "unclassified") {
           const key = name || ("Rua s/n #" + (ruaMap.size + 1));
-          if (!ruaMap.has(key)) ruaMap.set(key, { name: key, coords: coords, lat: mid[1], lng: mid[0], kind: "rua" });
+          itemObj = { name: key, coords: coords, lat: mid[1], lng: mid[0], kind: "rua" };
+          if (!ruaMap.has(key)) ruaMap.set(key, itemObj);
+        }
+
+        if (itemObj && name && targetTerms.length > 0) {
+          const normName = normalizeStr(name);
+          if (targetTerms.some(function (t) { return normName.includes(t); })) {
+            if (!matched.some(function (m) { return m.name === itemObj.name; })) matched.push(itemObj);
+          }
         }
       });
 
@@ -38069,7 +38255,8 @@ if (document.readyState === "loading") {
       if (totalAlleys >= 7 || (totalAlleys + totalRoads) >= 24) complexity = "Alta";
       else if (totalAlleys >= 2 || (totalAlleys + totalRoads) >= 10) complexity = "Média";
 
-      state.analysis = {
+      state.matchedTargets = matched;
+      state.analysis = Object.assign({}, state.analysis, {
         profile: profile,
         neighborhoods: Array.from(neighborhoods),
         avenidas: avenidas,
@@ -38078,19 +38265,72 @@ if (document.readyState === "loading") {
         escadarias: escadarias,
         shopsCount: shopsCount,
         complexity: complexity
-      };
+      });
       renderSectorAnalysisPanel();
     }
 
+    function focusSectorItem(item) {
+      if (!item) return;
+      state.paused = true;
+      const pb = document.getElementById("azReconPauseBtn");
+      if (pb) pb.textContent = "RETOMAR";
+      const m = getActiveMap();
+      if (!m) return;
+      ensureReconLayers(m);
+      if (Array.isArray(item.coords) && item.coords.length >= 2 && m.getSource("az-recon-highlight-src")) {
+        m.getSource("az-recon-highlight-src").setData({
+          type: "FeatureCollection",
+          features: [{ type: "Feature", geometry: { type: "LineString", coordinates: item.coords }, properties: {} }]
+        });
+      }
+      if (typeof m.easeTo === "function") {
+        m.easeTo({ center: [item.lng, item.lat], zoom: 17.6, pitch: 48, duration: 480 });
+      }
+    }
+
     function renderSectorAnalysisPanel() {
+      const tgtBox = document.getElementById("azSectorTargetsBox");
       const sumEl = document.getElementById("azSectorSummaryBox");
       const listEl = document.getElementById("azSectorListBox");
       if (!sumEl || !listEl) return;
       const a = state.analysis;
+
+      if (tgtBox) {
+        if (state.matchedTargets.length > 0) {
+          tgtBox.style.display = "block";
+          tgtBox.innerHTML = `<div style="font-size:9.5px;font-weight:900;color:#4ADE80;margin-bottom:4px;">ALVO(S) LOCALIZADO(S)</div>`;
+          state.matchedTargets.forEach(function (mt) {
+            const r = document.createElement("div");
+            r.style.cssText = "display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:3px;";
+            const sp = document.createElement("span");
+            sp.style.cssText = "font-size:10.5px;font-weight:800;color:#FACC15;";
+            sp.textContent = mt.name;
+            const btns = document.createElement("div");
+            btns.style.cssText = "display:flex;gap:4px;";
+            const fBtn = document.createElement("button");
+            fBtn.type = "button"; fBtn.className = "az-drone-pill-btn"; fBtn.textContent = "Focar";
+            fBtn.addEventListener("click", function () { focusSectorItem(mt); });
+            const rBtn = document.createElement("button");
+            rBtn.type = "button"; rBtn.className = "az-drone-pill-btn is-sky"; rBtn.textContent = "Gerar Rota";
+            rBtn.addEventListener("click", function () {
+              if (typeof window.azimuteGeoRouteTo === "function") window.azimuteGeoRouteTo(mt.lat, mt.lng, mt.name, false);
+            });
+            btns.appendChild(fBtn); btns.appendChild(rBtn);
+            r.appendChild(sp); r.appendChild(btns);
+            tgtBox.appendChild(r);
+          });
+        } else {
+          tgtBox.style.display = "none";
+          tgtBox.innerHTML = "";
+        }
+      }
+
       const bairrosStr = a.neighborhoods.length ? a.neighborhoods.slice(0, 3).join(", ") : "Setor mapeado";
+      const areaStr = getSectorAreaKm2().toFixed(1) + " km²";
+      const carLine = a.carDistKm > 0 ? ` • <b>Viatura:</b> ${a.carDistKm} km (${a.carDurMin} min)` : "";
       sumEl.innerHTML =
-        `<div style="font-weight:900;color:#C5A869;margin-bottom:3px;">PERFIL: ${a.profile}</div>` +
-        `<div><b>Bairros:</b> ${bairrosStr} • <b>Complexidade:</b> ${a.complexity}</div>` +
+        `<div style="font-weight:900;color:#C5A869;margin-bottom:3px;">PERFIL: ${a.profile} (${areaStr})</div>` +
+        `<div><b>Bairros:</b> ${bairrosStr} • <b>Complexidade:</b> ${a.complexity}${carLine}</div>` +
         `<div><b>Av.:</b> ${a.avenidas.length} • <b>Ruas:</b> ${a.ruas.length} • <b>Becos:</b> ${a.becos.length} • <b>Escadas:</b> ${a.escadarias.length} • <b>Comércios:</b> ${a.shopsCount}</div>`;
 
       const items = a[state.activeTab] || [];
@@ -38104,7 +38344,7 @@ if (document.readyState === "loading") {
         row.className = "az-sector-item";
         const title = document.createElement("span");
         title.style.cssText = "font-size:10.5px;font-weight:700;color:#E2E8F0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;";
-        title.textContent = item.name;
+        title.textContent = item.label || item.name;
         const routeBtn = document.createElement("button");
         routeBtn.type = "button";
         routeBtn.className = "az-drone-pill-btn is-sky";
@@ -38116,43 +38356,62 @@ if (document.readyState === "loading") {
           if (pauseBtn) pauseBtn.textContent = "RETOMAR";
           if (typeof window.azimuteGeoRouteTo === "function") {
             window.azimuteGeoRouteTo(item.lat, item.lng, item.name, false);
-          } else {
-            showToast("Motor de rotas indisponível nesta tela.");
           }
         });
-        row.addEventListener("click", function () {
-          state.paused = true;
-          const pauseBtn = document.getElementById("azReconPauseBtn");
-          if (pauseBtn) pauseBtn.textContent = "RETOMAR";
-          const m = getActiveMap();
-          if (m) {
-            ensureReconLayers(m);
-            if (m.getSource("az-recon-highlight-src")) {
-              m.getSource("az-recon-highlight-src").setData({
-                type: "FeatureCollection",
-                features: [{ type: "Feature", geometry: { type: "LineString", coordinates: item.coords }, properties: {} }]
-              });
-            }
-            if (typeof m.easeTo === "function") {
-              m.easeTo({ center: [item.lng, item.lat], zoom: 17.6, pitch: 48, duration: 480 });
-            }
-          }
-        });
+        row.addEventListener("click", function () { focusSectorItem(item); });
         row.appendChild(title);
         row.appendChild(routeBtn);
         listEl.appendChild(row);
       });
     }
 
-    async function fetchSectorOsmOrOffline() {
+    async function fetchCarItinerary(orig, dest, signal) {
+      try {
+        const url = `https://router.project-osrm.org/route/v1/driving/${orig.lng},${orig.lat};${dest.lng},${dest.lat}?overview=full&geometries=geojson&steps=true`;
+        const res = await fetch(url, { signal: signal });
+        if (!res.ok) return null;
+        const json = await res.json();
+        const route = json && json.routes && json.routes[0];
+        if (!route || !route.geometry || !Array.isArray(route.geometry.coordinates)) return null;
+        const steps = [];
+        const legs = route.legs || [];
+        legs.forEach(function (lg) {
+          (lg.steps || []).forEach(function (st) {
+            const nm = (st.name || "").trim();
+            if (!nm) return;
+            const loc = st.maneuver && st.maneuver.location;
+            if (!loc) return;
+            const dStr = st.distance >= 1000 ? (st.distance / 1000).toFixed(1) + " km" : Math.round(st.distance) + " m";
+            steps.push({ name: nm, label: `${nm} (${dStr})`, lat: loc[1], lng: loc[0], coords: route.geometry.coordinates });
+          });
+        });
+        return {
+          coords: route.geometry.coordinates,
+          distKm: Number((route.distance / 1000).toFixed(1)),
+          durMin: Math.max(1, Math.round(route.duration / 60)),
+          steps: steps
+        };
+      } catch (_) {
+        return null;
+      }
+    }
+
+    async function fetchSectorOsmOrOffline(signal) {
       const bbox = getSectorBbox();
       if (!bbox) return;
-      showReconPulse("Mapeando setor...");
-      const spanM = (bbox.maxLat - bbox.minLat) * 111320;
-      const hwRegex = spanM > 2000
-        ? "^(steps|alley|primary|secondary|tertiary|residential|living_street)$"
-        : "^(steps|alley|footway|path|pedestrian|primary|secondary|tertiary|residential|living_street|unclassified)$";
-      const query = `[out:json][timeout:18];(way["highway"~"${hwRegex}"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});way["service"="alley"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});way["name"~"(Beco|Viela|Travessa|Escada|Escadaria)",i](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});node["shop"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});node["amenity"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});way["landuse"~"^(industrial|forest)$"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});node["place"~"^(suburb|neighbourhood|quarter)$"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng}););out body geom;`;
+      setReconStatus("MAPEANDO...", null);
+      const areaKm2 = getSectorAreaKm2();
+      const terms = getTargetTerms();
+      const targetRegex = terms.map(function (t) { return t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }).join("|");
+      const targetClause = targetRegex ? `way["name"~"${targetRegex}",i](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});` : "";
+
+      let query = "";
+      if (areaKm2 > 3) {
+        query = `[out:json][timeout:18];(way["highway"~"^(steps|alley|primary|secondary|tertiary|residential)$"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});way["service"="alley"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});${targetClause}node["place"~"^(suburb|neighbourhood|quarter)$"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng}););out body geom;`;
+      } else {
+        query = `[out:json][timeout:18];(way["highway"~"^(steps|alley|footway|path|pedestrian|primary|secondary|tertiary|residential|living_street|unclassified)$"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});way["service"="alley"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});${targetClause}node["shop"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});node["amenity"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});way["landuse"~"^(industrial|forest)$"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});node["place"~"^(suburb|neighbourhood|quarter)$"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng}););out body geom;`;
+      }
+
       const endpoints = [
         "https://overpass-api.de/api/interpreter",
         "https://overpass.kumi.systems/api/interpreter"
@@ -38163,7 +38422,8 @@ if (document.readyState === "loading") {
           const res = await fetch(endpoints[i], {
             method: "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
-            body: "data=" + encodeURIComponent(query)
+            body: "data=" + encodeURIComponent(query),
+            signal: signal
           });
           if (res.ok) {
             const json = await res.json();
@@ -38177,7 +38437,9 @@ if (document.readyState === "loading") {
               break;
             }
           }
-        } catch (_) {}
+        } catch (err) {
+          if (err && err.name === "AbortError") return;
+        }
       }
 
       if (!elements) {
@@ -38215,15 +38477,76 @@ if (document.readyState === "loading") {
       if (!reconCfg.autoScan) {
         state.pendingFeatures = [];
         state.revealedFeatures = [];
-      } else if (reconCfg.drawMode === "background") {
+      } else if (!reconCfg.animMaster || reconCfg.drawMode === "background") {
         state.pendingFeatures = [];
         state.revealedFeatures = scanItems;
-        showReconPulse(`Setor mapeado: ${scanItems.length} becos/escadas`);
       } else {
         state.pendingFeatures = scanItems;
         state.revealedFeatures = [];
       }
       updateReconGeoJsonLayers();
+    }
+
+    async function searchReconDestination() {
+      const inp = document.getElementById("azReconDestInput");
+      const q = (inp ? inp.value : "").trim();
+      if (!q) { showToast("Digite o nome de um bairro ou setor."); return; }
+      if (state.abortCtrl) { try { state.abortCtrl.abort(); } catch (_) {} }
+      state.abortCtrl = new AbortController();
+      setReconStatus("BUSCANDO...", null);
+      let hit = null;
+      try {
+        const nomUrl = `https://nominatim.openstreetmap.org/search?format=json&limit=3&q=${encodeURIComponent(q + ", Belo Horizonte, MG, Brasil")}`;
+        const r1 = await fetch(nomUrl, { signal: state.abortCtrl.signal });
+        if (r1.ok) {
+          const j1 = await r1.json();
+          if (Array.isArray(j1) && j1[0]) hit = { lat: Number(j1[0].lat), lng: Number(j1[0].lon), label: q };
+        }
+      } catch (_) {}
+      if (!hit) {
+        try {
+          const phUrl = `https://photon.komoot.io/api/?limit=3&lat=-19.9191&lon=-43.9386&q=${encodeURIComponent(q + " Belo Horizonte")}`;
+          const r2 = await fetch(phUrl, { signal: state.abortCtrl.signal });
+          if (r2.ok) {
+            const j2 = await r2.json();
+            const f = j2 && j2.features && j2.features[0];
+            if (f && f.geometry && Array.isArray(f.geometry.coordinates)) {
+              hit = { lng: Number(f.geometry.coordinates[0]), lat: Number(f.geometry.coordinates[1]), label: q };
+            }
+          }
+        } catch (_) {}
+      }
+      if (!hit) {
+        setReconStatus("PRONTO", null);
+        showToast("Bairro/Setor não encontrado.");
+        return;
+      }
+      state.destLabel = hit.label;
+      state.shapeMode = "circle";
+      state.center = { lng: hit.lng, lat: hit.lat };
+      state.rectCornerA = null;
+      state.rectCornerB = null;
+      drawReconSectorBoundary();
+      const m = getActiveMap();
+      if (m && typeof m.easeTo === "function") {
+        m.easeTo({ center: [hit.lng, hit.lat], zoom: 14.8, pitch: 25, duration: 500 });
+      }
+      setReconStatus("SETOR MARCADO", null);
+      showToast(`Área movida para ${hit.label}. Ajuste o tamanho e clique em SOLTAR.`);
+    }
+
+    function setReconSectorActiveColor(isScanning) {
+      const m = getActiveMap();
+      if (!m) return;
+      try {
+        if (m.getLayer("az-recon-sector-fill")) {
+          m.setPaintProperty("az-recon-sector-fill", "fill-color", isScanning ? "#38BDF8" : "#C5A869");
+          m.setPaintProperty("az-recon-sector-fill", "fill-opacity", isScanning ? 0.16 : 0.06);
+        }
+        if (m.getLayer("az-recon-sector-line")) {
+          m.setPaintProperty("az-recon-sector-line", "line-color", isScanning ? "#38BDF8" : "#C5A869");
+        }
+      } catch (_) {}
     }
 
     let _reconSwitchedSat = false;
@@ -38242,136 +38565,119 @@ if (document.readyState === "loading") {
       }
     };
 
-    function setReconSectorActiveColor(isScanning) {
+    async function startReconFlight(pattern) {
       const m = getActiveMap();
       if (!m) return;
-      try {
-        if (m.getLayer("az-recon-sector-fill")) {
-          m.setPaintProperty("az-recon-sector-fill", "fill-color", isScanning ? "#38BDF8" : "#C5A869");
-          m.setPaintProperty("az-recon-sector-fill", "fill-opacity", isScanning ? 0.16 : 0.06);
-        }
-        if (m.getLayer("az-recon-sector-line")) {
-          m.setPaintProperty("az-recon-sector-line", "line-color", isScanning ? "#38BDF8" : "#C5A869");
-        }
-      } catch (_) {}
-    }
+      if (!state.center && !state.rectCornerB) window.initReconSectorAtOrigin();
+      if (state.abortCtrl) { try { state.abortCtrl.abort(); } catch (_) {} }
+      state.abortCtrl = new AbortController();
+      const sig = state.abortCtrl.signal;
 
-    function sampleViewportFeaturesRealtime(m) {
-      if (!m || typeof m.queryRenderedFeatures !== "function") return;
-      try {
-        const feats = m.queryRenderedFeatures();
-        let changed = false;
-        const a = state.analysis;
-        const addUnique = function (arr, name, coords, lat, lng, kind) {
-          if (arr.some(function (it) { return it.name === name; })) return false;
-          arr.push({ name: name, coords: coords, lat: lat, lng: lng, kind: kind });
-          return true;
-        };
-        for (let i = 0; i < feats.length; i++) {
-          const f = feats[i];
-          if (!f || !f.geometry) continue;
-          const props = f.properties || {};
-          const cls = String(props.class || props.subclass || props.type || "");
-          const name = String(props.name || "").trim();
-          if (props.shop || props.amenity) {
-            // Count unique named shops when present
-          }
-          if (f.geometry.type !== "LineString" && f.geometry.type !== "MultiLineString") continue;
-          const coords = f.geometry.type === "LineString" ? f.geometry.coordinates : (f.geometry.coordinates[0] || []);
-          if (coords.length < 2) continue;
-          const mid = coords[Math.floor(coords.length / 2)];
-          const isEsc = cls === "steps" || /escada|escadaria/i.test(name);
-          const isBeco = !isEsc && (cls === "alley" || /beco|viela|travessa/i.test(name));
-          if (isEsc && name) {
-            if (addUnique(a.escadarias, name, coords, mid[1], mid[0], "escada")) changed = true;
-          } else if (isBeco && name) {
-            if (addUnique(a.becos, name, coords, mid[1], mid[0], "beco")) changed = true;
-          } else if ((cls === "primary" || cls === "secondary" || cls === "trunk" || /^av\.?|^avenida/i.test(name)) && name) {
-            if (addUnique(a.avenidas, name, coords, mid[1], mid[0], "avenida")) changed = true;
-          } else if ((cls === "tertiary" || cls === "residential" || cls === "street" || cls === "minor" || name) && name) {
-            if (addUnique(a.ruas, name, coords, mid[1], mid[0], "rua")) changed = true;
-          }
-        }
-        if (changed) {
-          const pEl = document.getElementById("azSectorAnalysisPanel");
-          if (pEl && pEl.classList.contains("is-open")) renderSectorAnalysisPanel();
-        }
-      } catch (_) {}
-    }
-
-    function formatEtaSec(sec) {
-      const s = Math.max(0, Math.round(sec));
-      const mm = String(Math.floor(s / 60)).padStart(2, "0");
-      const ss = String(s % 60).padStart(2, "0");
-      return mm + ":" + ss;
-    }
-
-    function startReconFlight(pattern) {
-      const m = getActiveMap();
-      if (!m) return;
-      if (!state.center && !state.rectCornerB) {
-        const c = m.getCenter();
-        state.shapeMode = "circle";
-        state.center = { lng: c.lng, lat: c.lat };
-        drawReconSectorBoundary();
-        fetchSectorOsmOrOffline();
-      }
       state.pattern = pattern || "sweep";
+      state.alertedTargetKeys = new Set();
+      state.analysis.itinerario = [];
+      state.analysis.carDistKm = 0;
+      state.analysis.carDurMin = 0;
+
       const sectorWps = generateReconWaypoints(state.pattern);
-      state.waypoints = sectorWps.slice();
-      state.wpIdx = 0;
-      state.paused = false;
-      state.targetZoom = 16.95;
-      state.inspectUntil = 0;
-      state.rthAdded = false;
+      let transitCoords = [];
+      let rthCoords = [];
 
-      // Cor momentânea no setor + alternância de camada vetorial se necessário
-      applyReconTempLayer();
-      setReconSectorActiveColor(true);
+      // Verifica deslocamento remoto (ex.: Prado -> Serra) e rota de carro OSRM se ligada
+      const opOrigin = (tac.myPos && typeof tac.myPos.lat === "number" && typeof tac.myPos.lng === "number")
+        ? { lng: tac.myPos.lng, lat: tac.myPos.lat }
+        : null;
+      const distFromOp = (opOrigin && sectorWps[0])
+        ? calcDistAndBearing(opOrigin.lat, opOrigin.lng, sectorWps[0].lat, sectorWps[0].lng).dist
+        : 0;
 
-      // Decolagem a partir do ponto atual do operador (até 7 km de distância do setor)
-      let startPos = m.getCenter();
-      if (tac.myPos && typeof tac.myPos.lat === "number" && typeof tac.myPos.lng === "number" && sectorWps[0]) {
-        const distFromOp = calcDistAndBearing(tac.myPos.lat, tac.myPos.lng, sectorWps[0].lat, sectorWps[0].lng).dist;
-        if (distFromOp <= 7000 && distFromOp > 35) {
-          startPos = { lng: tac.myPos.lng, lat: tac.myPos.lat };
-          state.waypoints = [{ lng: sectorWps[0].lng, lat: sectorWps[0].lat, isTransit: true }].concat(sectorWps);
+      if (opOrigin && distFromOp > 80 && sectorWps[0]) {
+        if (reconCfg.carRoute) {
+          setReconStatus("ROTA CARRO...", null);
+          const car = await fetchCarItinerary(opOrigin, sectorWps[0], sig);
+          if (car && car.coords.length >= 2) {
+            state.analysis.itinerario = car.steps;
+            state.analysis.carDistKm = car.distKm;
+            state.analysis.carDurMin = car.durMin;
+            transitCoords = car.coords.map(function (pt) { return { lng: pt[0], lat: pt[1], isTransit: true }; });
+            rthCoords = car.coords.slice().reverse().map(function (pt) { return { lng: pt[0], lat: pt[1], isRth: true }; });
+            ensureReconLayers(m);
+            if (m.getSource("az-recon-transit-src")) {
+              m.getSource("az-recon-transit-src").setData({
+                type: "FeatureCollection",
+                features: [{ type: "Feature", geometry: { type: "LineString", coordinates: car.coords }, properties: {} }]
+              });
+            }
+          }
+        }
+        if (!transitCoords.length) {
+          transitCoords = [{ lng: sectorWps[0].lng, lat: sectorWps[0].lat, isTransit: true }];
+          rthCoords = [{ lng: opOrigin.lng, lat: opOrigin.lat, isRth: true }];
           ensureReconLayers(m);
           if (m.getSource("az-recon-transit-src")) {
             m.getSource("az-recon-transit-src").setData({
               type: "FeatureCollection",
-              features: [{ type: "Feature", geometry: { type: "LineString", coordinates: [[startPos.lng, startPos.lat], [sectorWps[0].lng, sectorWps[0].lat]] }, properties: {} }]
+              features: [{ type: "Feature", geometry: { type: "LineString", coordinates: [[opOrigin.lng, opOrigin.lat], [sectorWps[0].lng, sectorWps[0].lat]] }, properties: {} }]
             });
           }
-          showReconPulse(`Decolando para setor (${(distFromOp / 1000).toFixed(1)} km)`, 2200);
-        } else if (distFromOp > 7000) {
-          showToast("Setor acima de 7 km — iniciando próximo ao setor.");
         }
       }
 
+      // Consulta setor (Overpass + fallback offline)
+      await fetchSectorOsmOrOffline(sig);
+      if (sig.aborted) return;
+
+      // Modo Animações DESLIGADAS: entrega análise e marcações imediatamente sem voo
+      if (!reconCfg.animMaster) {
+        setReconStatus("CONCLUÍDO", "~00:00");
+        playDroneTargetFoundBeep();
+        const pEl = document.getElementById("azSectorAnalysisPanel");
+        if (pEl) { pEl.classList.add("is-open"); renderSectorAnalysisPanel(); }
+        showToast("Análise do setor concluída (modo instantâneo).");
+        return;
+      }
+
+      // Monta missão completa com animações ligadas
+      state.waypoints = (reconCfg.animTransit && transitCoords.length)
+        ? transitCoords.concat(sectorWps)
+        : sectorWps.slice();
+      state.rthWps = (reconCfg.animTransit && rthCoords.length) ? rthCoords : [];
+      state.wpIdx = 0;
+      state.paused = false;
+      state.targetZoom = 16.95;
+      state.targetPitch = 42;
+      state.inspectUntil = 0;
+      state.inspectSpin = false;
+      state.rthAdded = false;
+
+      applyReconTempLayer();
+      setReconSectorActiveColor(true);
+
+      const startPos = (reconCfg.animTransit && opOrigin && distFromOp > 80) ? opOrigin : (state.waypoints[0] || m.getCenter());
       const pauseBtn = document.getElementById("azReconPauseBtn");
       if (pauseBtn) pauseBtn.textContent = "PAUSAR";
       if (tac.reconRaf) { cancelAnimationFrame(tac.reconRaf); tac.reconRaf = 0; }
-      if (typeof m.easeTo === "function" && state.waypoints[0]) {
-        m.easeTo({ center: [startPos.lng, startPos.lat], zoom: state.waypoints[0].isTransit ? 15.8 : 16.95, pitch: 42, duration: 480 });
+
+      if (typeof m.jumpTo === "function") {
+        m.jumpTo({ center: [startPos.lng, startPos.lat], zoom: (state.waypoints[0] && state.waypoints[0].isTransit) ? 15.8 : 16.95, pitch: 42 });
       }
       if (typeof window.updateDroneCraftOnMap === "function") {
         window.updateDroneCraftOnMap(startPos.lng, startPos.lat, m.getBearing ? m.getBearing() : 0, true);
       }
+
       if (!state.mapDragHandler && typeof m.on === "function") {
         state.mapDragHandler = function () {
           if (tac.droneMode && tac.droneType === "recon" && !state.paused) {
             state.paused = true;
             const pb = document.getElementById("azReconPauseBtn");
             if (pb) pb.textContent = "RETOMAR";
-            showToast("Piloto automático pausado pelo toque no mapa.");
+            setReconStatus("PAUSADO", null);
           }
         };
         m.on("dragstart", state.mapDragHandler);
       }
 
       let lastTs = performance.now();
-      let lastSampleTs = 0;
       let lastEtaTs = 0;
       function tickRecon(now) {
         if (!tac.droneMode || tac.droneType !== "recon") { tac.reconRaf = 0; return; }
@@ -38382,53 +38688,51 @@ if (document.readyState === "loading") {
           const wp = state.waypoints[state.wpIdx];
           const info = calcDistAndBearing(c.lat, c.lng, wp.lat, wp.lng);
 
-          // Pausa breve e giro no próprio eixo ao desenhar beco/escadaria
-          if (state.inspectUntil && now < state.inspectUntil) {
-            const curB = typeof m.getBearing === "function" ? m.getBearing() : 0;
-            const nextB = (curB + 72 * dt) % 360;
-            if (typeof m.jumpTo === "function") m.jumpTo({ bearing: nextB });
-            if (typeof window.updateDroneCraftOnMap === "function") {
-              window.updateDroneCraftOnMap(c.lng, c.lat, nextB, true);
-            }
+          // Interpolação contínua suave de zoom e pitch (60fps)
+          let curZ = typeof m.getZoom === "function" ? m.getZoom() : 16.95;
+          let curP = typeof m.getPitch === "function" ? m.getPitch() : 42;
+          let curB = typeof m.getBearing === "function" ? m.getBearing() : 0;
+
+          if (reconCfg.animInspect && state.inspectUntil && now < state.inspectUntil) {
+            state.targetZoom = 17.75;
+            state.targetPitch = 52;
+            const nextZ = curZ + (state.targetZoom - curZ) * Math.min(1, dt * 3.5);
+            const nextP = curP + (state.targetPitch - curP) * Math.min(1, dt * 3.5);
+            const nextB = state.inspectSpin ? (curB + 55 * dt) % 360 : curB;
+            if (typeof m.jumpTo === "function") m.jumpTo({ zoom: nextZ, pitch: nextP, bearing: nextB });
+            if (typeof window.updateDroneCraftOnMap === "function") window.updateDroneCraftOnMap(c.lng, c.lat, nextB, true);
             tac.reconRaf = requestAnimationFrame(tickRecon);
             return;
           }
 
-          const baseSpeed = (wp.isTransit || wp.isRth) ? Math.max(52, Math.min(280, info.dist * 0.25)) : 42;
+          const baseSpeed = (wp.isTransit || wp.isRth) ? Math.max(60, Math.min(300, info.dist * 0.25)) : 44;
           const stepM = baseSpeed * state.speedMult * dt;
           let nextLat = c.lat, nextLng = c.lng;
           if (info.dist <= Math.max(12, stepM)) {
             nextLat = wp.lat; nextLng = wp.lng;
             state.wpIdx++;
+            if (wp.laneTurn && reconCfg.animInspect) {
+              state.targetZoom = 16.55;
+              state.targetPitch = 36;
+            }
             if (state.wpIdx >= state.waypoints.length) {
               if (state.pattern === "perim" && !state.rthAdded) {
                 state.wpIdx = 0;
-              } else if (!state.rthAdded && tac.myPos && typeof tac.myPos.lat === "number" && typeof tac.myPos.lng === "number") {
-                const dHome = calcDistAndBearing(nextLat, nextLng, tac.myPos.lat, tac.myPos.lng).dist;
-                if (dHome <= 7500 && dHome > 35) {
-                  state.rthAdded = true;
-                  setReconSectorActiveColor(false);
-                  window.restoreReconTempLayer();
-                  state.waypoints.push({ lng: tac.myPos.lng, lat: tac.myPos.lat, isRth: true });
-                  showReconPulse("Coleta finalizada — Retornando à sua posição...", 3000);
-                } else {
-                  state.paused = true;
-                  setReconSectorActiveColor(false);
-                  window.restoreReconTempLayer();
-                  playDroneReturnBeep();
-                  const pEl = document.getElementById("azSectorAnalysisPanel");
-                  if (pEl) { pEl.classList.add("is-open"); renderSectorAnalysisPanel(); }
-                  closeDroneMode(true);
-                  return;
-                }
+              } else if (!state.rthAdded && state.rthWps && state.rthWps.length > 0) {
+                state.rthAdded = true;
+                setReconSectorActiveColor(false);
+                window.restoreReconTempLayer();
+                state.waypoints = state.waypoints.concat(state.rthWps);
+                setReconStatus("RETORNO RTH", null);
               } else {
                 state.paused = true;
                 setReconSectorActiveColor(false);
                 window.restoreReconTempLayer();
+                setReconStatus("CONCLUÍDO", "~00:00");
                 playDroneReturnBeep();
                 const pEl = document.getElementById("azSectorAnalysisPanel");
                 if (pEl) { pEl.classList.add("is-open"); renderSectorAnalysisPanel(); }
-                showToast("Reconhecimento concluído — Análise disponível em PDF.");
+                showToast("Missão concluída — Análise pronta.");
                 closeDroneMode(true);
                 return;
               }
@@ -38443,19 +38747,29 @@ if (document.readyState === "loading") {
             window.updateDroneCraftOnMap(nextLng, nextLat, info.bearing, true);
           }
 
-          // Amostragem em tempo real de ruas/becos/escadas durante o voo
-          if (!wp.isTransit && !wp.isRth && now - lastSampleTs > 550) {
-            lastSampleTs = now;
-            sampleViewportFeaturesRealtime(m);
+          // Alvos nominais (ex.: "Arauto"): bipe + pausa breve ao sobrevoar
+          if (!wp.isTransit && !wp.isRth && state.matchedTargets.length > 0) {
+            state.matchedTargets.forEach(function (mt) {
+              if (state.alertedTargetKeys.has(mt.name)) return;
+              if (calcDistAndBearing(nextLat, nextLng, mt.lat, mt.lng).dist <= 160) {
+                state.alertedTargetKeys.add(mt.name);
+                playDroneTargetFoundBeep();
+                if (reconCfg.animInspect) {
+                  state.inspectUntil = now + 1600;
+                  state.inspectSpin = true;
+                }
+                showToast(`Alvo localizado: ${mt.name}`);
+              }
+            });
           }
 
-          // Revelação progressiva ao vivo + giro breve ao desenhar becos/escadarias
+          // Revelação progressiva ao vivo + pausas de leitura de beco/escadaria
           if (!wp.isTransit && !wp.isRth && reconCfg.autoScan && reconCfg.drawMode === "live" && state.pendingFeatures.length > 0) {
             let newlyRevealed = 0;
             const remaining = [];
             state.pendingFeatures.forEach(function (pf) {
               const df = calcDistAndBearing(nextLat, nextLng, pf.mid.lat, pf.mid.lng).dist;
-              if (df <= 140) {
+              if (df <= 145) {
                 state.revealedFeatures.push(pf);
                 newlyRevealed++;
               } else {
@@ -38465,36 +38779,40 @@ if (document.readyState === "loading") {
             if (newlyRevealed > 0) {
               state.pendingFeatures = remaining;
               updateReconGeoJsonLayers();
-              state.inspectUntil = now + 550;
+              if (reconCfg.animInspect) {
+                state.inspectUntil = now + 1100;
+                state.inspectSpin = newlyRevealed >= 2;
+              }
             }
           }
 
-          // ETA + Contagem ao vivo (a cada 350ms)
+          // ETA e fase dentro da barra (sem sobrepor mapa)
           if (now - lastEtaTs > 350) {
             lastEtaTs = now;
             let remDist = info.dist;
             for (let k = state.wpIdx; k < state.waypoints.length - 1; k++) {
               remDist += calcDistAndBearing(state.waypoints[k].lat, state.waypoints[k].lng, state.waypoints[k + 1].lat, state.waypoints[k + 1].lng).dist;
             }
-            const etaSec = remDist / Math.max(15, 42 * state.speedMult);
-            const a = state.analysis;
-            const tag = wp.isRth ? "RETORNO RTH" : (wp.isTransit ? "TRÂNSITO" : "VARREDURA");
-            showReconPulse(`${tag} • ${formatEtaSec(etaSec)} • ${a.avenidas.length + a.ruas.length} RUAS • ${a.becos.length} BECOS`, 1200);
+            const etaSec = remDist / Math.max(15, 44 * state.speedMult);
+            const destTxt = state.destLabel ? (" → " + state.destLabel.toUpperCase()) : "";
+            const tag = wp.isRth ? "RETORNO RTH" : (wp.isTransit ? ("TRÂNSITO" + destTxt) : "VARREDURA");
+            setReconStatus(tag, formatEtaSec(etaSec));
           }
 
-          // Auto-Altitude inteligente
-          let z = typeof m.getZoom === "function" ? m.getZoom() : 16.95;
+          // Auto-Altitude suave (60fps lerp)
           if (Date.now() > state.manualZoomUntil) {
             let nearbyAlleys = 0;
             state.revealedFeatures.concat(state.pendingFeatures).forEach(function (rf) {
               if (calcDistAndBearing(nextLat, nextLng, rf.mid.lat, rf.mid.lng).dist <= 95) nearbyAlleys++;
             });
             state.targetZoom = (wp.isTransit || wp.isRth) ? 15.8 : (nearbyAlleys >= 2 ? 17.55 : 16.75);
-            z = z + (state.targetZoom - z) * Math.min(1, dt * 1.4);
+            state.targetPitch = (wp.isTransit || wp.isRth) ? 35 : (nearbyAlleys >= 2 ? 48 : 40);
+            curZ = curZ + (state.targetZoom - curZ) * Math.min(1, dt * 1.8);
+            curP = curP + (state.targetPitch - curP) * Math.min(1, dt * 1.8);
           }
 
           if (typeof m.jumpTo === "function") {
-            m.jumpTo({ center: [nextLng, nextLat], zoom: z });
+            m.jumpTo({ center: [nextLng, nextLat], zoom: curZ, pitch: curP });
           }
         }
         tac.reconRaf = requestAnimationFrame(tickRecon);
@@ -38504,7 +38822,9 @@ if (document.readyState === "loading") {
 
     window.stopReconFlight = function (clearPickHandler) {
       if (tac.reconRaf) { cancelAnimationFrame(tac.reconRaf); tac.reconRaf = 0; }
+      if (state.abortCtrl) { try { state.abortCtrl.abort(); } catch (_) {} state.abortCtrl = null; }
       state.paused = true;
+      setReconSectorActiveColor(false);
       const m = getActiveMap();
       if (clearPickHandler && m && typeof m.off === "function") {
         if (state.mapClickHandler) { m.off("click", state.mapClickHandler); state.mapClickHandler = null; }
@@ -38520,7 +38840,7 @@ if (document.readyState === "loading") {
       if (state.mapClickHandler) { m.off("click", state.mapClickHandler); state.mapClickHandler = null; }
       const rWrap = document.getElementById("azReconRadiusWrap");
       if (rWrap) rWrap.style.display = mode === "circle" ? "inline-flex" : "none";
-      showToast(mode === "circle" ? "Toque no mapa para definir o centro do círculo." : "Toque 2 cantos opostos no mapa (teto ~1,2 km²).");
+      showToast(mode === "circle" ? "Toque no mapa para definir o centro do círculo." : "Toque 2 cantos opostos no mapa (até 50 km²).");
       state.mapClickHandler = function (ev) {
         if (!tac.droneMode || tac.droneType !== "recon") return;
         const pt = { lng: ev.lngLat.lng, lat: ev.lngLat.lat };
@@ -38528,17 +38848,25 @@ if (document.readyState === "loading") {
           state.center = pt;
           m.off("click", state.mapClickHandler); state.mapClickHandler = null;
           drawReconSectorBoundary();
-          fetchSectorOsmOrOffline();
         } else {
           if (state.pickStep === 0) {
             state.rectCornerA = pt;
             state.pickStep = 1;
-            showToast("Agora toque no canto oposto do quadrante.");
+            showToast("Toque no canto oposto do quadrante.");
           } else {
             state.rectCornerB = pt;
+            // Limita retângulo a no máximo 50 km²
+            const areaKm2 = getSectorAreaKm2();
+            if (areaKm2 > 50) {
+              const scale = Math.sqrt(50 / areaKm2);
+              state.rectCornerB = {
+                lng: state.rectCornerA.lng + (pt.lng - state.rectCornerA.lng) * scale,
+                lat: state.rectCornerA.lat + (pt.lat - state.rectCornerA.lat) * scale
+              };
+              showToast("Área ajustada para o limite máximo de 50 km².");
+            }
             m.off("click", state.mapClickHandler); state.mapClickHandler = null;
             drawReconSectorBoundary();
-            fetchSectorOsmOrOffline();
           }
         }
       };
@@ -38563,8 +38891,9 @@ if (document.readyState === "loading") {
         } else if (nextType === "recon") {
           tac.droneFreeFlight = false;
           if (tac.droneRaf) { cancelAnimationFrame(tac.droneRaf); tac.droneRaf = 0; }
+          window.initReconSectorAtOrigin();
           const m = getActiveMap();
-          if (m && typeof m.easeTo === "function") m.easeTo({ zoom: 16.95, pitch: 42, duration: 420 });
+          if (m && typeof m.easeTo === "function") m.easeTo({ zoom: 15.8, pitch: 35, duration: 420 });
         }
         syncDroneUi();
       });
@@ -38587,14 +38916,19 @@ if (document.readyState === "loading") {
     });
 
     // Recon controls
+    onClick("azReconDestSearchBtn", searchReconDestination);
+    const destInp = document.getElementById("azReconDestInput");
+    if (destInp) destInp.addEventListener("keydown", function (ev) { if (ev.key === "Enter") searchReconDestination(); });
     onClick("azReconCircleBtn", function () { armSectorPick("circle"); });
     onClick("azReconRectBtn", function () { armSectorPick("rect"); });
     const radSlider = document.getElementById("azReconRadiusSlider");
     if (radSlider) {
       radSlider.addEventListener("input", function () {
-        state.radiusM = Math.max(100, Math.min(5000, Number(this.value) || 500));
+        state.radiusM = Math.max(100, Math.min(3990, Number(this.value) || 500));
         const valEl = document.getElementById("azReconRadiusVal");
-        if (valEl) valEl.textContent = state.radiusM >= 1000 ? (state.radiusM / 1000).toFixed(1) + "km" : state.radiusM + "m";
+        const areaStr = getSectorAreaKm2().toFixed(1) + "km²";
+        const rStr = state.radiusM >= 1000 ? (state.radiusM / 1000).toFixed(1) + "km" : state.radiusM + "m";
+        if (valEl) valEl.textContent = `${rStr} (${areaStr})`;
         if (state.shapeMode === "circle" && state.center) drawReconSectorBoundary();
       });
     }
@@ -38614,36 +38948,66 @@ if (document.readyState === "loading") {
       state.paused = !state.paused;
       const pb = document.getElementById("azReconPauseBtn");
       if (pb) pb.textContent = state.paused ? "RETOMAR" : "PAUSAR";
+      setReconStatus(state.paused ? "PAUSADO" : "VARREDURA", null);
     });
-    onClick("azReconSpeedBtn", function () {
-      const speeds = [0.5, 1, 2, 3];
-      const idx = (speeds.indexOf(state.speedMult) + 1) % speeds.length;
-      state.speedMult = speeds[idx];
-      const sb = document.getElementById("azReconSpeedBtn");
-      if (sb) sb.textContent = state.speedMult + "x";
+    onClick("azReconSpeedDownBtn", function () {
+      const idx = SPEEDS.indexOf(state.speedMult);
+      state.speedMult = SPEEDS[Math.max(0, (idx < 0 ? 2 : idx) - 1)];
+      const lbl = document.getElementById("azReconSpeedLabel");
+      if (lbl) lbl.textContent = state.speedMult + "x";
+      updateReconEtaEstimate();
+    });
+    onClick("azReconSpeedUpBtn", function () {
+      const idx = SPEEDS.indexOf(state.speedMult);
+      state.speedMult = SPEEDS[Math.min(SPEEDS.length - 1, (idx < 0 ? 2 : idx) + 1)];
+      const lbl = document.getElementById("azReconSpeedLabel");
+      if (lbl) lbl.textContent = state.speedMult + "x";
+      updateReconEtaEstimate();
+    });
+    onClick("azReconRthBtn", function () {
+      if (!tac.myPos || typeof tac.myPos.lat !== "number") { showToast("GPS indisponível para retorno."); return; }
+      state.rthAdded = true;
+      state.paused = false;
+      setReconSectorActiveColor(false);
+      window.restoreReconTempLayer();
+      const pb = document.getElementById("azReconPauseBtn");
+      if (pb) pb.textContent = "PAUSAR";
+      const rthList = (state.rthWps && state.rthWps.length) ? state.rthWps : [{ lng: tac.myPos.lng, lat: tac.myPos.lat, isRth: true }];
+      state.waypoints = rthList;
+      state.wpIdx = 0;
+      setReconStatus("RETORNO RTH", null);
     });
     onClick("azReconAltUpBtn", function () {
       const m = getActiveMap();
       if (!m || typeof m.jumpTo !== "function") return;
       state.manualZoomUntil = Date.now() + 8000;
-      m.jumpTo({ zoom: Math.max(15.2, m.getZoom() - 0.35) });
+      m.jumpTo({ zoom: Math.max(15.0, m.getZoom() - 0.35) });
     });
     onClick("azReconAltDownBtn", function () {
       const m = getActiveMap();
       if (!m || typeof m.jumpTo !== "function") return;
       state.manualZoomUntil = Date.now() + 8000;
-      m.jumpTo({ zoom: Math.min(18.2, m.getZoom() + 0.35) });
+      m.jumpTo({ zoom: Math.min(18.5, m.getZoom() + 0.35) });
     });
 
-    // Settings: Varredura Auto + Modo de Desenho + Mostrar/Limpar/Fixar
-    const autoScanChk = document.getElementById("azReconAutoScanChk");
-    if (autoScanChk) {
-      autoScanChk.checked = Boolean(reconCfg.autoScan);
-      autoScanChk.addEventListener("change", function () {
-        reconCfg.autoScan = Boolean(this.checked);
+    // Settings checkboxes
+    function wireReconChk(id, key, onChange) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.checked = Boolean(reconCfg[key]);
+      el.addEventListener("change", function () {
+        reconCfg[key] = Boolean(this.checked);
         saveReconCfg();
+        if (onChange) onChange();
+        updateReconEtaEstimate();
       });
     }
+    wireReconChk("azReconAnimMasterChk", "animMaster");
+    wireReconChk("azReconCarRouteChk", "carRoute");
+    wireReconChk("azReconAnimTransitChk", "animTransit");
+    wireReconChk("azReconAnimInspectChk", "animInspect");
+    wireReconChk("azReconAutoScanChk", "autoScan");
+
     const drawModeSel = document.getElementById("azReconDrawModeSelect");
     if (drawModeSel) {
       drawModeSel.value = reconCfg.drawMode || "live";
@@ -38660,6 +39024,7 @@ if (document.readyState === "loading") {
     onClick("azReconClearBtn", function () {
       state.pendingFeatures = [];
       state.revealedFeatures = [];
+      state.matchedTargets = [];
       updateReconGeoJsonLayers();
       showToast("Marcações da varredura limpas.");
     });
@@ -38743,9 +39108,17 @@ if (document.readyState === "loading") {
         "DATA/HORA: " + new Date().toLocaleString("pt-BR"),
         "------------------------------------------------------------",
         `Avenidas: ${(a.avenidas || []).length} | Ruas: ${(a.ruas || []).length} | Becos: ${(a.becos || []).length} | Escadarias: ${(a.escadarias || []).length} | Comercios: ${a.shopsCount || 0}`,
-        "------------------------------------------------------------",
-        "AVENIDAS:"
+        "------------------------------------------------------------"
       ];
+      if (state.matchedTargets.length) {
+        lines.push("ALVOS LOCALIZADOS:");
+        state.matchedTargets.forEach(function (mt) { lines.push(" * " + mt.name); });
+      }
+      if ((a.itinerario || []).length) {
+        lines.push(`ITINERARIO DE ACESSO (VIATURA: ${a.carDistKm} km / ${a.carDurMin} min):`);
+        a.itinerario.forEach(function (it) { lines.push(" -> " + it.label); });
+      }
+      lines.push("AVENIDAS:");
       (a.avenidas || []).forEach(function (it) { lines.push(" - " + it.name); });
       lines.push("RUAS:");
       (a.ruas || []).forEach(function (it) { lines.push(" - " + it.name); });
