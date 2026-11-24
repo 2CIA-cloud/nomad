@@ -26059,6 +26059,7 @@ if (document.readyState === "loading") {
       <option value="__SELF__">SEGUIR VOCÊ (SEU ÍCONE)</option>
     </select>
     <button type="button" class="az-drone-pill-btn is-sky" id="azDroneControlToggleBtn" title="Assumir controle manual ou seguir operador">ASSUMIR</button>
+    <button type="button" class="az-drone-pill-btn is-active" id="azDroneQuickSoundBtn" title="Ligar ou desligar todos os efeitos sonoros do Drone">SOM: ON</button>
     <button type="button" class="az-drone-pill-btn" id="azDroneSettingsBtn" title="Ajustes de sensibilidade, modo de voo, varredura e som DJI" aria-label="Ajustes do Drone">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
     </button>
@@ -26092,8 +26093,8 @@ if (document.readyState === "loading") {
       <span class="az-recon-eta-badge" id="azReconEtaBadge" title="Tempo estimado da missão">~00:30</span>
       <span class="az-recon-eta-badge" id="azReconPhaseBadge" style="color:#C5A869;border-color:rgba(197,168,105,0.45);background:rgba(197,168,105,0.12);">PRONTO</span>
     </div>
-    <div style="display:flex;gap:4px;width:100%;align-items:center;overflow-x:auto;scrollbar-width:none;">
-      <button type="button" class="az-drone-pill-btn is-active" id="azReconSweepBtn" title="Soltar Drone para varredura em grade S">SOLTAR</button>
+    <div style="display:flex;gap:4px;width:100%;align-items:center;flex-wrap:wrap;">
+      <button type="button" class="az-drone-pill-btn is-sky" id="azReconSweepBtn" style="background:rgba(56,189,248,0.28);color:#FFFFFF;border-color:#38BDF8;" title="Iniciar voo autônomo de reconhecimento">INICIAR VOO</button>
       <button type="button" class="az-drone-pill-btn" id="azReconOrbitPerimBtn" title="Orbitar perímetro do setor">PERÍM.</button>
       <button type="button" class="az-drone-pill-btn" id="azReconOrbitPtBtn" title="Orbitar 360° o ponto atual">ORB. PT</button>
       <button type="button" class="az-drone-pill-btn" id="azReconPauseBtn" title="Pausar ou retomar piloto automático">PAUSAR</button>
@@ -26183,6 +26184,7 @@ if (document.readyState === "loading") {
   <div class="az-sector-head">
     <span>ANÁLISE DO SETOR</span>
     <div style="display:flex;gap:4px;">
+      <button type="button" class="az-drone-pill-btn is-danger" id="azSectorClearMapBtn" title="Apagar desenhos do Drone e Cão da tela">LIMPAR TELA</button>
       <button type="button" class="az-drone-pill-btn is-sky" id="azSectorPdfBtn" title="Baixar Análise Territorial em PDF">BAIXAR PDF</button>
       <button type="button" class="az-drone-pill-btn" id="azSectorMinBtn" title="Recolher/Expandir painel">_</button>
       <button type="button" class="az-drone-pill-btn is-danger" id="azSectorCloseBtn" title="Fechar análise">FECHAR</button>
@@ -33540,6 +33542,8 @@ if (document.readyState === "loading") {
         tac.myTrailCoords = [];
         renderTrailsOnMaps(false);
         setBloodhoundTarget(null);
+        clearBloodhoundMarker();
+        if (typeof window.clearReconMapDrawings === "function") window.clearReconMapDrawings();
         clearCircleFromMaps(false, true);
         clearRouteFromMaps();
         renderLineOnMaps("az-tac-ruler", "az-tac-ruler-line", [], "#22C55E", true, null, "ruler");
@@ -36788,13 +36792,11 @@ if (document.readyState === "loading") {
   }
 
   function playDroneReturnBeep() {
-    triggerDroneVibrate([60, 40, 60, 40, 120]);
     playDjiArpeggio([2489, 2960, 3520]);
   }
 
   function playDroneTargetFoundBeep() {
     if (!droneCfg.soundOn) return;
-    triggerDroneVibrate([40, 30, 80]);
     playDjiArpeggio([1760, 2217, 2637]);
   }
 
@@ -36820,35 +36822,36 @@ if (document.readyState === "loading") {
   }
 
   function startDroneRotorHum() {
-    if (!droneCfg.humOn || _azDroneHumNodes) return;
+    if (!droneCfg.soundOn || !droneCfg.humOn || _azDroneHumNodes) return;
     const ctx = getDroneAudioCtx();
     if (!ctx) return;
     try {
       const master = ctx.createGain();
       master.gain.setValueAtTime(0.0001, ctx.currentTime);
-      master.gain.linearRampToValueAtTime(0.022, ctx.currentTime + 0.25);
+      master.gain.linearRampToValueAtTime(0.016, ctx.currentTime + 0.22);
 
       const filter = ctx.createBiquadFilter();
-      filter.type = "lowpass";
-      filter.frequency.setValueAtTime(260, ctx.currentTime);
+      filter.type = "bandpass";
+      filter.frequency.setValueAtTime(980, ctx.currentTime);
+      filter.Q.setValueAtTime(1.8, ctx.currentTime);
       filter.connect(master);
       master.connect(ctx.destination);
 
       const osc1 = ctx.createOscillator();
       osc1.type = "sawtooth";
-      osc1.frequency.setValueAtTime(118, ctx.currentTime);
+      osc1.frequency.setValueAtTime(415, ctx.currentTime);
       osc1.connect(filter);
 
       const osc2 = ctx.createOscillator();
       osc2.type = "triangle";
-      osc2.frequency.setValueAtTime(177, ctx.currentTime);
+      osc2.frequency.setValueAtTime(830, ctx.currentTime);
       osc2.connect(filter);
 
       const lfo = ctx.createOscillator();
       lfo.type = "sine";
-      lfo.frequency.setValueAtTime(9.5, ctx.currentTime);
+      lfo.frequency.setValueAtTime(24, ctx.currentTime);
       const lfoGain = ctx.createGain();
-      lfoGain.gain.setValueAtTime(0.006, ctx.currentTime);
+      lfoGain.gain.setValueAtTime(0.005, ctx.currentTime);
       lfo.connect(lfoGain);
       lfoGain.connect(master.gain);
 
@@ -37126,6 +37129,13 @@ if (document.readyState === "loading") {
     }
     const tgtSel = document.getElementById("azDroneTargetSelect");
     if (tgtSel) tgtSel.style.display = dType === "recon" ? "none" : "";
+    const qsBtn = document.getElementById("azDroneQuickSoundBtn");
+    if (qsBtn) {
+      const isOn = Boolean(droneCfg.soundOn);
+      qsBtn.textContent = isOn ? "SOM: ON" : "SOM: OFF";
+      qsBtn.classList.toggle("is-active", isOn);
+      qsBtn.classList.toggle("is-danger", !isOn);
+    }
     syncGimbalReadout();
     updateDroneStickAxisLabels();
   }
@@ -37620,12 +37630,28 @@ if (document.readyState === "loading") {
     });
     onClick("azDroneSettingsCloseBtn", function () { closeAllDronePopovers(null); });
 
+    onClick("azDroneQuickSoundBtn", function () {
+      droneCfg.soundOn = !Boolean(droneCfg.soundOn);
+      saveDroneCfg();
+      const soundChk = document.getElementById("azDroneSoundChk");
+      if (soundChk) soundChk.checked = droneCfg.soundOn;
+      if (!droneCfg.soundOn) {
+        stopDroneRotorHum();
+      } else if (tac.droneMode) {
+        startDroneRotorHum();
+      }
+      syncDroneUi();
+      showToast(droneCfg.soundOn ? "Efeitos sonoros do Drone ativados." : "Efeitos sonoros do Drone desativados.");
+    });
+
     const soundChk = document.getElementById("azDroneSoundChk");
     if (soundChk) {
       soundChk.addEventListener("change", function () {
         droneCfg.soundOn = Boolean(this.checked);
         saveDroneCfg();
-        if (droneCfg.soundOn) playDronePowerOnSound();
+        if (!droneCfg.soundOn) stopDroneRotorHum();
+        else if (tac.droneMode) { playDronePowerOnSound(); startDroneRotorHum(); }
+        syncDroneUi();
       });
     }
     const humChk = document.getElementById("azDroneHumChk");
@@ -39139,6 +39165,31 @@ if (document.readyState === "loading") {
         try { document.body.removeChild(aEl); URL.revokeObjectURL(url); } catch (_) {}
       }, 600);
       showToast("PDF da Análise Territorial gerado!");
+    });
+
+    window.clearReconMapDrawings = function () {
+      state.pendingFeatures = [];
+      state.revealedFeatures = [];
+      state.matchedTargets = [];
+      state.center = null;
+      state.rectCornerA = null;
+      state.rectCornerB = null;
+      const emptyGeo = { type: "FeatureCollection", features: [] };
+      const m = getActiveMap();
+      if (m && typeof m.getSource === "function") {
+        ["az-recon-sector-src", "az-recon-transit-src", "az-recon-features-src", "az-recon-pins-src", "az-recon-target-src", "az-recon-highlight-src", "az-drone-craft-src"].forEach(function (sid) {
+          const s = m.getSource(sid);
+          if (s && typeof s.setData === "function") s.setData(emptyGeo);
+        });
+      }
+      setReconStatus("PRONTO", "~00:00");
+    };
+
+    onClick("azSectorClearMapBtn", function () {
+      window.clearReconMapDrawings();
+      if (typeof setBloodhoundTarget === "function") setBloodhoundTarget(null);
+      if (typeof clearBloodhoundMarker === "function") clearBloodhoundMarker();
+      showToast("Desenhos do Drone e Cão apagados da tela.");
     });
 
     onClick("azReconAnalysisBtn", function () {
