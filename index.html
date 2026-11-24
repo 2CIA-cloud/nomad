@@ -1557,6 +1557,13 @@
       display: none !important;
     }
 
+    #azGeoMap,
+    #azGeoMap .maplibregl-canvas-container,
+    #azGeoMap .maplibregl-canvas {
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+    }
     #azGeoLeftOverlayCol {
       position: absolute;
       left: 10px;
@@ -1578,12 +1585,17 @@
     }
     #azGeoLeftOverlayCol #azHudSearchToggleBtn,
     #azGeoLeftOverlayCol #azSatToggleBtn {
-      width: 32px !important;
-      height: 32px !important;
-      border-radius: 8px !important;
+      width: 38px !important;
+      height: 38px !important;
+      border-radius: 9px !important;
       border: 1px solid var(--geo-border) !important;
       background: rgba(13, 13, 13, 0.94) !important;
       color: var(--geo-gold) !important;
+    }
+    #azGeoLeftOverlayCol #azHudSearchToggleBtn svg,
+    #azGeoLeftOverlayCol #azSatToggleBtn svg {
+      width: 19px !important;
+      height: 19px !important;
     }
     #azGeoLeftOverlayCol #azHudSearchToggleBtn.is-active,
     #azGeoLeftOverlayCol #azSatToggleBtn.is-active {
@@ -1599,20 +1611,20 @@
       z-index: 600;
       display: flex;
       flex-direction: column;
-      border-radius: 8px;
+      border-radius: 9px;
       overflow: hidden;
       border: 1px solid var(--geo-border);
       background: rgba(13, 13, 13, 0.94);
     }
 
     .az-geo-zoom-stack button {
-      width: 32px;
-      height: 32px;
+      width: 38px;
+      height: 36px;
       background: transparent;
       color: var(--geo-gold);
       border: 0;
       border-bottom: 1px solid var(--geo-border);
-      font-size: 17px;
+      font-size: 20px;
       font-weight: 700;
       cursor: pointer;
     }
@@ -1625,12 +1637,12 @@
     .az-geo-locate-fab {
       position: absolute !important;
       right: 12px !important;
-      bottom: 14px !important;
+      bottom: 24px !important;
       left: auto !important;
       top: auto !important;
       z-index: 750 !important;
-      width: 44px;
-      height: 44px;
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
       background: rgba(13, 13, 13, 0.94);
       border: 1.5px solid rgba(197, 168, 105, 0.95);
@@ -1640,6 +1652,11 @@
       justify-content: center;
       cursor: pointer;
       box-shadow: 0 3px 12px rgba(0, 0, 0, 0.78);
+    }
+
+    .az-geo-locate-fab svg {
+      width: 24px;
+      height: 24px;
     }
 
     .az-geo-locate-fab.is-heading-up {
@@ -1658,8 +1675,8 @@
       right: 12px;
       top: 12px;
       z-index: 600;
-      width: 34px;
-      height: 34px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       background: rgba(13, 13, 13, 0.94);
       border: 1px solid #C5A869;
@@ -1677,14 +1694,14 @@
       right: 12px;
       top: 54px;
       z-index: 600;
-      width: 34px;
-      height: 30px;
-      border-radius: 8px;
+      width: 40px;
+      height: 36px;
+      border-radius: 9px;
       background: rgba(13, 13, 13, 0.94);
       border: 1px solid var(--geo-border);
       color: var(--geo-gold);
-      font-size: 10px;
-      font-weight: 800;
+      font-size: 11.5px;
+      font-weight: 900;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -3126,7 +3143,7 @@
                         </div>
                         <div class="flex items-center gap-3 shrink-0">
                             <div class="text-right leading-tight">
-                                <span id="localClimateHeaderCond" class="text-xs font-extrabold text-sky-300 block leading-tight">--</span>
+                                <span id="localClimateHeaderCond" class="text-xs font-extrabold text-sky-300 block leading-tight">Sob demanda</span>
                                 <span id="localClimateHeaderTemp" class="text-xs font-mono font-extrabold text-white block leading-tight mt-0.5">-- °C</span>
                             </div>
                             <i data-lucide="chevron-down" id="iconGeoWeatherChevron" class="w-4 h-4 text-pmmg-gold transition-transform duration-200"></i>
@@ -3148,7 +3165,11 @@
                                 <strong id="localClimateWind" class="text-sm sm:text-base font-mono text-white font-extrabold block mt-0.5">-- km/h</strong>
                             </div>
                         </div>
-                        <div class="flex justify-end">
+                        <div class="flex flex-wrap justify-end gap-2">
+                            <button type="button" onclick="fetchRealtimeWeatherDetails(azimuteLastGeoLat, azimuteLastGeoLon)" class="px-3 py-1.5 rounded-lg bg-pmmg-dark hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-gold/60 text-xs font-extrabold flex items-center gap-1.5 transition-all cursor-pointer">
+                                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                                <span>Buscar Clima Agora</span>
+                            </button>
                             <button type="button" onclick="openGeoWeatherSubpage()" class="px-3 py-1.5 rounded-lg bg-sky-950/90 hover:bg-sky-800 text-sky-300 border border-sky-500/50 text-xs font-extrabold flex items-center gap-1.5 transition-all cursor-pointer">
                                 <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
                                 <span>Previsão Horária e 7 Dias</span>
@@ -3168,7 +3189,7 @@
                         </div>
                         <div class="flex items-center gap-2.5 shrink-0">
                             <span id="connSummaryStateBadge" class="px-2.5 py-1 rounded-lg text-xs font-mono font-extrabold uppercase bg-pmmg-dark text-gray-300 border border-pmmg-border transition-all">
-                                Verificando...
+                                Sob demanda
                             </span>
                             <i data-lucide="chevron-down" id="iconGeoConnectivityChevron" class="w-4 h-4 text-pmmg-gold transition-transform duration-200"></i>
                         </div>
@@ -3178,7 +3199,7 @@
                         <div class="grid grid-cols-3 gap-2.5 text-xs">
                             <div class="bg-pmmg-dark p-2.5 rounded-lg border border-pmmg-border">
                                 <span class="text-[10px] text-gray-400 uppercase font-bold block">Status</span>
-                                <strong id="connSummaryStatusText" class="text-xs sm:text-sm font-mono text-pmmg-khaki font-extrabold block mt-0.5 truncate">Medindo...</strong>
+                                <strong id="connSummaryStatusText" class="text-xs sm:text-sm font-mono text-pmmg-khaki font-extrabold block mt-0.5 truncate">Toque p/ buscar</strong>
                             </div>
                             <div class="bg-pmmg-dark p-2.5 rounded-lg border border-pmmg-border">
                                 <span class="text-[10px] text-gray-400 uppercase font-bold block">Down / Ping</span>
@@ -3192,7 +3213,7 @@
                         <div class="flex items-center justify-end gap-2">
                             <button type="button" id="btnSummaryRunConnTest" onclick="runRealConnectivityDiagnostic()" class="px-3 py-1.5 rounded-lg bg-pmmg-dark hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-gold/60 font-extrabold text-xs flex items-center gap-1.5 shadow transition-all active:scale-95 cursor-pointer">
                                 <i data-lucide="refresh-cw" id="iconSummaryConnTest" class="w-3.5 h-3.5"></i>
-                                <span id="txtSummaryConnTest">Novo Teste</span>
+                                <span id="txtSummaryConnTest">Buscar Conectividade</span>
                             </button>
                             <button type="button" onclick="openGeoConnectivitySubpage()" class="px-3 py-1.5 rounded-lg bg-pmmg-dark hover:bg-pmmg-border text-gray-200 border border-pmmg-border text-xs font-extrabold flex items-center gap-1 transition-all cursor-pointer">
                                 <span>Diagnóstico</span>
@@ -11683,27 +11704,11 @@
             }
         };
 
-        // Inicia/Para o monitoramento periódico automático enquanto a aba "Drones" (#view-rpas) estiver aberta
+        // Desativa polling automático de clima na aba RPAS: busca apenas sob demanda ao clicar no botão
         function manageRpasPeriodicWeatherMonitor() {
-            const viewRpas = document.getElementById('view-rpas');
-            if (!viewRpas) return;
-            const isVisible = !viewRpas.classList.contains('hidden');
-
-            if (isVisible) {
-                window.evaluateRpasFlightConditions(false);
-                if (!azimuteRpasPeriodicIntervalId) {
-                    azimuteRpasPeriodicIntervalId = setInterval(() => {
-                        const v = document.getElementById('view-rpas');
-                        if (v && !v.classList.contains('hidden')) {
-                            window.evaluateRpasFlightConditions(false);
-                        }
-                    }, 45000); // Verifica periodicamente a cada 45s enquanto a aba Drones estiver aberta
-                }
-            } else {
-                if (azimuteRpasPeriodicIntervalId) {
-                    clearInterval(azimuteRpasPeriodicIntervalId);
-                    azimuteRpasPeriodicIntervalId = null;
-                }
+            if (azimuteRpasPeriodicIntervalId) {
+                clearInterval(azimuteRpasPeriodicIntervalId);
+                azimuteRpasPeriodicIntervalId = null;
             }
         }
 
@@ -13300,11 +13305,7 @@
                 }
             }
 
-            // Atualiza dados meteorológicos e altitude em tempo real a cada 60s
-            if ((now - azimuteLastWeatherTime) >60000) {
-                azimuteLastWeatherTime = now;
-                fetchRealtimeWeatherDetails(lat, lon);
-            }
+            // Clima agora apenas sob demanda (sem chamadas automáticas no GPS para máxima fluidez do mapa)
         }
 
         function onAzimuteGpsError(err) {
@@ -14364,13 +14365,12 @@
         window.addEventListener('orientationchange', () =>setTimeout(getAzimuteScreenOrientationOffset, 150));
         window.addEventListener('resize', getAzimuteScreenOrientationOffset);
 
-        // Inicia o GPS continuamente assim que o sistema carrega e preenche o Apoio Mais Próximo inicial
+        // Inicia o GPS continuamente e mantém somente busca de Hospitais em segundo plano (Clima/Conectividade sob demanda)
         document.addEventListener('DOMContentLoaded', () => {
             updateOfflineProximityData(azimuteLastGeoLat || -19.9162, azimuteLastGeoLon || -44.0809, 15);
             setInterval(() => {
                 updateOfflineProximityData(azimuteLastGeoLat || -19.9162, azimuteLastGeoLon || -44.0809, 15);
             }, 30000);
-            fetchRealtimeWeatherDetails(azimuteLastGeoLat || -19.9162, azimuteLastGeoLon || -44.0809);
             startAzimuteLiveGps();
             getAzimuteScreenOrientationOffset();
             if (typeof window.DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission !== 'function') {
@@ -15624,7 +15624,6 @@
             target.enabled = !target.enabled;
             saveQuickAccessConfig(cfg);
             renderQuickAccessGrid();
-            if (typeof window.runRealConnectivityDiagnostic === 'function') window.runRealConnectivityDiagnostic();
             renderQuickAccessCustomizerList();
         };
 
@@ -15735,10 +15734,6 @@ if (viewId === 'gps' && window.azimuteGeoInvalidate) window.azimuteGeoInvalidate
                     if (typeof window.toggleGpsClosestHospitalBox === 'function') window.toggleGpsClosestHospitalBox(false);
                     if (typeof window.toggleDigitalCompassBox === 'function') window.toggleDigitalCompassBox(false);
                     if (typeof window.toggleOfflineMapsGuideBox === 'function') window.toggleOfflineMapsGuideBox(false);
-                    // Inicia a aferição de conectividade AUTOMATICAMENTE ao abrir a aba Geolocalização
-                    if (typeof window.runRealConnectivityDiagnostic === 'function') {
-                        window.runRealConnectivityDiagnostic();
-                    }
                 } else {
                     gpsHud.classList.add('hidden');
                 }
@@ -17997,7 +17992,7 @@ if (window.__azimuteGeoInitialized) {
     pitch: 0,
     maxPitch: 65,
     fadeDuration: 0,
-    pixelRatio: Math.min(window.devicePixelRatio || 1, 2.5),
+    pixelRatio: Math.min(window.devicePixelRatio || 1, 1.35),
     touchPitch: true,
     pitchWithRotate: true,
     attributionControl: false
@@ -18053,6 +18048,8 @@ if (window.__azimuteGeoInitialized) {
       center: [-43.9386, -19.9191],
       zoom: 16,
       bearing: 0,
+      fadeDuration: 0,
+      pixelRatio: 1,
       interactive: false,
       attributionControl: false
     });
@@ -18158,7 +18155,7 @@ if (window.__azimuteGeoInitialized) {
     const rect = canvas.getBoundingClientRect();
     const cssW = Math.max(10, Math.round(rect.width || canvas.clientWidth || 340));
     const cssH = Math.max(10, Math.round(rect.height || canvas.clientHeight || 220));
-    const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     const targetW = Math.round(cssW * dpr);
     const targetH = Math.round(cssH * dpr);
     if (canvas.width !== targetW || canvas.height !== targetH) {
@@ -21646,7 +21643,7 @@ if (window.__azimuteGeoInitialized) {
   }
 
   syncFromMainAzimuteGps(true);
-  setInterval(() => syncFromMainAzimuteGps(false), 1500);
+  setInterval(() => { if (!document.hidden) syncFromMainAzimuteGps(false); }, 3500);
 
   if ("geolocation" in navigator) {
     navigator.geolocation.watchPosition(
@@ -21813,11 +21810,13 @@ if (document.readyState === "loading") {
     visibility: visible !important;
     pointer-events: auto !important;
     position: absolute !important;
-    bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important;
-    right: 10px !important;
+    bottom: calc(24px + env(safe-area-inset-bottom, 0px)) !important;
+    right: 12px !important;
     top: auto !important;
     left: auto !important;
     z-index: 100045 !important;
+    width: 50px !important;
+    height: 50px !important;
   }
 
   /* 4. Barra Superior ATAK */
@@ -21927,7 +21926,7 @@ if (document.readyState === "loading") {
   /* Botão K9 compacto (só aparece quando há 1+ alvo ou aliado selecionado) */
   #azK9HudBtn {
     position: absolute !important;
-    top: 90px !important;
+    top: 98px !important;
     right: 12px !important;
     z-index: 650 !important;
     width: 34px !important;
@@ -22024,7 +22023,7 @@ if (document.readyState === "loading") {
   }
   body.az-map-expanded #azK9HudBtn {
     position: fixed !important;
-    top: calc(var(--az-top-hud-safe, 52px) + 76px) !important;
+    top: calc(var(--az-top-hud-safe, 52px) + 84px) !important;
     right: 10px !important;
     z-index: 100044 !important;
   }
@@ -22197,10 +22196,10 @@ if (document.readyState === "loading") {
     bottom: auto !important;
     left: auto !important;
     z-index: 650 !important;
-    width: 32px !important;
-    height: 32px !important;
+    width: 38px !important;
+    height: 38px !important;
     padding: 0 !important;
-    border-radius: 8px !important;
+    border-radius: 9px !important;
     background: rgba(13, 13, 13, 0.94) !important;
     color: #C5A869 !important;
     border: 1px solid #C5A869 !important;
@@ -22227,20 +22226,20 @@ if (document.readyState === "loading") {
     pointer-events: none !important;
   }
 
-  /* PTT Fixado na lateral ESQUERDA DENTRO do mapa, bem abaixo dos botões superiores */
+  /* PTT Fixado na lateral ESQUERDA DENTRO do mapa, afastado da borda inferior */
   #azFloatingPttGroup {
     position: absolute !important;
-    bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important;
-    left: 10px !important;
+    bottom: calc(24px + env(safe-area-inset-bottom, 0px)) !important;
+    left: 12px !important;
     right: auto !important;
     top: auto !important;
     z-index: 100045 !important;
     display: none;
     align-items: stretch !important;
-    min-height: 36px;
+    min-height: 44px;
     border-radius: 999px !important;
     background: #0D0D0D !important;
-    border: 1.8px solid #C5A869 !important;
+    border: 2px solid #C5A869 !important;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.92) !important;
     overflow: hidden !important;
     user-select: none;
@@ -22248,8 +22247,8 @@ if (document.readyState === "loading") {
   }
   body.az-map-expanded #azFloatingPttGroup {
     position: absolute !important;
-    bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important;
-    left: 10px !important;
+    bottom: calc(24px + env(safe-area-inset-bottom, 0px)) !important;
+    left: 12px !important;
     right: auto !important;
     top: auto !important;
     z-index: 100045 !important;
@@ -22277,14 +22276,14 @@ if (document.readyState === "loading") {
     border-right: 1px solid #28271F !important;
   }
   #azFloatingMapPttBtn {
-    height: 36px !important;
-    padding: 0 14px !important;
+    height: 44px !important;
+    padding: 0 18px !important;
     background: #0D0D0D !important;
     border: none !important;
     color: #C5A869 !important;
-    font-size: 11px !important;
+    font-size: 12.5px !important;
     font-weight: 900 !important;
-    letter-spacing: 0.4px;
+    letter-spacing: 0.5px;
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -22301,72 +22300,72 @@ if (document.readyState === "loading") {
     #azGeoLeftOverlayCol {
       top: 8px;
       left: 8px;
-      gap: 3px;
+      gap: 4px;
     }
     body.az-map-expanded #azGeoLeftOverlayCol {
       position: fixed !important;
       top: var(--az-top-hud-safe, 48px) !important;
       left: 8px !important;
-      gap: 3px !important;
+      gap: 4px !important;
       z-index: 100044 !important;
     }
     #azGeoLeftOverlayCol #azHudSearchToggleBtn,
     #azGeoLeftOverlayCol #azSatToggleBtn,
     #azLockMapDrawBtn {
-      width: 26px !important;
-      height: 26px !important;
+      width: 32px !important;
+      height: 32px !important;
     }
     #azGeoLeftOverlayCol #azHudSearchToggleBtn svg,
     #azGeoLeftOverlayCol #azSatToggleBtn svg,
     #azLockMapDrawBtn svg {
-      width: 13px !important;
-      height: 13px !important;
+      width: 16px !important;
+      height: 16px !important;
     }
     #azGeoLeftOverlayCol .az-geo-zoom-stack button {
-      width: 26px;
-      height: 23px;
-      font-size: 14px;
+      width: 32px;
+      height: 28px;
+      font-size: 17px;
     }
     body.az-map-fullscreen #azFloatingPttGroup:not(.is-global-float),
     body.az-map-expanded #azFloatingPttGroup:not(.is-global-float) {
       position: absolute !important;
-      bottom: calc(10px + env(safe-area-inset-bottom, 0px)) !important;
-      left: 8px !important;
+      bottom: calc(18px + env(safe-area-inset-bottom, 0px)) !important;
+      left: 10px !important;
       top: auto !important;
       right: auto !important;
-      min-height: 32px !important;
+      min-height: 38px !important;
       z-index: 100045 !important;
     }
     #azFloatingMapPttBtn {
-      height: 32px !important;
-      padding: 0 12px !important;
-      font-size: 10px !important;
+      height: 38px !important;
+      padding: 0 15px !important;
+      font-size: 11px !important;
     }
     #azGeoNorthBadge {
-      width: 28px;
-      height: 28px;
+      width: 30px;
+      height: 30px;
       top: 8px;
       right: 8px;
       font-size: 10px;
     }
     #azGeoLockBadge {
-      height: 28px;
+      height: 30px;
       top: 8px;
-      right: 42px;
+      right: 44px;
       font-size: 9px;
       padding: 0 7px;
     }
     #azGeoTiltBadge {
-      width: 28px;
-      height: 25px;
-      top: 40px;
+      width: 34px;
+      height: 30px;
+      top: 42px;
       right: 8px;
-      font-size: 9px;
+      font-size: 10px;
     }
     #azK9HudBtn {
-      width: 28px !important;
-      height: 26px !important;
-      top: 69px !important;
+      width: 32px !important;
+      height: 28px !important;
+      top: 76px !important;
       right: 8px !important;
     }
     #azK9HudBtn svg {
@@ -22379,31 +22378,31 @@ if (document.readyState === "loading") {
     }
     body.az-map-expanded #azGeoLockBadge {
       top: var(--az-top-hud-safe, 48px) !important;
-      right: 42px !important;
+      right: 44px !important;
     }
     body.az-map-expanded #azGeoTiltBadge {
-      top: calc(var(--az-top-hud-safe, 48px) + 32px) !important;
+      top: calc(var(--az-top-hud-safe, 48px) + 34px) !important;
       right: 8px !important;
     }
     body.az-map-expanded #azK9HudBtn {
-      top: calc(var(--az-top-hud-safe, 48px) + 61px) !important;
+      top: calc(var(--az-top-hud-safe, 48px) + 68px) !important;
       right: 8px !important;
     }
     #azK9Popover {
       top: 64px !important;
-      right: 42px !important;
+      right: 46px !important;
     }
     body.az-map-expanded #azK9Popover {
       top: calc(var(--az-top-hud-safe, 48px) + 56px) !important;
-      right: 42px !important;
+      right: 46px !important;
     }
     body.az-map-fullscreen #azGeoCenterFab,
     body.az-map-expanded #azGeoCenterFab {
       position: absolute !important;
-      width: 36px !important;
-      height: 36px !important;
-      bottom: calc(10px + env(safe-area-inset-bottom, 0px)) !important;
-      right: 8px !important;
+      width: 42px !important;
+      height: 42px !important;
+      bottom: calc(18px + env(safe-area-inset-bottom, 0px)) !important;
+      right: 10px !important;
       top: auto !important;
       left: auto !important;
       z-index: 100045 !important;
@@ -23019,7 +23018,6 @@ if (document.readyState === "loading") {
     gap: 5px;
     color: #FFFFFF;
     box-shadow: 0 10px 26px rgba(0, 0, 0, 0.88);
-    backdrop-filter: blur(5px);
   }
   #azWaspHudBar.is-open { display: flex !important; }
   .az-wasp-progress-track {
@@ -23365,7 +23363,6 @@ if (document.readyState === "loading") {
     gap: 7px;
     color: #FFFFFF;
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.92);
-    backdrop-filter: blur(5px);
   }
   #azStrokeEditPopover.is-open { display: flex !important; }
 
@@ -23790,7 +23787,6 @@ if (document.readyState === "loading") {
     gap: 6px;
     color: #FFFFFF;
     box-shadow: 0 10px 28px rgba(0, 0, 0, 0.88);
-    backdrop-filter: blur(6px);
   }
   #azPlantaAdjustBar.is-open { display: flex !important; }
   .az-fp-handle {
@@ -30981,15 +30977,20 @@ if (document.readyState === "loading") {
     container.addEventListener("touchstart", function (ev) {
       if (ev.touches && ev.touches.length > 1) cancelHold();
     }, { passive: true, capture: true });
+    container.addEventListener("contextmenu", function (ev) {
+      ev.preventDefault();
+    });
     if (typeof map.on === "function") {
-      map.on("movestart", cancelHold);
       map.on("zoomstart", cancelHold);
       map.on("rotatestart", cancelHold);
       let _edgeRaf = 0;
+      let _lastEdgeTs = 0;
       map.on("move", function () {
-        if (_edgeRaf) return;
+        const nowTs = Date.now();
+        if (_edgeRaf || nowTs - _lastEdgeTs < 150) return;
         _edgeRaf = requestAnimationFrame(function () {
           _edgeRaf = 0;
+          _lastEdgeTs = Date.now();
           renderEdgeIndicators();
         });
       });
@@ -31198,13 +31199,14 @@ if (document.readyState === "loading") {
       const clientXSnap = ev.clientX;
       const clientYSnap = ev.clientY;
       holdTimer = setTimeout(function () {
+        holdTimer = null;
         if (activePointers.size > 1) return;
         holdReady = true;
-        vibratePattern([45, 30, 45]);
+        vibratePattern(40);
         tac.wheelMode = "new_press";
         tac.pendingPinCoords = { lng: downLngLat.lng, lat: downLngLat.lat };
         openRadialWheelAt(clientXSnap, clientYSnap, "new_press");
-      }, 700);
+      }, 420);
     }, true);
 
     container.addEventListener("pointermove", function (ev) {
@@ -31230,7 +31232,7 @@ if (document.readyState === "loading") {
         }
         return;
       }
-      if (activePointers.size > 1 || ((holdTimer || holdReady) && Math.hypot(ev.clientX - sx, ev.clientY - sy) > 9)) {
+      if (activePointers.size > 1 || (holdTimer && Math.hypot(ev.clientX - sx, ev.clientY - sy) > 20)) {
         cancelHold();
       }
     }, true);
@@ -34296,14 +34298,18 @@ if (document.readyState === "loading") {
       return m && !(tac.audioBlockedUids && tac.audioBlockedUids.has(m.uid));
     });
     const totalOnline = getRoomOnlineCount();
-    const pill = document.getElementById("azWaOnlinePill");
     const topBadge = document.getElementById("azTopGroupBadge");
+    if (topBadge) topBadge.textContent = tac.roomCode ? `${tac.roomCode} (${totalOnline})` : "GRUPO";
+
+    const waModal = document.getElementById("azWhatsappGroupModal");
+    if (!waModal || (!waModal.classList.contains("is-open") && waModal.style.display !== "flex")) return;
+
+    const pill = document.getElementById("azWaOnlinePill");
     const title = document.getElementById("azWaGroupTitle");
     const sub = document.getElementById("azWaGroupSubtitle");
     const chips = document.getElementById("azWaMembersChips");
 
     if (pill) pill.textContent = `${totalOnline} ONLINE`;
-    if (topBadge) topBadge.textContent = tac.roomCode ? `${tac.roomCode} (${totalOnline})` : "GRUPO";
     if (title) title.textContent = tac.roomCode ? `EQUIPE • ${tac.roomCode}` : "GRUPO TÁTICO AZIMUTE";
     if (sub) {
       sub.textContent = mates.length > 0
@@ -36009,11 +36015,12 @@ if (document.readyState === "loading") {
       }
       const dt = Math.min(0.08, Math.max(0, (now - lastTs) / 1000));
       lastTs = now;
-      const lx = droneSticks.leftX;
-      const ly = droneSticks.leftY;
-      const rx = droneSticks.rightX;
-      const ry = droneSticks.rightY;
-      if (Math.abs(lx) > 0.01 || Math.abs(ly) > 0.01 || Math.abs(rx) > 0.01 || Math.abs(ry) > 0.01) {
+      const curveStick = function (v) { return Math.sign(v) * Math.pow(Math.abs(v), 1.85); };
+      const lx = curveStick(droneSticks.leftX);
+      const ly = curveStick(droneSticks.leftY);
+      const rx = curveStick(droneSticks.rightX);
+      const ry = curveStick(droneSticks.rightY);
+      if (Math.abs(lx) > 0.005 || Math.abs(ly) > 0.005 || Math.abs(rx) > 0.005 || Math.abs(ry) > 0.005) {
         if (tac._orbitActive) stopMapOrbit(false);
         const m = getActiveMap();
         if (m && typeof m.getCenter === "function" && typeof m.jumpTo === "function") {
@@ -36021,12 +36028,12 @@ if (document.readyState === "loading") {
             const c = m.getCenter();
             let bearing = typeof m.getBearing === "function" ? m.getBearing() : 0;
             let zoom = typeof m.getZoom === "function" ? m.getZoom() : 17;
-            // Stick Esquerdo (Modo 02): Horizontal = Yaw (girar), Vertical = Altitude (Zoom)
-            bearing = ((bearing + lx * 78 * dt) % 360 + 360) % 360;
-            zoom = Math.max(11.5, Math.min(20.0, zoom + ly * 2.4 * dt));
+            // Stick Esquerdo (Modo 02): Horizontal = Yaw suave, Vertical = Altitude (Zoom) suave
+            bearing = ((bearing + lx * 38 * dt) % 360 + 360) % 360;
+            zoom = Math.max(11.5, Math.min(20.0, zoom + ly * 1.15 * dt));
 
-            // Stick Direito (Modo 02): Vertical = Frente/Trás, Horizontal = Lateral
-            const forwardSpeedMps = Math.max(10, Math.min(480, 32 * Math.pow(2, 17 - zoom)));
+            // Stick Direito (Modo 02): Vertical = Frente/Trás, Horizontal = Lateral (sensibilidade reduzida e progressiva)
+            const forwardSpeedMps = Math.max(5, Math.min(220, 14 * Math.pow(2, 17 - zoom)));
             const fwd = -ry * forwardSpeedMps * dt;
             const strafe = rx * forwardSpeedMps * dt;
             const bRad = (bearing * Math.PI) / 180;
@@ -36117,8 +36124,8 @@ if (document.readyState === "loading") {
         knobEl.style.transform = `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px)`;
         let nx = dx / maxR;
         let ny = dy / maxR;
-        if (Math.abs(nx) < 0.08) nx = 0;
-        if (Math.abs(ny) < 0.08) ny = 0;
+        if (Math.abs(nx) < 0.12) nx = 0;
+        if (Math.abs(ny) < 0.12) ny = 0;
         if (isLeft) { droneSticks.leftX = nx; droneSticks.leftY = ny; }
         else { droneSticks.rightX = nx; droneSticks.rightY = ny; }
       }
