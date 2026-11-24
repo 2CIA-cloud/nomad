@@ -9856,6 +9856,38 @@
                     </div>
                 </div>
 
+                <!-- 1B. CACHE DE MAPAS OFFLINE (CAIXA FECHADA POR PADRÃO) -->
+                <div class="bg-pmmg-dark rounded-xl border border-pmmg-border overflow-hidden">
+                    <button type="button" onclick="toggleAjustesSectionBox('mapcache')" id="btnToggleAjustesSec-mapcache" class="w-full p-3.5 sm:p-4 flex items-center justify-between gap-2 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
+                        <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki flex items-center gap-2">
+                            <i data-lucide="map" class="w-4 h-4 text-pmmg-gold shrink-0"></i>
+                            <span>Cache de Mapas (Offline)</span>
+                        </span>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <span id="lblAjustesSec-mapcache" class="text-[11px] font-bold text-pmmg-khaki">Abrir</span>
+                            <i data-lucide="chevron-down" id="icoAjustesSec-mapcache" class="w-4 h-4 text-pmmg-gold transition-transform duration-200"></i>
+                        </div>
+                    </button>
+
+                    <div id="boxAjustesSec-mapcache" class="hidden p-3.5 sm:p-4 pt-3 border-t border-pmmg-border/80 space-y-3">
+                        <div class="grid grid-cols-2 gap-2.5 text-xs">
+                            <div class="bg-pmmg-black/80 p-3 rounded-xl border border-pmmg-border">
+                                <span class="text-[10px] text-gray-400 uppercase font-bold block">Blocos em cache</span>
+                                <strong id="azMapCacheCountTxt" class="text-sm font-mono text-white font-extrabold block mt-0.5">--</strong>
+                            </div>
+                            <div class="bg-pmmg-black/80 p-3 rounded-xl border border-pmmg-border">
+                                <span class="text-[10px] text-gray-400 uppercase font-bold block">Espaço estimado</span>
+                                <strong id="azMapCacheSizeTxt" class="text-sm font-mono text-pmmg-gold font-extrabold block mt-0.5">--</strong>
+                            </div>
+                        </div>
+                        <p id="azMapCacheStatusTxt" class="text-[11px] text-gray-400">Os mapas visualizados ficam salvos no aparelho e abrem sem baixar de novo (limite de 3.500 blocos).</p>
+                        <div class="flex flex-wrap justify-end gap-2">
+                            <button type="button" onclick="azRefreshMapCacheStats()" class="px-3 py-1.5 rounded-lg bg-pmmg-dark hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-gold/60 text-xs font-extrabold cursor-pointer">Atualizar</button>
+                            <button type="button" onclick="azClearMapCache()" class="px-3 py-1.5 rounded-lg bg-[#1C0C0C] hover:bg-[#2A1010] text-red-400 border border-red-500/55 text-xs font-extrabold cursor-pointer">Limpar Cache do Mapa</button>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- 2. BOTÕES DO ACESSO RÁPIDO E ORDEM NA TELA INÍCIO (CAIXA FECHADA POR PADRÃO) -->
                 <div class="bg-pmmg-dark rounded-xl border border-pmmg-border overflow-hidden">
                     <button type="button" onclick="toggleAjustesSectionBox('acesso_rapido')" id="btnToggleAjustesSec-acesso_rapido" class="w-full p-3.5 sm:p-4 flex items-center justify-between gap-2 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
@@ -14639,6 +14671,8 @@
                     renderQuickAccessCustomizerList();
                 } else if (secKey === 'rodape_topo' && typeof window.renderFooterButtonsCustomizerList === 'function') {
                     window.renderFooterButtonsCustomizerList();
+                } else if (secKey === 'mapcache' && typeof window.azRefreshMapCacheStats === 'function') {
+                    window.azRefreshMapCacheStats();
                 }
             } else {
                 boxEl.classList.add('hidden');
@@ -14648,7 +14682,7 @@
         };
 
         window.closeAllAjustesSectionBoxes = function() {
-            ['drones', 'acesso_rapido', 'rodape_topo', 'modo_exibicao', 'acordeao_global'].forEach(secKey => {
+            ['drones', 'acesso_rapido', 'rodape_topo', 'modo_exibicao', 'mapcache', 'acordeao_global'].forEach(secKey => {
                 window.toggleAjustesSectionBox(secKey, false);
             });
         };
@@ -17252,6 +17286,58 @@ if (viewId === 'gps' && window.azimuteGeoInvalidate) window.azimuteGeoInvalidate
             });
         }
 
+        // Persistência de armazenamento: evita que o Android limpe o cache de mapas automaticamente
+        window.addEventListener('load', () => {
+            try {
+                if (navigator.storage && typeof navigator.storage.persist === 'function') {
+                    navigator.storage.persisted().then(already => {
+                        if (!already) return navigator.storage.persist();
+                    }).catch(() => {});
+                }
+            } catch (e) {}
+        });
+
+        // Comunicação com o Service Worker: estatísticas e limpeza do cache de mapas
+        function azSwRequest(msg) {
+            return new Promise((resolve, reject) => {
+                try {
+                    const sw = navigator.serviceWorker && navigator.serviceWorker.controller;
+                    if (!sw) { reject(new Error('sem-sw')); return; }
+                    const ch = new MessageChannel();
+                    const timer = setTimeout(() => reject(new Error('timeout')), 15000);
+                    ch.port1.onmessage = (ev) => { clearTimeout(timer); resolve(ev.data); };
+                    sw.postMessage(msg, [ch.port2]);
+                } catch (e) { reject(e); }
+            });
+        }
+
+        window.azRefreshMapCacheStats = function() {
+            const cEl = document.getElementById('azMapCacheCountTxt');
+            const sEl = document.getElementById('azMapCacheSizeTxt');
+            const tEl = document.getElementById('azMapCacheStatusTxt');
+            if (!cEl || !sEl) return;
+            azSwRequest({ type: 'GET_MAP_CACHE_STATS' }).then(res => {
+                if (res && res.ok && res.stats) {
+                    cEl.textContent = res.stats.count + ' / ' + res.stats.max;
+                    sEl.textContent = res.stats.mb + ' MB';
+                    if (tEl) tEl.textContent = 'Os mapas visualizados ficam salvos no aparelho e abrem sem baixar de novo (limite de ' + res.stats.max + ' blocos).';
+                }
+            }).catch(() => {
+                cEl.textContent = '--';
+                sEl.textContent = '--';
+                if (tEl) tEl.textContent = 'Cache offline indisponível: o Service Worker só ativa quando o app é aberto por https (GitHub Pages) ou localhost.';
+            });
+        };
+
+        window.azClearMapCache = function() {
+            azSwRequest({ type: 'CLEAR_MAP_CACHE' }).then(res => {
+                if (typeof showToast === 'function') showToast(res && res.ok ? 'Cache do mapa limpo.' : 'Falha ao limpar o cache do mapa.');
+                window.azRefreshMapCacheStats();
+            }).catch(() => {
+                if (typeof showToast === 'function') showToast('Service Worker inativo: nada para limpar.');
+            });
+        };
+
         // Carrega e unifica todos os JSONs de Batalhões do repositório (1ª RPM, 2ª RPM, 1º BPM, 22º BPM, etc.)
         function normalizeBattalionRecord(raw, defaultCity) {
             if (!raw || typeof raw !== 'object') return null;
@@ -17612,6 +17698,7 @@ if (viewId === 'gps' && window.azimuteGeoInvalidate) window.azimuteGeoInvalidate
                     { box: 'boxAjustesSec-acesso_rapido', close: () => window.toggleAjustesSectionBox && window.toggleAjustesSectionBox('acesso_rapido', false) },
                     { box: 'boxAjustesSec-rodape_topo', close: () => window.toggleAjustesSectionBox && window.toggleAjustesSectionBox('rodape_topo', false) },
                     { box: 'boxAjustesSec-modo_exibicao', close: () => window.toggleAjustesSectionBox && window.toggleAjustesSectionBox('modo_exibicao', false) },
+                    { box: 'boxAjustesSec-mapcache', close: () => window.toggleAjustesSectionBox && window.toggleAjustesSectionBox('mapcache', false) },
                     { box: 'boxAjustesSec-acordeao_global', close: () => window.toggleAjustesSectionBox && window.toggleAjustesSectionBox('acordeao_global', false) }
                 ],
                 // 2. Aba Geolocalização
@@ -21916,6 +22003,17 @@ if (document.readyState === "loading") {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  /* Modo horizontal: barra de endereço adapta a largura ao texto, sem comprimir os botões do topo */
+  @media (orientation: landscape) and (max-height: 580px) {
+    #azMicroTelemetryHud {
+      flex: 0 1 auto;
+      width: fit-content;
+      min-width: 112px;
+      max-width: calc(100vw - 215px);
+      margin-right: auto;
+    }
   }
 
   /* Barra antiga de Cão de Caça substituída pelo botão compacto K9 + Popover */
@@ -26511,24 +26609,40 @@ if (document.readyState === "loading") {
     if (!canDrawOnMap(map)) return;
     const srcId = "az-sat-src";
     const layerId = "az-sat-layer";
+    const trSrcId = "az-sat-trans-src";
+    const trLayerId = "az-sat-trans-layer";
     const lblSrcId = "az-sat-lbl-src";
     const lblLayerId = "az-sat-lbl-layer";
     if (enable) {
+      // Esri World Imagery + Esri World Transportation (ruas nítidas) + CartoDB Labels: todos com CORS limpo (cacheáveis offline)
       if (!map.getSource(srcId)) {
         map.addSource(srcId, {
           type: "raster",
-          tiles: ["https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}"],
+          tiles: ["https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"],
           tileSize: 256,
-          maxzoom: 20
+          maxzoom: 19
         });
       }
+      const layers = (map.getStyle() && map.getStyle().layers) || [];
+      const sym = layers.find(function (l) { return l.type === "symbol"; });
       if (!map.getLayer(layerId)) {
-        const layers = (map.getStyle() && map.getStyle().layers) || [];
-        const sym = layers.find(function (l) { return l.type === "symbol"; });
-        map.addLayer({ id: layerId, type: "raster", source: srcId, paint: { "raster-opacity": 0.98 } }, sym ? sym.id : undefined);
+        map.addLayer({ id: layerId, type: "raster", source: srcId, paint: { "raster-opacity": 1 } }, sym ? sym.id : undefined);
       } else {
         map.setLayoutProperty(layerId, "visibility", "visible");
-        map.setPaintProperty(layerId, "raster-opacity", 0.98);
+        map.setPaintProperty(layerId, "raster-opacity", 1);
+      }
+      if (!map.getSource(trSrcId)) {
+        map.addSource(trSrcId, {
+          type: "raster",
+          tiles: ["https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}"],
+          tileSize: 256,
+          maxzoom: 19
+        });
+      }
+      if (!map.getLayer(trLayerId)) {
+        map.addLayer({ id: trLayerId, type: "raster", source: trSrcId, paint: { "raster-opacity": 0.95 } }, sym ? sym.id : undefined);
+      } else {
+        map.setLayoutProperty(trLayerId, "visibility", "visible");
       }
       if (!map.getSource(lblSrcId)) {
         map.addSource(lblSrcId, {
@@ -26545,6 +26659,7 @@ if (document.readyState === "loading") {
       }
     } else {
       if (map.getLayer(layerId)) map.setLayoutProperty(layerId, "visibility", "none");
+      if (map.getLayer(trLayerId)) map.setLayoutProperty(trLayerId, "visibility", "none");
       if (map.getLayer(lblLayerId)) map.setLayoutProperty(lblLayerId, "visibility", "none");
     }
   }
