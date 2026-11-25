@@ -212,7 +212,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://unpkg.com">
+    <link rel="preconnect" href="https://tiles.openfreemap.org" crossorigin>
+    <link rel="preconnect" href="https://server.arcgisonline.com" crossorigin>
     <link rel="dns-prefetch" href="https://www.gstatic.com">
+    <link rel="dns-prefetch" href="https://mt1.google.com">
+    <link rel="dns-prefetch" href="https://a.basemaps.cartocdn.com">
     <!-- Tailwind CSS -->
     <!-- Lucide Icons -->
     <script defer src="https://unpkg.com/lucide@latest"></script>
@@ -17482,7 +17486,7 @@ if (viewId === 'gps' && window.azimuteGeoInvalidate) window.azimuteGeoInvalidate
                 setSectorUi(isManual ? 'Baixando setor atual em alta definição...' : 'Pré-carregando área atual em segundo plano...', 0, total, true);
 
                 try {
-                    const CHUNK = 8;
+                    const CHUNK = 2;
                     for (let i = 0; i < urls.length; i += CHUNK) {
                         if (precacheCancelled) break;
                         while (mapInteracting && !precacheCancelled) {
@@ -18143,7 +18147,6 @@ if (window.__azimuteGeoInitialized) {
         position: relative;
         z-index: 2;
         display: block;
-        will-change: transform;
         filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.92));
       }
       @keyframes azMarkerRipple {
@@ -24924,14 +24927,13 @@ if (document.readyState === "loading") {
     -webkit-backdrop-filter: none !important;
   }
 
-  body.az-perf-noblur #azTopHudShell .az-hud-glass-btn,
+  /* Regra de proteção: background-color específico sem apagar estado ativo (.is-active/.is-open/.active/aria-*) */
+  body.az-perf-noblur #azTopHudShell .az-hud-glass-btn:not(.is-active):not(.active):not(.is-open):not([aria-pressed="true"]):not([aria-expanded="true"]),
   body.az-perf-noblur #azMicroTelemetryHud,
   body.az-perf-noblur #azGeoLeftOverlayCol .az-geo-zoom-stack,
-  body.az-perf-noblur #azGeoLeftOverlayCol #azHudSearchToggleBtn,
-  body.az-perf-noblur #azGeoLeftOverlayCol #azSatToggleBtn,
-  body.az-perf-noblur #azFloatingPttGroup,
-  body.az-perf-noblur #azGeoCenterFab,
-  body.az-perf-noblur #azK9HudBtn,
+  body.az-perf-noblur #azGeoLeftOverlayCol #azHudSearchToggleBtn:not(.is-active):not(.active),
+  body.az-perf-noblur #azGeoLeftOverlayCol #azSatToggleBtn:not(.is-active):not(.active),
+  body.az-perf-noblur #azK9HudBtn:not(.is-open):not(.has-targets),
   body.az-perf-noblur #azK9Popover,
   body.az-perf-noblur #azOrbitStopPill,
   body.az-perf-noblur #azBloodhoundBanner,
@@ -24940,15 +24942,63 @@ if (document.readyState === "loading") {
   body.az-perf-noblur #azSectorAnalysisPanel,
   body.az-perf-noblur #azTeamCommsModal,
   body.az-perf-noblur #azTacHudToast {
-    background: rgba(16, 16, 16, 0.94) !important;
-    border-color: rgba(197, 168, 105, 0.35) !important;
+    background-color: rgba(16, 16, 16, 0.94);
+    border-color: rgba(197, 168, 105, 0.35);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45) !important;
+  }
+
+  /* 2 & 5. Expandir/Reduzir (#azExpandMapScreenBtn) e Hambúrguer (#azAtakHamburgerBtn) + estados ativos */
+  body.az-perf-noblur #azExpandMapScreenBtn:not(.is-active):not(.is-open):not(.active),
+  body.az-perf-noblur #azAtakHamburgerBtn:not(.is-active):not(.is-open):not(.active) {
+    background-color: #161616 !important;
+    color: #F2F0EA !important;
+    border-color: rgba(197, 168, 105, 0.4) !important;
+  }
+  body.az-perf-noblur #azExpandMapScreenBtn.is-active,
+  body.az-perf-noblur #azExpandMapScreenBtn.active,
+  body.az-perf-noblur #azExpandMapScreenBtn[aria-pressed="true"],
+  body.az-perf-noblur #azAtakHamburgerBtn.is-active,
+  body.az-perf-noblur #azAtakHamburgerBtn.is-open,
+  body.az-perf-noblur #azAtakHamburgerBtn.active,
+  body.az-perf-noblur #azAtakHamburgerBtn[aria-expanded="true"] {
+    background-color: #C5A869 !important;
+    color: #0D0D0D !important;
+    border-color: #C5A869 !important;
+  }
+
+  /* 3. Botão PTT flutuante (#azFloatingPttGroup): travar stacking context acima do canvas MapLibre */
+  body.az-perf-noblur #azFloatingPttGroup {
+    z-index: 100055 !important;
+    background-color: #0D0D0D !important;
+    border-color: #C5A869 !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.65) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  /* 4. Botão Centralizar GPS (#azGeoCenterFab): impedir fundo branco padrão */
+  body.az-perf-noblur #azGeoCenterFab:not(.is-heading-up):not(.is-active) {
+    background-color: #161616 !important;
+    color: #C5A869 !important;
+    border: 1.5px solid rgba(197, 168, 105, 0.85) !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45) !important;
+  }
+  body.az-perf-noblur #azGeoCenterFab.is-heading-up {
+    background-color: rgba(37, 99, 235, 0.94) !important;
+    color: #FFFFFF !important;
+    border-color: #93C5FD !important;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45) !important;
   }
 
   body.az-perf-noblur .az-drone-stick-pad {
-    background: #161616 !important;
+    background-color: #161616 !important;
     border-color: rgba(197, 168, 105, 0.35) !important;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45) !important;
+  }
+
+  body.az-perf-noblur #azMicroTelemetryHud,
+  body.az-perf-noblur #azTacHudToast {
+    contain: layout style;
   }
 
   body.az-perf-noblur.az-map-interacting #azTopHudShell,
@@ -32526,7 +32576,14 @@ if (document.readyState === "loading") {
     else setTimeout(runSilentHeartbeatEcho, 250);
   });
   document.addEventListener("visibilitychange", function () {
-    if (document.hidden || !tac.roomCode) return;
+    if (document.hidden) {
+      if (tac.droneRaf) { cancelAnimationFrame(tac.droneRaf); tac.droneRaf = 0; }
+      if (tac.reconRaf) { cancelAnimationFrame(tac.reconRaf); tac.reconRaf = 0; }
+      if (tac._orbitRaf) { cancelAnimationFrame(tac._orbitRaf); tac._orbitRaf = 0; }
+      return;
+    }
+    if (tac.droneMode && tac.droneFreeFlight && typeof stepDroneFlightLoop === "function") stepDroneFlightLoop();
+    if (!tac.roomCode) return;
     if (!tac.ws || tac.ws.readyState !== 1) connectLiveRoom();
     else setTimeout(runSilentHeartbeatEcho, 250);
   });
@@ -32891,12 +32948,19 @@ if (document.readyState === "loading") {
     }
   }
 
+  const _hudDomCache = {
+    topShell: null, topSlot: null, lockBtn: null, centerFab: null, stage: null,
+    redeText: null, unitLine: null, streetLine: null,
+    lastVis: null, lastUnitText: "", lastStreetText: ""
+  };
   function updateHud() {
     disableIncursionCompletely();
     const vis = isMapTabVisible();
+    const visChanged = _hudDomCache.lastVis !== vis;
+    _hudDomCache.lastVis = vis;
     document.body.classList.toggle("az-map-fullscreen", vis);
-    const topShell = document.getElementById("azTopHudShell");
-    const topSlot = document.getElementById("azTopHudSlot");
+    const topShell = _hudDomCache.topShell || (_hudDomCache.topShell = document.getElementById("azTopHudShell"));
+    const topSlot = _hudDomCache.topSlot || (_hudDomCache.topSlot = document.getElementById("azTopHudSlot"));
     if (topShell) {
       if (document.body.classList.contains("az-map-expanded")) {
         if (topShell.parentElement !== document.body) document.body.appendChild(topShell);
@@ -32905,25 +32969,36 @@ if (document.readyState === "loading") {
       }
       topShell.classList.toggle("is-visible", vis);
     }
-    document.getElementById("azLockMapDrawBtn").classList.toggle("is-visible", vis);
+    const lockBtn = _hudDomCache.lockBtn || (_hudDomCache.lockBtn = document.getElementById("azLockMapDrawBtn"));
+    if (lockBtn) lockBtn.classList.toggle("is-visible", vis);
     syncSinglePttMode();
     renderEdgeIndicators();
 
     // Contém #azGeoCenterFab estritamente dentro do mapa (#azGeoStage)
-    const centerFab = document.getElementById("azGeoCenterFab");
+    const centerFab = _hudDomCache.centerFab || (_hudDomCache.centerFab = document.getElementById("azGeoCenterFab"));
     if (centerFab) {
-      const stage = document.getElementById("azGeoStage");
+      const stage = _hudDomCache.stage || (_hudDomCache.stage = document.getElementById("azGeoStage"));
       if (stage && centerFab.parentElement !== stage) stage.appendChild(centerFab);
       centerFab.style.setProperty("display", vis ? "inline-flex" : "none", "important");
     }
     if (!vis) closeDock();
 
-    const redeBtnText = (document.getElementById("statusBarRedeText")?.textContent || "").trim() || "REDE LOCAL";
-    document.getElementById("azHudUnitNetLine").textContent = tac.roomCode ? `${redeBtnText} • TURNO ${tac.roomCode}` : redeBtnText;
-    if (tac.resolvedAddress) document.getElementById("azHudStreetLine").textContent = tac.resolvedAddress;
+    const redeEl = _hudDomCache.redeText || (_hudDomCache.redeText = document.getElementById("statusBarRedeText"));
+    const unitEl = _hudDomCache.unitLine || (_hudDomCache.unitLine = document.getElementById("azHudUnitNetLine"));
+    const streetEl = _hudDomCache.streetLine || (_hudDomCache.streetLine = document.getElementById("azHudStreetLine"));
+    const redeBtnText = (redeEl?.textContent || "").trim() || "REDE LOCAL";
+    const nextUnit = tac.roomCode ? `${redeBtnText} • TURNO ${tac.roomCode}` : redeBtnText;
+    if (unitEl && _hudDomCache.lastUnitText !== nextUnit) {
+      _hudDomCache.lastUnitText = nextUnit;
+      unitEl.textContent = nextUnit;
+    }
+    if (streetEl && tac.resolvedAddress && _hudDomCache.lastStreetText !== tac.resolvedAddress) {
+      _hudDomCache.lastStreetText = tac.resolvedAddress;
+      streetEl.textContent = tac.resolvedAddress;
+    }
     if (typeof window.azSyncExpandedViewportVars === "function") window.azSyncExpandedViewportVars();
 
-    if (vis && window.azGeoMap && typeof window.azGeoMap.resize === "function") {
+    if (vis && visChanged && window.azGeoMap && typeof window.azGeoMap.resize === "function") {
       window.azGeoMap.resize();
     }
     tac.maps.forEach(function (m) {
@@ -32961,7 +33036,12 @@ if (document.readyState === "loading") {
     if (typeof pos.coords.accuracy !== "number" || pos.coords.accuracy <= 45) {
       const addedPeg = appendPointToPegadasBuffer(tac.myPassivePegadas, lat, lng, now);
       if (addedPeg) {
-        try { localStorage.setItem("az_tac_passive_pegadas_v1", JSON.stringify(tac.myPassivePegadas)); } catch (_) {}
+        if (!window._azPegSaveTimer) {
+          window._azPegSaveTimer = setTimeout(function () {
+            window._azPegSaveTimer = 0;
+            try { localStorage.setItem("az_tac_passive_pegadas_v1", JSON.stringify(tac.myPassivePegadas)); } catch (_) {}
+          }, 6000);
+        }
         if (tac.visiblePegadasUids && tac.visiblePegadasUids[tac.myId]) renderPegadasOnMaps();
       }
     }
@@ -38475,6 +38555,7 @@ if (document.readyState === "loading") {
         listEl.innerHTML = `<div style="font-size:10px;color:#94A3B8;padding:8px;">Nenhum registro nesta aba para o setor atual.</div>`;
         return;
       }
+      const frag = document.createDocumentFragment();
       items.forEach(function (item) {
         const row = document.createElement("div");
         row.className = "az-sector-item";
@@ -38498,8 +38579,9 @@ if (document.readyState === "loading") {
         row.addEventListener("click", function () { focusSectorItem(item); });
         row.appendChild(title);
         row.appendChild(routeBtn);
-        listEl.appendChild(row);
+        frag.appendChild(row);
       });
+      listEl.appendChild(frag);
     }
 
     async function fetchWithTimeout(url, opts, timeoutMs, parentSignal) {
@@ -39592,8 +39674,10 @@ if (document.readyState === "loading") {
       const onEnd = function () { document.body.classList.remove("az-map-interacting"); };
       map.on("dragstart", onStart);
       map.on("rotatestart", onStart);
+      map.on("movestart", onStart);
       map.on("dragend", onEnd);
       map.on("rotateend", onEnd);
+      map.on("moveend", onEnd);
     }
     (tac.maps || []).forEach(wireMapDragPerf);
     setInterval(function () { (tac.maps || []).forEach(wireMapDragPerf); }, 3500);
