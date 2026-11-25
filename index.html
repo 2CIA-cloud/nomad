@@ -10108,6 +10108,18 @@
                     </div>
                 </div>
 
+                <!-- INTERRUPTOR COMPARATIVO: MODO PERFORMANCE (SEM BLUR) -->
+                <div class="bg-pmmg-dark rounded-xl border border-pmmg-border p-3.5 sm:p-4 flex items-center justify-between gap-3">
+                    <div>
+                        <span class="text-xs font-extrabold uppercase tracking-wider text-pmmg-khaki block">Modo Performance (Sem Blur)</span>
+                        <span class="text-[11px] text-gray-400">Desativa desfoque/sombras pesadas na GPU sobre o mapa para máxima fluidez (60fps)</span>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer shrink-0">
+                        <input type="checkbox" id="azPerfNoBlurChk" class="sr-only peer" checked>
+                        <span class="w-11 h-6 bg-[#26231c] border border-pmmg-border rounded-full peer peer-checked:bg-[#C5A869] peer-checked:border-[#C5A869] transition-all after:content-[''] after:absolute after:top-[3px] after:left-[3px] after:bg-white peer-checked:after:bg-[#0D0D0D] after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-5"></span>
+                    </label>
+                </div>
+
                 <!-- BARRA DE AÇÃO PERMANENTE: SALVAR AJUSTES + RESTAURAR PADRÃO -->
                 <div class="pt-3 border-t border-pmmg-border flex flex-wrap items-center justify-between gap-3">
                     <button type="button" onclick="resetAllAzimuteSettings()" class="px-3.5 py-2 rounded-xl bg-pmmg-black hover:bg-pmmg-dark text-gray-400 hover:text-gray-200 border border-pmmg-border text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer" title="Restaurar todos os ajustes para o padrão original">
@@ -24886,6 +24898,68 @@ if (document.readyState === "loading") {
     border-color: #EF4444 !important;
     color: #FECACA !important;
   }
+
+  /* ==================== MODO PERFORMANCE GPU (SEM BACKDROP-FILTER / SOMBRAS LEVES) ==================== */
+  body.az-perf-noblur [class*="backdrop-blur"],
+  body.az-perf-noblur #azTopHudShell,
+  body.az-perf-noblur #azTopHudShell .az-hud-glass-btn,
+  body.az-perf-noblur #azMicroTelemetryHud,
+  body.az-perf-noblur #azGeoLeftOverlayCol,
+  body.az-perf-noblur #azGeoLeftOverlayCol > *,
+  body.az-perf-noblur #azFloatingPttGroup,
+  body.az-perf-noblur #azGeoCenterFab,
+  body.az-perf-noblur #azDroneHudBar,
+  body.az-perf-noblur #azDroneSticksLayer,
+  body.az-perf-noblur .az-drone-stick-pad,
+  body.az-perf-noblur .az-drone-popover,
+  body.az-perf-noblur #azSectorAnalysisPanel,
+  body.az-perf-noblur #azTeamCommsModal,
+  body.az-perf-noblur #azBloodhoundBanner,
+  body.az-perf-noblur #azK9HudBtn,
+  body.az-perf-noblur #azK9Popover,
+  body.az-perf-noblur #azOrbitStopPill,
+  body.az-perf-noblur #azTacHudToast,
+  body.az-perf-noblur #mobileBottomNav {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  body.az-perf-noblur #azTopHudShell .az-hud-glass-btn,
+  body.az-perf-noblur #azMicroTelemetryHud,
+  body.az-perf-noblur #azGeoLeftOverlayCol .az-geo-zoom-stack,
+  body.az-perf-noblur #azGeoLeftOverlayCol #azHudSearchToggleBtn,
+  body.az-perf-noblur #azGeoLeftOverlayCol #azSatToggleBtn,
+  body.az-perf-noblur #azFloatingPttGroup,
+  body.az-perf-noblur #azGeoCenterFab,
+  body.az-perf-noblur #azK9HudBtn,
+  body.az-perf-noblur #azK9Popover,
+  body.az-perf-noblur #azOrbitStopPill,
+  body.az-perf-noblur #azBloodhoundBanner,
+  body.az-perf-noblur #azDroneHudBar,
+  body.az-perf-noblur .az-drone-popover,
+  body.az-perf-noblur #azSectorAnalysisPanel,
+  body.az-perf-noblur #azTeamCommsModal,
+  body.az-perf-noblur #azTacHudToast {
+    background: rgba(16, 16, 16, 0.94) !important;
+    border-color: rgba(197, 168, 105, 0.35) !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45) !important;
+  }
+
+  body.az-perf-noblur .az-drone-stick-pad {
+    background: #161616 !important;
+    border-color: rgba(197, 168, 105, 0.35) !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45) !important;
+  }
+
+  body.az-perf-noblur.az-map-interacting #azTopHudShell,
+  body.az-perf-noblur.az-map-interacting #azTopHudShell *,
+  body.az-perf-noblur.az-map-interacting #azGeoLeftOverlayCol *,
+  body.az-perf-noblur.az-map-interacting #azFloatingPttGroup *,
+  body.az-perf-noblur.az-map-interacting #azGeoCenterFab,
+  body.az-perf-noblur.az-map-interacting #azK9HudBtn,
+  body.az-perf-noblur.az-map-interacting #azDroneHudBar * {
+    transition: none !important;
+  }
 </style>
 
 <input type="file" id="azNativeCameraInput" accept="image/*" capture="environment" style="display:none;">
@@ -38704,15 +38778,17 @@ if (document.readyState === "loading") {
         }
       }
 
-      // Modo Animações DESLIGADAS: consulta e entrega análise imediatamente sem voo
+      // Modo Animações DESLIGADAS: consulta, salva PDF automaticamente e encerra busca
       if (!reconCfg.animMaster) {
         await fetchSectorOsmOrOffline(sig);
         if (sig.aborted) return;
         setReconStatus("CONCLUÍDO", "~00:00");
         playDroneTargetFoundBeep();
+        triggerReconPdfDownload();
+        closeDroneMode(true);
         const pEl = document.getElementById("azSectorAnalysisPanel");
         if (pEl) { pEl.classList.add("is-open"); renderSectorAnalysisPanel(); }
-        showToast("Análise do setor concluída (modo instantâneo).");
+        showToast("Busca encerrada — PDF salvo automaticamente.");
         return;
       }
 
@@ -38812,10 +38888,11 @@ if (document.readyState === "loading") {
                 window.restoreReconTempLayer();
                 setReconStatus("CONCLUÍDO", "~00:00");
                 playDroneReturnBeep();
+                triggerReconPdfDownload();
+                closeDroneMode(true);
                 const pEl = document.getElementById("azSectorAnalysisPanel");
                 if (pEl) { pEl.classList.add("is-open"); renderSectorAnalysisPanel(); }
-                showToast("Missão concluída — Análise pronta.");
-                closeDroneMode(true);
+                showToast("Busca encerrada — PDF salvo automaticamente.");
                 return;
               }
             }
@@ -39221,7 +39298,7 @@ if (document.readyState === "loading") {
       return new Blob([pdf], { type: "application/pdf" });
     }
 
-    onClick("azSectorPdfBtn", function () {
+    function triggerReconPdfDownload() {
       const a = state.analysis || {};
       const bairro = (a.neighborhoods && a.neighborhoods.length) ? a.neighborhoods.join(", ") : "Setor Mapeado";
       const lines = [
@@ -39262,8 +39339,10 @@ if (document.readyState === "loading") {
       setTimeout(function () {
         try { document.body.removeChild(aEl); URL.revokeObjectURL(url); } catch (_) {}
       }, 600);
-      showToast("PDF da Análise Territorial gerado!");
-    });
+      showToast("PDF da Análise Territorial salvo!");
+    }
+
+    onClick("azSectorPdfBtn", triggerReconPdfDownload);
 
     window.clearReconMapDrawings = function () {
       state.pendingFeatures = [];
@@ -39482,6 +39561,44 @@ if (document.readyState === "loading") {
     updateHud();
     syncWaGroupHeaderAndMembers();
   }, 3500);
+  // ==================== MODO PERFORMANCE (SEM BLUR) + SUSPENSÃO DE TRANSIÇÃO NO ARRASTE ====================
+  (function initPerfNoBlurMode() {
+    const PERF_KEY = "az_perf_noblur_v1";
+    let enabled = true;
+    try {
+      const saved = localStorage.getItem(PERF_KEY);
+      if (saved === "false") enabled = false;
+    } catch (_) {}
+
+    function applyPerfClass(on) {
+      document.body.classList.toggle("az-perf-noblur", Boolean(on));
+    }
+    applyPerfClass(enabled);
+
+    const chk = document.getElementById("azPerfNoBlurChk");
+    if (chk) {
+      chk.checked = enabled;
+      chk.addEventListener("change", function () {
+        enabled = Boolean(this.checked);
+        try { localStorage.setItem(PERF_KEY, enabled ? "true" : "false"); } catch (_) {}
+        applyPerfClass(enabled);
+      });
+    }
+
+    function wireMapDragPerf(map) {
+      if (!map || map._azPerfBound || typeof map.on !== "function") return;
+      map._azPerfBound = true;
+      const onStart = function () { document.body.classList.add("az-map-interacting"); };
+      const onEnd = function () { document.body.classList.remove("az-map-interacting"); };
+      map.on("dragstart", onStart);
+      map.on("rotatestart", onStart);
+      map.on("dragend", onEnd);
+      map.on("rotateend", onEnd);
+    }
+    (tac.maps || []).forEach(wireMapDragPerf);
+    setInterval(function () { (tac.maps || []).forEach(wireMapDragPerf); }, 3500);
+  })();
+
   setInterval(monitorGps, 4500);
 })();
 </script>
