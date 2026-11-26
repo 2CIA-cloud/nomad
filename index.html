@@ -37060,9 +37060,36 @@ if (document.readyState === "loading") {
     Q:"Quebec",R:"Romeo",S:"Sierra",T:"Tango",U:"Uniform",V:"Victor",W:"Whiskey",
     X:"X-Ray",Y:"Yankee",Z:"Zulu"
   };
+  const JARVIS_SPRITE_URL = "AUDIO JARVIS/AUDIO JARVIS 21 FALAS.mp3";
+  const JARVIS_SPRITE_CLIPS = {
+    "drone-no-ar": [0.0, 1.35],
+    "recon_start": [0.0, 3.45],
+    "recon_divergent": [3.45, 9.15],
+    "recon_done": [9.15, 13.05],
+    "recon_bg_done": [13.05, 16.25],
+    "domo_limit": [16.25, 19.05],
+    "domo_on": [19.05, 22.05],
+    "domo_out": [22.05, 25.15],
+    "domo_in": [25.15, 27.35],
+    "ponto_alfa": [27.35, 29.35],
+    "ponto_bravo": [29.35, 31.35],
+    "ponto_charlie": [31.35, 33.35],
+    "ponto_delta": [33.35, 35.15],
+    "ponto_eco": [35.15, 36.75],
+    "nova_msg": [36.75, 38.65],
+    "condicoes-meteorologicas-favoraveis": [38.65, 42.45],
+    "alerta-meteorologico-rajadas-vento": [42.45, 51.55],
+    "rota_aprox": [51.55, 55.55],
+    "exposicao_visual": [55.55, 59.5]
+  };
   window.AzVoiceJarvis = {
     enabled: localStorage.getItem("az_jarvis_voice_v1") !== "false",
     _activeAudio: null,
+    _activeSource: null,
+    _spriteCtx: null,
+    _spriteBuffer: null,
+    _spriteLoading: null,
+    _spriteStopTimer: null,
     _isSpeaking: false,
     _radioActive: false,
     _savedSecondaryState: null,
@@ -37099,8 +37126,42 @@ if (document.readyState === "loading") {
         console.warn("[AZIMUTE][JARVIS] Falha ao retomar sons secundários:", err);
       }
     },
+    _loadSpriteBuffer: function () {
+      const self = this;
+      if (self._spriteBuffer) return Promise.resolve(self._spriteBuffer);
+      if (self._spriteLoading) return self._spriteLoading;
+      self._spriteLoading = (async function () {
+        try {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (!AudioCtx) return null;
+          if (!self._spriteCtx) self._spriteCtx = new AudioCtx();
+          if (self._spriteCtx.state === "suspended") {
+            try { await self._spriteCtx.resume(); } catch (_) {}
+          }
+          const resp = await fetch(encodeURI(JARVIS_SPRITE_URL));
+          if (!resp.ok) return null;
+          const arrBuf = await resp.arrayBuffer();
+          self._spriteBuffer = await self._spriteCtx.decodeAudioData(arrBuf);
+          return self._spriteBuffer;
+        } catch (err) {
+          console.warn("[AZIMUTE][JARVIS] Sprite WebAudio indisponível:", err);
+          return null;
+        } finally {
+          self._spriteLoading = null;
+        }
+      })();
+      return self._spriteLoading;
+    },
     stop: function (keepSecondaryPaused) {
       try {
+        if (this._spriteStopTimer) {
+          clearTimeout(this._spriteStopTimer);
+          this._spriteStopTimer = null;
+        }
+        if (this._activeSource) {
+          try { this._activeSource.onended = null; this._activeSource.stop(); } catch (_) {}
+          this._activeSource = null;
+        }
         if (this._activeAudio) {
           this._activeAudio.onended = null;
           this._activeAudio.onerror = null;
@@ -37151,8 +37212,13 @@ if (document.readyState === "loading") {
         this._isSpeaking = true;
 
         const finishSpeech = function () {
+          if (self._spriteStopTimer) {
+            clearTimeout(self._spriteStopTimer);
+            self._spriteStopTimer = null;
+          }
           self._isSpeaking = false;
           self._activeAudio = null;
+          self._activeSource = null;
           self._resumeSecondarySoundsIfAllowed();
         };
 
@@ -37182,6 +37248,58 @@ if (document.readyState === "loading") {
             finishSpeech();
           }
         };
+
+        const playSpriteHtmlFallback = function (range) {
+          try {
+            const aud = new Audio(encodeURI(JARVIS_SPRITE_URL));
+            aud.volume = 0.9;
+            self._activeAudio = aud;
+            const durMs = Math.max(250, (range[1] - range[0]) * 1000);
+            aud.addEventListener("loadedmetadata", function () {
+              try {
+                if (self.isRadioPriorityActive()) { self.stop(true); return; }
+                aud.currentTime = range[0];
+                const p = aud.play();
+                if (p && typeof p.catch === "function") p.catch(fallbackSynth);
+                self._spriteStopTimer = setTimeout(function () {
+                  try { aud.pause(); } catch (_) {}
+                  finishSpeech();
+                }, durMs);
+              } catch (_) { fallbackSynth(); }
+            }, { once: true });
+            aud.onerror = fallbackSynth;
+          } catch (_) { fallbackSynth(); }
+        };
+
+        const spriteRange = clipKey && JARVIS_SPRITE_CLIPS[clipKey];
+        if (spriteRange) {
+          self._loadSpriteBuffer().then(function (buf) {
+            if (self.isRadioPriorityActive() || !self._isSpeaking) return;
+            if (buf && self._spriteCtx) {
+              try {
+                if (self._spriteCtx.state === "suspended") self._spriteCtx.resume();
+                const src = self._spriteCtx.createBufferSource();
+                src.buffer = buf;
+                const gain = self._spriteCtx.createGain();
+                gain.gain.value = 0.92;
+                src.connect(gain);
+                gain.connect(self._spriteCtx.destination);
+                self._activeSource = src;
+                const offset = Math.max(0, spriteRange[0]);
+                const dur = Math.max(0.2, Math.min(buf.duration - offset, spriteRange[1] - offset));
+                src.onended = finishSpeech;
+                src.start(0, offset, dur);
+                return;
+              } catch (err) {
+                console.warn("[AZIMUTE][JARVIS] Falha WebAudio sprite:", err);
+              }
+            }
+            playSpriteHtmlFallback(spriteRange);
+          }).catch(function () {
+            playSpriteHtmlFallback(spriteRange);
+          });
+          return;
+        }
 
         if (clipKey) {
           try {
