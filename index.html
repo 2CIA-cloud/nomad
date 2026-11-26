@@ -26444,6 +26444,22 @@ if (document.readyState === "loading") {
 
 <div id="azAllyFlyoverBanner" role="status" aria-live="polite"></div>
 
+<!-- Cartão compacto de inspeção do marcador ? (órbita de inspeção) -->
+<div id="azReconQMarkCard" style="display:none;position:fixed;bottom:92px;left:50%;transform:translateX(-50%);z-index:100068;width:305px;max-width:calc(100vw - 16px);background:#0D0D0D;border:1.5px solid #C5A869;border-radius:10px;padding:8px 10px;color:#F2F0EA;font-size:10px;flex-direction:column;gap:6px;">
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;">
+    <span style="font-weight:900;color:#C5A869;letter-spacing:0.04em;">PONTO DE INSPEÇÃO (?)</span>
+    <button type="button" class="az-drone-pill-btn is-danger" id="azReconQMarkCloseBtn" style="padding:2px 6px;font-size:9px;">FECHAR</button>
+  </div>
+  <div id="azReconQMarkMeta" style="background:#161616;border:1px solid rgba(197,168,105,0.28);border-radius:7px;padding:6px;line-height:1.35;color:#E5E7EB;"></div>
+  <div style="display:flex;flex-wrap:wrap;gap:4px;">
+    <button type="button" class="az-drone-pill-btn" data-qm-class="Passagem confirmada" style="font-size:9px;">Passagem</button>
+    <button type="button" class="az-drone-pill-btn" data-qm-class="Edificação identificada" style="font-size:9px;">Edificação</button>
+    <button type="button" class="az-drone-pill-btn" data-qm-class="Via sem saída" style="font-size:9px;">Sem saída</button>
+    <button type="button" class="az-drone-pill-btn" data-qm-class="Área de atenção" style="font-size:9px;">Atenção</button>
+    <button type="button" class="az-drone-pill-btn is-danger" id="azReconQMarkRemoveBtn" style="font-size:9px;">Remover ?</button>
+  </div>
+</div>
+
 <!-- Barra compacta pós-marcação de área (libera 100% do mapa até confirmar) -->
 <div id="azReconConfirmAreaBar" style="display:none;position:fixed;bottom:92px;left:50%;transform:translateX(-50%);z-index:100064;background:#0D0D0D;border:1.5px solid #C5A869;border-radius:999px;padding:6px 10px;align-items:center;gap:6px;">
   <span id="azReconConfirmInfo" style="font-size:10px;font-weight:900;color:#C5A869;white-space:nowrap;">Toque no mapa</span>
@@ -38718,6 +38734,32 @@ if (document.readyState === "loading") {
           }
         });
       }
+      if (!map.getSource("az-recon-qmarks-src")) {
+        map.addSource("az-recon-qmarks-src", { type: "geojson", data: emptyGeo });
+        map.addLayer({
+          id: "az-recon-qmarks-bg",
+          type: "circle",
+          source: "az-recon-qmarks-src",
+          paint: {
+            "circle-radius": 11,
+            "circle-color": "#0D0D0D",
+            "circle-stroke-color": "#C5A869",
+            "circle-stroke-width": 2
+          }
+        });
+        map.addLayer({
+          id: "az-recon-qmarks-lbl",
+          type: "symbol",
+          source: "az-recon-qmarks-src",
+          layout: {
+            "text-field": ["coalesce", ["get", "symbol"], "?"],
+            "text-size": 12,
+            "text-allow-overlap": true,
+            "text-ignore-placement": true
+          },
+          paint: { "text-color": "#C5A869" }
+        });
+      }
       if (!map.getSource("az-recon-transit-src")) {
         map.addSource("az-recon-transit-src", { type: "geojson", data: emptyGeo });
         map.addLayer({ id: "az-recon-transit-line", type: "line", source: "az-recon-transit-src", paint: { "line-color": "#38BDF8", "line-width": 2.6, "line-dasharray": [2.5, 1.5], "line-opacity": 0.85 } });
@@ -39330,12 +39372,14 @@ if (document.readyState === "loading") {
 
         if (isEscada) {
           pedWays.push({ coords: coords, name: name || "Escadaria", kind: "escada" });
-          const keyLabel = !isPlaceholderName(name) ? name : ("Escadaria (" + bairro + ") #" + (escMap.size + 1));
-          itemObj = mergeWay(escMap, keyLabel, bairro, coords, mid, "escada");
+          const brEsc = (bairro && !/setor mapeado/i.test(bairro)) ? bairro : (state.destLabel || "Setor");
+          const keyLabel = !isPlaceholderName(name) ? name : (`Escadaria #${escMap.size + 1} (${brEsc})`);
+          itemObj = mergeWay(escMap, keyLabel, brEsc, coords, mid, "escada");
         } else if (isBeco) {
-          pedWays.push({ coords: coords, name: name || "Beco/Viela", kind: "beco" });
-          const keyLabel = !isPlaceholderName(name) ? name : ("Beco/Viela (" + bairro + ") #" + (becoMap.size + 1));
-          itemObj = mergeWay(becoMap, keyLabel, bairro, coords, mid, "beco");
+          pedWays.push({ coords: coords, name: name || "Passagem", kind: "beco" });
+          const brBeco = (bairro && !/setor mapeado/i.test(bairro)) ? bairro : (state.destLabel || "Setor");
+          const keyLabel = !isPlaceholderName(name) ? name : (`Passagem s/ denominação #${becoMap.size + 1} (${brBeco})`);
+          itemObj = mergeWay(becoMap, keyLabel, brBeco, coords, mid, "beco");
         } else if (isVehicular) {
           vehicularWays.push({ coords: coords, name: isPlaceholderName(name) ? "Via local" : name, hw: hw });
           if (isPlaceholderName(name)) {
@@ -39401,63 +39445,115 @@ if (document.readyState === "loading") {
         });
       }
 
-      // 4. Raio-X Topológico de Becos e Vielas (Início x Término x Bifurcações x Por Rua)
+      // 4. Análise Topológica de Becos, Vielas e Escadarias + Pontos de Inspeção (?)
       const raioX = [];
       const becosPorRua = {};
-      if (state.criteria.raioXTopologico) {
-        const findNearestStreet = function (pt) {
-          let best = "Sem conexão viária";
-          let bestD = 16;
-          for (let vi = 0; vi < vehicularWays.length; vi++) {
-            const vw = vehicularWays[vi];
-            for (let vj = 0; vj < vw.coords.length; vj++) {
-              const d = calcDistAndBearing(pt[1], pt[0], vw.coords[vj][1], vw.coords[vj][0]).dist;
-              if (d <= bestD) { bestD = d; best = vw.name; }
+      const qMarks = [];
+      const addQuestionMark = function (lat, lng, motivo, viaRef) {
+        if (!isPointInsideSector(lng, lat) || qMarks.length >= 10) return null;
+        if (qMarks.some(function (q) { return calcDistAndBearing(lat, lng, q.lat, q.lng).dist < 35; })) return null;
+        const qId = "qm_" + (qMarks.length + 1);
+        const obj = { id: qId, lat: lat, lng: lng, motivo: motivo, vinculoVia: viaRef || "", status: "Pendente", orbited: false };
+        qMarks.push(obj);
+        return obj;
+      };
+      const findNearestStreet = function (pt) {
+        let best = "";
+        let bestD = 18;
+        for (let vi = 0; vi < vehicularWays.length; vi++) {
+          const vw = vehicularWays[vi];
+          for (let vj = 0; vj < vw.coords.length; vj++) {
+            const d = calcDistAndBearing(pt[1], pt[0], vw.coords[vj][1], vw.coords[vj][0]).dist;
+            if (d <= bestD) { bestD = d; best = vw.name; }
+          }
+        }
+        return best;
+      };
+      const findEnvAtEnd = function (pt) {
+        let bestEnv = "";
+        for (let ei = 0; ei < elements.length; ei++) {
+          const el = elements[ei];
+          const tg = el.tags || {};
+          let eLat = el.lat, eLng = el.lon;
+          if (Array.isArray(el.coords) && el.coords[0]) { eLng = el.coords[0][0]; eLat = el.coords[0][1]; }
+          if (typeof eLat !== "number" || typeof eLng !== "number") continue;
+          if (calcDistAndBearing(pt[1], pt[0], eLat, eLng).dist > 45) continue;
+          if (tg.waterway) { bestEnv = "Margem de córrego (" + (tg.name || "curso d'água") + ")"; break; }
+          if (tg.landuse === "forest" || tg.natural === "wood" || tg.natural === "scrub") { bestEnv = "Área de mata"; break; }
+          if (tg.landuse === "brownfield" || tg.landuse === "greenfield") { bestEnv = "Terreno baldio"; break; }
+        }
+        return bestEnv;
+      };
+      const allAlleys = Array.from(becoMap.values()).concat(Array.from(escMap.values()));
+      allAlleys.forEach(function (al) {
+        const pStart = al.coords[0];
+        const pEnd = al.coords[al.coords.length - 1];
+        const iniRua = findNearestStreet(pStart) || "Acesso local";
+        let fimRua = findNearestStreet(pEnd);
+        let qLink = null;
+        if (!fimRua) {
+          const envOut = findEnvAtEnd(pEnd);
+          if (envOut) {
+            fimRua = envOut;
+            qLink = addQuestionMark(pEnd[1], pEnd[0], `${al.name} termina junto a ${envOut.toLowerCase()}`, al.name);
+          } else {
+            const qm = addQuestionMark(pEnd[1], pEnd[0], `${al.name}: saída não consta na base`, al.name);
+            qLink = qm;
+            fimRua = "Saída não mapeada na base" + (qm ? ` (vinculada ao marcador ? #${qMarks.length})` : "");
+          }
+        }
+        let bifurc = 0;
+        pedWays.forEach(function (pw) {
+          if (pw.coords === al.coords) return;
+          for (let k = 1; k < al.coords.length - 1; k++) {
+            const pt = al.coords[k];
+            if (calcDistAndBearing(pt[1], pt[0], pw.coords[0][1], pw.coords[0][0]).dist <= 12) {
+              bifurc++;
+              break;
             }
           }
-          return best;
-        };
-        const allAlleys = Array.from(becoMap.values()).concat(Array.from(escMap.values()));
-        allAlleys.forEach(function (al) {
-          const pStart = al.coords[0];
-          const pEnd = al.coords[al.coords.length - 1];
-          const inicioRua = findNearestStreet(pStart);
-          const terminoRua = findNearestStreet(pEnd);
-          let bifurc = 0;
-          pedWays.forEach(function (pw) {
-            if (pw.coords === al.coords) return;
-            for (let k = 1; k < al.coords.length - 1; k++) {
-              const pt = al.coords[k];
-              if (calcDistAndBearing(pt[1], pt[0], pw.coords[0][1], pw.coords[0][0]).dist <= 12) {
-                bifurc++;
-                break;
-              }
-            }
-          });
-          let cls = "Fundo de Saco / Sem Saída";
-          if (bifurc >= 2) cls = `Ramificado / Labirinto (${bifurc} bif.)`;
-          else if (inicioRua !== "Sem conexão viária" && terminoRua !== "Sem conexão viária" && inicioRua !== terminoRua) {
-            cls = "Vazado / Travessia";
-          }
-          const ficha = {
-            name: al.name,
-            kind: al.kind,
-            inicioRua: inicioRua,
-            terminoRua: terminoRua,
-            comprimentoM: al.lengthM,
-            classificacao: cls,
-            coords: al.coords,
-            lat: al.lat,
-            lng: al.lng
-          };
-          raioX.push(ficha);
-          [inicioRua, terminoRua].forEach(function (rn) {
-            if (!rn || rn === "Sem conexão viária") return;
-            if (!becosPorRua[rn]) becosPorRua[rn] = [];
-            if (!becosPorRua[rn].includes(al.name)) becosPorRua[rn].push(al.name);
-          });
         });
-      }
+        let cls = "Sem saída mapeada";
+        if (bifurc >= 2) cls = `Ramificado (${bifurc} bif.)`;
+        else if (iniRua !== "Acesso local" && !/não mapeada/i.test(fimRua) && iniRua !== fimRua) {
+          cls = "Vazado / Travessia";
+        }
+        al.inicioRua = iniRua;
+        al.terminoRua = fimRua;
+        al.qMarkId = qLink ? qLink.id : null;
+        const ficha = {
+          name: al.name,
+          kind: al.kind,
+          inicioRua: iniRua,
+          terminoRua: fimRua,
+          comprimentoM: al.lengthM,
+          classificacao: cls,
+          qMarkId: al.qMarkId,
+          coords: al.coords,
+          lat: al.lat,
+          lng: al.lng
+        };
+        if (state.criteria.raioXTopologico) {
+          raioX.push(ficha);
+        }
+        if (!becosPorRua[iniRua]) becosPorRua[iniRua] = [];
+        becosPorRua[iniRua].push(ficha);
+      });
+
+      // Estruturas/edificações sem identificação clara na área -> marcador ?
+      elements.forEach(function (el) {
+        if (qMarks.length >= 10) return;
+        const tg = el.tags || {};
+        if ((tg.building && !tg.name && !tg.amenity && !tg.shop) || (tg.highway && !tg.name && /track|path/.test(tg.highway))) {
+          let eLat = el.lat, eLng = el.lon;
+          if (Array.isArray(el.coords) && el.coords[0]) { eLng = el.coords[0][0]; eLat = el.coords[0][1]; }
+          if (typeof eLat === "number" && typeof eLng === "number") {
+            addQuestionMark(eLat, eLng, tg.building ? "Edificação/estrutura sem identificação na base" : "Passagem atípica sem nome", "");
+          }
+        }
+      });
+      state.questionMarks = qMarks;
+      if (typeof updateReconQuestionMarksLayer === "function") updateReconQuestionMarksLayer();
 
       const becos = Array.from(becoMap.values());
       const escadarias = Array.from(escMap.values());
@@ -39572,13 +39668,25 @@ if (document.readyState === "loading") {
         dimTexto = `${wM}m x ${hM}m (${getSectorAreaKm2().toFixed(2)} km²)`;
       }
       const nivelMap = { superficial: "Superficial", tatica: "Detalhada", minuciosa: "Minuciosa" };
+      const brLista = Array.from(neighborhoods).filter(function (b) { return b && !/setor mapeado/i.test(b); });
+      const brNome = brLista.length ? brLista.join(", ") : (state.destLabel || "Bairro em identificação");
+      const avPrincipais = avenidas.slice(0, 3).map(function (v) { return `${v.name} (${v.distOpM}m, ${v.azimuteOp}°)`; }).join(", ");
+      const corCursos = condBuckets["Córrego"] ? condBuckets["Córrego"].length : 0;
+      const sinteseParts = [
+        `Área de perfil ${profile.toLowerCase()} em ${brNome}.`,
+        avPrincipais ? `Principais acessos arteriais: ${avPrincipais}.` : `Circulação predominante por ${ruas.length} via(s) local(is).`,
+        escadarias.length > 0 ? `Desníveis e escadarias identificados (${escadarias.length} trecho(s) de escadaria).` : "",
+        corCursos > 0 ? `Presença de ${corCursos} curso(s) d'água com pontos de gargalo/travessia.` : "",
+        blockadePts.length > 0 ? `${blockadePts.length} ponto(s) de contenção perimetral mapeados.` : ""
+      ].filter(Boolean).join(" ");
 
       state.analysis = Object.assign({}, state.analysis, {
         profile: profile,
-        neighborhoods: Array.from(neighborhoods),
+        neighborhoods: brLista,
         unidadeResponsavel: unidadeResp,
         dimensoesTexto: dimTexto,
         nivelTexto: nivelMap[state.depthLevel] || "Detalhada",
+        sinteseTerreno: sinteseParts,
         condicionais: condicionais,
         avenidas: avenidas,
         ruas: ruas,
@@ -39706,18 +39814,41 @@ if (document.readyState === "loading") {
         }
       }
 
-      const bairrosStr = a.neighborhoods.length ? a.neighborhoods.join(", ") : "Setor mapeado";
+      const bairrosStr = a.neighborhoods.length ? a.neighborhoods.join(", ") : (state.destLabel || "Identificação por coordenada");
       const areaStr = a.dimensoesTexto || (getSectorAreaKm2().toFixed(2) + " km²");
       const nivelStr = a.nivelTexto || "Detalhada";
       const unitStr = a.unidadeResponsavel || "Base local";
       const carLine = a.carDistKm > 0 ? ` • <b>Viatura:</b> ${a.carDistKm} km (${a.carDurMin} min)` : "";
       const semSaidaN = Array.isArray(a.semSaida) ? a.semSaida.length : 0;
       const cercoN = Array.isArray(a.pontosBloqueio) ? a.pontosBloqueio.length : 0;
-      const unnamedN = Number(a.unnamedCount || 0);
+      const qList = Array.isArray(state.questionMarks) ? state.questionMarks : [];
+      const pendingQ = qList.filter(function (q) { return q.status === "Pendente"; });
+
+      let becosDescHtml = "";
+      const becoEscAll = (a.becos || []).concat(a.escadarias || []);
+      if (becoEscAll.length > 0) {
+        becosDescHtml = `<div style="margin-top:4px;padding-top:4px;border-top:1px solid rgba(197,168,105,0.22);">` +
+          `<div style="font-weight:900;color:#C5A869;margin-bottom:2px;">ANÁLISE DE BECOS, VIELAS E ESCADARIAS</div>` +
+          becoEscAll.slice(0, 6).map(function (b) {
+            return `<div style="color:#E5E7EB;"><b>${b.name}</b> (${b.distOpM || 0}m • ${b.lengthM || 0}m): inicia em <i>${b.inicioRua || "acesso local"}</i> e desemboca em <i>${b.terminoRua || "saída não mapeada"}</i>.</div>`;
+          }).join("") +
+          `</div>`;
+      }
+
+      let qMarksHtml = "";
+      if (pendingQ.length > 0) {
+        qMarksHtml = `<div style="margin-top:4px;padding-top:4px;border-top:1px solid rgba(197,168,105,0.22);">` +
+          `<div style="font-weight:900;color:#C5A869;margin-bottom:2px;">PONTOS MARCADOS (?) PENDENTES (${pendingQ.length})</div>` +
+          pendingQ.slice(0, 5).map(function (q, idx) {
+            return `<div style="color:#FDE68A;"><b>? #${idx + 1}:</b> ${q.motivo} (${q.lat.toFixed(5)}, ${q.lng.toFixed(5)})</div>`;
+          }).join("") +
+          `</div>`;
+      }
+
       let condHtml = "";
       if (Array.isArray(a.condicionais) && a.condicionais.length > 0) {
         condHtml = `<div style="margin-top:4px;padding-top:4px;border-top:1px solid rgba(197,168,105,0.28);">` +
-          `<div style="font-weight:900;color:#C5A869;margin-bottom:2px;">ELEMENTOS DETECTADOS NA ÁREA</div>` +
+          `<div style="font-weight:900;color:#C5A869;margin-bottom:2px;">OCORRÊNCIAS CONFIRMADAS NA ÁREA</div>` +
           a.condicionais.map(function (grp) {
             const itensTxt = grp.itens.slice(0, 4).map(function (it) {
               return `${it.nome} (${it.distOpM}m • ${it.extensaoPorte})`;
@@ -39727,11 +39858,13 @@ if (document.readyState === "loading") {
           `</div>`;
       }
       sumEl.innerHTML =
-        `<div style="font-weight:900;color:#C5A869;margin-bottom:3px;">SETOR: ${bairrosStr}</div>` +
+        `<div style="font-weight:900;color:#C5A869;margin-bottom:3px;">a) IDENTIFICAÇÃO REAL: ${bairrosStr}</div>` +
         `<div><b>Unidade/Cia:</b> ${unitStr}</div>` +
         `<div><b>Dimensões:</b> ${areaStr} • <b>Nível:</b> ${nivelStr}${carLine}</div>` +
-        `<div><b>Av.:</b> ${a.avenidas.length} • <b>Ruas:</b> ${a.ruas.length} • <b>Becos:</b> ${a.becos.length} • <b>Escadas:</b> ${a.escadarias.length}</div>` +
-        `<div style="color:#94A3B8;margin-top:2px;"><b>Sem Saída:</b> ${semSaidaN} • <b>Cerco:</b> ${cercoN} VTRs • <b>Trechos s/ nome descartados:</b> ${unnamedN}</div>` +
+        `<div style="margin-top:4px;padding-top:4px;border-top:1px solid rgba(197,168,105,0.22);"><b>b) SÍNTESE DO TERRENO E CIRCULAÇÃO:</b> ${a.sinteseTerreno || "Varredura em processamento."}</div>` +
+        `<div style="color:#94A3B8;margin-top:2px;"><b>Vias:</b> ${a.avenidas.length} art. / ${a.ruas.length} loc. • <b>Becos/Escadas:</b> ${becoEscAll.length} • <b>Sem Saída:</b> ${semSaidaN} • <b>Cerco:</b> ${cercoN}</div>` +
+        becosDescHtml +
+        qMarksHtml +
         condHtml;
 
       const items = a[state.activeTab] || [];
@@ -39907,6 +40040,24 @@ if (document.readyState === "loading") {
       state.osmCacheKey = cacheKey;
       state.cachedElements = elements;
       classifyAndBuildSectorAnalysis(elements);
+
+      // Geocodificação reversa leve se o nome real do bairro ainda não constar na base
+      if ((!state.analysis.neighborhoods || state.analysis.neighborhoods.length === 0) && !state.destLabel) {
+        try {
+          const cLat = (bbox.minLat + bbox.maxLat) / 2;
+          const cLng = (bbox.minLng + bbox.maxLng) / 2;
+          const revRes = await fetchWithTimeout(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${cLat.toFixed(5)}&lon=${cLng.toFixed(5)}&zoom=16`, {}, 4500, signal);
+          if (revRes && revRes.ok) {
+            const revJson = await revRes.json();
+            const ad = revJson && revJson.address;
+            const realNb = ad && (ad.suburb || ad.neighbourhood || ad.quarter || ad.city_district || ad.town);
+            if (realNb) {
+              state.destLabel = realNb;
+              classifyAndBuildSectorAnalysis(elements);
+            }
+          }
+        } catch (_) {}
+      }
 
       const scanItems = [];
       state.analysis.escadarias.forEach(function (e, idx) {
@@ -40187,17 +40338,43 @@ if (document.readyState === "loading") {
           let curP = typeof m.getPitch === "function" ? m.getPitch() : 42;
           let curB = typeof m.getBearing === "function" ? m.getBearing() : 0;
 
-          if ((reconCfg.animInspect || state.depthLevel === "minuciosa") && state.inspectUntil && now < state.inspectUntil) {
+          if ((reconCfg.animInspect || state.depthLevel === "minuciosa" || state.depthLevel === "tatica") && state.inspectUntil && now < state.inspectUntil) {
             state.targetZoom = 17.75;
             state.targetPitch = 52;
             const nextZ = curZ + (state.targetZoom - curZ) * Math.min(1, dt * 3.5);
             const nextP = curP + (state.targetPitch - curP) * Math.min(1, dt * 3.5);
-            const nextB = state.inspectSpin ? (curB + 48 * dt) % 360 : curB;
-            const clampedHold = (!wp.isTransit && !wp.isRth) ? clampPointInsideSector(c.lng, c.lat) : { lng: c.lng, lat: c.lat };
+            const nextB = state.inspectSpin ? (curB + 65 * dt) % 360 : curB;
+            let orbLng = c.lng, orbLat = c.lat;
+            if (state.inspectCenter && state.inspectSpin) {
+              state.inspectAngle = ((state.inspectAngle || 0) + 155 * dt) % 360;
+              const radDegLat = 22 / 111320;
+              const radDegLng = 22 / (111320 * Math.max(0.2, Math.cos((state.inspectCenter.lat * Math.PI) / 180)));
+              const angRad = (state.inspectAngle * Math.PI) / 180;
+              orbLng = state.inspectCenter.lng + Math.cos(angRad) * radDegLng;
+              orbLat = state.inspectCenter.lat + Math.sin(angRad) * radDegLat;
+            }
+            const clampedHold = (!wp.isTransit && !wp.isRth) ? clampPointInsideSector(orbLng, orbLat) : { lng: orbLng, lat: orbLat };
             if (typeof m.jumpTo === "function") m.jumpTo({ center: [clampedHold.lng, clampedHold.lat], zoom: nextZ, pitch: nextP, bearing: nextB });
             if (typeof window.updateDroneCraftOnMap === "function") window.updateDroneCraftOnMap(clampedHold.lng, clampedHold.lat, nextB, true);
             tac.reconRaf = requestAnimationFrame(tickRecon);
             return;
+          }
+          state.inspectCenter = null;
+
+          // Dispara breve órbita circular ao passar próximo de marcador ? pendente
+          if (!wp.isTransit && !wp.isRth && Array.isArray(state.questionMarks) && state.questionMarks.length > 0 && state.depthLevel !== "superficial") {
+            for (let qi = 0; qi < state.questionMarks.length; qi++) {
+              const qm = state.questionMarks[qi];
+              if (!qm.orbited && qm.status === "Pendente" && calcDistAndBearing(c.lat, c.lng, qm.lat, qm.lng).dist <= 135) {
+                qm.orbited = true;
+                state.inspectCenter = { lng: qm.lng, lat: qm.lat };
+                state.inspectAngle = 0;
+                state.inspectUntil = now + 2200;
+                state.inspectSpin = true;
+                setReconStatus("ÓRBITA ?", null);
+                break;
+              }
+            }
           }
 
           const baseSpeed = (wp.isTransit || wp.isRth) ? Math.max(60, Math.min(300, info.dist * 0.25)) : 44;
@@ -40554,6 +40731,70 @@ if (document.readyState === "loading") {
         if (state.shapeMode === "circle" && state.center) drawReconSectorBoundary();
       });
     }
+
+    function updateReconQuestionMarksLayer() {
+      const m = getActiveMap();
+      if (!m) return;
+      ensureReconLayers(m);
+      const qSrc = m.getSource("az-recon-qmarks-src");
+      if (!qSrc) return;
+      const list = Array.isArray(state.questionMarks) ? state.questionMarks : [];
+      qSrc.setData({
+        type: "FeatureCollection",
+        features: list.map(function (q) {
+          return {
+            type: "Feature",
+            geometry: { type: "Point", coordinates: [q.lng, q.lat] },
+            properties: { id: q.id, symbol: q.status === "Pendente" ? "?" : "OK" }
+          };
+        })
+      });
+    }
+
+    (function bindReconQMarkInteractions() {
+      const m = getActiveMap();
+      let activeQmId = null;
+      const card = document.getElementById("azReconQMarkCard");
+      const meta = document.getElementById("azReconQMarkMeta");
+      const openQMarkCard = function (qmId) {
+        const qm = (state.questionMarks || []).find(function (q) { return q.id === qmId; });
+        if (!qm || !card || !meta) return;
+        activeQmId = qm.id;
+        const opRef = (tac.myPos && typeof tac.myPos.lat === "number") ? tac.myPos : (state.center || { lat: qm.lat, lng: qm.lng });
+        const db = calcDistAndBearing(opRef.lat, opRef.lng, qm.lat, qm.lng);
+        meta.innerHTML =
+          `<div><b>Motivo:</b> ${qm.motivo}</div>` +
+          `<div><b>Coord:</b> ${qm.lat.toFixed(5)}, ${qm.lng.toFixed(5)}</div>` +
+          `<div><b>Operador:</b> ${Math.round(db.dist)}m • Azimute ${Math.round((db.bearing + 360) % 360)}° • <b>Status:</b> ${qm.status}</div>`;
+        card.style.display = "flex";
+      };
+      if (m && typeof m.on === "function" && !m._azQMarkClickBound) {
+        m._azQMarkClickBound = true;
+        m.on("click", "az-recon-qmarks-bg", function (ev) {
+          const f = ev && ev.features && ev.features[0];
+          if (f && f.properties && f.properties.id) openQMarkCard(f.properties.id);
+        });
+      }
+      onClick("azReconQMarkCloseBtn", function () { if (card) card.style.display = "none"; });
+      document.querySelectorAll("[data-qm-class]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          const qm = (state.questionMarks || []).find(function (q) { return q.id === activeQmId; });
+          if (!qm) return;
+          qm.status = btn.getAttribute("data-qm-class") || "Confirmado";
+          updateReconQuestionMarksLayer();
+          renderSectorAnalysisPanel();
+          if (card) card.style.display = "none";
+          showToast(`Ponto classificado como: ${qm.status}`);
+        });
+      });
+      onClick("azReconQMarkRemoveBtn", function () {
+        state.questionMarks = (state.questionMarks || []).filter(function (q) { return q.id !== activeQmId; });
+        updateReconQuestionMarksLayer();
+        renderSectorAnalysisPanel();
+        if (card) card.style.display = "none";
+        showToast("Marcador ? removido.");
+      });
+    })();
 
     const execModeSelEl = document.getElementById("azReconExecModeSelect");
     if (execModeSelEl) {
