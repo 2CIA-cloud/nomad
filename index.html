@@ -11301,9 +11301,8 @@
                 listEl.innerHTML = reasonsArray.map(r => `<li>${r}</li>`).join('');
                 banner.classList.remove('hidden');
             }
-            // Só emite som se o usuário tiver ativado manualmente o áudio (desativado por padrão)
-            if (!azimuteRpasAudioMuted) {
-                playRpasWeatherAlertBeep();
+            if (!azimuteRpasAudioMuted && typeof window.playDroneWeatherAudio === 'function') {
+                window.playDroneWeatherAudio(false);
             }
         };
 
@@ -11656,14 +11655,22 @@
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
-        // Reproduz feedback de áudio meteorológico (Mavic 3 / RPAS) sem sobreposição e respeitando mudo
+        // Reproduz feedback de áudio meteorológico (Mavic 3 / RPAS) via controlador centralizado J.A.R.V.I.S.
         window.playDroneWeatherAudio = function(isFavorable) {
             try {
+                if (typeof azimuteRpasAudioMuted !== 'undefined' && azimuteRpasAudioMuted) return;
+                const clipKey = isFavorable
+                    ? 'condicoes-meteorologicas-favoraveis'
+                    : 'alerta-meteorologico-rajadas-vento';
+                if (window.AzVoiceJarvis && typeof window.AzVoiceJarvis.speak === 'function') {
+                    window.AzVoiceJarvis.speak('', clipKey, { noSynthFallback: true });
+                    return;
+                }
                 const stealthBtn = document.getElementById('azHudStealthBtn');
                 const isMuted = Boolean(
                     (window.azimuteTacState && window.azimuteTacState.stealthSilent) ||
                     (stealthBtn && stealthBtn.classList.contains('is-active')) ||
-                    localStorage.getItem('az_stealth_silent') === '1'
+                    localStorage.getItem('az_stealth_silent_v1') === 'true'
                 );
                 if (isMuted) return;
                 if (window._azRpasWeatherAudio) {
@@ -11672,14 +11679,13 @@
                         window._azRpasWeatherAudio.currentTime = 0;
                     } catch (_) {}
                 }
-                const src = isFavorable
-                    ? 'audio/jarvis/condicoes-meteorologicas-favoraveis.mp3'
-                    : 'audio/jarvis/alerta-meteorologico-rajadas-vento.mp3';
-                const audio = new Audio(src);
+                const audio = new Audio('audio/jarvis/' + clipKey + '.mp3');
                 window._azRpasWeatherAudio = audio;
                 const p = audio.play();
-                if (p && typeof p.catch === 'function') p.catch(function() {});
-            } catch (_) {}
+                if (p && typeof p.catch === 'function') p.catch(function(err) { console.warn('[AZIMUTE][JARVIS]', err); });
+            } catch (err) {
+                console.warn('[AZIMUTE][JARVIS]', err);
+            }
         };
 
         // Busca clima de alta confiabilidade e atualização em tempo real (Open-Meteo API com vento 10m/80m, rajadas, precipitação e visibilidade)
@@ -27144,6 +27150,9 @@ if (document.readyState === "loading") {
     if (fb) { fb.classList.toggle("is-tx", tac.isRecordingPtt); fb.textContent = tac.isRecordingPtt ? "TX ATIVO" : "PTT"; }
     if (db) { db.classList.toggle("is-tx", tac.isRecordingPtt); db.textContent = tac.isRecordingPtt ? "NO AR • CLIQUE P/ ENCERRAR" : "TRANSMITIR PTT (OU FONE P2)"; }
     if (wb) { wb.classList.toggle("is-tx", tac.isRecordingPtt); wb.textContent = tac.isRecordingPtt ? "TX ATIVO" : "PTT"; }
+    if (window.AzVoiceJarvis && typeof window.AzVoiceJarvis.setRadioActive === "function") {
+      window.AzVoiceJarvis.setRadioActive(Boolean(tac.isRecordingPtt));
+    }
   }
 
   // --- MOTOR 1: BLOCOS WEBM (ATUAL) ---
@@ -37053,10 +37062,74 @@ if (document.readyState === "loading") {
   };
   window.AzVoiceJarvis = {
     enabled: localStorage.getItem("az_jarvis_voice_v1") !== "false",
+    _activeAudio: null,
+    _isSpeaking: false,
+    _radioActive: false,
+    _savedSecondaryState: null,
+    isRadioPriorityActive: function () {
+      return Boolean(this._radioActive || (typeof tac !== "undefined" && tac.isRecordingPtt));
+    },
+    _pauseSecondarySounds: function () {
+      try {
+        const humWasActive = Boolean(
+          (typeof _azAvataAudioEl !== "undefined" && _azAvataAudioEl) ||
+          (typeof _azDroneHumNodes !== "undefined" && _azDroneHumNodes)
+        );
+        if (!this._savedSecondaryState) {
+          this._savedSecondaryState = { humWasActive: humWasActive };
+        } else if (humWasActive) {
+          this._savedSecondaryState.humWasActive = true;
+        }
+        if (typeof stopDroneRotorHum === "function") stopDroneRotorHum();
+      } catch (err) {
+        console.warn("[AZIMUTE][JARVIS] Falha ao pausar sons secundários:", err);
+      }
+    },
+    _resumeSecondarySoundsIfAllowed: function () {
+      try {
+        if (this._isSpeaking || this.isRadioPriorityActive()) return;
+        if (typeof tac !== "undefined" && (tac.stealthSilent || tac.audioMuted)) return;
+        if (this._savedSecondaryState && this._savedSecondaryState.humWasActive) {
+          this._savedSecondaryState = null;
+          if (typeof tac !== "undefined" && tac.droneMode && typeof startDroneRotorHum === "function") {
+            startDroneRotorHum();
+          }
+        }
+      } catch (err) {
+        console.warn("[AZIMUTE][JARVIS] Falha ao retomar sons secundários:", err);
+      }
+    },
+    stop: function (keepSecondaryPaused) {
+      try {
+        if (this._activeAudio) {
+          this._activeAudio.onended = null;
+          this._activeAudio.onerror = null;
+          this._activeAudio.pause();
+          this._activeAudio.currentTime = 0;
+          this._activeAudio = null;
+        }
+        if (window.speechSynthesis) {
+          try { window.speechSynthesis.cancel(); } catch (_) {}
+        }
+      } catch (err) {
+        console.warn("[AZIMUTE][JARVIS] Falha ao parar áudio:", err);
+      }
+      this._isSpeaking = false;
+      if (!keepSecondaryPaused) this._resumeSecondarySoundsIfAllowed();
+    },
+    setRadioActive: function (active) {
+      this._radioActive = Boolean(active);
+      if (this._radioActive) {
+        this._pauseSecondarySounds();
+        this.stop(true);
+      } else {
+        this._resumeSecondarySoundsIfAllowed();
+      }
+    },
     setEnabled: function (on) {
       this.enabled = Boolean(on);
       try { localStorage.setItem("az_jarvis_voice_v1", this.enabled ? "true" : "false"); } catch (_) {}
-      if (!this.enabled && window.speechSynthesis) { try { window.speechSynthesis.cancel(); } catch (_) {} }
+      if (!this.enabled) this.stop(false);
     },
     toNatoPhonetic: function (text) {
       return String(text || "").replace(/\b(Ponto|B|A)\s*([A-Z])\b/gi, function (_, pfx, ch) {
@@ -37066,32 +37139,77 @@ if (document.readyState === "loading") {
         return (JARVIS_NATO[ch.toUpperCase()] || ch) + " " + num;
       });
     },
-    speak: function (rawText, clipKey) {
-      if (tac.stealthSilent || !this.enabled) return;
-      const text = this.toNatoPhonetic(rawText);
-      const fallbackSynth = function () {
-        try {
-          if (!("speechSynthesis" in window)) return;
-          const u = new SpeechSynthesisUtterance(text);
-          u.lang = "pt-BR";
-          u.rate = 0.98;
-          u.pitch = 0.85;
-          const voices = window.speechSynthesis.getVoices ? window.speechSynthesis.getVoices() : [];
-          const ptMale = voices.find(function (v) { return /pt/i.test(v.lang) && /daniel|felipe|google/i.test(v.name); })
-            || voices.find(function (v) { return /pt/i.test(v.lang); });
-          if (ptMale) u.voice = ptMale;
-          window.speechSynthesis.speak(u);
-        } catch (_) {}
-      };
-      if (clipKey) {
-        try {
-          const aud = new Audio("audio/jarvis/" + clipKey + ".mp3");
-          aud.volume = 0.85;
-          aud.play().catch(fallbackSynth);
-          return;
-        } catch (_) {}
+    speak: function (rawText, clipKey, opts) {
+      try {
+        if ((typeof tac !== "undefined" && (tac.stealthSilent || tac.audioMuted)) || !this.enabled || this.isRadioPriorityActive()) return;
+        const self = this;
+        const text = this.toNatoPhonetic(rawText);
+        const noSynth = Boolean(opts && opts.noSynthFallback);
+
+        this.stop(true);
+        this._pauseSecondarySounds();
+        this._isSpeaking = true;
+
+        const finishSpeech = function () {
+          self._isSpeaking = false;
+          self._activeAudio = null;
+          self._resumeSecondarySoundsIfAllowed();
+        };
+
+        const fallbackSynth = function () {
+          if (noSynth || !text || self.isRadioPriorityActive()) {
+            finishSpeech();
+            return;
+          }
+          try {
+            if (!("speechSynthesis" in window)) {
+              finishSpeech();
+              return;
+            }
+            const u = new SpeechSynthesisUtterance(text);
+            u.lang = "pt-BR";
+            u.rate = 0.98;
+            u.pitch = 0.85;
+            const voices = window.speechSynthesis.getVoices ? window.speechSynthesis.getVoices() : [];
+            const ptMale = voices.find(function (v) { return /pt/i.test(v.lang) && /daniel|felipe|google/i.test(v.name); })
+              || voices.find(function (v) { return /pt/i.test(v.lang); });
+            if (ptMale) u.voice = ptMale;
+            u.onend = finishSpeech;
+            u.onerror = finishSpeech;
+            window.speechSynthesis.speak(u);
+          } catch (err) {
+            console.warn("[AZIMUTE][JARVIS] Falha na síntese de voz:", err);
+            finishSpeech();
+          }
+        };
+
+        if (clipKey) {
+          try {
+            const aud = new Audio("audio/jarvis/" + clipKey + ".mp3");
+            aud.volume = 0.88;
+            this._activeAudio = aud;
+            aud.onended = finishSpeech;
+            aud.onerror = function (err) {
+              console.warn("[AZIMUTE][JARVIS] Clipe ausente ou bloqueado:", clipKey, err);
+              fallbackSynth();
+            };
+            const p = aud.play();
+            if (p && typeof p.catch === "function") {
+              p.catch(function (err) {
+                console.warn("[AZIMUTE][JARVIS] Reprodução bloqueada/ausente:", clipKey, err);
+                fallbackSynth();
+              });
+            }
+            return;
+          } catch (err) {
+            console.warn("[AZIMUTE][JARVIS] Erro ao carregar clipe:", clipKey, err);
+          }
+        }
+        fallbackSynth();
+      } catch (err) {
+        console.warn("[AZIMUTE][JARVIS] Erro no controlador de voz:", err);
+        this._isSpeaking = false;
       }
-      fallbackSynth();
     }
   };
 
@@ -37170,7 +37288,9 @@ if (document.readyState === "loading") {
 
   function playDronePowerOnSound() {
     triggerDroneVibrate([45, 40, 85]);
-    playDjiArpeggio([1976, 2489, 2960]);
+    if (window.AzVoiceJarvis && typeof window.AzVoiceJarvis.speak === "function") {
+      window.AzVoiceJarvis.speak("", "drone-no-ar", { noSynthFallback: true });
+    }
   }
 
   function playDronePowerOffSound() {
@@ -37272,6 +37392,10 @@ if (document.readyState === "loading") {
 
   function startDroneRotorHum() {
     if (tac.stealthSilent || !droneCfg.soundOn || !droneCfg.humOn || _azDroneHumNodes || _azAvataAudioEl) return;
+    if (window.AzVoiceJarvis && (window.AzVoiceJarvis._isSpeaking || window.AzVoiceJarvis.isRadioPriorityActive())) {
+      window.AzVoiceJarvis._savedSecondaryState = { humWasActive: true };
+      return;
+    }
     try {
       const aud = new Audio("audio/avata-loop.mp3");
       aud.loop = true;
