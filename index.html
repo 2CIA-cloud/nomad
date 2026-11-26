@@ -20859,13 +20859,31 @@ if (window.__azimuteGeoInitialized) {
         distBadgeHtml = `<span class="az-geo-result-dist">${formatDistEtaLabel(opt.estKm, opt.estMin, true)}</span>`;
       }
 
+      const isAreaHit = Boolean(
+        opt.osmCategory === "boundary" ||
+        opt.osmCategory === "place" ||
+        /suburb|neighbourhood|quarter|city|town|administrative/i.test(opt.osmType || "") ||
+        (opt.geojson && /Polygon/i.test(opt.geojson.type || ""))
+      );
+
       btn.innerHTML = `
         <div class="az-geo-result-info">
           <span class="az-geo-result-title">${opt.title}</span>
           ${opt.subtitle ? `<span class="az-geo-result-sub">${opt.subtitle}</span>` : ""}
         </div>
+        ${isAreaHit ? `<span class="az-geo-result-recon-tag" style="font-size:9px;font-weight:900;color:#0D0D0D;background:#C5A869;padding:2px 6px;border-radius:6px;margin-right:4px;white-space:nowrap;">VOAR RECON</span>` : ""}
         ${distBadgeHtml}
       `;
+      const reconTag = btn.querySelector(".az-geo-result-recon-tag");
+      if (reconTag) {
+        reconTag.addEventListener("click", (ev) => {
+          ev.stopPropagation();
+          showDestinationOnMap(opt.title, opt.subtitle, opt.lat, opt.lng);
+          if (typeof window.azShowGeoSearchGeometry === "function") window.azShowGeoSearchGeometry(opt);
+          const rb = document.getElementById("azGeoSearchReconBtn");
+          if (rb) rb.click();
+        });
+      }
       btn.addEventListener("click", () => {
         showDestinationOnMap(opt.title, opt.subtitle, opt.lat, opt.lng);
         if (typeof window.azShowGeoSearchGeometry === "function") {
@@ -22974,30 +22992,57 @@ if (document.readyState === "loading") {
   #azDroneHudBar {
     position: fixed !important;
     top: calc(50px + env(safe-area-inset-top, 0px)) !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
+    left: 8px !important;
+    transform: none !important;
     z-index: 100055 !important;
-    width: 350px;
-    max-width: calc(100vw - 14px);
+    width: 320px;
+    max-width: calc(100vw - 16px);
+    max-height: calc(100vh - 140px);
+    overflow-y: auto;
     background: #0D0D0D !important;
-    border: 1.5px solid #38BDF8 !important;
+    border: 1.5px solid #C5A869 !important;
     border-radius: 12px;
-    padding: 6px 8px;
+    padding: 7px 8px;
     display: none;
     flex-direction: column;
-    gap: 5px;
-    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.92);
+    gap: 6px;
+    box-shadow: none !important;
     color: #F2F0EA;
   }
   #azDroneHudBar.is-open { display: flex !important; }
+  #azDroneHudBar.is-pick-hidden { display: none !important; }
   #azDroneHudBar.is-collapsed {
     width: auto !important;
     top: auto !important;
     bottom: 88px !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
+    left: 8px !important;
+    transform: none !important;
     padding: 5px 10px !important;
     border-radius: 999px !important;
+  }
+  .az-recon-step-box {
+    width: 100%;
+    background: #161616;
+    border: 1px solid rgba(197, 168, 105, 0.3);
+    border-radius: 8px;
+    padding: 6px 7px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .az-recon-step-head {
+    font-size: 9.5px;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    color: #C5A869;
+    text-transform: uppercase;
+  }
+  .az-recon-step-desc {
+    font-size: 9px;
+    line-height: 1.25;
+    color: #E5E7EB;
+    border-top: 1px solid rgba(197, 168, 105, 0.16);
+    padding-top: 3px;
   }
   #azDroneHudBar.is-collapsed #azDroneTargetSelect,
   #azDroneHudBar.is-collapsed #azDroneControlToggleBtn,
@@ -26287,52 +26332,72 @@ if (document.readyState === "loading") {
     <button type="button" class="az-drone-pill-btn is-sky" id="azEscoltaOrbitTeamBtn" title="Orbitar equipe ou aliado selecionado">ORBITAR EQUIPE</button>
   </div>
   <div id="azDroneReconRow" aria-label="Controles Drone de Reconhecimento">
-    <div style="display:flex;gap:4px;width:100%;align-items:center;">
-      <input type="text" id="azReconDestInput" class="az-recon-input" style="flex:1;" placeholder="Bairro/Setor (ex: Serra, Prado)" autocomplete="off" />
-      <button type="button" class="az-drone-pill-btn is-sky" id="azReconDestSearchBtn" title="Mover área para o bairro digitado">IR</button>
-      <input type="text" id="azReconTargetInput" class="az-recon-input" style="flex:1;" placeholder="Alvo (ex: Arauto)" autocomplete="off" />
+    <!-- Etapa 1: Área -->
+    <div class="az-recon-step-box">
+      <div class="az-recon-step-head">1. Área (Círculo ou Retângulo)</div>
+      <div style="display:flex;gap:4px;width:100%;align-items:center;">
+        <input type="text" id="azReconDestInput" class="az-recon-input" style="flex:1;" placeholder="Bairro/Setor (ex: Serra, Prado)" autocomplete="off" />
+        <button type="button" class="az-drone-pill-btn is-sky" id="azReconDestSearchBtn" title="Mover área para o bairro digitado">IR</button>
+        <input type="text" id="azReconTargetInput" class="az-recon-input" style="flex:1;" placeholder="Alvo (ex: Arauto)" autocomplete="off" />
+      </div>
+      <div style="display:flex;gap:4px;width:100%;align-items:center;flex-wrap:wrap;">
+        <button type="button" class="az-drone-pill-btn is-sky" id="azReconCircleBtn" title="Definir área circular no mapa">CÍRCULO</button>
+        <button type="button" class="az-drone-pill-btn" id="azReconRectBtn" title="Definir quadrante retangular no mapa">RETÂNGULO</button>
+        <span class="az-recon-radius-wrap" id="azReconRadiusWrap" title="Raio do setor circular (até 50 km²)">
+          <span>R:</span>
+          <input type="range" id="azReconRadiusSlider" min="100" max="3990" step="50" value="500" />
+          <span id="azReconRadiusVal">500m (0.8km²)</span>
+        </span>
+        <span class="az-recon-eta-badge" id="azReconEtaBadge" title="Tempo estimado da missão">~00:30</span>
+        <span class="az-recon-eta-badge" id="azReconPhaseBadge" style="color:#C5A869;border-color:rgba(197,168,105,0.45);background:rgba(197,168,105,0.12);">PRONTO</span>
+      </div>
+      <div class="az-recon-step-desc">Define o perímetro no mapa e minimiza esta gaveta para marcação livre.</div>
     </div>
-    <div style="display:flex;gap:4px;width:100%;align-items:center;flex-wrap:wrap;">
-      <button type="button" class="az-drone-pill-btn is-sky" id="azReconCircleBtn" title="Definir área circular no mapa">CÍRCULO</button>
-      <button type="button" class="az-drone-pill-btn" id="azReconRectBtn" title="Definir quadrante retangular no mapa">RETÂNG.</button>
-      <span class="az-recon-radius-wrap" id="azReconRadiusWrap" title="Raio do setor circular (até 50 km²)">
-        <span>R:</span>
-        <input type="range" id="azReconRadiusSlider" min="100" max="3990" step="50" value="500" />
-        <span id="azReconRadiusVal">500m (0.8km²)</span>
-      </span>
-      <span class="az-recon-eta-badge" id="azReconEtaBadge" title="Tempo estimado da missão">~00:30</span>
-      <span class="az-recon-eta-badge" id="azReconPhaseBadge" style="color:#C5A869;border-color:rgba(197,168,105,0.45);background:rgba(197,168,105,0.12);">PRONTO</span>
+
+    <!-- Etapa 2: Nível -->
+    <div class="az-recon-step-box">
+      <div class="az-recon-step-head">2. Nível (Superficial, Detalhada ou Minuciosa)</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;width:100%;">
+        <button type="button" class="az-drone-pill-btn" data-recon-depth="superficial" title="Vias principais, clima e área">SUPERFICIAL</button>
+        <button type="button" class="az-drone-pill-btn is-active" data-recon-depth="tatica" title="Superficial + malha, becos, sem saída e cerco">DETALHADA</button>
+        <button type="button" class="az-drone-pill-btn" data-recon-depth="minuciosa" title="Detalhada + raio-X completo de becos">MINUCIOSA</button>
+      </div>
+      <div id="azReconCriteriaGrid" style="display:flex;flex-wrap:wrap;gap:6px;width:100%;font-size:8.5px;color:#E5E7EB;padding:3px 4px;background:#0D0D0D;border:1px solid rgba(197,168,105,0.2);border-radius:6px;">
+        <label style="display:inline-flex;align-items:center;gap:3px;"><input type="checkbox" id="azReconCritMalha" checked />Vias</label>
+        <label style="display:inline-flex;align-items:center;gap:3px;"><input type="checkbox" id="azReconCritBecos" checked />Becos/Escadas</label>
+        <label style="display:inline-flex;align-items:center;gap:3px;"><input type="checkbox" id="azReconCritSemSaida" checked />Sem Saída</label>
+        <label style="display:inline-flex;align-items:center;gap:3px;"><input type="checkbox" id="azReconCritCerco" checked />Cerco B1..Bn</label>
+        <label style="display:inline-flex;align-items:center;gap:3px;"><input type="checkbox" id="azReconCritRaioX" />Raio-X Becos</label>
+        <label style="display:inline-flex;align-items:center;gap:3px;"><input type="checkbox" id="azReconCritVoz" checked />Voz J.A.R.V.I.S.</label>
+      </div>
+      <div class="az-recon-step-desc" id="azReconDepthDesc">Detalhada: análise intermediária de vias e pontos.</div>
     </div>
-    <!-- Seletor de Profundidade (3 níveis 1 toque) + Critérios individuais -->
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;width:100%;">
-      <button type="button" class="az-drone-pill-btn" data-recon-depth="superficial" title="Enquadramento PMMG, Vias Principais, Clima e Área">SUPERFICIAL</button>
-      <button type="button" class="az-drone-pill-btn is-active" data-recon-depth="tatica" title="Superficial + Malha Completa, Becos, Sem Saída, Cerco">TÁTICA</button>
-      <button type="button" class="az-drone-pill-btn" data-recon-depth="minuciosa" title="Tática + Raio-X Topológico de Becos e Aglomerados">MINUCIOSA</button>
-    </div>
-    <div id="azReconCriteriaGrid" style="display:flex;flex-wrap:wrap;gap:6px;width:100%;font-size:8.5px;color:#CBD5E1;padding:3px 4px;background:#111318;border:1px solid rgba(255,255,255,0.08);border-radius:6px;">
-      <label style="display:inline-flex;align-items:center;gap:3px;"><input type="checkbox" id="azReconCritMalha" checked />Vias</label>
-      <label style="display:inline-flex;align-items:center;gap:3px;"><input type="checkbox" id="azReconCritBecos" checked />Becos/Escadas</label>
-      <label style="display:inline-flex;align-items:center;gap:3px;"><input type="checkbox" id="azReconCritSemSaida" checked />Sem Saída</label>
-      <label style="display:inline-flex;align-items:center;gap:3px;"><input type="checkbox" id="azReconCritCerco" checked />Cerco B1..Bn</label>
-      <label style="display:inline-flex;align-items:center;gap:3px;"><input type="checkbox" id="azReconCritRaioX" />Raio-X Becos</label>
-      <label style="display:inline-flex;align-items:center;gap:3px;"><input type="checkbox" id="azReconCritVoz" checked />Voz J.A.R.V.I.S.</label>
-    </div>
-    <div style="display:flex;gap:4px;width:100%;align-items:center;flex-wrap:wrap;">
-      <button type="button" class="az-drone-pill-btn is-sky" id="azReconSweepBtn" style="background-color:rgba(56,189,248,0.28);color:#FFFFFF;border-color:#38BDF8;" title="Iniciar Reconhecimento">INICIAR RECON</button>
-      <select id="azReconExecModeSelect" class="az-recon-input" style="max-width:118px;font-size:8.5px;" title="Modo de execução">
-        <option value="live">Ao vivo (Mapa)</option>
-        <option value="bg">Segundo Plano</option>
-      </select>
-      <button type="button" class="az-drone-pill-btn" id="azReconOrbitPerimBtn" title="Orbitar perímetro do setor">PERÍM.</button>
-      <button type="button" class="az-drone-pill-btn" id="azReconOrbitPtBtn" title="Orbitar 360° o ponto atual">ORB. PT</button>
-      <button type="button" class="az-drone-pill-btn" id="azReconPauseBtn" title="Pausar ou retomar piloto automático">PAUSAR</button>
-      <button type="button" class="az-drone-pill-btn" id="azReconSpeedDownBtn" title="Desacelerar voo">−</button>
-      <span class="az-recon-eta-badge" id="azReconSpeedLabel" style="min-width:34px;text-align:center;">1x</span>
-      <button type="button" class="az-drone-pill-btn" id="azReconSpeedUpBtn" title="Acelerar voo">+</button>
-      <button type="button" class="az-drone-pill-btn" id="azReconAltUpBtn" title="Subir altitude">ALT+</button>
-      <button type="button" class="az-drone-pill-btn" id="azReconAltDownBtn" title="Descer altitude">ALT-</button>
-      <button type="button" class="az-drone-pill-btn" id="azReconRthBtn" title="Retornar imediatamente à origem">RETORNAR</button>
-      <button type="button" class="az-drone-pill-btn is-sky" id="azReconAnalysisBtn" title="Abrir caixa ANÁLISE">ANÁLISE</button>
+
+    <!-- Etapa 3: Execução -->
+    <div class="az-recon-step-box">
+      <div class="az-recon-step-head">3. Execução (Ao vivo ou Segundo Plano)</div>
+      <div style="display:flex;gap:4px;width:100%;align-items:center;flex-wrap:wrap;">
+        <button type="button" class="az-drone-pill-btn is-sky" id="azReconSweepBtn" style="background-color:#C5A869;color:#0D0D0D;border-color:#C5A869;font-weight:900;" title="Iniciar Reconhecimento">INICIAR RECON</button>
+        <select id="azReconExecModeSelect" class="az-recon-input" style="max-width:118px;font-size:8.5px;" title="Modo de execução">
+          <option value="live">Ao vivo (Mapa)</option>
+          <option value="bg">Segundo Plano</option>
+        </select>
+        <button type="button" class="az-drone-pill-btn is-active" data-recon-speed="1" title="Velocidade normal 1x">1x</button>
+        <button type="button" class="az-drone-pill-btn" data-recon-speed="2" title="Velocidade rápida 2x">2x</button>
+        <button type="button" class="az-drone-pill-btn" id="azReconSpeedDownBtn" title="Desacelerar voo">−</button>
+        <span class="az-recon-eta-badge" id="azReconSpeedLabel" style="min-width:30px;text-align:center;">1x</span>
+        <button type="button" class="az-drone-pill-btn" id="azReconSpeedUpBtn" title="Acelerar voo">+</button>
+      </div>
+      <div style="display:flex;gap:4px;width:100%;align-items:center;flex-wrap:wrap;">
+        <button type="button" class="az-drone-pill-btn" id="azReconOrbitPerimBtn" title="Orbitar perímetro do setor">PERÍM.</button>
+        <button type="button" class="az-drone-pill-btn" id="azReconOrbitPtBtn" title="Orbitar 360° o ponto atual">ORB. PT</button>
+        <button type="button" class="az-drone-pill-btn" id="azReconPauseBtn" title="Pausar ou retomar piloto automático">PAUSAR</button>
+        <button type="button" class="az-drone-pill-btn" id="azReconAltUpBtn" title="Subir altitude">ALT+</button>
+        <button type="button" class="az-drone-pill-btn" id="azReconAltDownBtn" title="Descer altitude">ALT-</button>
+        <button type="button" class="az-drone-pill-btn" id="azReconRthBtn" title="Retornar imediatamente à origem">RETORNAR</button>
+        <button type="button" class="az-drone-pill-btn is-sky" id="azReconAnalysisBtn" title="Abrir caixa ANÁLISE">ANÁLISE</button>
+      </div>
+      <div class="az-recon-step-desc">Ao vivo acompanha o voo no mapa; Segundo Plano gera o relatório sem mover a tela.</div>
     </div>
   </div>
   <div class="az-drone-act-row" id="azDroneMainToolsRow">
@@ -26380,15 +26445,23 @@ if (document.readyState === "loading") {
 <div id="azAllyFlyoverBanner" role="status" aria-live="polite"></div>
 
 <!-- Barra compacta pós-marcação de área (libera 100% do mapa até confirmar) -->
-<div id="azReconConfirmAreaBar" style="display:none;position:fixed;bottom:92px;left:50%;transform:translateX(-50%);z-index:100064;background:#0D0D0D;border:1.5px solid #38BDF8;border-radius:999px;padding:6px 12px;align-items:center;gap:8px;box-shadow:0 2px 8px rgba(0,0,0,0.65);">
-  <span id="azReconConfirmInfo" style="font-size:10px;font-weight:900;color:#38BDF8;">Toque no mapa para cravar o centro</span>
-  <input type="range" id="azReconFloatRadius" min="100" max="3990" step="50" value="500" style="width:76px;accent-color:#C5A869;" />
-  <button type="button" class="az-drone-pill-btn is-sky" id="azReconConfirmOkBtn">OK (Área Definida)</button>
+<div id="azReconConfirmAreaBar" style="display:none;position:fixed;bottom:92px;left:50%;transform:translateX(-50%);z-index:100064;background:#0D0D0D;border:1.5px solid #C5A869;border-radius:999px;padding:6px 10px;align-items:center;gap:6px;">
+  <span id="azReconConfirmInfo" style="font-size:10px;font-weight:900;color:#C5A869;white-space:nowrap;">Toque no mapa</span>
+  <button type="button" class="az-drone-pill-btn" id="azReconFloatMinusBtn" style="min-width:26px;font-weight:900;border-color:#C5A869;color:#C5A869;" title="Reduzir área">−</button>
+  <input type="range" id="azReconFloatRadius" min="100" max="3990" step="50" value="500" style="width:68px;accent-color:#C5A869;" />
+  <button type="button" class="az-drone-pill-btn" id="azReconFloatPlusBtn" style="min-width:26px;font-weight:900;border-color:#C5A869;color:#C5A869;" title="Ampliar área">+</button>
+  <button type="button" class="az-drone-pill-btn" id="azReconConfirmOkBtn" style="background-color:#C5A869;color:#0D0D0D;border-color:#C5A869;font-weight:900;">OK</button>
 </div>
 
-<!-- Barra discreta de progresso em Segundo Plano Real -->
-<div id="azReconBgProgressBar" style="display:none;position:fixed;top:4px;left:50%;transform:translateX(-50%);z-index:100080;background:#0D0D0D;border:1px solid #C5A869;border-radius:999px;padding:3px 10px;align-items:center;gap:8px;font-size:9.5px;font-weight:900;color:#C5A869;box-shadow:0 2px 6px rgba(0,0,0,0.55);">
-  <span id="azReconBgProgressText">RECON EM SEGUNDO PLANO: 0%</span>
+<!-- Barra discreta de progresso em Segundo Plano / Minimizado (ícone de drone no topo + barra abaixo) -->
+<div id="azReconBgProgressBar" style="display:none;position:fixed;top:6px;left:50%;transform:translateX(-50%);z-index:100080;background:#0D0D0D;border:1px solid #C5A869;border-radius:10px;padding:5px 12px;flex-direction:column;align-items:center;gap:4px;min-width:210px;">
+  <div style="display:flex;align-items:center;gap:6px;font-size:9.5px;font-weight:900;color:#C5A869;">
+    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#C5A869" stroke-width="2"><circle cx="5" cy="5" r="2.2"/><circle cx="19" cy="5" r="2.2"/><circle cx="5" cy="19" r="2.2"/><circle cx="19" cy="19" r="2.2"/><path d="M7 7l3 3M17 7l-3 3M7 17l3-3M17 17l-3-3"/><rect x="10" y="10" width="4" height="4" rx="1"/></svg>
+    <span id="azReconBgProgressText">RECON EM SEGUNDO PLANO: 0%</span>
+  </div>
+  <div style="width:100%;height:4px;background:#161616;border-radius:999px;overflow:hidden;border:1px solid rgba(197,168,105,0.28);">
+    <div id="azReconBgFill" style="width:0%;height:100%;background:#C5A869;transition:width 0.25s linear;"></div>
+  </div>
 </div>
 
 <!-- Botão rápido da Busca Google Maps para enviar polígono ao Recon -->
@@ -27643,6 +27716,12 @@ if (document.readyState === "loading") {
       });
     }
     tac.circleCenter = null;
+    tac._suppressGeofenceSoundUntil = Date.now() + 800;
+    if (tac.geofenceInsideMap) {
+      Object.keys(tac.geofenceInsideMap).forEach(function (gk) {
+        if (gk.indexOf("circle_main::") === 0) delete tac.geofenceInsideMap[gk];
+      });
+    }
     document.getElementById("azCircleRadiusPad").classList.remove("is-open");
     const gj = { type: "Feature", geometry: { type: "Polygon", coordinates: [[]] } };
     tac.maps.forEach(function (m) {
@@ -29787,7 +29866,8 @@ if (document.readyState === "loading") {
         const wasInside = tac.geofenceInsideMap[k] === true;
         if (inside && !wasInside) {
           tac.geofenceInsideMap[k] = true;
-          if (!tac.stealthSilent) {
+          const supAudio = tac._suppressGeofenceSoundUntil && Date.now() < tac._suppressGeofenceSoundUntil;
+          if (!tac.stealthSilent && !supAudio) {
             vibratePattern([280, 100, 280, 100, 320]);
             try { playTone(880, 1360, 0.24, 0.18); } catch (_) {}
             if (window.AzVoiceJarvis) window.AzVoiceJarvis.speak(`${op.name} entrou no perímetro.`, "domo_in");
@@ -37062,8 +37142,9 @@ if (document.readyState === "loading") {
   };
   const JARVIS_SPRITE_URL = "AUDIO JARVIS/AUDIO JARVIS 21 FALAS.mp3";
   const JARVIS_SPRITE_CLIPS = {
-    "drone-no-ar": [0.0, 1.35],
-    "recon_start": [0.0, 3.45],
+    "drone-no-ar": [0.0, 0.92],
+    "iniciando-reconhecimento-perimetro": [0.95, 3.08],
+    "recon_start": [0.0, 3.08],
     "recon_divergent": [3.45, 9.15],
     "recon_done": [9.15, 13.05],
     "recon_bg_done": [13.05, 16.25],
@@ -37780,6 +37861,12 @@ if (document.readyState === "loading") {
     const dType = tac.droneType || "tatico";
     if (bar) {
       bar.classList.toggle("is-open", Boolean(tac.droneMode));
+      if (!tac.droneMode) {
+        bar.classList.remove("is-pick-hidden", "is-collapsed");
+        bar.style.display = "";
+        const confirmBar = document.getElementById("azReconConfirmAreaBar");
+        if (confirmBar) confirmBar.style.display = "none";
+      }
       bar.setAttribute("data-drone-type", dType);
     }
     const typeSel = document.getElementById("azDroneTypeSelect");
@@ -38617,6 +38704,20 @@ if (document.readyState === "loading") {
         map.addLayer({ id: "az-recon-sector-fill", type: "fill", source: "az-recon-sector-src", paint: { "fill-color": "#C5A869", "fill-opacity": 0.08 } });
         map.addLayer({ id: "az-recon-sector-line", type: "line", source: "az-recon-sector-src", paint: { "line-color": "#C5A869", "line-width": 2.2, "line-dasharray": [3, 2] } });
       }
+      if (!map.getSource("az-recon-handles-src")) {
+        map.addSource("az-recon-handles-src", { type: "geojson", data: emptyGeo });
+        map.addLayer({
+          id: "az-recon-handles-layer",
+          type: "circle",
+          source: "az-recon-handles-src",
+          paint: {
+            "circle-radius": 8,
+            "circle-color": "#C5A869",
+            "circle-stroke-color": "#0D0D0D",
+            "circle-stroke-width": 2.5
+          }
+        });
+      }
       if (!map.getSource("az-recon-transit-src")) {
         map.addSource("az-recon-transit-src", { type: "geojson", data: emptyGeo });
         map.addLayer({ id: "az-recon-transit-line", type: "line", source: "az-recon-transit-src", paint: { "line-color": "#38BDF8", "line-width": 2.6, "line-dasharray": [2.5, 1.5], "line-opacity": 0.85 } });
@@ -38927,8 +39028,54 @@ if (document.readyState === "loading") {
           features: [{ type: "Feature", geometry: { type: "Polygon", coordinates: [poly] }, properties: {} }]
         });
       }
+      const hSrc = m.getSource("az-recon-handles-src");
+      if (hSrc) {
+        const hFeats = [];
+        if (state.shapeMode === "circle" && state.center) {
+          const cosLat = Math.max(0.2, Math.cos((state.center.lat * Math.PI) / 180));
+          const edgeLng = state.center.lng + state.radiusM / (111320 * cosLat);
+          hFeats.push({ type: "Feature", geometry: { type: "Point", coordinates: [state.center.lng, state.center.lat] }, properties: { handleKind: "center" } });
+          hFeats.push({ type: "Feature", geometry: { type: "Point", coordinates: [edgeLng, state.center.lat] }, properties: { handleKind: "radius" } });
+        } else if (state.shapeMode === "rect" && state.rectCornerA && state.rectCornerB) {
+          hFeats.push({ type: "Feature", geometry: { type: "Point", coordinates: [state.rectCornerA.lng, state.rectCornerA.lat] }, properties: { handleKind: "cornerA" } });
+          hFeats.push({ type: "Feature", geometry: { type: "Point", coordinates: [state.rectCornerB.lng, state.rectCornerB.lat] }, properties: { handleKind: "cornerB" } });
+        }
+        hSrc.setData({ type: "FeatureCollection", features: hFeats });
+      }
       if (typeof applySmartDepthRecommendation === "function") applySmartDepthRecommendation();
       updateReconEtaEstimate();
+    }
+
+    function clampPointInsideSector(lng, lat) {
+      if (state.shapeMode === "circle" && state.center) {
+        const d = calcDistAndBearing(state.center.lat, state.center.lng, lat, lng);
+        const maxR = Math.max(20, state.radiusM * 0.98);
+        if (d.dist <= maxR) return { lng: lng, lat: lat };
+        const cosLat = Math.max(0.2, Math.cos((state.center.lat * Math.PI) / 180));
+        const ratio = maxR / d.dist;
+        return {
+          lng: state.center.lng + (lng - state.center.lng) * ratio,
+          lat: state.center.lat + (lat - state.center.lat) * ratio
+        };
+      }
+      if (state.shapeMode === "rect" && state.rectCornerA && state.rectCornerB) {
+        const minLng = Math.min(state.rectCornerA.lng, state.rectCornerB.lng);
+        const maxLng = Math.max(state.rectCornerA.lng, state.rectCornerB.lng);
+        const minLat = Math.min(state.rectCornerA.lat, state.rectCornerB.lat);
+        const maxLat = Math.max(state.rectCornerA.lat, state.rectCornerB.lat);
+        return {
+          lng: Math.max(minLng, Math.min(maxLng, lng)),
+          lat: Math.max(minLat, Math.min(maxLat, lat))
+        };
+      }
+      const bbox = getSectorBbox();
+      if (bbox) {
+        return {
+          lng: Math.max(bbox.minLng, Math.min(bbox.maxLng, lng)),
+          lat: Math.max(bbox.minLat, Math.min(bbox.maxLat, lat))
+        };
+      }
+      return { lng: lng, lat: lat };
     }
 
     function applySmartDepthRecommendation() {
@@ -39332,9 +39479,107 @@ if (document.readyState === "loading") {
       else if (totalAlleys >= 2 || (totalAlleys + totalRoads) >= 10) complexity = "Média";
 
       state.matchedTargets = matched;
+      // 6. Enriquecimento viário (distância, azimute do operador, classificação funcional, sem saída)
+      const opRef = (tac.myPos && typeof tac.myPos.lat === "number") ? tac.myPos : (state.center || { lat: -19.9191, lng: -43.9386 });
+      const semSaidaSet = new Set(semSaida.map(function (s) { return normalizeStr(s.name); }));
+      const enrichRoadItem = function (item, clsFunc) {
+        const db = calcDistAndBearing(opRef.lat, opRef.lng, item.lat, item.lng);
+        item.distOpM = Math.round(db.dist);
+        item.azimuteOp = Math.round((db.bearing + 360) % 360);
+        item.classificacaoFuncional = clsFunc;
+        item.isSemSaida = semSaidaSet.has(normalizeStr(item.name));
+        return item;
+      };
+      avenidas.forEach(function (it) { enrichRoadItem(it, "Avenida arterial"); });
+      ruas.forEach(function (it) { enrichRoadItem(it, "Rua local"); });
+      becos.forEach(function (it) { enrichRoadItem(it, "Beco / Passagem"); });
+      escadarias.forEach(function (it) { enrichRoadItem(it, "Escadaria"); });
+
+      // 7. Unidade / Companhia responsável (via dados.json / base local mais próxima)
+      let unidadeResp = "Não identificada na base local";
+      let minUnitD = Infinity;
+      try {
+        const localUnits = (window.AZ_GEO_DATASETS && window.AZ_GEO_DATASETS.unidades) || [];
+        const cPt = state.center || opRef;
+        localUnits.forEach(function (u) {
+          if (typeof u.lat !== "number" || typeof u.lng !== "number") return;
+          const d = calcDistAndBearing(cPt.lat, cPt.lng, u.lat, u.lng).dist;
+          if (d < minUnitD) {
+            minUnitD = d;
+            unidadeResp = (u.name || u.unidade || "Unidade PMMG") + (u.subtitle ? " (" + u.subtitle + ")" : "");
+          }
+        });
+      } catch (_) {}
+
+      // 8. Detecção Exata Condicional (SOMENTE itens reais dentro da área dentre as 10 categorias)
+      const condCategories = ["Escola", "Hospital", "Batalhão", "Lagoa", "Lago", "Córrego", "Mata", "Terreno baldio", "Aterro", "Presídio"];
+      const condBuckets = {};
+      condCategories.forEach(function (c) { condBuckets[c] = []; });
+      const pushCond = function (cat, nome, lat, lng, extPorte) {
+        if (!condBuckets[cat] || !isPointInsideSector(lng, lat)) return;
+        const cleanNome = String(nome || cat).trim();
+        if (condBuckets[cat].some(function (x) { return normalizeStr(x.nome) === normalizeStr(cleanNome) && calcDistAndBearing(lat, lng, x.lat, x.lng).dist < 60; })) return;
+        const dOp = Math.round(calcDistAndBearing(opRef.lat, opRef.lng, lat, lng).dist);
+        condBuckets[cat].push({ nome: cleanNome, tipo: cat, lat: lat, lng: lng, distOpM: dOp, extensaoPorte: extPorte || "Localizado na área" });
+      };
+
+      elements.forEach(function (el) {
+        const tg = el.tags || {};
+        const nm = (tg.name || "").trim();
+        let ptLat = el.lat, ptLng = el.lon;
+        let lenM = 0;
+        if (Array.isArray(el.coords) && el.coords.length > 0) {
+          const mid = el.coords[Math.floor(el.coords.length / 2)];
+          ptLng = mid[0]; ptLat = mid[1];
+          if (el.coords.length >= 2) lenM = calcTraceDistanceMeters(el.coords);
+        }
+        if (typeof ptLat !== "number" || typeof ptLng !== "number") return;
+        const porteStr = lenM > 0 ? (lenM + " m") : "Área demarcada";
+
+        if (tg.amenity === "school" || /escola|col[eé]gio|emef|ee\s/i.test(nm)) pushCond("Escola", nm || "Escola", ptLat, ptLng, porteStr);
+        if (tg.amenity === "hospital" || tg.amenity === "clinic" || tg.healthcare === "hospital" || /hospital|upa|pronto.?socorro/i.test(nm)) pushCond("Hospital", nm || "Hospital / Unidade de Saúde", ptLat, ptLng, porteStr);
+        if (tg.amenity === "police" || tg.military || tg.landuse === "military" || /batalh[aã]o|bpm|cia\s*pm|companhia/i.test(nm)) pushCond("Batalhão", nm || "Unidade Policial / Militar", ptLat, ptLng, porteStr);
+        if (tg.amenity === "prison" || /pres[ií]dio|penitenci[aá]ria|ceresp|cadeia/i.test(nm)) pushCond("Presídio", nm || "Unidade Prisional", ptLat, ptLng, porteStr);
+        if (tg.water === "lagoon" || /lagoa/i.test(nm)) pushCond("Lagoa", nm || "Lagoa", ptLat, ptLng, porteStr);
+        else if (tg.natural === "water" || tg.water === "lake" || tg.water === "pond" || tg.water === "reservoir" || /\blago\b/i.test(nm)) pushCond("Lago", nm || "Lago / Espelho d'água", ptLat, ptLng, porteStr);
+        if (tg.waterway === "stream" || tg.waterway === "river" || tg.waterway === "canal" || tg.waterway === "drain" || /c[oó]rrego|ribeir[aã]o/i.test(nm)) pushCond("Córrego", nm || "Córrego / Curso d'água", ptLat, ptLng, lenM > 0 ? (lenM + " m no setor") : "Curso d'água");
+        if (tg.landuse === "forest" || tg.natural === "wood" || tg.natural === "scrub" || /\bmata\b|bosque/i.test(nm)) pushCond("Mata", nm || "Área de Mata / Vegetação densa", ptLat, ptLng, porteStr);
+        if (tg.landuse === "brownfield" || tg.landuse === "greenfield" || /terreno baldio|lote vago/i.test(nm)) pushCond("Terreno baldio", nm || "Terreno baldio", ptLat, ptLng, porteStr);
+        if (tg.landuse === "landfill" || /aterro/i.test(nm)) pushCond("Aterro", nm || "Aterro", ptLat, ptLng, porteStr);
+      });
+
+      try {
+        const ds = window.AZ_GEO_DATASETS || {};
+        (ds.hospitais || []).forEach(function (h) { if (typeof h.lat === "number") pushCond("Hospital", h.name, h.lat, h.lng, "Base local"); });
+        (ds.unidades || []).forEach(function (u) { if (typeof u.lat === "number") pushCond("Batalhão", u.name, u.lat, u.lng, u.subtitle || "Base local"); });
+      } catch (_) {}
+
+      const condicionais = [];
+      condCategories.forEach(function (cat) {
+        if (condBuckets[cat].length > 0) {
+          condicionais.push({ categoria: cat, itens: condBuckets[cat] });
+        }
+      });
+
+      const bbox = getSectorBbox();
+      let dimTexto = getSectorAreaKm2().toFixed(2) + " km²";
+      if (state.shapeMode === "circle") {
+        dimTexto = `Raio ${state.radiusM}m (${getSectorAreaKm2().toFixed(2)} km²)`;
+      } else if (bbox) {
+        const midLat = (bbox.minLat + bbox.maxLat) / 2;
+        const wM = Math.round((bbox.maxLng - bbox.minLng) * 111320 * Math.max(0.2, Math.cos((midLat * Math.PI) / 180)));
+        const hM = Math.round((bbox.maxLat - bbox.minLat) * 111320);
+        dimTexto = `${wM}m x ${hM}m (${getSectorAreaKm2().toFixed(2)} km²)`;
+      }
+      const nivelMap = { superficial: "Superficial", tatica: "Detalhada", minuciosa: "Minuciosa" };
+
       state.analysis = Object.assign({}, state.analysis, {
         profile: profile,
         neighborhoods: Array.from(neighborhoods),
+        unidadeResponsavel: unidadeResp,
+        dimensoesTexto: dimTexto,
+        nivelTexto: nivelMap[state.depthLevel] || "Detalhada",
+        condicionais: condicionais,
         avenidas: avenidas,
         ruas: ruas,
         becos: becos,
@@ -39461,17 +39706,33 @@ if (document.readyState === "loading") {
         }
       }
 
-      const bairrosStr = a.neighborhoods.length ? a.neighborhoods.slice(0, 3).join(", ") : "Setor mapeado";
-      const areaStr = getSectorAreaKm2().toFixed(1) + " km²";
+      const bairrosStr = a.neighborhoods.length ? a.neighborhoods.join(", ") : "Setor mapeado";
+      const areaStr = a.dimensoesTexto || (getSectorAreaKm2().toFixed(2) + " km²");
+      const nivelStr = a.nivelTexto || "Detalhada";
+      const unitStr = a.unidadeResponsavel || "Base local";
       const carLine = a.carDistKm > 0 ? ` • <b>Viatura:</b> ${a.carDistKm} km (${a.carDurMin} min)` : "";
       const semSaidaN = Array.isArray(a.semSaida) ? a.semSaida.length : 0;
       const cercoN = Array.isArray(a.pontosBloqueio) ? a.pontosBloqueio.length : 0;
       const unnamedN = Number(a.unnamedCount || 0);
+      let condHtml = "";
+      if (Array.isArray(a.condicionais) && a.condicionais.length > 0) {
+        condHtml = `<div style="margin-top:4px;padding-top:4px;border-top:1px solid rgba(197,168,105,0.28);">` +
+          `<div style="font-weight:900;color:#C5A869;margin-bottom:2px;">ELEMENTOS DETECTADOS NA ÁREA</div>` +
+          a.condicionais.map(function (grp) {
+            const itensTxt = grp.itens.slice(0, 4).map(function (it) {
+              return `${it.nome} (${it.distOpM}m • ${it.extensaoPorte})`;
+            }).join("; ");
+            return `<div style="color:#F3F4F6;"><b>${grp.categoria} (${grp.itens.length}):</b> ${itensTxt}</div>`;
+          }).join("") +
+          `</div>`;
+      }
       sumEl.innerHTML =
-        `<div style="font-weight:900;color:#C5A869;margin-bottom:3px;">PERFIL: ${a.profile} (${areaStr})</div>` +
-        `<div><b>Bairros:</b> ${bairrosStr} • <b>Complexidade:</b> ${a.complexity}${carLine}</div>` +
-        `<div><b>Av.:</b> ${a.avenidas.length} • <b>Ruas:</b> ${a.ruas.length} • <b>Becos:</b> ${a.becos.length} • <b>Escadas:</b> ${a.escadarias.length} • <b>Comércios:</b> ${a.shopsCount}</div>` +
-        `<div style="color:#94A3B8;margin-top:2px;"><b>Sem Saída:</b> ${semSaidaN} • <b>Cerco:</b> ${cercoN} VTRs • <b>Trechos s/ nome descartados:</b> ${unnamedN}</div>`;
+        `<div style="font-weight:900;color:#C5A869;margin-bottom:3px;">SETOR: ${bairrosStr}</div>` +
+        `<div><b>Unidade/Cia:</b> ${unitStr}</div>` +
+        `<div><b>Dimensões:</b> ${areaStr} • <b>Nível:</b> ${nivelStr}${carLine}</div>` +
+        `<div><b>Av.:</b> ${a.avenidas.length} • <b>Ruas:</b> ${a.ruas.length} • <b>Becos:</b> ${a.becos.length} • <b>Escadas:</b> ${a.escadarias.length}</div>` +
+        `<div style="color:#94A3B8;margin-top:2px;"><b>Sem Saída:</b> ${semSaidaN} • <b>Cerco:</b> ${cercoN} VTRs • <b>Trechos s/ nome descartados:</b> ${unnamedN}</div>` +
+        condHtml;
 
       const items = a[state.activeTab] || [];
       listEl.innerHTML = "";
@@ -39487,6 +39748,9 @@ if (document.readyState === "loading") {
         title.style.cssText = "font-size:10.5px;font-weight:700;color:#E2E8F0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;";
         const brTag = item.bairro ? ` • ${item.bairro}` : "";
         const lenTag = item.lengthM ? ` • ${item.lengthM}m` : "";
+        const opTag = (typeof item.distOpM === "number") ? ` • ${item.distOpM}m (${item.azimuteOp || 0}°)` : "";
+        const ssTag = item.isSemSaida ? " • Sem saída" : "";
+        const clsTag = item.classificacaoFuncional ? ` [${item.classificacaoFuncional}]` : "";
         if (state.activeTab === "raioX") {
           title.textContent = `${item.name} (${item.inicioRua || "?"} → ${item.terminoRua || "?"}) • ${item.comprimentoM || 0}m • ${item.classificacao || ""}`;
         } else if (state.activeTab === "pontosBloqueio") {
@@ -39494,7 +39758,7 @@ if (document.readyState === "loading") {
         } else if (state.activeTab === "semSaida") {
           title.textContent = `${item.name} (${item.tipo || "Sem saída"})${brTag}`;
         } else {
-          title.textContent = item.label || (item.name + lenTag + brTag);
+          title.textContent = item.label || (`${item.name}${clsTag}${lenTag}${opTag}${ssTag}`);
         }
         const routeBtn = document.createElement("button");
         routeBtn.type = "button";
@@ -39567,17 +39831,23 @@ if (document.readyState === "loading") {
     async function fetchSectorOsmOrOffline(signal) {
       const bbox = getSectorBbox();
       if (!bbox) return;
+      const cacheKey = `${bbox.minLat.toFixed(4)},${bbox.minLng.toFixed(4)},${bbox.maxLat.toFixed(4)},${bbox.maxLng.toFixed(4)}|${state.shapeMode}|${state.radiusM}`;
+      if (state.osmCacheKey === cacheKey && Array.isArray(state.cachedElements)) {
+        classifyAndBuildSectorAnalysis(state.cachedElements);
+        return;
+      }
       if (!reconCfg.animMaster) setReconStatus("MAPEANDO...", null);
       const areaKm2 = getSectorAreaKm2();
       const terms = getTargetTerms();
       const targetRegex = terms.map(function (t) { return t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }).join("|");
       const targetClause = targetRegex ? `way["name"~"${targetRegex}",i](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});` : "";
+      const condClause = `nwr["amenity"~"^(school|hospital|clinic|prison|police)$"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});nwr["landuse"~"^(military|forest|brownfield|landfill|greenfield)$"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});nwr["natural"~"^(water|wood|scrub)$"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});way["waterway"~"^(stream|river|canal|drain)$"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});`;
 
       let query = "";
       if (areaKm2 > 3) {
-        query = `[out:json][timeout:14];(way["highway"~"^(steps|alley|motorway|trunk|primary|secondary|tertiary|residential|living_street|unclassified|road|.*_link)$"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});way["service"="alley"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});${targetClause}node["place"~"^(suburb|neighbourhood|quarter)$"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng}););out body geom;`;
+        query = `[out:json][timeout:14];(way["highway"~"^(steps|alley|motorway|trunk|primary|secondary|tertiary|residential|living_street|unclassified|road|.*_link)$"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});way["service"="alley"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});${targetClause}${condClause}node["place"~"^(suburb|neighbourhood|quarter)$"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng}););out body geom;`;
       } else {
-        query = `[out:json][timeout:14];(way["highway"~"^(steps|alley|footway|path|pedestrian|motorway|trunk|primary|secondary|tertiary|residential|living_street|unclassified|road|service|.*_link)$"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});way["service"="alley"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});${targetClause}node["shop"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});node["amenity"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});way["landuse"~"^(industrial|forest)$"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});node["place"~"^(suburb|neighbourhood|quarter)$"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng}););out body geom;`;
+        query = `[out:json][timeout:14];(way["highway"~"^(steps|alley|footway|path|pedestrian|motorway|trunk|primary|secondary|tertiary|residential|living_street|unclassified|road|service|.*_link)$"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});way["service"="alley"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});${targetClause}${condClause}node["shop"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});node["amenity"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});way["landuse"~"^(industrial|forest)$"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng});node["place"~"^(suburb|neighbourhood|quarter)$"](${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng}););out body geom;`;
       }
 
       const endpoints = [
@@ -39634,6 +39904,8 @@ if (document.readyState === "loading") {
         }
       }
 
+      state.osmCacheKey = cacheKey;
+      state.cachedElements = elements;
       classifyAndBuildSectorAnalysis(elements);
 
       const scanItems = [];
@@ -39903,7 +40175,7 @@ if (document.readyState === "loading") {
       let lastEtaTs = 0;
       function tickRecon(now) {
         if (!tac.droneMode || tac.droneType !== "recon") { tac.reconRaf = 0; return; }
-        const dt = Math.min(0.08, Math.max(0, (now - lastTs) / 1000));
+        const dt = Math.min(0.05, Math.max(0.001, (now - lastTs) / 1000));
         lastTs = now;
         if (!state.paused && state.waypoints.length > 0 && state.wpIdx < state.waypoints.length) {
           const c = m.getCenter();
@@ -39915,14 +40187,15 @@ if (document.readyState === "loading") {
           let curP = typeof m.getPitch === "function" ? m.getPitch() : 42;
           let curB = typeof m.getBearing === "function" ? m.getBearing() : 0;
 
-          if (reconCfg.animInspect && state.inspectUntil && now < state.inspectUntil) {
+          if ((reconCfg.animInspect || state.depthLevel === "minuciosa") && state.inspectUntil && now < state.inspectUntil) {
             state.targetZoom = 17.75;
             state.targetPitch = 52;
             const nextZ = curZ + (state.targetZoom - curZ) * Math.min(1, dt * 3.5);
             const nextP = curP + (state.targetPitch - curP) * Math.min(1, dt * 3.5);
-            const nextB = state.inspectSpin ? (curB + 55 * dt) % 360 : curB;
-            if (typeof m.jumpTo === "function") m.jumpTo({ zoom: nextZ, pitch: nextP, bearing: nextB });
-            if (typeof window.updateDroneCraftOnMap === "function") window.updateDroneCraftOnMap(c.lng, c.lat, nextB, true);
+            const nextB = state.inspectSpin ? (curB + 48 * dt) % 360 : curB;
+            const clampedHold = (!wp.isTransit && !wp.isRth) ? clampPointInsideSector(c.lng, c.lat) : { lng: c.lng, lat: c.lat };
+            if (typeof m.jumpTo === "function") m.jumpTo({ center: [clampedHold.lng, clampedHold.lat], zoom: nextZ, pitch: nextP, bearing: nextB });
+            if (typeof window.updateDroneCraftOnMap === "function") window.updateDroneCraftOnMap(clampedHold.lng, clampedHold.lat, nextB, true);
             tac.reconRaf = requestAnimationFrame(tickRecon);
             return;
           }
@@ -39930,12 +40203,12 @@ if (document.readyState === "loading") {
           const baseSpeed = (wp.isTransit || wp.isRth) ? Math.max(60, Math.min(300, info.dist * 0.25)) : 44;
           const stepM = baseSpeed * state.speedMult * dt;
           let nextLat = c.lat, nextLng = c.lng;
-          if (info.dist <= Math.max(12, stepM)) {
+          if (info.dist <= Math.max(10, stepM)) {
             nextLat = wp.lat; nextLng = wp.lng;
             state.wpIdx++;
-            if (wp.laneTurn && reconCfg.animInspect) {
-              state.targetZoom = 16.55;
-              state.targetPitch = 36;
+            if (wp.laneTurn && (reconCfg.animInspect || state.depthLevel === "minuciosa")) {
+              state.inspectUntil = now + 900;
+              state.inspectSpin = false;
             }
             if (state.wpIdx >= state.waypoints.length) {
               if (state.pattern === "perim" && !state.rthAdded) {
@@ -39968,6 +40241,22 @@ if (document.readyState === "loading") {
             const ratio = stepM / info.dist;
             nextLat = c.lat + (wp.lat - c.lat) * ratio;
             nextLng = c.lng + (wp.lng - c.lng) * ratio;
+          }
+
+          // Contenção estrita: drone nunca sai de dentro da área fixada durante a varredura
+          if (!wp.isTransit && !wp.isRth) {
+            const clamped = clampPointInsideSector(nextLng, nextLat);
+            nextLng = clamped.lng;
+            nextLat = clamped.lat;
+          }
+
+          const bgBar = document.getElementById("azReconBgProgressBar");
+          if (bgBar && bgBar.style.display !== "none" && state.waypoints.length > 0) {
+            const pct = Math.min(99, Math.max(5, Math.round((state.wpIdx / state.waypoints.length) * 100)));
+            const bgTxt = document.getElementById("azReconBgProgressText");
+            const bgFill = document.getElementById("azReconBgFill");
+            if (bgTxt) bgTxt.textContent = `RECON EM ANDAMENTO: ${pct}%`;
+            if (bgFill) bgFill.style.width = pct + "%";
           }
 
           if (typeof window.updateDroneCraftOnMap === "function") {
@@ -40107,7 +40396,7 @@ if (document.readyState === "loading") {
     function setHudCollapsedForPick(collapsed) {
       const hudBar = document.getElementById("azDroneHudBar");
       const confirmBar = document.getElementById("azReconConfirmAreaBar");
-      if (hudBar) hudBar.style.display = collapsed ? "none" : "flex";
+      if (hudBar) hudBar.classList.toggle("is-pick-hidden", Boolean(collapsed));
       if (confirmBar) confirmBar.style.display = collapsed ? "flex" : "none";
     }
 
@@ -40163,8 +40452,92 @@ if (document.readyState === "loading") {
     onClick("azReconConfirmOkBtn", function () {
       setHudCollapsedForPick(false);
       applySmartDepthRecommendation();
-      showToast("Área definida. Escolha a profundidade e clique em INICIAR RECON.");
+      if (!state.abortCtrl) state.abortCtrl = new AbortController();
+      fetchSectorOsmOrOffline(state.abortCtrl.signal).catch(function () {});
+      showToast("Área fixada. Escolha o nível e inicie o reconhecimento.");
     });
+
+    function adjustConfirmSectorScale(deltaMeters, scaleFactor) {
+      if (state.shapeMode === "circle" && state.center) {
+        state.radiusM = Math.max(100, Math.min(3990, state.radiusM + deltaMeters));
+        const mainRad = document.getElementById("azReconRadiusSlider");
+        if (mainRad) mainRad.value = String(state.radiusM);
+        const fRad = document.getElementById("azReconFloatRadius");
+        if (fRad) fRad.value = String(state.radiusM);
+        const valEl = document.getElementById("azReconRadiusVal");
+        const areaStr = getSectorAreaKm2().toFixed(1) + "km²";
+        const rStr = state.radiusM >= 1000 ? (state.radiusM / 1000).toFixed(1) + "km" : state.radiusM + "m";
+        if (valEl) valEl.textContent = `${rStr} (${areaStr})`;
+        const infoEl = document.getElementById("azReconConfirmInfo");
+        if (infoEl) infoEl.textContent = `Raio: ${rStr} (${areaStr})`;
+        drawReconSectorBoundary();
+      } else if (state.shapeMode === "rect" && state.rectCornerA && state.rectCornerB) {
+        const cLng = (state.rectCornerA.lng + state.rectCornerB.lng) / 2;
+        const cLat = (state.rectCornerA.lat + state.rectCornerB.lat) / 2;
+        const nextA = { lng: cLng + (state.rectCornerA.lng - cLng) * scaleFactor, lat: cLat + (state.rectCornerA.lat - cLat) * scaleFactor };
+        const nextB = { lng: cLng + (state.rectCornerB.lng - cLng) * scaleFactor, lat: cLat + (state.rectCornerB.lat - cLat) * scaleFactor };
+        state.rectCornerA = nextA;
+        state.rectCornerB = nextB;
+        if (getSectorAreaKm2() > 50) {
+          const s = Math.sqrt(50 / getSectorAreaKm2());
+          state.rectCornerA = { lng: cLng + (nextA.lng - cLng) * s, lat: cLat + (nextA.lat - cLat) * s };
+          state.rectCornerB = { lng: cLng + (nextB.lng - cLng) * s, lat: cLat + (nextB.lat - cLat) * s };
+        }
+        drawReconSectorBoundary();
+        const infoEl = document.getElementById("azReconConfirmInfo");
+        if (infoEl) infoEl.textContent = `Área: ${getSectorAreaKm2().toFixed(1)} km²`;
+      }
+    }
+    onClick("azReconFloatMinusBtn", function () { adjustConfirmSectorScale(-100, 0.85); });
+    onClick("azReconFloatPlusBtn", function () { adjustConfirmSectorScale(100, 1.15); });
+
+    // Arraste interativo das alças (bolinhas) da geometria no mapa
+    (function bindReconHandleDrag() {
+      const m = getActiveMap();
+      if (!m || typeof m.on !== "function" || m._azReconHandleBound) return;
+      m._azReconHandleBound = true;
+      let dragKind = null;
+      const startDrag = function (ev) {
+        if (!tac.droneMode || tac.droneType !== "recon" || !m.getLayer("az-recon-handles-layer")) return;
+        const feats = m.queryRenderedFeatures(ev.point, { layers: ["az-recon-handles-layer"] });
+        if (!feats || !feats.length) return;
+        dragKind = feats[0].properties && feats[0].properties.handleKind;
+        if (!dragKind) return;
+        if (ev.preventDefault) ev.preventDefault();
+        if (m.dragPan && m.dragPan.disable) m.dragPan.disable();
+      };
+      const moveDrag = function (ev) {
+        if (!dragKind || !ev.lngLat) return;
+        const pt = { lng: ev.lngLat.lng, lat: ev.lngLat.lat };
+        if (dragKind === "center" && state.shapeMode === "circle") {
+          state.center = pt;
+          drawReconSectorBoundary();
+        } else if (dragKind === "radius" && state.shapeMode === "circle" && state.center) {
+          const d = calcDistAndBearing(state.center.lat, state.center.lng, pt.lat, pt.lng).dist;
+          state.radiusM = Math.max(100, Math.min(3990, Math.round(d / 10) * 10));
+          drawReconSectorBoundary();
+          const infoEl = document.getElementById("azReconConfirmInfo");
+          if (infoEl) infoEl.textContent = `Raio: ${state.radiusM}m (${getSectorAreaKm2().toFixed(1)} km²)`;
+        } else if (dragKind === "cornerA" && state.shapeMode === "rect") {
+          state.rectCornerA = pt;
+          drawReconSectorBoundary();
+        } else if (dragKind === "cornerB" && state.shapeMode === "rect") {
+          state.rectCornerB = pt;
+          drawReconSectorBoundary();
+        }
+      };
+      const endDrag = function () {
+        if (!dragKind) return;
+        dragKind = null;
+        if (m.dragPan && m.dragPan.enable && !tac.mapLocked) m.dragPan.enable();
+      };
+      m.on("mousedown", startDrag);
+      m.on("touchstart", startDrag);
+      m.on("mousemove", moveDrag);
+      m.on("touchmove", moveDrag);
+      m.on("mouseup", endDrag);
+      m.on("touchend", endDrag);
+    })();
 
     const floatRad = document.getElementById("azReconFloatRadius");
     if (floatRad) {
@@ -40182,15 +40555,53 @@ if (document.readyState === "loading") {
       });
     }
 
+    const execModeSelEl = document.getElementById("azReconExecModeSelect");
+    if (execModeSelEl) {
+      execModeSelEl.addEventListener("change", function () {
+        const nextMode = this.value || "live";
+        state.execMode = nextMode;
+        const bgBar = document.getElementById("azReconBgProgressBar");
+        if (tac.reconRaf && nextMode === "bg") {
+          setHudCollapsedForPick(true);
+          const confirmBar = document.getElementById("azReconConfirmAreaBar");
+          if (confirmBar) confirmBar.style.display = "none";
+          if (bgBar) bgBar.style.display = "flex";
+        } else if (nextMode === "live" && tac.reconRaf) {
+          setHudCollapsedForPick(false);
+          if (bgBar) bgBar.style.display = "none";
+        }
+      });
+    }
+
+    const DEPTH_DESCRIPTIONS = {
+      superficial: "Superficial: visão geral rápida de vias principais, clima e área.",
+      tatica: "Detalhada: análise intermediária de vias, becos, sem saída e cerco.",
+      minuciosa: "Minuciosa: leitura aprofundada com paradas de inspeção e raio-X."
+    };
     document.querySelectorAll("[data-recon-depth]").forEach(function (btn) {
       btn.addEventListener("click", function () {
         const lvl = btn.getAttribute("data-recon-depth") || "tatica";
         state.depthManualOverride = true;
         state.depthLevel = lvl;
         applyDepthPresetToCriteria(lvl);
+        const descEl = document.getElementById("azReconDepthDesc");
+        if (descEl) descEl.textContent = DEPTH_DESCRIPTIONS[lvl] || DEPTH_DESCRIPTIONS.tatica;
         if (lvl === "minuciosa" && getSectorAreaKm2() > 5.0) {
           showToast("Atenção: área > 5 km² no modo Minucioso pode levar mais tempo.");
         }
+      });
+    });
+
+    document.querySelectorAll("[data-recon-speed]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        const sp = Number(btn.getAttribute("data-recon-speed")) || 1;
+        state.speedMult = sp;
+        const lbl = document.getElementById("azReconSpeedLabel");
+        if (lbl) lbl.textContent = sp + "x";
+        document.querySelectorAll("[data-recon-speed]").forEach(function (b) {
+          b.classList.toggle("is-active", Number(b.getAttribute("data-recon-speed")) === sp);
+        });
+        updateReconEtaEstimate();
       });
     });
 
