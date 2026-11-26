@@ -37910,6 +37910,41 @@ if (document.readyState === "loading") {
     updateDroneStickAxisLabels();
   }
 
+  let _azGamepadActive = false;
+  function readGamepadAxesWithDeadzone() {
+    try {
+      if (typeof navigator === "undefined" || typeof navigator.getGamepads !== "function") return null;
+      const pads = navigator.getGamepads();
+      if (!pads) return null;
+      for (let i = 0; i < pads.length; i++) {
+        const gp = pads[i];
+        if (!gp || !gp.connected || !gp.axes || gp.axes.length < 2) continue;
+        const dz = function (v) {
+          const n = Number(v) || 0;
+          if (Math.abs(n) < 0.12) return 0;
+          return Math.sign(n) * ((Math.abs(n) - 0.12) / 0.88);
+        };
+        return {
+          lx: dz(gp.axes[0]),
+          ly: dz(gp.axes[1]),
+          rx: gp.axes.length > 2 ? dz(gp.axes[2]) : 0,
+          ry: gp.axes.length > 3 ? dz(gp.axes[3]) : 0
+        };
+      }
+    } catch (_) {}
+    return null;
+  }
+  if (typeof window !== "undefined" && typeof window.addEventListener === "function") {
+    window.addEventListener("gamepadconnected", function () {
+      _azGamepadActive = true;
+      if (tac.droneMode) showToast("Controle Gamepad conectado ao Modo Drone.");
+    });
+    window.addEventListener("gamepaddisconnected", function () {
+      _azGamepadActive = false;
+      if (tac.droneMode) showToast("Controle Gamepad desconectado.");
+    });
+  }
+
   function stepDroneFlightLoop() {
     if (tac.droneRaf) {
       cancelAnimationFrame(tac.droneRaf);
@@ -37917,6 +37952,9 @@ if (document.readyState === "loading") {
     }
     if (!tac.droneMode || !tac.droneFreeFlight) return;
     let lastTs = performance.now();
+    const knobL = document.getElementById("azDroneKnobLeft");
+    const knobR = document.getElementById("azDroneKnobRight");
+    let wasGpMoving = false;
     function tick(now) {
       if (!tac.droneMode || !tac.droneFreeFlight) {
         tac.droneRaf = 0;
@@ -37925,10 +37963,32 @@ if (document.readyState === "loading") {
       const dt = Math.min(0.08, Math.max(0, (now - lastTs) / 1000));
       lastTs = now;
       const curveStick = function (v) { return Math.sign(v) * Math.pow(Math.abs(v), 1.22); };
-      const lx = curveStick(droneSticks.leftX);
-      const ly = curveStick(droneSticks.leftY);
-      const rx = curveStick(droneSticks.rightX);
-      const ry = curveStick(droneSticks.rightY);
+      const gpAxes = readGamepadAxesWithDeadzone();
+      let rawLx = droneSticks.leftX;
+      let rawLy = droneSticks.leftY;
+      let rawRx = droneSticks.rightX;
+      let rawRy = droneSticks.rightY;
+      const touchIdle = Math.abs(rawLx) < 0.01 && Math.abs(rawLy) < 0.01 && Math.abs(rawRx) < 0.01 && Math.abs(rawRy) < 0.01;
+      if (gpAxes && touchIdle) {
+        const gpMoving = Math.abs(gpAxes.lx) > 0 || Math.abs(gpAxes.ly) > 0 || Math.abs(gpAxes.rx) > 0 || Math.abs(gpAxes.ry) > 0;
+        if (gpMoving || wasGpMoving) {
+          rawLx = gpAxes.lx;
+          rawLy = gpAxes.ly;
+          rawRx = gpAxes.rx;
+          rawRy = gpAxes.ry;
+          if (knobL) knobL.style.transform = `translate(${(rawLx * 24).toFixed(1)}px, ${(rawLy * 24).toFixed(1)}px)`;
+          if (knobR) knobR.style.transform = `translate(${(rawRx * 24).toFixed(1)}px, ${(rawRy * 24).toFixed(1)}px)`;
+          wasGpMoving = gpMoving;
+        }
+      } else if (wasGpMoving) {
+        if (knobL) knobL.style.transform = "";
+        if (knobR) knobR.style.transform = "";
+        wasGpMoving = false;
+      }
+      const lx = curveStick(rawLx);
+      const ly = curveStick(rawLy);
+      const rx = curveStick(rawRx);
+      const ry = curveStick(rawRy);
       if (Math.abs(lx) > 0.005 || Math.abs(ly) > 0.005 || Math.abs(rx) > 0.005 || Math.abs(ry) > 0.005) {
         if (tac._orbitActive) stopMapOrbit(false);
         const m = getActiveMap();
