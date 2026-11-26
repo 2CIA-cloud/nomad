@@ -11656,6 +11656,32 @@
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
+        // Reproduz feedback de áudio meteorológico (Mavic 3 / RPAS) sem sobreposição e respeitando mudo
+        window.playDroneWeatherAudio = function(isFavorable) {
+            try {
+                const stealthBtn = document.getElementById('azHudStealthBtn');
+                const isMuted = Boolean(
+                    (window.azimuteTacState && window.azimuteTacState.stealthSilent) ||
+                    (stealthBtn && stealthBtn.classList.contains('is-active')) ||
+                    localStorage.getItem('az_stealth_silent') === '1'
+                );
+                if (isMuted) return;
+                if (window._azRpasWeatherAudio) {
+                    try {
+                        window._azRpasWeatherAudio.pause();
+                        window._azRpasWeatherAudio.currentTime = 0;
+                    } catch (_) {}
+                }
+                const src = isFavorable
+                    ? 'audio/jarvis/condicoes-meteorologicas-favoraveis.mp3'
+                    : 'audio/jarvis/alerta-meteorologico-rajadas-vento.mp3';
+                const audio = new Audio(src);
+                window._azRpasWeatherAudio = audio;
+                const p = audio.play();
+                if (p && typeof p.catch === 'function') p.catch(function() {});
+            } catch (_) {}
+        };
+
         // Busca clima de alta confiabilidade e atualização em tempo real (Open-Meteo API com vento 10m/80m, rajadas, precipitação e visibilidade)
         window.evaluateRpasFlightConditions = async function(isManualTrigger) {
             const spinner = document.getElementById('rpasSyncSpinnerIcon');
@@ -11758,6 +11784,17 @@
 
                 azimuteRpasLastWeatherSnapshot = newSnapshot;
                 renderRpasEvaluationResult(newSnapshot, !isManualTrigger);
+
+                try {
+                    const selectedRpaAudio = typeof window.getSelectedRpasAircraft === 'function' ? window.getSelectedRpasAircraft() : null;
+                    const singleEvalAudio = typeof window.evaluateSingleRpasAgainstSnapshot === 'function'
+                        ? window.evaluateSingleRpasAgainstSnapshot(selectedRpaAudio, newSnapshot)
+                        : { reasons: [] };
+                    const isFavorableWeather = (!singleEvalAudio || !singleEvalAudio.reasons || singleEvalAudio.reasons.length === 0) && alertReasons.length === 0;
+                    if (typeof window.playDroneWeatherAudio === 'function') {
+                        window.playDroneWeatherAudio(isFavorableWeather);
+                    }
+                } catch (_) {}
 
                 const viewRpas = document.getElementById('view-rpas');
                 if (viewRpas && !viewRpas.classList.contains('hidden') && alertReasons.length > 0) {
@@ -19032,10 +19069,10 @@ if (window.__azimuteGeoInitialized) {
               source: "az-sat-src",
               paint: {
                 "raster-opacity": 1,
-                "raster-contrast": 0.14,
-                "raster-saturation": 0.08,
-                "raster-brightness-min": 0.02,
-                "raster-brightness-max": 0.96,
+                "raster-contrast": 0.22,
+                "raster-saturation": 0.14,
+                "raster-brightness-min": 0.03,
+                "raster-brightness-max": 0.94,
                 "raster-fade-duration": 0
               }
             },
@@ -19133,6 +19170,22 @@ if (window.__azimuteGeoInitialized) {
               }
             } catch (e) {}
           }
+        }
+      } else if (isSat && layer.type === "line") {
+        if (srcLayer.includes("transportation") || id.includes("road") || id.includes("street") || id.includes("highway")) {
+          try {
+            if (id.includes("casing")) {
+              targetMap.setPaintProperty(layer.id, "line-color", "#080808");
+              targetMap.setPaintProperty(layer.id, "line-opacity", 0.85);
+            } else if (id.includes("motorway") || id.includes("trunk") || id.includes("primary")) {
+              targetMap.setPaintProperty(layer.id, "line-color", "#FBBF24");
+              targetMap.setPaintProperty(layer.id, "line-opacity", 0.92);
+              targetMap.setPaintProperty(layer.id, "line-width", ["interpolate", ["linear"], ["zoom"], 11, 2.2, 15, 4.2, 18, 6.2]);
+            } else {
+              targetMap.setPaintProperty(layer.id, "line-color", "#F8FAFC");
+              targetMap.setPaintProperty(layer.id, "line-opacity", 0.72);
+            }
+          } catch (e) {}
         }
       } else if (!isSat && layer.type === "line") {
         if (srcLayer.includes("transportation") || id.includes("road") || id.includes("street") || id.includes("highway")) {
@@ -27459,20 +27512,20 @@ if (document.readyState === "loading") {
           source: srcId,
           paint: {
             "raster-opacity": 0.98,
-            "raster-contrast": 0.14,
-            "raster-saturation": 0.08,
-            "raster-brightness-min": 0.02,
-            "raster-brightness-max": 0.96,
+            "raster-contrast": 0.22,
+            "raster-saturation": 0.14,
+            "raster-brightness-min": 0.03,
+            "raster-brightness-max": 0.94,
             "raster-fade-duration": 0
           }
         }, sym ? sym.id : undefined);
       } else {
         map.setLayoutProperty(layerId, "visibility", "visible");
         map.setPaintProperty(layerId, "raster-opacity", 0.98);
-        map.setPaintProperty(layerId, "raster-contrast", 0.14);
-        map.setPaintProperty(layerId, "raster-saturation", 0.08);
-        map.setPaintProperty(layerId, "raster-brightness-min", 0.02);
-        map.setPaintProperty(layerId, "raster-brightness-max", 0.96);
+        map.setPaintProperty(layerId, "raster-contrast", 0.22);
+        map.setPaintProperty(layerId, "raster-saturation", 0.14);
+        map.setPaintProperty(layerId, "raster-brightness-min", 0.03);
+        map.setPaintProperty(layerId, "raster-brightness-max", 0.94);
         map.setPaintProperty(layerId, "raster-fade-duration", 0);
       }
       // Camada raster de rótulos borrados desativada: mantém exclusivamente rótulos vetoriais nítidos da GPU
@@ -27498,11 +27551,27 @@ if (document.readyState === "loading") {
       const style = m.getStyle && m.getStyle();
       if (style && Array.isArray(style.layers)) {
         style.layers.forEach(function (layer) {
+          const lid = (layer.id || "").toLowerCase();
+          const sLayer = (layer["source-layer"] || "").toLowerCase();
           if (layer.type === "symbol" && layer.id !== "az-local-hosp-h") {
             try {
               m.setPaintProperty(layer.id, "text-color", tac.satMode ? "#FFFFFF" : "#000000");
               m.setPaintProperty(layer.id, "text-halo-color", tac.satMode ? "#000000" : "#FFFFFF");
-              m.setPaintProperty(layer.id, "text-halo-width", 3.4);
+              m.setPaintProperty(layer.id, "text-halo-width", 2.8);
+              m.setPaintProperty(layer.id, "text-halo-blur", 0);
+            } catch (_) {}
+          } else if (tac.satMode && layer.type === "line" && (sLayer.includes("transportation") || lid.includes("road") || lid.includes("street") || lid.includes("highway"))) {
+            try {
+              if (lid.includes("casing")) {
+                m.setPaintProperty(layer.id, "line-color", "#080808");
+                m.setPaintProperty(layer.id, "line-opacity", 0.85);
+              } else if (lid.includes("motorway") || lid.includes("trunk") || lid.includes("primary")) {
+                m.setPaintProperty(layer.id, "line-color", "#FBBF24");
+                m.setPaintProperty(layer.id, "line-opacity", 0.92);
+              } else {
+                m.setPaintProperty(layer.id, "line-color", "#F8FAFC");
+                m.setPaintProperty(layer.id, "line-opacity", 0.72);
+              }
             } catch (_) {}
           }
         });
