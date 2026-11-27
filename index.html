@@ -2913,14 +2913,6 @@
         </div>
       </div>
       <div class="az-geo-cfg-row">
-        <span class="az-geo-label">Tema Geral do App:</span>
-        <div class="az-geo-group" id="azGeoAccentColorGroup">
-          <button type="button" class="az-geo-btn active" data-map-accent="#C5A869" style="display:inline-flex;align-items:center;gap:6px;"><span style="width:12px;height:12px;border-radius:3px;background:#C5A869;border:1px solid #0D0D0D;display:inline-block;"></span>Dourado</button>
-          <button type="button" class="az-geo-btn subtle" data-map-accent="#6B7F54" style="display:inline-flex;align-items:center;gap:6px;"><span style="width:12px;height:12px;border-radius:3px;background:#6B7F54;border:1px solid #0D0D0D;display:inline-block;"></span>Verde Militar</button>
-          <button type="button" class="az-geo-btn subtle" data-map-accent="#9CA3AF" style="display:inline-flex;align-items:center;gap:6px;"><span style="width:12px;height:12px;border-radius:3px;background:#9CA3AF;border:1px solid #0D0D0D;display:inline-block;"></span>Cinza</button>
-        </div>
-      </div>
-      <div class="az-geo-cfg-row">
         <span class="az-geo-label">Cor da Seta:</span>
         <div class="az-geo-group" id="azGeoArrowColors">
           <button type="button" class="az-geo-swatch is-selected" data-color="#C5A869" style="background:#C5A869;" aria-label="Caqui"></button>
@@ -3109,7 +3101,7 @@
                         <div class="flex items-center gap-2 flex-wrap">
                             <span id="hudGpsBadge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-extrabold uppercase bg-emerald-950 text-emerald-400 border border-emerald-500/50">
                                 <span id="hudGpsDot" class="w-2.5 h-2.5 rounded-full bg-emerald-400 inline-block shadow-[0_0_8px_#34d399]"></span>
-                                <span id="hudGpsStatusText">GPS Online</span>
+                                <span id="hudGpsStatusText">GPS</span>
                             </span>
                             <span id="hudGpsAccuracy" class="text-xs font-mono bg-pmmg-dark px-2.5 py-1 rounded-lg border border-pmmg-border text-pmmg-khaki">Precisão: ±--m</span>
                             <span id="hudAltitudeQuickBadge" class="text-xs font-mono bg-pmmg-dark px-2.5 py-1 rounded-lg border border-pmmg-border text-pmmg-gold">Altitude: -- m</span>
@@ -3139,24 +3131,18 @@
                     </div>
                 </div>
 
-                <!-- BOTÃO LATERAL DE ROLAGEM RÁPIDA NA ABA GEOLOCALIZAÇÃO -->
-                <button type="button" id="azGeoQuickScrollSideBtn" onclick="toggleAzGeoQuickScroll()" class="fixed right-2 top-1/2 -translate-y-1/2 z-[900] w-9 h-12 rounded-xl bg-pmmg-dark/95 hover:bg-pmmg-card text-pmmg-khaki border border-pmmg-gold/70 shadow-2xl flex flex-col items-center justify-center gap-0.5 cursor-pointer" title="Rolar página para baixo / cima">
-                    <i data-lucide="chevrons-down" id="azGeoQuickScrollIcon" class="w-4 h-4 text-pmmg-gold"></i>
-                    <span id="azGeoQuickScrollLbl" class="text-[8px] font-extrabold uppercase">Descer</span>
-                </button>
-
-                <!-- 1. CAIXA "CLIMA LOCAL" (FECHADA POR PADRÃO, COM CONDIÇÃO E TEMPERATURA ABAIXO À DIREITA, SEM RÓTULOS EXTRAS) -->
-                <div id="localWeatherSummaryCard" class="bg-pmmg-card/90 backdrop-blur-sm border border-sky-500/45 rounded-2xl overflow-hidden shadow-xl transition-all">
+                <!-- 1. CAIXA "CLIMA LOCAL" (SEM BLUR E DESTAQUE #C5A869) -->
+                <div id="localWeatherSummaryCard" class="bg-pmmg-card border border-pmmg-gold/45 rounded-2xl overflow-hidden transition-all">
                     <button type="button" onclick="toggleGeoWeatherBox()" id="btnToggleGeoWeatherBox" class="w-full p-4 sm:p-5 flex items-center justify-between gap-3 text-left hover:bg-pmmg-cardHover transition-all cursor-pointer">
                         <div class="flex items-center gap-2.5">
-                            <div class="p-2 rounded-lg bg-sky-950 text-sky-400 border border-sky-500/40 shrink-0">
+                            <div class="p-2 rounded-lg bg-pmmg-dark text-pmmg-gold border border-pmmg-gold/40 shrink-0">
                                 <i data-lucide="cloud-sun" class="w-5 h-5"></i>
                             </div>
                             <h3 class="text-xl font-military text-white uppercase tracking-wide leading-none">CLIMA LOCAL</h3>
                         </div>
                         <div class="flex items-center gap-3 shrink-0">
                             <div class="text-right leading-tight">
-                                <span id="localClimateHeaderCond" class="text-xs font-extrabold text-sky-300 block leading-tight">Sob demanda</span>
+                                <span id="localClimateHeaderCond" class="text-xs font-extrabold text-pmmg-gold block leading-tight">Sob demanda</span>
                                 <span id="localClimateHeaderTemp" class="text-xs font-mono font-extrabold text-white block leading-tight mt-0.5">-- °C</span>
                             </div>
                             <i data-lucide="chevron-down" id="iconGeoWeatherChevron" class="w-4 h-4 text-pmmg-gold transition-transform duration-200"></i>
@@ -3166,15 +3152,15 @@
                     <div id="localWeatherExpandableBody" class="hidden p-4 sm:p-5 pt-3 border-t border-pmmg-border space-y-3">
                         <div class="grid grid-cols-3 gap-2.5 text-xs">
                             <div class="bg-pmmg-dark p-2.5 rounded-lg border border-pmmg-border">
-                                <span class="text-[10px] text-gray-400 uppercase font-bold block">Temperatura</span>
+                                <span class="text-[11px] text-gray-400 uppercase font-bold block">Temperatura</span>
                                 <strong id="localClimateTemp" class="text-sm sm:text-base font-mono text-white font-extrabold block mt-0.5">-- °C</strong>
                             </div>
                             <div class="bg-pmmg-dark p-2.5 rounded-lg border border-pmmg-border">
-                                <span class="text-[10px] text-gray-400 uppercase font-bold block">Condição</span>
-                                <strong id="localClimateCond" class="text-xs sm:text-sm text-sky-300 font-bold block mt-0.5 truncate">--</strong>
+                                <span class="text-[11px] text-gray-400 uppercase font-bold block">Condição</span>
+                                <strong id="localClimateCond" class="text-xs sm:text-sm text-pmmg-gold font-bold block mt-0.5 truncate">--</strong>
                             </div>
                             <div class="bg-pmmg-dark p-2.5 rounded-lg border border-pmmg-border">
-                                <span class="text-[10px] text-gray-400 uppercase font-bold block">Vento</span>
+                                <span class="text-[11px] text-gray-400 uppercase font-bold block">Vento</span>
                                 <strong id="localClimateWind" class="text-sm sm:text-base font-mono text-white font-extrabold block mt-0.5">-- km/h</strong>
                             </div>
                         </div>
@@ -3183,7 +3169,7 @@
                                 <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
                                 <span>Buscar Clima Agora</span>
                             </button>
-                            <button type="button" onclick="openGeoWeatherSubpage()" class="px-3 py-1.5 rounded-lg bg-sky-950/90 hover:bg-sky-800 text-sky-300 border border-sky-500/50 text-xs font-extrabold flex items-center gap-1.5 transition-all cursor-pointer">
+                            <button type="button" onclick="openGeoWeatherSubpage()" class="px-3 py-1.5 rounded-lg bg-pmmg-dark hover:bg-pmmg-border text-pmmg-gold border border-pmmg-gold/60 text-xs font-extrabold flex items-center gap-1.5 transition-all cursor-pointer">
                                 <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
                                 <span>Previsão Horária e 7 Dias</span>
                             </button>
@@ -3461,22 +3447,7 @@
         </section>
 
         <!-- ================= VIEW 1: HOME (PAINEL INICIAL) ================= -->
-        <section id="view-home" class="azimute-active-view flex flex-col gap-4" style="position:relative;overflow:hidden;">
-            <!-- Contorno subliminar de operador (capacete/NVG/colete sem caveiras, 60fps) -->
-            <div aria-hidden="true" style="position:absolute;right:-8px;bottom:8px;width:230px;height:280px;opacity:0.08;pointer-events:none;contain:layout paint;z-index:0;">
-              <svg viewBox="0 0 220 280" width="230" height="280" fill="none" stroke="#C5A869" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M72 68c0-26 17-42 38-42s38 16 38 42v14c0 10-6 18-14 22l-4 12H90l-4-12c-8-4-14-12-14-22V68z" fill="#161616"/>
-                <path d="M84 44h52M92 32h36" stroke-opacity="0.7"/>
-                <rect x="64" y="64" width="12" height="26" rx="4" fill="#0D0D0D"/>
-                <rect x="144" y="64" width="12" height="26" rx="4" fill="#0D0D0D"/>
-                <path d="M96 56h28v14H96z" fill="#0D0D0D"/>
-                <circle cx="94" cy="74" r="7" fill="#0D0D0D"/><circle cx="110" cy="74" r="7" fill="#0D0D0D"/><circle cx="126" cy="74" r="7" fill="#0D0D0D"/>
-                <path d="M52 132c8-12 22-18 38-18h40c16 0 30 6 38 18l18 46-20 12-12-30v96H66v-96l-12 30-20-12 18-46z" fill="#161616"/>
-                <rect x="78" y="138" width="64" height="54" rx="4" stroke-opacity="0.85"/>
-                <rect x="82" y="198" width="16" height="32" rx="2"/><rect x="102" y="198" width="16" height="32" rx="2"/><rect x="122" y="198" width="16" height="32" rx="2"/>
-                <path d="M78 156h64M78 172h64" stroke-opacity="0.5"/>
-              </svg>
-            </div>
+        <section id="view-home" class="azimute-active-view flex flex-col gap-4">
             <!-- SLOT DINÂMICO DA CAIXA DE PESQUISA NA TELA INICIAL -->
             <div id="homeSearchBlockSlot" class="max-w-7xl w-full mx-auto"></div>
 
@@ -7333,8 +7304,8 @@
 
                         <!-- 2. ASSISTENTE REDS -->
                         <a href="https://chatgpt.com/g/g-68a72c60b49081918fe5a2dbb207baae-policial-assistente-reds-pmmg" target="_blank" rel="noopener noreferrer" class="bg-[#0D0D0D] p-4 rounded-xl border border-[#C5A869]/40 hover:border-[#C5A869] flex items-center justify-between group transition-all">
-                            <span class="text-xl sm:text-2xl font-military text-emerald-400 font-bold uppercase group-hover:text-white transition-colors">ASSISTENTE REDS</span>
-                            <div class="p-2.5 bg-[#161616] text-emerald-400 border border-pmmg-border rounded-lg group-hover:border-[#C5A869] transition-colors shrink-0">
+                            <span class="text-xl sm:text-2xl font-military text-pmmg-gold font-bold uppercase group-hover:text-white transition-colors">ASSISTENTE REDS</span>
+                            <div class="p-2.5 bg-[#161616] text-pmmg-gold border border-pmmg-border rounded-lg group-hover:border-[#C5A869] transition-colors shrink-0">
                                 <i data-lucide="pen-tool" class="w-5 h-5"></i>
                             </div>
                         </a>
@@ -7404,8 +7375,8 @@
 
                         <!-- 5º EMENTÁRIO -->
                         <a href="https://ementario.policiamilitar.mg.gov.br/principal" target="_blank" rel="noopener noreferrer" class="bg-[#0D0D0D] p-4 rounded-xl border border-[#C5A869]/40 hover:border-[#C5A869] flex items-center justify-between group transition-all">
-                            <span class="text-xl sm:text-2xl font-military text-white font-bold uppercase group-hover:text-emerald-400 transition-colors">EMENTÁRIO</span>
-                            <div class="p-2.5 bg-[#161616] text-emerald-400 border border-pmmg-border rounded-lg group-hover:border-[#C5A869] transition-colors shrink-0">
+                            <span class="text-xl sm:text-2xl font-military text-white font-bold uppercase group-hover:text-pmmg-gold transition-colors">EMENTÁRIO</span>
+                            <div class="p-2.5 bg-[#161616] text-pmmg-gold border border-pmmg-border rounded-lg group-hover:border-[#C5A869] transition-colors shrink-0">
                                 <i data-lucide="book-open" class="w-5 h-5"></i>
                             </div>
                         </a>
@@ -7601,9 +7572,9 @@
                         <h3 class="text-lg sm:text-xl font-military text-pmmg-khaki uppercase tracking-wider leading-none">RMBH — ESPECIALIZADAS</h3>
                         <span class="text-[11px] font-mono font-bold text-pmmg-gold bg-pmmg-dark px-2 py-0.5 rounded border border-pmmg-gold/40">Especializadas • 1ª • 2ª • 3ª RPM</span>
                     </div>
-                    <i data-lucide="chevron-down" id="rmbhChevron" class="w-4 h-4 text-pmmg-gold transition-transform"></i>
+                    <i data-lucide="chevron-down" id="rmbhChevron" class="w-4 h-4 text-pmmg-gold transition-transform" style="transform:rotate(180deg);"></i>
                 </button>
-                <div id="rmbhUnitsBody" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-pmmg-border">
+                <div id="rmbhUnitsBody" class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-pmmg-border">
                     <!-- Cobertura Especializadas RMBH -->
                     <div onclick="showView('especializadas')" class="bg-pmmg-card p-4 rounded-xl border border-pmmg-gold/50 cursor-pointer group flex flex-col justify-between space-y-2.5">
                         <div class="space-y-1">
@@ -10462,10 +10433,10 @@
             if (isOnline && navigator.onLine !== false) {
                 if (badge) badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-extrabold uppercase bg-emerald-950 text-emerald-400 border border-emerald-500/50';
                 if (dot) dot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-400 inline-block shadow-[0_0_8px_#34d399]';
-                if (txt) txt.textContent = customLabel || 'GPS Online';
+                if (txt) txt.textContent = customLabel || 'GPS';
                 if (hBadge) hBadge.className = 'inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-emerald-950 text-emerald-400 border border-emerald-500/50';
                 if (hDot) hDot.className = 'w-2 h-2 rounded-full bg-emerald-400 inline-block shadow-[0_0_6px_#34d399]';
-                if (hTxt) hTxt.textContent = 'GPS Online';
+                if (hTxt) hTxt.textContent = 'GPS';
 
                 if (typeof accuracyMeters === 'number') {
                     setStatusBarGpsSignal(accuracyMeters <= 30 ? 'green' : 'yellow');
@@ -13467,7 +13438,7 @@
         }
 
         window.addEventListener('online', () => {
-            setGpsOnlineState(true, 'GPS Online');
+            setGpsOnlineState(true, 'GPS');
             azimuteLastLookupTime = 0;
             startAzimuteLiveGps();
         });
@@ -15921,7 +15892,20 @@ if (viewId === 'gps' && window.azimuteGeoInvalidate) window.azimuteGeoInvalidate
                 target.classList.add('app-screen-animate');
             }
             if (viewId === 'gps' && typeof initAzimuteGeo === 'function') {
-                setTimeout(initAzimuteGeo, 30);
+                setTimeout(function () {
+                    initAzimuteGeo();
+                    ['azGeoLayersBox', 'azGeoMunBox', 'azGeoCfgBox', 'azGeoRouteBox'].forEach(function (bid) {
+                        const bx = document.getElementById(bid);
+                        if (bx) bx.classList.remove('is-open');
+                    });
+                    const gm = window.azGeoMap;
+                    const tPos = window.azimuteTacState && window.azimuteTacState.myPos;
+                    const latC = (tPos && typeof tPos.lat === 'number') ? tPos.lat : (typeof azimuteLastGeoLat === 'number' ? azimuteLastGeoLat : null);
+                    const lngC = (tPos && typeof tPos.lng === 'number') ? tPos.lng : (typeof azimuteLastGeoLon === 'number' ? azimuteLastGeoLon : null);
+                    if (gm && latC !== null && lngC !== null && typeof gm.jumpTo === 'function') {
+                        gm.jumpTo({ center: [lngC, latC], zoom: Math.max(gm.getZoom ? gm.getZoom() : 14, 15.2) });
+                    }
+                }, 30);
             }
 
             const isRegiaoSub = ['regioes', 'rpm1', 'rpm2', 'rpm3', '18bpm', 'skeleton', 'especializadas'].includes(viewId);
@@ -19723,6 +19707,14 @@ if (window.__azimuteGeoInitialized) {
     }));
 
     map.getSource("az-local-src").setData({ type: "FeatureCollection", features });
+    ["az-local-circles", "az-local-hosp-circles", "az-local-hosp-h", "az-local-labels"].forEach((lid) => {
+      try {
+        if (map.getLayer(lid)) {
+          map.setLayoutProperty(lid, "visibility", "visible");
+          map.moveLayer(lid);
+        }
+      } catch (_) {}
+    });
   }
 
   function mergeBucketsIntoDatasets(buckets) {
@@ -19825,7 +19817,7 @@ if (window.__azimuteGeoInitialized) {
       badge.innerHTML = `<span class="az-quad-pulse-dot" style="background:#F87171;"></span><span>${text || "Reconectando..."}</span>`;
     } else {
       badge.className = "az-quad-inline-hint";
-      badge.textContent = text || "ESPECTRO";
+      badge.textContent = text || "PRONTO";
     }
   }
 
@@ -24223,9 +24215,9 @@ if (document.readyState === "loading") {
     transition: transform 130ms cubic-bezier(0.22, 1, 0.36, 1), opacity 110ms ease;
   }
   .az-radial-slice { cursor: pointer; transition: fill 90ms ease; }
-  .az-radial-slice path.az-slice-bg { fill: rgba(13, 13, 13, 0.94); stroke: rgba(197, 168, 105, 0.34); stroke-width: 1.2; }
+  .az-radial-slice path.az-slice-bg { fill: #0D0D0D; fill-opacity: 1; stroke: rgba(197, 168, 105, 0.36); stroke-width: 1.2; }
   .az-radial-slice:hover path.az-slice-bg,
-  .az-radial-slice:active path.az-slice-bg { fill: rgba(197, 168, 105, 0.24); stroke: #C5A869; stroke-width: 1.8; }
+  .az-radial-slice:active path.az-slice-bg { fill: #161616; fill-opacity: 1; stroke: #C5A869; stroke-width: 2; }
   .az-radial-center-btn { cursor: pointer; }
   .az-radial-center-btn circle { fill: #161616; stroke: #C5A869; stroke-width: 1.8; }
   .az-radial-center-btn:hover circle, .az-radial-center-btn:active circle { fill: #26231C; }
@@ -25156,9 +25148,9 @@ if (document.readyState === "loading") {
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45) !important;
   }
   body.az-perf-noblur #azGeoCenterFab.is-heading-up {
-    background-color: rgba(37, 99, 235, 0.94) !important;
-    color: #FFFFFF !important;
-    border-color: #93C5FD !important;
+    background-color: #C5A869 !important;
+    color: #0D0D0D !important;
+    border-color: #C5A869 !important;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45) !important;
   }
 
@@ -25296,43 +25288,17 @@ if (document.readyState === "loading") {
     color: #0D0D0D !important;
     font-weight: 900 !important;
   }
-  /* Tema Geral Dinâmico (Dourado #C5A869, Verde Militar #6B7F54, Cinza #9CA3AF) — 60fps sem blur */
-  :root {
-    --az-theme-accent: #C5A869;
-    --az-theme-accent-dim: rgba(197, 168, 105, 0.38);
-    --az-theme-surface: #161616;
+  /* Padronização de Fontes (#view-home, APH #view-saude, #estadios-lobby-screen) + Dock sempre completo fora do modo full */
+  #azAtakRightDock.is-open {
+    display: flex !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    z-index: 100090 !important;
   }
-  body.az-theme-olive {
-    --az-theme-accent: #6B7F54;
-    --az-theme-accent-dim: rgba(107, 127, 84, 0.42);
-    --az-theme-surface: #141812;
-  }
-  body.az-theme-gray {
-    --az-theme-accent: #9CA3AF;
-    --az-theme-accent-dim: rgba(156, 163, 175, 0.38);
-    --az-theme-surface: #16181C;
-  }
-  body.az-theme-olive .text-pmmg-khaki, body.az-theme-olive .text-pmmg-gold,
-  body.az-theme-gray .text-pmmg-khaki, body.az-theme-gray .text-pmmg-gold { color: var(--az-theme-accent) !important; }
-  body.az-theme-olive .bg-pmmg-khaki, body.az-theme-gray .bg-pmmg-khaki { background-color: var(--az-theme-accent) !important; }
-  body.az-theme-olive .border-pmmg-gold, body.az-theme-olive .border-pmmg-khaki,
-  body.az-theme-gray .border-pmmg-gold, body.az-theme-gray .border-pmmg-khaki { border-color: var(--az-theme-accent-dim) !important; }
-  body.az-theme-olive .bg-pmmg-dark, body.az-theme-olive .bg-pmmg-card,
-  body.az-theme-gray .bg-pmmg-dark, body.az-theme-gray .bg-pmmg-card { background-color: var(--az-theme-surface) !important; }
-  body.az-theme-olive #azGeoCfgBox, body.az-theme-olive #azGeoLayersBox, body.az-theme-olive #azGeoMunBox,
-  body.az-theme-olive #azAtakDrawer, body.az-theme-olive #azDroneHudBar, body.az-theme-olive #azAtakHamburgerBtn,
-  body.az-theme-gray #azGeoCfgBox, body.az-theme-gray #azGeoLayersBox, body.az-theme-gray #azGeoMunBox,
-  body.az-theme-gray #azAtakDrawer, body.az-theme-gray #azDroneHudBar, body.az-theme-gray #azAtakHamburgerBtn {
-    border-color: var(--az-theme-accent) !important;
-  }
-  body.az-theme-olive .az-geo-label, body.az-theme-olive .az-recon-step-head,
-  body.az-theme-gray .az-geo-label, body.az-theme-gray .az-recon-step-head { color: var(--az-theme-accent) !important; }
-  body.az-theme-olive .az-geo-btn.active, body.az-theme-olive .az-atak-tool-btn.is-active, body.az-theme-olive .az-drone-pill-btn.is-active,
-  body.az-theme-gray .az-geo-btn.active, body.az-theme-gray .az-atak-tool-btn.is-active, body.az-theme-gray .az-drone-pill-btn.is-active {
-    background-color: var(--az-theme-accent) !important;
-    border-color: var(--az-theme-accent) !important;
-    color: #0D0D0D !important;
-  }
+  #view-home .text-\[9\.5px\], #view-home .text-\[10px\] { font-size: 11.5px !important; }
+  #view-saude h2, #view-saude h3 { font-size: 1.15rem !important; line-height: 1.2 !important; }
+  #view-saude p, #view-saude li, #view-saude .text-sm { font-size: 13px !important; line-height: 1.4 !important; }
+  #estadios-lobby-screen h3 { font-size: 1.1rem !important; line-height: 1.2 !important; }
   #azMapSweepLine {
     position: fixed;
     left: 0;
@@ -25362,8 +25328,12 @@ if (document.readyState === "loading") {
     <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
     <span id="azTopGroupBadge">GRUPO</span>
   </button>
-  <button type="button" class="az-hud-glass-btn" id="azHudStealthBtn" title="Modo Furtivo / Silêncio Total (Mutar todos os áudios)">
-    <svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+  <button type="button" class="az-hud-glass-btn" id="azHudStealthBtn" title="Áudio Ativo (Toque para Mutar)">
+    <svg viewBox="0 0 24 24">
+      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+      <g id="azStealthSoundWaves"><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></g>
+      <g id="azStealthMuteX" style="display:none;"><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></g>
+    </svg>
   </button>
   <button type="button" class="az-hud-glass-btn" id="azExpandMapScreenBtn" title="Expandir / Minimizar Mapa">
     <svg viewBox="0 0 24 24"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
@@ -25374,20 +25344,8 @@ if (document.readyState === "loading") {
   </button>
 </div>
 
-<!-- MODAL DE ESPECIALIZADAS / EQUIPE (CHAT, FOTOS, COR EXCLUSIVA & PTT) -->
+<!-- MODAL DE GRUPO (CHAT, FOTOS, COR EXCLUSIVA & PTT) -->
 <div id="azWhatsappGroupModal" style="display:none;position:fixed;inset:0;z-index:100060;background:#0D0D0D;flex-direction:column;color:#F2F0EA;overflow:hidden;">
-  <!-- Contorno subliminar de operador no fundo (capacete/NVG/colete sem caveiras) -->
-  <div aria-hidden="true" style="position:absolute;right:6px;bottom:76px;width:210px;height:260px;opacity:0.09;pointer-events:none;contain:layout paint;z-index:0;">
-    <svg viewBox="0 0 220 280" width="210" height="260" fill="none" stroke="#C5A869" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M72 68c0-26 17-42 38-42s38 16 38 42v14c0 10-6 18-14 22l-4 12H90l-4-12c-8-4-14-12-14-22V68z" fill="#161616"/>
-      <rect x="64" y="64" width="12" height="26" rx="4" fill="#0D0D0D"/>
-      <rect x="144" y="64" width="12" height="26" rx="4" fill="#0D0D0D"/>
-      <circle cx="94" cy="74" r="7" fill="#0D0D0D"/><circle cx="110" cy="74" r="7" fill="#0D0D0D"/><circle cx="126" cy="74" r="7" fill="#0D0D0D"/>
-      <path d="M52 132c8-12 22-18 38-18h40c16 0 30 6 38 18l18 46-20 12-12-30v96H66v-96l-12 30-20-12 18-46z" fill="#161616"/>
-      <rect x="78" y="138" width="64" height="54" rx="4" stroke-opacity="0.85"/>
-      <rect x="82" y="198" width="16" height="32" rx="2"/><rect x="102" y="198" width="16" height="32" rx="2"/><rect x="122" y="198" width="16" height="32" rx="2"/>
-    </svg>
-  </div>
   <div style="position:relative;z-index:1;background:#161616;border-bottom:1.5px solid #C5A869;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px;">
     <div style="display:flex;align-items:center;gap:8px;min-width:0;">
       <button type="button" id="azCloseWaGroupBtn" class="az-atak-tool-btn" style="height:36px !important;">← VOLTAR</button>
@@ -25806,7 +25764,7 @@ if (document.readyState === "loading") {
     </button>
     <button type="button" class="az-grid-tile" id="azGridRadioConvTile" data-grid-act="radio_conv_tool">
       <svg viewBox="0 0 24 24"><rect x="6" y="7" width="12" height="14" rx="2"/><path d="M9 7V2"/><rect x="9" y="10" width="6" height="4"/><circle cx="12" cy="18" r="1"/></svg>
-      Comunicação
+      Conversor Rádio
     </button>
     <button type="button" class="az-grid-tile" id="azGridDroneTile" data-grid-act="drone_mode">
       <svg viewBox="0 0 24 24"><circle cx="5" cy="5" r="2.5"/><circle cx="19" cy="5" r="2.5"/><circle cx="5" cy="19" r="2.5"/><circle cx="19" cy="19" r="2.5"/><path d="M7 7l3 3"/><path d="M17 7l-3 3"/><path d="M7 17l3-3"/><path d="M17 17l-3-3"/><rect x="10" y="10" width="4" height="4" rx="1"/></svg>
@@ -25930,7 +25888,7 @@ if (document.readyState === "loading") {
     </div>
   </details>
 
-  <button type="button" class="az-atak-tool-btn is-danger" id="azEndSessionBtn" style="width:100%;height:30px;">ENCERRAR SESSÃO</button>
+  <button type="button" class="az-atak-tool-btn is-danger" id="azEndSessionBtn" style="display:none;width:100%;height:40px;">ENCERRAR SESSÃO</button>
 </aside>
 
 <!-- Roda Radial ATAK -->
@@ -26241,8 +26199,8 @@ if (document.readyState === "loading") {
 
   <div id="azRadioM2BBox" style="display:flex;flex-direction:column;gap:7px;">
     <div>
-      <label style="font-size:8.5px;font-weight:800;color:#9E9A8F;display:block;margin-bottom:3px;">ENTRADA RÁPIDA (EX: 1.9, 1.0, 4.45 OU 1)</label>
-      <input type="text" id="azRadioMotoQuickInput" class="az-team-input" value="1.9" placeholder="Ex: 1.9 ou 12.0" maxlength="10" autocomplete="off" style="width:100%;font-size:13px !important;font-weight:900;color:#C5A869;">
+      <label style="font-size:11px;font-weight:800;color:#9E9A8F;display:block;margin-bottom:3px;">ENTRADA RÁPIDA (EX: 1)</label>
+      <input type="text" id="azRadioMotoQuickInput" class="az-team-input" value="1" placeholder="Ex: 1" maxlength="10" autocomplete="off" style="width:100%;font-size:13px !important;font-weight:900;color:#C5A869;">
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
       <div>
@@ -26563,7 +26521,6 @@ if (document.readyState === "loading") {
   </div>
   <div id="azDroneEscoltaRow" aria-label="Controles Drone Escolta">
     <button type="button" class="az-drone-pill-btn" id="azEscoltaAltUpBtn" title="Subir altitude (afastar zoom)">SUBIR</button>
-    <button type="button" class="az-drone-pill-btn" id="azEscoltaAltDownBtn" title="Descer altitude (aproximar zoom)">DESCER</button>
     <button type="button" class="az-drone-pill-btn is-sky" id="azEscoltaOrbitTeamBtn" title="Orbitar equipe ou aliado selecionado">ORBITAR EQUIPE</button>
   </div>
   <div id="azDroneReconRow" aria-label="Controles Drone de Reconhecimento">
@@ -34073,6 +34030,8 @@ if (document.readyState === "loading") {
     scanAndCaptureExistingMaps();
     renderOnlineMembersList();
     if (typeof renderAllTeamColorSwatches === "function") renderAllTeamColorSwatches();
+    const endBtn = document.getElementById("azEndSessionBtn");
+    if (endBtn) endBtn.style.display = tac.roomCode ? "flex" : "none";
     tac.dockOpen = !tac.dockOpen;
     document.getElementById("azAtakRightDock").classList.toggle("is-open", tac.dockOpen);
     this.classList.toggle("is-active", tac.dockOpen);
@@ -35991,45 +35950,6 @@ if (document.readyState === "loading") {
     const mInp = document.getElementById("azWaMsgInput");
     if (mInp) mInp.value = "";
   });
-
-  // Seletor do Tema Geral do App + Destaque no Mapa (Dourado, Verde Militar, Cinza)
-  window.azApplyMapAccentColor = function (hex) {
-    const valid = ["#C5A869", "#6B7F54", "#9CA3AF"].includes(hex) ? hex : "#C5A869";
-    try { localStorage.setItem("az_map_accent_v1", valid); } catch (_) {}
-    if (document.body) {
-      document.body.classList.remove("az-theme-gold", "az-theme-olive", "az-theme-gray");
-      document.body.classList.add(valid === "#6B7F54" ? "az-theme-olive" : (valid === "#9CA3AF" ? "az-theme-gray" : "az-theme-gold"));
-    }
-    document.querySelectorAll("#azGeoAccentColorGroup [data-map-accent]").forEach(function (b) {
-      const on = b.getAttribute("data-map-accent") === valid;
-      b.classList.toggle("active", on);
-      b.classList.toggle("subtle", !on);
-    });
-    tac.maps.forEach(function (m) {
-      if (!canDrawOnMap(m)) return;
-      try {
-        if (m.getLayer("az-route-line")) m.setPaintProperty("az-route-line", "line-color", valid);
-        if (m.getLayer("az-radar-route-line")) m.setPaintProperty("az-radar-route-line", "line-color", valid);
-        if (m.getLayer("az-recon-sector-line")) m.setPaintProperty("az-recon-sector-line", "line-color", valid);
-        if (m.getLayer("az-recon-sector-fill")) m.setPaintProperty("az-recon-sector-fill", "fill-color", valid);
-        if (m.getLayer("az-recon-handles-layer")) m.setPaintProperty("az-recon-handles-layer", "circle-color", valid);
-        if (m.getLayer("az-recon-qmarks-bg")) m.setPaintProperty("az-recon-qmarks-bg", "circle-stroke-color", valid);
-        if (m.getLayer("az-recon-qmarks-lbl")) m.setPaintProperty("az-recon-qmarks-lbl", "text-color", valid);
-        if (m.getLayer("az-3d-buildings")) m.setPaintProperty("az-3d-buildings", "fill-extrusion-color", valid);
-      } catch (_) {}
-    });
-  };
-  document.querySelectorAll("#azGeoAccentColorGroup [data-map-accent]").forEach(function (btn) {
-    btn.addEventListener("click", function () {
-      const hex = btn.getAttribute("data-map-accent") || "#C5A869";
-      window.azApplyMapAccentColor(hex);
-      showToast("Tema geral atualizado.", 1800);
-    });
-  });
-  setTimeout(function () {
-    const savedAcc = localStorage.getItem("az_map_accent_v1");
-    if (savedAcc) window.azApplyMapAccentColor(savedAcc);
-  }, 1500);
   const waInpEl = document.getElementById("azWaMsgInput");
   if (waInpEl) {
     waInpEl.addEventListener("keydown", function (e) {
@@ -37878,9 +37798,14 @@ if (document.readyState === "loading") {
   tac.stealthSilent = localStorage.getItem("az_stealth_silent_v1") === "true";
   function syncStealthUi() {
     const btn = document.getElementById("azHudStealthBtn");
+    const waves = document.getElementById("azStealthSoundWaves");
+    const muteX = document.getElementById("azStealthMuteX");
+    const muted = Boolean(tac.stealthSilent);
+    if (waves) waves.style.display = muted ? "none" : "inline";
+    if (muteX) muteX.style.display = muted ? "inline" : "none";
     if (btn) {
-      btn.classList.toggle("is-active", Boolean(tac.stealthSilent));
-      btn.title = tac.stealthSilent ? "Modo Furtivo ATIVO (Clique para reativar áudio)" : "Modo Furtivo / Silêncio Total";
+      btn.classList.toggle("is-active", muted);
+      btn.title = muted ? "Áudio MUDO (Toque para reativar)" : "Áudio ATIVO (Toque para mutar)";
     }
   }
   syncStealthUi();
