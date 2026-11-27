@@ -906,7 +906,7 @@
                     <h1 onclick="showView('home')" class="text-2xl sm:text-3xl font-military tracking-widest text-pmmg-khaki uppercase leading-none cursor-pointer shrink-0 select-none">AZIMUTE</h1>
                     <span id="headerRedePipe" class="text-pmmg-khaki/50 font-light text-lg select-none shrink-0">|</span>
                     <button type="button" onclick="openCurrentNetworkBattalionModal()" id="statusBarBtnRede" class="px-3.5 py-1.5 rounded-lg bg-pmmg-black hover:bg-pmmg-card border border-pmmg-gold/45 text-pmmg-khaki font-mono font-extrabold text-xs sm:text-sm flex items-center justify-center whitespace-nowrap shrink-0 shadow-sm transition-all cursor-pointer" title="Ver dados do Batalhão da Rede atual">
-                        <span id="statusBarRedeText" class="tracking-wide">5º BPM A</span>
+                        <span id="statusBarRedeText" class="tracking-wide">Aguardando GPS</span>
                     </button>
                 </div>
 
@@ -1166,7 +1166,7 @@
                 <!-- Rede do BPM -->
                 <div onclick="openCurrentNetworkBattalionModal()" class="bg-[#0D0D0D] p-2.5 rounded-lg border border-[#C5A869]/40 cursor-pointer hover:border-[#C5A869] transition-all">
                     <span class="text-[9px] font-bold uppercase text-pmmg-khaki block leading-none">Rede do BPM</span>
-                    <strong id="gridTelemetryRede" class="font-mono text-sm sm:text-base text-white font-extrabold block mt-1 truncate">5º BPM A</strong>
+                    <strong id="gridTelemetryRede" class="font-mono text-sm sm:text-base text-white font-extrabold block mt-1 truncate">Aguardando GPS</strong>
                 </div>
 
                 <!-- Área Atual -->
@@ -1175,7 +1175,7 @@
                         <span class="text-[9px] font-bold uppercase text-pmmg-khaki leading-none">Área Atual</span>
                         <span id="gridTelemetryAcc" class="text-[9px] font-mono text-gray-400">±15m</span>
                     </div>
-                    <strong id="gridTelemetryArea" class="text-xs text-gray-100 font-bold block mt-1 leading-snug line-clamp-2">5º BPM • Belo Horizonte</strong>
+                    <strong id="gridTelemetryArea" class="text-xs text-gray-100 font-bold block mt-1 leading-snug line-clamp-2">Aguardando confirmação de bairro/GPS</strong>
                 </div>
             </div>
 
@@ -3086,7 +3086,7 @@
                         </div>
                         <div>
                             <span class="text-[10px] uppercase font-bold text-pmmg-gold block leading-none">Rede de Rádio</span>
-                            <strong id="hudRadioChannel" class="text-sm sm:text-base text-white font-mono block mt-1">REDE: 2ª RPM / 18º BPM A</strong>
+                            <strong id="hudRadioChannel" class="text-sm sm:text-base text-white font-mono block mt-1">Aguardando GPS</strong>
                         </div>
                     </div>
                     <div class="text-left sm:text-right">
@@ -7565,31 +7565,16 @@
                 </div>
             </div>
 
-            <!-- CAIXA ÚNICA: RMBH COBERTA COMO ESPECIALIZADAS (INICIA FECHADA/RECOLHIDA POR PADRÃO) -->
+            <!-- CAIXA ÚNICA: RMBH (BATALHÕES) ABERTA POR PADRÃO, SEM ESPECIALIZADAS DENTRO -->
             <div class="bg-pmmg-card/60 border border-pmmg-gold/45 rounded-2xl p-3.5 space-y-3">
                 <button type="button" onclick="(function(){ var b=document.getElementById('rmbhUnitsBody'), c=document.getElementById('rmbhChevron'); if(!b) return; var closed=b.classList.toggle('hidden'); if(c) c.style.transform = closed ? 'rotate(0deg)' : 'rotate(180deg)'; })()" class="w-full flex items-center justify-between text-left cursor-pointer">
                     <div class="flex items-center gap-2">
-                        <h3 class="text-lg sm:text-xl font-military text-pmmg-khaki uppercase tracking-wider leading-none">RMBH — ESPECIALIZADAS</h3>
-                        <span class="text-[11px] font-mono font-bold text-pmmg-gold bg-pmmg-dark px-2 py-0.5 rounded border border-pmmg-gold/40">Especializadas • 1ª • 2ª • 3ª RPM</span>
+                        <h3 class="text-lg sm:text-xl font-military text-pmmg-khaki uppercase tracking-wider leading-none">RMBH — BATALHÕES</h3>
+                        <span class="text-[11px] font-mono font-bold text-pmmg-gold bg-pmmg-dark px-2 py-0.5 rounded border border-pmmg-gold/40">1ª • 2ª • 3ª RPM</span>
                     </div>
                     <i data-lucide="chevron-down" id="rmbhChevron" class="w-4 h-4 text-pmmg-gold transition-transform" style="transform:rotate(180deg);"></i>
                 </button>
                 <div id="rmbhUnitsBody" class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-pmmg-border">
-                    <!-- Cobertura Especializadas RMBH -->
-                    <div onclick="showView('especializadas')" class="bg-pmmg-card p-4 rounded-xl border border-pmmg-gold/50 cursor-pointer group flex flex-col justify-between space-y-2.5">
-                        <div class="space-y-1">
-                            <div class="flex justify-between items-center">
-                                <span class="text-[11px] bg-pmmg-khakiBadge text-pmmg-gold font-bold px-2 py-0.5 rounded border border-pmmg-gold/30 uppercase">Especializadas • RMBH</span>
-                                <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500 group-hover:text-pmmg-gold transition-colors"></i>
-                            </div>
-                            <h3 class="text-lg sm:text-xl font-military text-pmmg-gold uppercase font-bold tracking-wide leading-none pt-0.5">Unidades Especializadas</h3>
-                            <p class="text-xs text-gray-300">GER, ROTAM, BOPE, Choque, ROCCA, BEPE, BPGd, MAmb, BPMRv e RCAT</p>
-                        </div>
-                        <div class="pt-2.5 border-t border-pmmg-border flex justify-between items-center text-xs font-bold text-pmmg-gold">
-                            <span>Cobertura RMBH • 10 Unidades</span>
-                            <span class="flex items-center gap-1">Acessar <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
-                        </div>
-                    </div>
                     <!-- 1. 1ª RPM (Capital) -->
                     <div onclick="showView('rpm1')" class="bg-pmmg-card p-4 rounded-xl tactical-border tactical-card cursor-pointer group flex flex-col justify-between space-y-2.5">
                         <div class="space-y-1">
@@ -7626,7 +7611,7 @@
                     <div onclick="showView('rpm3')" class="bg-pmmg-card p-4 rounded-xl tactical-border tactical-card cursor-pointer group flex flex-col justify-between space-y-2.5 opacity-95 hover:opacity-100">
                         <div class="space-y-1">
                             <div class="flex justify-between items-center">
-                                <span class="text-[10px] bg-pmmg-dark text-gray-300 font-bold px-2 py-0.5 rounded border border-pmmg-border uppercase">3ª RPM • RMBH / Expansão</span>
+                                <span class="text-[10px] bg-pmmg-dark text-white font-bold px-2 py-0.5 rounded border border-white/30 uppercase">3ª RPM • RMBH / Expansão</span>
                                 <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500 group-hover:text-pmmg-khaki transition-colors"></i>
                             </div>
                             <h3 class="text-lg sm:text-xl font-military text-white uppercase font-bold tracking-wide leading-none pt-0.5">3ª RPM • Vetor Norte / Leste</h3>
@@ -10364,6 +10349,143 @@
         let azimuteLastLookupTime = 0;
         let azimuteLastWeatherTime = 0;
         let azimuteLastStreet = "Sincronizando endereço via satélite...";
+        let azimuteCurrentSuburb = "";
+        let azimuteCurrentCity = "";
+
+        // Base verificada de jurisdição Bairro -> Batalhão/Cia/Rede (consulta prioritária em AZIMUTE_DB e fallback apenas nesta base verificada, nunca por chute de distância)
+        const AZIMUTE_VERIFIED_BAIRROS_INDEX = [
+            // 22º BPM (Belo Horizonte - 1ª RPM)
+            { bpm: "22º BPM", cia: "124ª Cia", cidade: "Belo Horizonte", rede: "REDE: 1ª RPM / 22º BPM A", bairros: ["Morro do Papagaio", "Santa Lúcia", "Santo Antônio", "Belvedere", "Santa Rita de Cássia", "Vila Barragem Santa Lúcia", "Vila Estrela", "Cidade Jardim", "São Bento", "São Pedro"] },
+            { bpm: "22º BPM", cia: "125ª Cia", cidade: "Belo Horizonte", rede: "REDE: 1ª RPM / 22º BPM A", bairros: ["Morro das Pedras", "Prado", "Nova Suíssa", "Nova Suissa", "Gutierrez", "Calafate", "Vila Santa Sofia", "Vila São Jorge", "Vila Leonina", "Jardim América", "Nova Granada", "Barroca", "Grajaú"] },
+            { bpm: "22º BPM", cia: "127ª Cia", cidade: "Belo Horizonte", rede: "REDE: 1ª RPM / 22º BPM A", bairros: ["Aglomerado da Serra", "Serra", "Sion", "Cruzeiro", "Vila Nossa Senhora de Fátima", "Vila Marçola", "Vila Marcola", "Vila Santana do Cafezal", "Mangabeiras", "São Lucas", "Carmo", "Anchieta"] },
+            { bpm: "22º BPM", cia: "128ª Cia", cidade: "Belo Horizonte", rede: "REDE: 1ª RPM / 22º BPM A", bairros: ["Alto Vera Cruz", "Paraíso", "Saudade", "Esplanada", "Conjunto Taquaril", "Taquaril", "Santa Efigênia", "Pompéia"] },
+            // 5º BPM (Belo Horizonte - 1ª RPM)
+            { bpm: "5º BPM", cia: "", cidade: "Belo Horizonte", rede: "REDE: 1ª RPM / 5º BPM A", bairros: ["Gameleira", "Nova Gameleira", "Califórnia", "Camargos", "Coracao Eucaristico", "Coração Eucarístico", "Dom Bosco", "Dom Cabral", "João Pinheiro", "Madre Gertrudes", "Minas Brasil", "Nova Cintra", "Nova Vista", "Padre Eustáquio", "Salgado Filho", "Betânia", "Cabana do Pai Tomás", "Estrela do Oriente", "Havaí", "Vista Alegre", "Oeste", "Conjunto Califórnia"] },
+            // 1º BPM (Belo Horizonte - 1ª RPM)
+            { bpm: "1º BPM", cia: "", cidade: "Belo Horizonte", rede: "REDE: 1ª RPM / 1º BPM", bairros: ["Centro", "Savassi", "Funcionários", "Lourdes", "Barro Preto", "Carlos Prates", "Floresta", "Boa Viagem", "Lagoinha"] },
+            // 16º BPM (Belo Horizonte - 1ª RPM)
+            { bpm: "16º BPM", cia: "", cidade: "Belo Horizonte", rede: "REDE: 1ª RPM / 16º BPM A", bairros: ["Santa Tereza", "Horto", "Horto Florestal", "Sagrada Família", "Cidade Nova", "Silveira", "Nova Floresta", "União", "Bairro da Graça", "Colégio Batista", "Renascença", "São Geraldo", "Boa Vista", "Casa Branca", "Santa Inês"] },
+            // 34º BPM (Belo Horizonte - 1ª RPM)
+            { bpm: "34º BPM", cia: "", cidade: "Belo Horizonte", rede: "REDE: 1ª RPM / 34º BPM B", bairros: ["Caiçara", "Caiçaras", "Alípio de Melo", "Castelo", "Ouro Preto", "Paquetá", "São José", "Pampulha", "São Luiz", "Bandeirantes", "Santa Amélia", "Santa Branca", "Itapoã", "Jardim Atlântico", "Serrano", "Glória", "Coqueiros", "Pindorama"] },
+            // 41º BPM (Belo Horizonte - 1ª RPM)
+            { bpm: "41º BPM", cia: "", cidade: "Belo Horizonte", rede: "REDE: 1ª RPM / 41º BPM", bairros: ["Barreiro", "Barreiro de Baixo", "Barreiro de Cima", "Cardoso", "Diamante", "Milionários", "Lindéia", "Tirol", "Teixeira Dias", "Vila Pinho", "Vale do Jatobá", "Bonsucesso", "Olaria", "Santa Helena"] },
+            // 13º BPM (Belo Horizonte - 1ª RPM)
+            { bpm: "13º BPM", cia: "", cidade: "Belo Horizonte", rede: "REDE: 1ª RPM / 13º BPM", bairros: ["Planalto", "Guarani", "Tupi", "Aarão Reis", "Floramar", "Heliópolis", "Jaqueline", "Jardim Guanabara", "Providência", "São Bernardo", "Vila Clóris"] },
+            // 49º BPM (Belo Horizonte - 1ª RPM)
+            { bpm: "49º BPM", cia: "", cidade: "Belo Horizonte", rede: "REDE: 1ª RPM / 49º BPM", bairros: ["Venda Nova", "Céu Azul", "Copacabana", "Jardim dos Comerciários", "Justinópolis", "Letícia", "Mantiqueira", "Piratininga", "Rio Branco", "Santa Mônica", "São João Batista", "Serra Verde"] },
+            // 18º BPM (Contagem - 2ª RPM)
+            { bpm: "18º BPM", cia: "133ª Cia", cidade: "Contagem", rede: "REDE: 2ª RPM / 18º BPM A", bairros: ["Centro", "Sede", "Fonte Grande", "Nossa Senhora do Carmo", "Bernardo Monteiro", "Alvorada", "Camilo Alves", "Santa Helena", "Colonial", "Praia", "Três Barras"] },
+            { bpm: "18º BPM", cia: "131ª Cia", cidade: "Contagem", rede: "REDE: 2ª RPM / 18º BPM A", bairros: ["Ressaca", "Laguna", "Cabral", "Arpoador", "São Joaquim", "Candida Ferreira", "Guanabara", "Colorado", "Oitis", "Morada Nova"] },
+            { bpm: "18º BPM", cia: "39ª Cia", cidade: "Contagem", rede: "REDE: 2ª RPM / 18º BPM A", bairros: ["Nacional", "Pedra Azul", "Xangri-lá", "Xangrila", "Vila Boa Vista", "Confisco", "Tijuco", "Estrela Dalva", "Bom Jesus", "Vale das Amendoeiras"] },
+            { bpm: "18º BPM", cia: "283ª Cia", cidade: "Contagem", rede: "REDE: 2ª RPM / 18º BPM A", bairros: ["Petrolândia", "Sapucaias", "Tropical", "São Luiz", "Industrial São Luiz", "Beija-Flor", "Duque de Caxias", "Campo Alto"] },
+            { bpm: "18º BPM", cia: "38ª Cia Esp.", cidade: "Contagem", rede: "REDE: 2ª RPM / 18º BPM A", bairros: ["Nova Contagem", "Ipê Amarelo", "Vila Renascer", "Retiro", "Vila Nova Esperança", "Estância do Hibisco", "Icaivera", "Darcy Ribeiro"] },
+            // 39º BPM (Contagem - 2ª RPM)
+            { bpm: "39º BPM", cia: "", cidade: "Contagem", rede: "REDE: 2ª RPM / 39º BPM", bairros: ["Eldorado", "Industrial", "Riacho das Pedras", "Novo Riacho", "Inconfidentes", "Agua Branca", "Água Branca", "Cidade Industrial", "Amazonas", "Bandeirantes", "Flamengo", "Monte Castelo", "Parque São João", "Santa Cruz Industrial"] }
+        ];
+
+        function azNormTerritoryName(s) {
+            return String(s || '')
+                .toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-z0-9\s-]/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim();
+        }
+
+        function azStripTerritoryPrefix(s) {
+            return azNormTerritoryName(s).replace(/^(bairro|vila|conjunto|aglomerado|jardim|parque)\s+/i, '').trim();
+        }
+
+        function azCityMatches(unitCity, queryCity) {
+            const nc = azNormTerritoryName(queryCity);
+            const nu = azNormTerritoryName(unitCity);
+            if (!nc || !nu || nc === 'rmbh' || nu === 'rmbh') return true;
+            return nu.includes(nc) || nc.includes(nu);
+        }
+
+        function resolveTerritorialJurisdiction(suburbStr, cityStr) {
+            const rawSub = String(suburbStr || '').trim();
+            const rawCity = String(cityStr || '').trim();
+            const normSub = azNormTerritoryName(rawSub);
+            const coreSub = azStripTerritoryPrefix(rawSub);
+
+            if (!normSub) {
+                return {
+                    confirmed: false,
+                    battalion: null,
+                    cia: null,
+                    rede: 'Aguardando GPS',
+                    unidade: 'Aguardando confirmação de bairro/GPS',
+                    headerLabel: 'Aguardando bairro/GPS'
+                };
+            }
+
+            // 1. Consulta prioritária na base carregada (AZIMUTE_DB: dados.json, batalhao_22.json, etc.)
+            if (typeof AZIMUTE_DB !== 'undefined' && AZIMUTE_DB) {
+                const allUnits = Array.isArray(AZIMUTE_DB.all) && AZIMUTE_DB.all.length
+                    ? AZIMUTE_DB.all
+                    : [...(AZIMUTE_DB.rpm1 || []), ...(AZIMUTE_DB.rpm2 || [])];
+
+                // Duas passadas: 1ª exigindo compatibilidade de cidade, 2ª apenas se cidade genérica
+                for (let pass = 0; pass < 2; pass++) {
+                    for (const u of allUnits) {
+                        if (pass === 0 && !azCityMatches(u.cidade, rawCity)) continue;
+                        for (const c of (u.companhias || [])) {
+                            const exactHit = (c.bairros || []).some(b => {
+                                const nb = azNormTerritoryName(b);
+                                const cb = azStripTerritoryPrefix(b);
+                                return (nb && nb === normSub) || (cb && coreSub && cb === coreSub && nb.length >= 4);
+                            });
+                            if (exactHit) {
+                                const ciaShort = (c.nome || '').replace(/\s*PM$/i, '').replace(/Companhia/i, 'Cia').replace(/ESPECIAL/i, 'Esp.').trim();
+                                const redeVal = u.rede_radio || ('REDE: ' + u.nome);
+                                return {
+                                    confirmed: true,
+                                    battalion: u.nome,
+                                    cia: ciaShort,
+                                    rede: redeVal,
+                                    unidade: (ciaShort ? (u.nome + ' • ' + ciaShort) : u.nome) + ' (' + rawSub + (rawCity ? ' - ' + rawCity : '') + ')',
+                                    headerLabel: ciaShort ? (ciaShort + ' / ' + u.nome) : u.nome
+                                };
+                            }
+                        }
+                    }
+                }
+            }
+
+            // 2. Consulta na tabela verificada de bairros (sem chute por distância)
+            for (let pass = 0; pass < 2; pass++) {
+                for (const entry of AZIMUTE_VERIFIED_BAIRROS_INDEX) {
+                    if (pass === 0 && !azCityMatches(entry.cidade, rawCity)) continue;
+                    const hit = entry.bairros.some(b => {
+                        const nb = azNormTerritoryName(b);
+                        const cb = azStripTerritoryPrefix(b);
+                        return (nb && nb === normSub) || (cb && coreSub && cb === coreSub && nb.length >= 4);
+                    });
+                    if (hit) {
+                        return {
+                            confirmed: true,
+                            battalion: entry.bpm,
+                            cia: entry.cia,
+                            rede: entry.rede,
+                            unidade: (entry.cia ? (entry.bpm + ' • ' + entry.cia) : entry.bpm) + ' (' + rawSub + (rawCity ? ' - ' + rawCity : '') + ')',
+                            headerLabel: entry.cia ? (entry.cia + ' / ' + entry.bpm) : entry.bpm
+                        };
+                    }
+                }
+            }
+
+            // 3. Regra de incerteza: não inventar nem chutar outro batalhão
+            return {
+                confirmed: false,
+                battalion: null,
+                cia: null,
+                rede: 'Não confirmada na base',
+                unidade: 'Batalhão não consta na base (' + rawSub + (rawCity ? ' - ' + rawCity : '') + ')',
+                headerLabel: 'Batalhão não consta na base'
+            };
+        }
 
         function azimuteCalcDistKm(lat1, lon1, lat2, lon2) {
             const R = 6371;
@@ -10383,11 +10505,12 @@
             return { roadKm: roadKm.toFixed(1), mins: mins };
         }
 
-        let azimuteCurrentClosestArea = AZIMUTE_AREAS_RADIO[0];
+        let azimuteCurrentClosestArea = { confirmed: false, battalion: null, cia: null, unidade: "Aguardando confirmação de bairro/GPS", rede: "Aguardando GPS", headerLabel: "Aguardando bairro/GPS" };
 
         // Resume o texto da Rede para a Barra de Status (ex: "REDE: 2ª RPM / 18º BPM A" -> "18º BPM A")
         function formatShortRedeName(fullRede) {
-            if (!fullRede) return '18º BPM A';
+            if (!fullRede) return 'Aguardando GPS';
+            if (/não confirmad|nao confirmad|aguardando/i.test(fullRede)) return fullRede;
             let s = fullRede.replace(/^REDE:\s*/i, '').trim();
             if (s.includes('/')) {
                 s = s.split('/').pop().trim();
@@ -10494,6 +10617,9 @@
                     const cleanCachedSuburb = (saved.cepVerified === true)
                         ? (saved.suburb || '')
                         : String(saved.suburb || '').replace(/\s*•\s*CEP:.*$/i, '');
+                    const cachedParts = String(cleanCachedSuburb || '').split('•').map(p => p.trim()).filter(Boolean);
+                    azimuteCurrentSuburb = saved.suburbRaw || (cachedParts[0] || '');
+                    azimuteCurrentCity = saved.cityRaw || (cachedParts[1] && !/^CEP:/i.test(cachedParts[1]) ? cachedParts[1] : '');
                     if (stEl) stEl.textContent = saved.street;
                     if (subEl) subEl.textContent = cleanCachedSuburb;
                     const hQth = document.getElementById('homeQuickQth');
@@ -13085,21 +13211,27 @@
                 miniBtn.href = hospUrl;
             }
 
-            // 2. Canaleta de Rádio e Unidade mais próxima
-            let closestArea = AZIMUTE_AREAS_RADIO[0];
-            let minAreaDist = 99999;
-            AZIMUTE_AREAS_RADIO.forEach(a => {
-                const d = azimuteCalcDistKm(lat, lon, a.lat, a.lon);
-                if (d < minAreaDist) { minAreaDist = d; closestArea = a; }
-            });
+            // 2. Canaleta de Rádio e Batalhão pela jurisdição real do bairro (sem chute por distância)
+            const resolvedJurisdiction = resolveTerritorialJurisdiction(azimuteCurrentSuburb, azimuteCurrentCity);
+            const closestArea = {
+                confirmed: resolvedJurisdiction.confirmed,
+                battalion: resolvedJurisdiction.battalion,
+                cia: resolvedJurisdiction.cia,
+                unidade: resolvedJurisdiction.unidade,
+                rede: resolvedJurisdiction.rede,
+                headerLabel: resolvedJurisdiction.headerLabel,
+                lat: lat,
+                lon: lon
+            };
             const rChanEl = document.getElementById('hudRadioChannel');
             const rAreaEl = document.getElementById('hudUnitArea');
             const rCiaBpmBadge = document.getElementById('hudLocationCiaBpmBadge');
+            const hudUnitLineEl = document.getElementById('azHudUnitNetLine');
             if (rChanEl) rChanEl.textContent = closestArea.rede;
             if (rAreaEl) rAreaEl.textContent = closestArea.unidade;
-            if (rCiaBpmBadge && typeof formatCiaBatalhaoHeaderLabel === 'function') {
-                const subCurr = document.getElementById('hudCurrentSuburb') ? document.getElementById('hudCurrentSuburb').textContent : '';
-                rCiaBpmBadge.textContent = formatCiaBatalhaoHeaderLabel(closestArea, subCurr, azimuteLastStreet);
+            if (hudUnitLineEl) hudUnitLineEl.textContent = formatShortRedeName(closestArea.rede);
+            if (rCiaBpmBadge) {
+                rCiaBpmBadge.textContent = closestArea.headerLabel;
             }
 
             // Atualiza também os 2 Quadros de Resumo no Topo da Tela Inicial
@@ -13306,7 +13438,7 @@
             const acc = Math.round(pos.coords.accuracy || 10);
             const alt = pos.coords.altitude !== null && pos.coords.altitude !== undefined ? Math.round(pos.coords.altitude) : null;
 
-            setGpsOnlineState(navigator.onLine, navigator.onLine ? 'GPS Online' : 'GPS Offline (Satélite Ativo)', acc);
+            setGpsOnlineState(navigator.onLine, navigator.onLine ? 'GPS' : 'GPS Offline (Satélite Ativo)', acc);
             const accEl = document.getElementById('hudGpsAccuracy');
             if (accEl) accEl.textContent = 'Precisão: ±' + acc + 'm';
 
@@ -13400,6 +13532,10 @@
                             document.getElementById('sosBigStreet').textContent = azimuteLastStreet;
                             document.getElementById('sosBigSuburb').textContent = subText;
 
+                            azimuteCurrentSuburb = suburb;
+                            azimuteCurrentCity = city;
+                            updateOfflineProximityData(lat, lon, acc);
+
                             const rCiaBpmBadge = document.getElementById('hudLocationCiaBpmBadge');
                             if (rCiaBpmBadge && typeof formatCiaBatalhaoHeaderLabel === 'function') {
                                 rCiaBpmBadge.textContent = formatCiaBatalhaoHeaderLabel(azimuteCurrentClosestArea, subText, azimuteLastStreet);
@@ -13408,6 +13544,8 @@
                             saveLastValidQthToCache({
                                 street: azimuteLastStreet,
                                 suburb: subText,
+                                suburbRaw: suburb,
+                                cityRaw: city,
                                 cepVerified: Boolean(postcode),
                                 lat: lat,
                                 lon: lon,
@@ -13632,28 +13770,17 @@
         }
 
         function formatCiaBatalhaoHeaderLabel(closestArea, suburbStr = '', streetStr = '') {
-            if (typeof AZIMUTE_DB !== 'undefined' && AZIMUTE_DB) {
-                const normSub = (suburbStr || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-                const allUnits = [...(AZIMUTE_DB.rpm1 || []), ...(AZIMUTE_DB.rpm2 || [])];
-                for (const u of allUnits) {
-                    for (const c of (u.companhias || [])) {
-                        const matchBairro = (c.bairros || []).some(b => {
-                            const nb = b.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-                            return nb && normSub.includes(nb);
-                        });
-                        if (matchBairro) {
-                            const ciaShort = c.nome.replace(/\s*PM$/i, '').replace(/ESPECIAL/i, 'Esp.');
-                            return `${ciaShort} / ${u.nome}`;
-                        }
-                    }
-                }
+            const parts = String(suburbStr || '').replace(/\s*•\s*CEP:.*$/i, '').split('•').map(s => s.trim()).filter(Boolean);
+            const subOnly = parts[0] || azimuteCurrentSuburb || '';
+            const cityOnly = parts[1] || azimuteCurrentCity || '';
+            const resolved = resolveTerritorialJurisdiction(subOnly, cityOnly);
+            if (resolved && resolved.confirmed) {
+                return resolved.headerLabel;
             }
-            const rawUnit = (closestArea && closestArea.unidade) ? closestArea.unidade : '18º BPM • 133ª Cia';
-            const bpmMatch = rawUnit.match(/(\d+º\s*BPM|BPTran)/i);
-            const ciaMatch = rawUnit.match(/(\d+ª\s*Cia(?:\s*Esp\.?|\s*PM\s*Ind)?)/i);
-            if (ciaMatch && bpmMatch) return `${ciaMatch[1]} / ${bpmMatch[1]}`;
-            if (bpmMatch) return bpmMatch[1];
-            return rawUnit;
+            if (closestArea && closestArea.confirmed && closestArea.headerLabel) {
+                return closestArea.headerLabel;
+            }
+            return resolved ? resolved.headerLabel : 'Batalhão não consta na base';
         }
 
         async function resolveExactStreetCep(roadName, suburbName, cityName, stateCode, nominatimData) {
@@ -14186,11 +14313,24 @@
             const bodyEl = document.getElementById('netModalBody');
             if (!modal || !titleEl || !bodyEl) return;
 
-            const areaObj = azimuteCurrentClosestArea || AZIMUTE_AREAS_RADIO[0];
-            const unitLabel = areaObj.unidade || '18º BPM';
+            const areaObj = azimuteCurrentClosestArea;
+            if (!areaObj || areaObj.confirmed === false) {
+                titleEl.textContent = 'Jurisdição não confirmada';
+                bodyEl.innerHTML = `
+                    <div class="bg-pmmg-dark p-3.5 rounded-xl border border-pmmg-border space-y-1.5">
+                        <strong class="text-pmmg-khaki text-sm block">Batalhão não confirmado na base</strong>
+                        <p class="text-xs text-gray-300"><strong>Local / Bairro atual:</strong> ${azimuteCurrentSuburb || 'Aguardando confirmação pelo GPS'}</p>
+                        <p class="text-xs text-gray-400">O bairro ou coordenada atual ainda não consta com certeza na base territorial carregada. Consulte a aba Unidades para selecionar manualmente.</p>
+                    </div>
+                `;
+                modal.classList.remove('hidden');
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+                return;
+            }
+            const unitLabel = areaObj.unidade || '';
             const shortRede = formatShortRedeName(areaObj.rede);
             const bpmMatch = unitLabel.match(/^(\d+º\s*BPM|BPTran)/i);
-            const bpmName = bpmMatch ? bpmMatch[1] : '18º BPM';
+            const bpmName = areaObj.battalion || (bpmMatch ? bpmMatch[1] : '');
 
             titleEl.textContent = bpmName + ' • REDE: ' + shortRede;
 
@@ -14249,24 +14389,31 @@
         };
 
         window.openNetworkUnitFullPanel = function() {
-            const areaObj = azimuteCurrentClosestArea || AZIMUTE_AREAS_RADIO[0];
-            const unitLabel = areaObj.unidade || '18º BPM';
-            const bpmMatch = unitLabel.match(/^(\d+º\s*BPM|BPTran)/i);
-            const bpmName = bpmMatch ? bpmMatch[1] : '18º BPM';
+            const areaObj = azimuteCurrentClosestArea;
             closeCurrentNetworkBattalionModal();
+            if (!areaObj || areaObj.confirmed === false) {
+                if (typeof showView === 'function') showView('unidades');
+                return;
+            }
+            const unitLabel = areaObj.unidade || '';
+            const bpmMatch = unitLabel.match(/^(\d+º\s*BPM|BPTran)/i);
+            const bpmName = areaObj.battalion || (bpmMatch ? bpmMatch[1] : '');
             if (bpmName.toUpperCase() === '18º BPM') {
                 showView('18bpm');
-            } else if (typeof window.openBattalionPlaceholder === 'function') {
+            } else if (bpmName && typeof window.openBattalionPlaceholder === 'function') {
                 window.openBattalionPlaceholder(bpmName, 'RMBH', 'Sede ' + bpmName);
+            } else if (typeof showView === 'function') {
+                showView('unidades');
             }
         };
 
         window.downloadCurrentNetworkOfflineData = function() {
-            const areaObj = azimuteCurrentClosestArea || AZIMUTE_AREAS_RADIO[0];
-            const unitLabel = areaObj.unidade || '18º BPM';
+            const areaObj = azimuteCurrentClosestArea;
+            if (!areaObj || areaObj.confirmed === false) return;
+            const unitLabel = areaObj.unidade || '';
             const shortRede = formatShortRedeName(areaObj.rede);
             const bpmMatch = unitLabel.match(/^(\d+º\s*BPM|BPTran)/i);
-            const bpmName = bpmMatch ? bpmMatch[1] : '18º BPM';
+            const bpmName = areaObj.battalion || (bpmMatch ? bpmMatch[1] : '');
             const bodyEl = document.getElementById('netModalBody');
             const contentHtml = bodyEl ? bodyEl.innerHTML : '';
 
@@ -17598,11 +17745,11 @@ if (viewId === 'gps' && window.azimuteGeoInvalidate) window.azimuteGeoInvalidate
             const nome = (raw.nome || raw.unidade || raw.batalhao || '').trim();
             if (!nome) return null;
 
-            const ciasRaw = Array.isArray(raw.companhias) ? raw.companhias : [];
+            const ciasRaw = Array.isArray(raw.companhias) ? raw.companhias : (Array.isArray(raw.cias) ? raw.cias : []);
             const companhias = ciasRaw.map(c => ({
                 nome: c.nome || c.cia || 'Cia PM',
                 setor: c.setor || c.nome || '',
-                endereco: c.endereco || c.sede || '',
+                endereco: c.endereco || (typeof c.sede === 'string' ? c.sede : (c.sede && c.sede.endereco ? c.sede.endereco : '')),
                 telefone: c.telefone || (Array.isArray(c.telefones) ? c.telefones.join(' / ') : (c.telefones || '')),
                 bairros: Array.isArray(c.bairros) ? c.bairros : [],
                 vias: Array.isArray(c.vias) ? c.vias : (Array.isArray(c.corredores) ? c.corredores : [])
@@ -17635,18 +17782,38 @@ if (viewId === 'gps' && window.azimuteGeoInvalidate) window.azimuteGeoInvalidate
                     maps_url: 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent((b.endereco || b.nome || '') + ' MG')
                 }));
             }
+            if (Array.isArray(raw.bases_comunitarias)) {
+                raw.bases_comunitarias.forEach(b => apoioAbastecimento.push({
+                    nome: (b.cia ? b.cia + ' • ' : '') + 'Base Comunitária',
+                    endereco: b.local || b.endereco || '',
+                    maps_url: 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent((b.local || b.endereco || '') + ' MG')
+                }));
+            }
+
+            const sedeAddr = raw.endereco_sede
+                || (typeof raw.sede === 'string' ? raw.sede : (raw.sede && raw.sede.endereco ? raw.sede.endereco : ''))
+                || raw.endereco
+                || '';
+            const sedeTel = raw.telefone_sou
+                || raw.telefone
+                || (raw.sede && Array.isArray(raw.sede.telefones) ? raw.sede.telefones.join(' / ') : '')
+                || '';
+            const rawRede = (raw.rede_radio || raw.rede || '').trim();
+            const normRede = rawRede
+                ? (/^REDE:/i.test(rawRede) ? rawRede : ('REDE: ' + rawRede.replace(/(\d+)\s*BPM/i, '$1º BPM')))
+                : ('REDE: ' + nome);
 
             return {
                 nome,
                 cidade: raw.cidade || defaultCity || 'RMBH',
                 regiao: raw.regiao || raw.rpm || defaultCity || 'RMBH',
-                rede_radio: raw.rede_radio || ('REDE: ' + nome),
-                endereco_sede: raw.endereco_sede || raw.sede || raw.endereco || '',
-                telefone_sou: raw.telefone_sou || raw.telefone || '',
+                rede_radio: normRede,
+                endereco_sede: sedeAddr,
+                telefone_sou: sedeTel,
                 status: 'Dados Carregados • ' + companhias.length + ' Cia(s)',
                 companhias,
                 apoio_abastecimento: apoioAbastecimento,
-                divisas: raw.divisas || (Array.isArray(raw.limites) ? raw.limites.join(' • ') : ''),
+                divisas: Array.isArray(raw.divisas) ? raw.divisas.join(' • ') : (raw.divisas || (Array.isArray(raw.limites) ? raw.limites.join(' • ') : '')),
                 saude_delegacias: saudeDelegacias,
                 contatos: Array.isArray(raw.contatos) ? raw.contatos : []
             };
@@ -17655,7 +17822,8 @@ if (viewId === 'gps' && window.azimuteGeoInvalidate) window.azimuteGeoInvalidate
         async function loadExternalDadosJson() {
             const mergedUnits = new Map();
             try {
-                const cached = localStorage.getItem('azimute_unified_units_cache_v1');
+                localStorage.removeItem('azimute_unified_units_cache_v1');
+                const cached = localStorage.getItem('azimute_unified_units_cache_v2');
                 if (cached) {
                     const arr = JSON.parse(cached);
                     if (Array.isArray(arr)) arr.forEach(u => mergedUnits.set(u.nome.toLowerCase(), u));
@@ -17683,10 +17851,10 @@ if (viewId === 'gps' && window.azimuteGeoInvalidate) window.azimuteGeoInvalidate
                     if (Array.isArray(json.rpm1)) candidates.push(...json.rpm1);
                     if (Array.isArray(json.rpm2)) candidates.push(...json.rpm2);
                     if (Array.isArray(json.unidades)) candidates.push(...json.unidades);
-                    if (json.unidade || json.nome) candidates.push(json);
+                    if (json.unidade || json.nome || json.batalhao) candidates.push(json);
                     if (!Array.isArray(json)) {
                         Object.values(json).forEach(val => {
-                            if (val && typeof val === 'object' && (val.unidade || val.nome || val.companhias)) {
+                            if (val && typeof val === 'object' && (val.unidade || val.nome || val.batalhao || val.companhias || val.cias)) {
                                 candidates.push(val);
                             }
                         });
@@ -17710,8 +17878,11 @@ if (viewId === 'gps' && window.azimuteGeoInvalidate) window.azimuteGeoInvalidate
             if (typeof window.azimuteRefreshGeoDatasets === "function") {
                 window.azimuteRefreshGeoDatasets();
             }
+            if (typeof azimuteLastGeoLat === 'number' && typeof azimuteLastGeoLon === 'number' && typeof updateOfflineProximityData === 'function') {
+                updateOfflineProximityData(azimuteLastGeoLat, azimuteLastGeoLon, null);
+            }
             try {
-                localStorage.setItem('azimute_unified_units_cache_v1', JSON.stringify(finalList));
+                localStorage.setItem('azimute_unified_units_cache_v2', JSON.stringify(finalList));
             } catch (e) {}
         }
         loadExternalDadosJson();
@@ -25140,17 +25311,17 @@ if (document.readyState === "loading") {
     visibility: visible !important;
   }
 
-  /* 4. Botão Centralizar GPS (#azGeoCenterFab): impedir fundo branco padrão */
+  /* 4. Botão Centralizar GPS (#azGeoCenterFab): fundo escuro/preto com ícone e borda em dourado #C5A869 */
   body.az-perf-noblur #azGeoCenterFab:not(.is-heading-up):not(.is-active) {
-    background-color: #161616 !important;
+    background-color: #0D0D0D !important;
     color: #C5A869 !important;
-    border: 1.5px solid rgba(197, 168, 105, 0.85) !important;
+    border: 1.5px solid #C5A869 !important;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45) !important;
   }
   body.az-perf-noblur #azGeoCenterFab.is-heading-up {
-    background-color: #C5A869 !important;
-    color: #0D0D0D !important;
-    border-color: #C5A869 !important;
+    background-color: #0D0D0D !important;
+    color: #C5A869 !important;
+    border: 1.5px solid #C5A869 !important;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45) !important;
   }
 
@@ -25321,7 +25492,7 @@ if (document.readyState === "loading") {
 <!-- Barra Superior -->
 <div id="azTopHudShell">
   <div id="azMicroTelemetryHud" title="QTH e Rede">
-    <div class="az-hud-line-top" id="azHudUnitNetLine">5º BPM A</div>
+    <div class="az-hud-line-top" id="azHudUnitNetLine">Aguardando GPS</div>
     <div class="az-hud-line-sub" id="azHudStreetLine">Localizando via...</div>
   </div>
   <button type="button" class="az-hud-glass-btn" id="azWhatsappGroupOpenBtn" title="Grupo da Equipe (Chat, Fotos e PTT)" style="width:auto !important;padding:0 8px !important;gap:4px;font-size:11px;font-weight:900;color:var(--az-theme-accent, #C5A869) !important;">
