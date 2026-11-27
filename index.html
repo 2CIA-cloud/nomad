@@ -940,11 +940,11 @@
 
             <!-- LINHA 2 (ACIMA DA CAIXA DE PESQUISA): BARRA DE LOCALIZAÇÃO ("GPS | QTH: Rua, Bairro - Cidade") -->
             <div id="operationalStatusBar" class="bg-pmmg-black/90 border border-pmmg-border rounded-xl px-2.5 py-1.5 flex items-center gap-2 text-xs shadow-inner">
-                <button type="button" onclick="showView('gps')" id="statusBarGpsIndicator" class="px-2 py-0.5 rounded font-mono font-extrabold text-[10.5px] uppercase tracking-wider border bg-emerald-950/90 text-emerald-400 border-emerald-500/60 shrink-0 transition-all cursor-pointer" title="Abrir aba Geolocalização">
+                <button type="button" onclick="showView('gps')" id="statusBarGpsIndicator" class="px-2 py-0.5 rounded font-mono font-extrabold text-[10.5px] uppercase tracking-wider border bg-emerald-950/90 text-emerald-400 border-emerald-500/60 shrink-0 transition-all cursor-pointer" title="Abrir aba Mapa">
                     GPS
                 </button>
                 <span class="text-pmmg-khaki/40 font-light select-none shrink-0">|</span>
-                <div id="statusBarQthBox" onclick="showView('gps')" class="flex-1 min-w-0 font-sans text-xs text-gray-200 cursor-pointer hover:text-pmmg-khaki transition-colors whitespace-normal break-words leading-snug" title="Abrir detalhes de Geolocalização">
+                <div id="statusBarQthBox" onclick="showView('gps')" class="flex-1 min-w-0 font-sans text-xs text-gray-200 cursor-pointer hover:text-pmmg-khaki transition-colors whitespace-normal break-words leading-snug" title="Abrir detalhes do Mapa">
                     <span class="font-bold text-pmmg-khaki">QTH:</span>
                     <span id="statusBarQth" class="font-semibold text-white ml-1">--</span>
                 </div>
@@ -1115,10 +1115,10 @@
                 <span class="pc-sb-label truncate">Funções</span>
             </button>
 
-            <!-- 6. Geolocalização -->
-            <button type="button" onclick="showView('gps')" id="pcsb-btn-gps" class="pc-sb-item w-full px-3 py-2.5 rounded-xl bg-pmmg-dark hover:bg-pmmg-card text-gray-400 border border-pmmg-border font-bold flex items-center gap-3 transition-all" title="Geolocalização">
+            <!-- 6. Mapa -->
+            <button type="button" onclick="showView('gps')" id="pcsb-btn-gps" class="pc-sb-item w-full px-3 py-2.5 rounded-xl bg-pmmg-dark hover:bg-pmmg-card text-gray-400 border border-pmmg-border font-bold flex items-center gap-3 transition-all" title="Mapa">
                 <i data-lucide="locate-fixed" class="w-4 h-4 shrink-0"></i>
-                <span class="pc-sb-label truncate">Geolocalização</span>
+                <span class="pc-sb-label truncate">Mapa</span>
             </button>
 
             <!-- 7. Estádios -->
@@ -1340,8 +1340,14 @@
             </div>
         </div>
 
-        <!-- ================= VIEW EXCLUSIVA: GEOLOCALIZAÇÃO ================= -->
+        <!-- ================= VIEW EXCLUSIVA: MAPA ================= -->
         <section id="view-gps" class="hidden relative overflow-hidden rounded-2xl space-y-4 p-1">
+            <div class="relative z-10 flex items-center justify-between gap-2 border-b border-pmmg-border pb-2.5 px-3 pt-1">
+                <h2 class="text-xl sm:text-2xl font-military text-pmmg-khaki uppercase leading-none">MAPA</h2>
+                <button type="button" onclick="showView('home')" class="px-3 py-1.5 rounded-lg bg-pmmg-dark hover:bg-pmmg-border border border-pmmg-border text-xs text-pmmg-khaki font-bold flex items-center gap-1.5 cursor-pointer">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i>Voltar ao Início
+                </button>
+            </div>
             <!-- CAIXA EXTERNA REDE DE RÁDIO (ABERTA NO MODO APP, TRANSPORTADA PARA O HUD AO EXPANDIR) -->
             <div id="azExternalRadioWrap" class="relative z-10 px-3 pt-1">
                 <div class="bg-pmmg-card p-3.5 rounded-xl border border-pmmg-khaki/50 border-l-4 border-l-pmmg-gold flex flex-wrap items-center justify-between gap-3">
@@ -2711,12 +2717,7 @@
   </style>
 
   <button type="button" id="azGeoDrawerToggle" class="az-geo-drawer-btn" aria-expanded="false" onclick="window.azimuteToggleGeoDrawer()">
-    <span style="display:inline-flex;align-items:center;gap:8px;">
-      <svg width="22" height="18" viewBox="0 0 800 650" aria-hidden="true" style="flex-shrink:0;">
-        <path d="M 380 45 L 445 38 L 510 55 L 555 48 L 620 82 L 695 110 L 735 162 L 718 225 L 742 280 L 710 345 L 685 415 L 650 468 L 592 515 L 535 552 L 472 588 L 415 605 L 362 572 L 325 530 L 285 495 L 252 442 L 210 425 L 155 438 L 95 422 L 42 395 L 35 355 L 88 325 L 145 318 L 195 332 L 235 292 L 222 230 L 245 168 L 285 122 L 330 78 Z" fill="rgba(197,168,105,0.14)" stroke="#C5A869" stroke-width="34" stroke-linejoin="round" stroke-linecap="round"/>
-      </svg>
-      <span>MAPA INTERATIVO</span>
-    </span>
+    <span>MAPA INTERATIVO</span>
     <span id="azGeoDrawerArrow">ABRIR +</span>
   </button>
   <script>
@@ -2763,9 +2764,7 @@
     <div class="az-geo-stage" id="azGeoStage">
       <div id="azGeoMap"></div>
       <div id="azGeoLeftOverlayCol">
-        <button type="button" class="az-hud-glass-btn" id="azMapControlsDrawerBtn" aria-label="Gaveta de Controles" title="Mostrar / Ocultar Controles do Mapa">
-          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="4" rx="1"/><rect x="3" y="10" width="18" height="4" rx="1"/><rect x="3" y="16" width="18" height="4" rx="1"/></svg>
-        </button>
+        <button type="button" id="azMapControlsDrawerBtn" aria-label="Gaveta de Controles" title="Mostrar / Ocultar Controles do Mapa" style="width:35px;height:26px;border-radius:6px;background:#141414;border:1px solid #C5A869;color:#C5A869;font-size:11px;font-weight:900;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;">▲</button>
         <button type="button" class="az-hud-glass-btn" id="azHudSearchToggleBtn" title="Buscar rua, unidade ou hospital">
           <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         </button>
@@ -3488,10 +3487,10 @@
 
                 <!-- GRADE DINÂMICA DE BOTÕES DO ACESSO RÁPIDO -->
                 <div id="homeQuickAccessGrid" class="grid grid-cols-5 gap-2 sm:gap-3">
-                    <!-- 1º Geolocalização -->
+                    <!-- 1º Mapa -->
                     <button type="button" onclick="showView('gps')" class="aspect-square sm:aspect-auto sm:py-3.5 bg-pmmg-dark hover:bg-pmmg-card border border-pmmg-gold/40 hover:border-pmmg-gold rounded-xl flex flex-col items-center justify-center p-2 text-center transition-all active:scale-95 cursor-pointer group shadow">
                         <i data-lucide="locate-fixed" stroke-width="1.5" class="w-5 h-5 sm:w-6 sm:h-6 text-pmmg-gold mb-1.5 group-hover:scale-105 transition-transform"></i>
-                        <span class="text-[9.5px] sm:text-xs font-bold text-gray-200 group-hover:text-pmmg-khaki leading-tight truncate w-full">Geolocalização</span>
+                        <span class="text-[9.5px] sm:text-xs font-bold text-gray-200 group-hover:text-pmmg-khaki leading-tight truncate w-full">Mapa</span>
                     </button>
 
                     <!-- 2º REDS -->
@@ -7699,83 +7698,83 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div onclick="openBattalionPlaceholder('1º BPM', 'Belo Horizonte', 'Praça Floriano Peixoto, s/n - Santa Efigênia')"class="bg-pmmg-card p-4 rounded-xl tactical-border tactical-card cursor-pointer">
-                    <span class="text-[10px] bg-pmmg-dark text-gray-400 font-bold px-2 py-0.5 rounded uppercase">Capital • Santa Efigênia</span>
-                    <h3 class="text-lg sm:text-xl font-military text-white font-bold uppercase mt-1">1º BPM</h3>
+                <div data-rpm1-bpm="1º BPM" onclick="openBattalionPlaceholder('1º BPM', 'Belo Horizonte', 'Praça Floriano Peixoto, s/n - Santa Efigênia')" class="bg-pmmg-card p-4 rounded-xl tactical-border tactical-card cursor-pointer">
+                    <span class="rpm1-badge text-[10px] bg-pmmg-dark text-gray-200 font-bold px-2 py-0.5 rounded uppercase">Capital • Santa Efigênia</span>
+                    <h3 class="rpm1-title text-lg sm:text-xl font-military text-white font-bold uppercase mt-1">1º BPM</h3>
                     <p class="text-xs text-gray-400 mt-0.5">Praça Floriano Peixoto, s/n - Santa Efigênia</p>
-                    <div class="mt-3 text-[11px] text-pmmg-khaki flex items-center justify-between">
-                        <span class="italic text-gray-500">Esqueleto Padrão 18º BPM</span>
-                        <span class="font-bold">Acessar <i data-lucide="chevron-right"class="w-3 h-3 inline"></i></span>
+                    <div class="rpm1-foot mt-3 text-[11px] text-gray-300 flex items-center justify-between">
+                        <span class="rpm1-status">Área pronta para receber os dados</span>
+                        <span class="font-bold text-white">Acessar <i data-lucide="chevron-right" class="w-3 h-3 inline"></i></span>
                     </div>
                 </div>
 
-                <div onclick="openBattalionPlaceholder('5º BPM', 'Belo Horizonte', 'Avenida Amazonas, 6455 - Gameleira')"class="bg-pmmg-card p-4 rounded-xl tactical-border tactical-card cursor-pointer">
-                    <span class="text-[10px] bg-pmmg-dark text-gray-400 font-bold px-2 py-0.5 rounded uppercase">Capital • Gameleira</span>
-                    <h3 class="text-lg sm:text-xl font-military text-white font-bold uppercase mt-1">5º BPM</h3>
+                <div data-rpm1-bpm="5º BPM" onclick="openBattalionPlaceholder('5º BPM', 'Belo Horizonte', 'Avenida Amazonas, 6455 - Gameleira')" class="bg-pmmg-card p-4 rounded-xl tactical-border tactical-card cursor-pointer">
+                    <span class="rpm1-badge text-[10px] bg-pmmg-dark text-gray-200 font-bold px-2 py-0.5 rounded uppercase">Capital • Gameleira</span>
+                    <h3 class="rpm1-title text-lg sm:text-xl font-military text-white font-bold uppercase mt-1">5º BPM</h3>
                     <p class="text-xs text-gray-400 mt-0.5">Avenida Amazonas, 6455 - Gameleira</p>
-                    <div class="mt-3 text-[11px] text-pmmg-khaki flex items-center justify-between">
-                        <span class="italic text-gray-500">Esqueleto Padrão 18º BPM</span>
-                        <span class="font-bold">Acessar <i data-lucide="chevron-right"class="w-3 h-3 inline"></i></span>
+                    <div class="rpm1-foot mt-3 text-[11px] text-gray-300 flex items-center justify-between">
+                        <span class="rpm1-status">Área pronta para receber os dados</span>
+                        <span class="font-bold text-white">Acessar <i data-lucide="chevron-right" class="w-3 h-3 inline"></i></span>
                     </div>
                 </div>
 
-                <div onclick="openBattalionPlaceholder('13º BPM', 'Belo Horizonte', 'Avenida Dr. Cristiano Guimarães, 2300 - Planalto')"class="bg-pmmg-card p-4 rounded-xl tactical-border tactical-card cursor-pointer">
-                    <span class="text-[10px] bg-pmmg-dark text-gray-400 font-bold px-2 py-0.5 rounded uppercase">Capital • Planalto</span>
-                    <h3 class="text-lg sm:text-xl font-military text-white font-bold uppercase mt-1">13º BPM</h3>
+                <div data-rpm1-bpm="13º BPM" onclick="openBattalionPlaceholder('13º BPM', 'Belo Horizonte', 'Avenida Dr. Cristiano Guimarães, 2300 - Planalto')" class="bg-pmmg-card p-4 rounded-xl tactical-border tactical-card cursor-pointer">
+                    <span class="rpm1-badge text-[10px] bg-pmmg-dark text-gray-200 font-bold px-2 py-0.5 rounded uppercase">Capital • Planalto</span>
+                    <h3 class="rpm1-title text-lg sm:text-xl font-military text-white font-bold uppercase mt-1">13º BPM</h3>
                     <p class="text-xs text-gray-400 mt-0.5">Avenida Dr. Cristiano Guimarães, 2300 - Planalto</p>
-                    <div class="mt-3 text-[11px] text-pmmg-khaki flex items-center justify-between">
-                        <span class="italic text-gray-500">Esqueleto Padrão 18º BPM</span>
-                        <span class="font-bold">Acessar <i data-lucide="chevron-right"class="w-3 h-3 inline"></i></span>
+                    <div class="rpm1-foot mt-3 text-[11px] text-gray-300 flex items-center justify-between">
+                        <span class="rpm1-status">Área pronta para receber os dados</span>
+                        <span class="font-bold text-white">Acessar <i data-lucide="chevron-right" class="w-3 h-3 inline"></i></span>
                     </div>
                 </div>
 
-                <div onclick="openBattalionPlaceholder('16º BPM', 'Belo Horizonte', 'Rua Tenente Vitorino, 71 - Santa Tereza')"class="bg-pmmg-card p-4 rounded-xl tactical-border tactical-card cursor-pointer">
-                    <span class="text-[10px] bg-pmmg-dark text-gray-400 font-bold px-2 py-0.5 rounded uppercase">Capital • Santa Tereza</span>
-                    <h3 class="text-lg sm:text-xl font-military text-white font-bold uppercase mt-1">16º BPM</h3>
+                <div data-rpm1-bpm="16º BPM" onclick="openBattalionPlaceholder('16º BPM', 'Belo Horizonte', 'Rua Tenente Vitorino, 71 - Santa Tereza')" class="bg-pmmg-card p-4 rounded-xl tactical-border tactical-card cursor-pointer">
+                    <span class="rpm1-badge text-[10px] bg-pmmg-dark text-gray-200 font-bold px-2 py-0.5 rounded uppercase">Capital • Santa Tereza</span>
+                    <h3 class="rpm1-title text-lg sm:text-xl font-military text-white font-bold uppercase mt-1">16º BPM</h3>
                     <p class="text-xs text-gray-400 mt-0.5">Rua Tenente Vitorino, 71 - Santa Tereza</p>
-                    <div class="mt-3 text-[11px] text-pmmg-khaki flex items-center justify-between">
-                        <span class="italic text-gray-500">Esqueleto Padrão 18º BPM</span>
-                        <span class="font-bold">Acessar <i data-lucide="chevron-right"class="w-3 h-3 inline"></i></span>
+                    <div class="rpm1-foot mt-3 text-[11px] text-gray-300 flex items-center justify-between">
+                        <span class="rpm1-status">Área pronta para receber os dados</span>
+                        <span class="font-bold text-white">Acessar <i data-lucide="chevron-right" class="w-3 h-3 inline"></i></span>
                     </div>
                 </div>
 
-                <div onclick="openBattalionPlaceholder('22º BPM', 'Belo Horizonte', 'Avenida Arthur Bernardes, 1337 - Santa Lúcia')"class="bg-pmmg-card p-4 rounded-xl tactical-border tactical-card cursor-pointer">
-                    <span class="text-[10px] bg-pmmg-dark text-gray-400 font-bold px-2 py-0.5 rounded uppercase">Capital • Santa Lúcia</span>
-                    <h3 class="text-lg sm:text-xl font-military text-white font-bold uppercase mt-1">22º BPM</h3>
+                <div data-rpm1-bpm="22º BPM" onclick="openBattalionPlaceholder('22º BPM', 'Belo Horizonte', 'Avenida Arthur Bernardes, 1337 - Santa Lúcia')" class="bg-pmmg-card p-4 rounded-xl border border-pmmg-gold/60 tactical-card cursor-pointer">
+                    <span class="rpm1-badge text-[10px] bg-pmmg-khakiBadge text-pmmg-gold font-bold px-2 py-0.5 rounded uppercase">Capital • Santa Lúcia</span>
+                    <h3 class="rpm1-title text-lg sm:text-xl font-military text-pmmg-gold font-bold uppercase mt-1">22º BPM</h3>
                     <p class="text-xs text-gray-400 mt-0.5">Avenida Arthur Bernardes, 1337 - Santa Lúcia</p>
-                    <div class="mt-3 text-[11px] text-pmmg-khaki flex items-center justify-between">
-                        <span class="italic text-gray-500">Esqueleto Padrão 18º BPM</span>
-                        <span class="font-bold">Acessar <i data-lucide="chevron-right"class="w-3 h-3 inline"></i></span>
+                    <div class="rpm1-foot mt-3 text-[11px] text-pmmg-gold flex items-center justify-between">
+                        <span class="rpm1-status">Dados Carregados • 4 Cia(s)</span>
+                        <span class="font-bold">Acessar <i data-lucide="chevron-right" class="w-3 h-3 inline"></i></span>
                     </div>
                 </div>
 
-                <div onclick="openBattalionPlaceholder('34º BPM', 'Belo Horizonte', 'Avenida Américo Vespúcio, 2391 - Caiçara')"class="bg-pmmg-card p-4 rounded-xl tactical-border tactical-card cursor-pointer">
-                    <span class="text-[10px] bg-pmmg-dark text-gray-400 font-bold px-2 py-0.5 rounded uppercase">Capital • Caiçara</span>
-                    <h3 class="text-lg sm:text-xl font-military text-white font-bold uppercase mt-1">34º BPM</h3>
+                <div data-rpm1-bpm="34º BPM" onclick="openBattalionPlaceholder('34º BPM', 'Belo Horizonte', 'Avenida Américo Vespúcio, 2391 - Caiçara')" class="bg-pmmg-card p-4 rounded-xl tactical-border tactical-card cursor-pointer">
+                    <span class="rpm1-badge text-[10px] bg-pmmg-dark text-gray-200 font-bold px-2 py-0.5 rounded uppercase">Capital • Caiçara</span>
+                    <h3 class="rpm1-title text-lg sm:text-xl font-military text-white font-bold uppercase mt-1">34º BPM</h3>
                     <p class="text-xs text-gray-400 mt-0.5">Avenida Américo Vespúcio, 2391 - Caiçara</p>
-                    <div class="mt-3 text-[11px] text-pmmg-khaki flex items-center justify-between">
-                        <span class="italic text-gray-500">Esqueleto Padrão 18º BPM</span>
-                        <span class="font-bold">Acessar <i data-lucide="chevron-right"class="w-3 h-3 inline"></i></span>
+                    <div class="rpm1-foot mt-3 text-[11px] text-gray-300 flex items-center justify-between">
+                        <span class="rpm1-status">Área pronta para receber os dados</span>
+                        <span class="font-bold text-white">Acessar <i data-lucide="chevron-right" class="w-3 h-3 inline"></i></span>
                     </div>
                 </div>
 
-                <div onclick="openBattalionPlaceholder('41º BPM', 'Belo Horizonte', 'Avenida Afonso Vaz de Melo, 650 - Barreiro')"class="bg-pmmg-card p-4 rounded-xl tactical-border tactical-card cursor-pointer">
-                    <span class="text-[10px] bg-pmmg-dark text-gray-400 font-bold px-2 py-0.5 rounded uppercase">Capital • Barreiro</span>
-                    <h3 class="text-lg sm:text-xl font-military text-white font-bold uppercase mt-1">41º BPM</h3>
+                <div data-rpm1-bpm="41º BPM" onclick="openBattalionPlaceholder('41º BPM', 'Belo Horizonte', 'Avenida Afonso Vaz de Melo, 650 - Barreiro')" class="bg-pmmg-card p-4 rounded-xl tactical-border tactical-card cursor-pointer">
+                    <span class="rpm1-badge text-[10px] bg-pmmg-dark text-gray-200 font-bold px-2 py-0.5 rounded uppercase">Capital • Barreiro</span>
+                    <h3 class="rpm1-title text-lg sm:text-xl font-military text-white font-bold uppercase mt-1">41º BPM</h3>
                     <p class="text-xs text-gray-400 mt-0.5">Avenida Afonso Vaz de Melo, 650 - Barreiro</p>
-                    <div class="mt-3 text-[11px] text-pmmg-khaki flex items-center justify-between">
-                        <span class="italic text-gray-500">Esqueleto Padrão 18º BPM</span>
-                        <span class="font-bold">Acessar <i data-lucide="chevron-right"class="w-3 h-3 inline"></i></span>
+                    <div class="rpm1-foot mt-3 text-[11px] text-gray-300 flex items-center justify-between">
+                        <span class="rpm1-status">Área pronta para receber os dados</span>
+                        <span class="font-bold text-white">Acessar <i data-lucide="chevron-right" class="w-3 h-3 inline"></i></span>
                     </div>
                 </div>
 
-                <div onclick="openBattalionPlaceholder('49º BPM', 'Belo Horizonte', 'Avenida Érico Veríssimo, 561 - Venda Nova')"class="bg-pmmg-card p-4 rounded-xl tactical-border tactical-card cursor-pointer">
-                    <span class="text-[10px] bg-pmmg-dark text-gray-400 font-bold px-2 py-0.5 rounded uppercase">Capital • Venda Nova</span>
-                    <h3 class="text-lg sm:text-xl font-military text-white font-bold uppercase mt-1">49º BPM</h3>
+                <div data-rpm1-bpm="49º BPM" onclick="openBattalionPlaceholder('49º BPM', 'Belo Horizonte', 'Avenida Érico Veríssimo, 561 - Venda Nova')" class="bg-pmmg-card p-4 rounded-xl tactical-border tactical-card cursor-pointer">
+                    <span class="rpm1-badge text-[10px] bg-pmmg-dark text-gray-200 font-bold px-2 py-0.5 rounded uppercase">Capital • Venda Nova</span>
+                    <h3 class="rpm1-title text-lg sm:text-xl font-military text-white font-bold uppercase mt-1">49º BPM</h3>
                     <p class="text-xs text-gray-400 mt-0.5">Avenida Érico Veríssimo, 561 - São João Batista</p>
-                    <div class="mt-3 text-[11px] text-pmmg-khaki flex items-center justify-between">
-                        <span class="italic text-gray-500">Esqueleto Padrão 18º BPM</span>
-                        <span class="font-bold">Acessar <i data-lucide="chevron-right"class="w-3 h-3 inline"></i></span>
+                    <div class="rpm1-foot mt-3 text-[11px] text-gray-300 flex items-center justify-between">
+                        <span class="rpm1-status">Área pronta para receber os dados</span>
+                        <span class="font-bold text-white">Acessar <i data-lucide="chevron-right" class="w-3 h-3 inline"></i></span>
                     </div>
                 </div>
 
@@ -15624,7 +15623,7 @@
         const AZIMUTE_QUICK_ACCESS_CATALOG = [
             {
                 id: 'geolocalizacao',
-                label: 'Geolocalização',
+                label: 'Mapa',
                 defaultEnabled: true,
                 type: 'action',
                 onClick: "showView('gps')",
@@ -16027,7 +16026,15 @@ if (viewId === 'gps' && window.azimuteGeoInvalidate) window.azimuteGeoInvalidate
             if (gpsHud) {
                 if (viewId === 'gps') {
                     gpsHud.classList.remove('hidden');
-                    // Mantém TODAS as caixas de Geolocalização fechadas por padrão ao abrir a aba
+                    // Mantém TODAS as caixas de Mapa fechadas por padrão ao abrir a aba
+                    const geoBody = document.getElementById('azGeoDrawerBody');
+                    const geoBtn = document.getElementById('azGeoDrawerToggle');
+                    const geoArr = document.getElementById('azGeoDrawerArrow');
+                    if (geoBody && !document.body.classList.contains('az-map-expanded')) {
+                        geoBody.classList.remove('is-open');
+                        if (geoBtn) geoBtn.setAttribute('aria-expanded', 'false');
+                        if (geoArr) geoArr.textContent = 'ABRIR +';
+                    }
                     if (typeof window.toggleGeoWeatherBox === 'function') window.toggleGeoWeatherBox(false);
                     if (typeof window.toggleGeoConnectivityBox === 'function') window.toggleGeoConnectivityBox(false);
                     if (typeof window.toggleGpsClosestHospitalBox === 'function') window.toggleGpsClosestHospitalBox(false);
@@ -16139,7 +16146,7 @@ if (viewId === 'gps' && window.azimuteGeoInvalidate) window.azimuteGeoInvalidate
                 if (activeName) activeName.textContent = 'APH';
             } else if (viewId === 'gps') {
                 if (activeBadge) activeBadge.classList.remove('hidden');
-                if (activeName) activeName.textContent = 'Geolocalização';
+                if (activeName) activeName.textContent = 'Mapa';
                 const dBody = document.getElementById('azGeoDrawerBody');
                 const dArrow = document.getElementById('azGeoDrawerArrow');
                 if (dBody && !dBody.classList.contains('is-open')) {
@@ -17841,7 +17848,8 @@ if (viewId === 'gps' && window.azimuteGeoInvalidate) window.azimuteGeoInvalidate
                 rede_radio: normRede,
                 endereco_sede: sedeAddr,
                 telefone_sou: sedeTel,
-                status: 'Dados Carregados • ' + companhias.length + ' Cia(s)',
+                isSummaryOnly: Boolean(raw.isSummaryOnly),
+                status: raw.isSummaryOnly ? 'Área pronta para receber os dados' : ('Dados Carregados • ' + companhias.length + ' Cia(s)'),
                 companhias,
                 apoio_abastecimento: apoioAbastecimento,
                 divisas: Array.isArray(raw.divisas) ? raw.divisas.join(' • ') : (raw.divisas || (Array.isArray(raw.limites) ? raw.limites.join(' • ') : '')),
@@ -17885,7 +17893,7 @@ if (viewId === 'gps' && window.azimuteGeoInvalidate) window.azimuteGeoInvalidate
                 ]
             },
             {
-                nome: "1º BPM", cidade: "Belo Horizonte", regiao: "1ª RPM • Capital", rede_radio: "REDE: 1ª RPM / 1º BPM",
+                nome: "1º BPM", isSummaryOnly: true, cidade: "Belo Horizonte", regiao: "1ª RPM • Capital", rede_radio: "REDE: 1ª RPM / 1º BPM",
                 endereco_sede: "Praça Floriano Peixoto, s/n - Santa Efigênia, Belo Horizonte/MG", telefone_sou: "COPOM 190 / 1ª RPM",
                 companhias: [{ nome: "Área Central / 1º BPM", setor: "Centro / Savassi / Funcionários / Barro Preto", endereco: "Praça Floriano Peixoto, s/n - Santa Efigênia", telefone: "190", bairros: ["Centro", "Savassi", "Funcionários", "Lourdes", "Barro Preto", "Carlos Prates", "Floresta", "Boa Viagem", "Lagoinha"], vias: ["Av. Afonso Pena", "Av. Amazonas", "Av. do Contorno", "Av. Cristiano Machado", "Av. Bias Fortes"] }],
                 apoio_abastecimento: [{ nome: "Sede 1º BPM", endereco: "Praça Floriano Peixoto, s/n - Santa Efigênia, BH", maps_url: "https://www.google.com/maps/search/?api=1&query=Praca+Floriano+Peixoto+Santa+Efigenia+BH" }],
@@ -17894,7 +17902,7 @@ if (viewId === 'gps' && window.azimuteGeoInvalidate) window.azimuteGeoInvalidate
                 contatos: [{ setor: "COPOM / 1ª RPM", telefone: "190" }]
             },
             {
-                nome: "5º BPM", cidade: "Belo Horizonte", regiao: "1ª RPM • Capital", rede_radio: "REDE: 1ª RPM / 5º BPM A",
+                nome: "5º BPM", isSummaryOnly: true, cidade: "Belo Horizonte", regiao: "1ª RPM • Capital", rede_radio: "REDE: 1ª RPM / 5º BPM A",
                 endereco_sede: "Avenida Amazonas, 6455 - Gameleira, Belo Horizonte/MG", telefone_sou: "COPOM 190 / 1ª RPM",
                 companhias: [{ nome: "Área Oeste / 5º BPM", setor: "Gameleira / Padre Eustáquio / Betânia / Arena MRV", endereco: "Avenida Amazonas, 6455 - Gameleira", telefone: "190", bairros: ["Gameleira", "Nova Gameleira", "Califórnia", "Camargos", "Coração Eucarístico", "Dom Bosco", "Dom Cabral", "João Pinheiro", "Madre Gertrudes", "Minas Brasil", "Nova Cintra", "Padre Eustáquio", "Salgado Filho", "Betânia", "Cabana do Pai Tomás", "Estrela do Oriente", "Havaí", "Vista Alegre"], vias: ["Av. Amazonas", "Via Expressa", "Anel Rodoviário", "Av. Tereza Cristina"] }],
                 apoio_abastecimento: [{ nome: "Complexo Gameleira / 5º BPM", endereco: "Av. Amazonas, 6455 - Gameleira, BH", maps_url: "https://www.google.com/maps/search/?api=1&query=Avenida+Amazonas+6455+Gameleira+BH" }],
@@ -17903,7 +17911,7 @@ if (viewId === 'gps' && window.azimuteGeoInvalidate) window.azimuteGeoInvalidate
                 contatos: [{ setor: "COPOM / 5º BPM", telefone: "190" }]
             },
             {
-                nome: "16º BPM", cidade: "Belo Horizonte", regiao: "1ª RPM • Capital", rede_radio: "REDE: 1ª RPM / 16º BPM A",
+                nome: "16º BPM", isSummaryOnly: true, cidade: "Belo Horizonte", regiao: "1ª RPM • Capital", rede_radio: "REDE: 1ª RPM / 16º BPM A",
                 endereco_sede: "Rua Tenente Vitorino, 71 - Santa Tereza, Belo Horizonte/MG", telefone_sou: "COPOM 190 / 1ª RPM",
                 companhias: [{ nome: "Área Leste / 16º BPM", setor: "Santa Tereza / Horto / Sagrada Família / Independência", endereco: "Rua Tenente Vitorino, 71 - Santa Tereza", telefone: "190", bairros: ["Santa Tereza", "Horto", "Horto Florestal", "Sagrada Família", "Cidade Nova", "Silveira", "Nova Floresta", "União", "Bairro da Graça", "Colégio Batista", "Renascença", "São Geraldo", "Boa Vista", "Casa Branca", "Santa Inês"], vias: ["Av. dos Andradas", "Av. Silviano Brandão", "Av. José Cândido da Silveira", "Av. Cristiano Machado"] }],
                 apoio_abastecimento: [{ nome: "Sede 16º BPM", endereco: "Rua Tenente Vitorino, 71 - Santa Tereza, BH", maps_url: "https://www.google.com/maps/search/?api=1&query=Rua+Tenente+Vitorino+71+Santa+Tereza+BH" }],
@@ -17912,7 +17920,7 @@ if (viewId === 'gps' && window.azimuteGeoInvalidate) window.azimuteGeoInvalidate
                 contatos: [{ setor: "COPOM / 16º BPM", telefone: "190" }]
             },
             {
-                nome: "34º BPM", cidade: "Belo Horizonte", regiao: "1ª RPM • Capital", rede_radio: "REDE: 1ª RPM / 34º BPM B",
+                nome: "34º BPM", isSummaryOnly: true, cidade: "Belo Horizonte", regiao: "1ª RPM • Capital", rede_radio: "REDE: 1ª RPM / 34º BPM B",
                 endereco_sede: "Avenida Américo Vespúcio, 2391 - Caiçara, Belo Horizonte/MG", telefone_sou: "COPOM 190 / 1ª RPM",
                 companhias: [{ nome: "Área Noroeste / Pampulha", setor: "Caiçara / Castelo / Pampulha / Mineirão", endereco: "Av. Américo Vespúcio, 2391 - Caiçara", telefone: "190", bairros: ["Caiçara", "Alípio de Melo", "Castelo", "Ouro Preto", "Paquetá", "São José", "Pampulha", "São Luiz", "Bandeirantes", "Santa Amélia", "Santa Branca", "Itapoã", "Jardim Atlântico", "Serrano", "Glória", "Coqueiros", "Pindorama"], vias: ["Av. Antônio Carlos", "Av. Pedro II", "Av. Carlos Luz", "Av. Portugal", "Anel Rodoviário"] }],
                 apoio_abastecimento: [{ nome: "Sede 34º BPM", endereco: "Av. Américo Vespúcio, 2391 - Caiçara, BH", maps_url: "https://www.google.com/maps/search/?api=1&query=Avenida+Americo+Vespucio+2391+Caicara+BH" }],
@@ -17921,7 +17929,7 @@ if (viewId === 'gps' && window.azimuteGeoInvalidate) window.azimuteGeoInvalidate
                 contatos: [{ setor: "COPOM / 34º BPM", telefone: "190" }]
             },
             {
-                nome: "41º BPM", cidade: "Belo Horizonte", regiao: "1ª RPM • Capital", rede_radio: "REDE: 1ª RPM / 41º BPM",
+                nome: "41º BPM", isSummaryOnly: true, cidade: "Belo Horizonte", regiao: "1ª RPM • Capital", rede_radio: "REDE: 1ª RPM / 41º BPM",
                 endereco_sede: "Avenida Afonso Vaz de Melo, 650 - Barreiro, Belo Horizonte/MG", telefone_sou: "COPOM 190 / 1ª RPM",
                 companhias: [{ nome: "Área Barreiro / 41º BPM", setor: "Barreiro / Cardoso / Tirol / Jatobá", endereco: "Av. Afonso Vaz de Melo, 650 - Barreiro", telefone: "190", bairros: ["Barreiro", "Cardoso", "Diamante", "Milionários", "Lindéia", "Tirol", "Teixeira Dias", "Vila Pinho", "Vale do Jatobá", "Bonsucesso", "Olaria", "Santa Helena"], vias: ["Av. Afonso Vaz de Melo", "Av. Olinto Meireles", "Av. Sinfrônio Brochado", "Anel Rodoviário"] }],
                 apoio_abastecimento: [{ nome: "Sede 41º BPM", endereco: "Av. Afonso Vaz de Melo, 650 - Barreiro, BH", maps_url: "https://www.google.com/maps/search/?api=1&query=Avenida+Afonso+Vaz+de+Melo+650+Barreiro+BH" }],
@@ -17930,7 +17938,7 @@ if (viewId === 'gps' && window.azimuteGeoInvalidate) window.azimuteGeoInvalidate
                 contatos: [{ setor: "COPOM / 41º BPM", telefone: "190" }]
             },
             {
-                nome: "13º BPM", cidade: "Belo Horizonte", regiao: "1ª RPM • Capital", rede_radio: "REDE: 1ª RPM / 13º BPM",
+                nome: "13º BPM", isSummaryOnly: true, cidade: "Belo Horizonte", regiao: "1ª RPM • Capital", rede_radio: "REDE: 1ª RPM / 13º BPM",
                 endereco_sede: "Avenida Dr. Cristiano Guimarães, 2300 - Planalto, Belo Horizonte/MG", telefone_sou: "COPOM 190 / 1ª RPM",
                 companhias: [{ nome: "Área Norte / Planalto", setor: "Planalto / Guarani / Tupi / Floramar", endereco: "Av. Dr. Cristiano Guimarães, 2300 - Planalto", telefone: "190", bairros: ["Planalto", "Guarani", "Tupi", "Aarão Reis", "Floramar", "Heliópolis", "Jaqueline", "Jardim Guanabara", "Providência", "São Bernardo", "Vila Clóris"], vias: ["Av. Cristiano Machado", "Av. Pedro I", "Av. Saramenha", "MG-020"] }],
                 apoio_abastecimento: [{ nome: "Sede 13º BPM", endereco: "Av. Dr. Cristiano Guimarães, 2300 - Planalto, BH", maps_url: "https://www.google.com/maps/search/?api=1&query=Avenida+Cristiano+Guimaraes+2300+Planalto+BH" }],
@@ -17939,7 +17947,7 @@ if (viewId === 'gps' && window.azimuteGeoInvalidate) window.azimuteGeoInvalidate
                 contatos: [{ setor: "COPOM / 13º BPM", telefone: "190" }]
             },
             {
-                nome: "49º BPM", cidade: "Belo Horizonte", regiao: "1ª RPM • Capital", rede_radio: "REDE: 1ª RPM / 49º BPM",
+                nome: "49º BPM", isSummaryOnly: true, cidade: "Belo Horizonte", regiao: "1ª RPM • Capital", rede_radio: "REDE: 1ª RPM / 49º BPM",
                 endereco_sede: "Avenida Érico Veríssimo, 561 - Venda Nova, Belo Horizonte/MG", telefone_sou: "COPOM 190 / 1ª RPM",
                 companhias: [{ nome: "Área Venda Nova / 49º BPM", setor: "Venda Nova / Céu Azul / Justinópolis / Serra Verde", endereco: "Av. Érico Veríssimo, 561 - Venda Nova", telefone: "190", bairros: ["Venda Nova", "Céu Azul", "Copacabana", "Jardim dos Comerciários", "Letícia", "Mantiqueira", "Piratininga", "Rio Branco", "Santa Mônica", "São João Batista", "Serra Verde"], vias: ["Av. Vilarinho", "Av. Padre Pedro Pinto", "Av. Pedro I", "MG-010"] }],
                 apoio_abastecimento: [{ nome: "Sede 49º BPM", endereco: "Av. Érico Veríssimo, 561 - Venda Nova, BH", maps_url: "https://www.google.com/maps/search/?api=1&query=Avenida+Erico+Verissimo+561+Venda+Nova+BH" }],
@@ -18017,6 +18025,9 @@ if (viewId === 'gps' && window.azimuteGeoInvalidate) window.azimuteGeoInvalidate
 
             const finalList = Array.from(mergedUnits.values());
             AZIMUTE_DB = { all: finalList, rpm1: finalList, rpm2: [] };
+            if (typeof window.azSyncRpm1BattalionCards === "function") {
+                window.azSyncRpm1BattalionCards();
+            }
             if (typeof window.azimuteRefreshGeoDatasets === "function") {
                 window.azimuteRefreshGeoDatasets();
             }
@@ -18027,6 +18038,33 @@ if (viewId === 'gps' && window.azimuteGeoInvalidate) window.azimuteGeoInvalidate
                 localStorage.setItem('azimute_unified_units_cache_v2', JSON.stringify(finalList));
             } catch (e) {}
         }
+
+        window.azSyncRpm1BattalionCards = function() {
+            const cards = document.querySelectorAll('#view-rpm1 [data-rpm1-bpm]');
+            if (!cards.length || !AZIMUTE_DB || !Array.isArray(AZIMUTE_DB.all)) return;
+            cards.forEach(card => {
+                const bpmName = card.getAttribute('data-rpm1-bpm');
+                const unit = AZIMUTE_DB.all.find(u => u.nome && u.nome.toLowerCase() === String(bpmName || '').toLowerCase());
+                const hasData = Boolean(unit && Array.isArray(unit.companhias) && unit.companhias.length > 0 && !unit.isSummaryOnly);
+                const badge = card.querySelector('.rpm1-badge');
+                const title = card.querySelector('.rpm1-title');
+                const foot = card.querySelector('.rpm1-foot');
+                const status = card.querySelector('.rpm1-status');
+                if (hasData) {
+                    card.className = 'bg-pmmg-card p-4 rounded-xl border border-pmmg-gold/60 tactical-card cursor-pointer';
+                    if (badge) badge.className = 'rpm1-badge text-[10px] bg-pmmg-khakiBadge text-pmmg-gold font-bold px-2 py-0.5 rounded uppercase';
+                    if (title) title.className = 'rpm1-title text-lg sm:text-xl font-military text-pmmg-gold font-bold uppercase mt-1';
+                    if (foot) foot.className = 'rpm1-foot mt-3 text-[11px] text-pmmg-gold flex items-center justify-between';
+                    if (status) status.textContent = 'Dados Carregados • ' + unit.companhias.length + ' Cia(s)';
+                } else {
+                    card.className = 'bg-pmmg-card p-4 rounded-xl tactical-border tactical-card cursor-pointer';
+                    if (badge) badge.className = 'rpm1-badge text-[10px] bg-pmmg-dark text-gray-200 font-bold px-2 py-0.5 rounded uppercase';
+                    if (title) title.className = 'rpm1-title text-lg sm:text-xl font-military text-white font-bold uppercase mt-1';
+                    if (foot) foot.className = 'rpm1-foot mt-3 text-[11px] text-gray-300 flex items-center justify-between';
+                    if (status) status.textContent = 'Área pronta para receber os dados';
+                }
+            });
+        };
         loadExternalDadosJson();
 
         // Sobrescreve openBattalionPlaceholder para abrir qualquer Batalhão com seus dados reais
@@ -18109,7 +18147,7 @@ if (viewId === 'gps' && window.azimuteGeoInvalidate) window.azimuteGeoInvalidate
                                 <span><strong>Endereço:</strong> ${c.endereco || ''}</span>
                                 ${c.endereco ? `<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(c.endereco + ' ' + currentDrawerUnit.cidade)}" target="_blank" class="text-[10px] font-bold text-pmmg-khaki underline shrink-0">Abrir no Maps</a>` : ''}
                             </p>
-                            ${allV.length > 0 ? `<p class="text-[11px] text-gray-400"><strong class="text-pmmg-khaki">Principais Vias:</strong> ${allV.join(' • ')}</p>` : ''}
+                            ${allV.length > 0 ? `<div class="bg-pmmg-dark border border-pmmg-border rounded-lg p-2.5 space-y-1.5 text-[11px]"><strong class="text-pmmg-khaki block">Principais Corredores e Ruas:</strong><div class="flex flex-wrap gap-1">${allV.map(v => `<span class="px-2 py-0.5 bg-pmmg-card border border-pmmg-border rounded text-gray-200">${v}</span>`).join('')}</div></div>` : ''}
                             <div class="text-[11px] space-y-1.5">
                                 <div class="flex items-center justify-between">
                                     <strong class="text-pmmg-khaki">Principais Bairros:</strong>
@@ -18837,22 +18875,35 @@ if (window.__azimuteGeoInitialized) {
     const willOpen = typeof forceOpen === "boolean" ? forceOpen : !incOverlay.classList.contains("is-open");
 
     if (willOpen) {
-      document.body.classList.add("az-incursion-fullscreen");
+      const isHalf = incOverlay.classList.contains("is-halfscreen");
       incOverlay.classList.add("is-open");
-      if (mapEl.parentElement !== incMapSlot) {
-        incMapSlot.insertBefore(mapEl, incMapSlot.firstChild);
-      }
-      if (northBadge && northBadge.parentElement !== incMapSlot) {
-        incMapSlot.appendChild(northBadge);
-      }
-      if (tiltBadge && tiltBadge.parentElement !== incMapSlot) {
-        incMapSlot.appendChild(tiltBadge);
-      }
-      if (lockBadge && lockBadge.parentElement !== incMapSlot) {
-        incMapSlot.appendChild(lockBadge);
-      }
-      if (centerFab && centerFab.parentElement !== incMapSlot) {
-        incMapSlot.appendChild(centerFab);
+      if (isHalf) {
+        document.body.classList.remove("az-incursion-fullscreen");
+        document.body.classList.add("az-incursion-halfscreen");
+        // Mantém o mapa ativo visível em #azGeoStage (nunca tela preta)
+        if (mapEl.parentElement !== stageEl) stageEl.insertBefore(mapEl, stageEl.firstChild);
+        if (northBadge && northBadge.parentElement !== stageEl) stageEl.appendChild(northBadge);
+        if (tiltBadge && tiltBadge.parentElement !== stageEl) stageEl.appendChild(tiltBadge);
+        if (lockBadge && lockBadge.parentElement !== stageEl) stageEl.appendChild(lockBadge);
+        if (centerFab && centerFab.parentElement !== stageEl) stageEl.appendChild(centerFab);
+      } else {
+        document.body.classList.remove("az-incursion-halfscreen");
+        document.body.classList.add("az-incursion-fullscreen");
+        if (mapEl.parentElement !== incMapSlot) {
+          incMapSlot.insertBefore(mapEl, incMapSlot.firstChild);
+        }
+        if (northBadge && northBadge.parentElement !== incMapSlot) {
+          incMapSlot.appendChild(northBadge);
+        }
+        if (tiltBadge && tiltBadge.parentElement !== incMapSlot) {
+          incMapSlot.appendChild(tiltBadge);
+        }
+        if (lockBadge && lockBadge.parentElement !== incMapSlot) {
+          incMapSlot.appendChild(lockBadge);
+        }
+        if (centerFab && centerFab.parentElement !== incMapSlot) {
+          incMapSlot.appendChild(centerFab);
+        }
       }
       map.resize();
       requestAnimationFrame(() => map.resize());
@@ -18861,7 +18912,9 @@ if (window.__azimuteGeoInitialized) {
       startEspectro3dLoop();
     } else {
       document.body.classList.remove("az-incursion-fullscreen");
+      document.body.classList.remove("az-incursion-halfscreen");
       incOverlay.classList.remove("is-open");
+      incOverlay.classList.remove("is-halfscreen");
       if (mapEl.parentElement !== stageEl) {
         stageEl.insertBefore(mapEl, stageEl.firstChild);
       }
@@ -22649,8 +22702,19 @@ if (document.readyState === "loading") {
     left: 0 !important;
     right: 0 !important;
     bottom: 0 !important;
+    height: auto !important;
     border-top: 2px solid #C5A869 !important;
     border-radius: 16px 16px 0 0 !important;
+  }
+  #azIncursionOverlay.is-halfscreen .az-inc-quad-frame {
+    display: none !important;
+  }
+  #azIncursionOverlay.is-halfscreen .az-inc-body {
+    grid-template-columns: 1fr !important;
+    overflow-y: auto !important;
+  }
+  body.az-incursion-halfscreen.az-map-expanded #azGeoStage {
+    height: 46dvh !important;
   }
   #azTopHudShell.is-visible { display: flex !important; }
   #azTopHudShell > * { pointer-events: auto; }
@@ -25738,9 +25802,7 @@ if (document.readyState === "loading") {
       <g id="azStealthMuteX" style="display:none;"><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></g>
     </svg>
   </button>
-  <button type="button" class="az-hud-glass-btn" id="azAtakHamburgerBtn" title="Menu Principal" aria-label="Menu Principal">
-    <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-  </button>
+  <button type="button" id="azAtakHamburgerBtn" title="Gaveta do Mapa" aria-label="Gaveta do Mapa" style="width:30px !important;height:26px !important;border-radius:6px !important;background:#141414 !important;border:1px solid #C5A869 !important;color:#C5A869 !important;font-size:11px !important;font-weight:900 !important;display:inline-flex !important;align-items:center !important;justify-content:center !important;cursor:pointer;flex-shrink:0;">▲</button>
 </div>
 
 <!-- MODAL DE GRUPO (CHAT, FOTOS, COR EXCLUSIVA & PTT) -->
@@ -36268,12 +36330,12 @@ if (document.readyState === "loading") {
     syncSinglePttMode();
   });
 
-  // Gaveta de Controles do Mapa Expandido
+  // Gaveta de Controles do Mapa Expandido (mesma mecânica ▲/▼ do rodapé)
   onClick("azMapControlsDrawerBtn", function () {
     const col = document.getElementById("azGeoLeftOverlayCol");
     if (!col) return;
     const collapsed = col.classList.toggle("az-controls-collapsed");
-    this.classList.toggle("is-active", !collapsed);
+    this.textContent = collapsed ? "▼" : "▲";
   });
 
   // Helper de Press & Hold reutilizável (60fps, sem poluir clique curto)
@@ -36333,8 +36395,8 @@ if (document.readyState === "loading") {
     if (!inc) return;
     const isHalf = inc.classList.toggle("is-halfscreen");
     this.textContent = isHalf ? "Tela Cheia" : "Meia Tela";
-    if (window.azGeoMap && typeof window.azGeoMap.resize === "function") {
-      setTimeout(function () { window.azGeoMap.resize(); }, 80);
+    if (typeof window.azimuteToggleIncursionMode === "function") {
+      window.azimuteToggleIncursionMode(true);
     }
   });
 
