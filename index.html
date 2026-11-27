@@ -8141,7 +8141,7 @@
                         <a id="skeletonMapsBtn" href="#" target="_blank" class="px-3 py-1.5 bg-pmmg-dark text-pmmg-khaki border border-pmmg-border rounded-lg text-xs font-bold hover:bg-pmmg-border flex items-center gap-1">
                             <i data-lucide="map-pin" class="w-3.5 h-3.5"></i>Mapa Sede
                         </a>
-                        <button onclick="showView('regioes')" class="px-3 py-1.5 bg-pmmg-card text-pmmg-khaki border border-pmmg-khaki/40 rounded-lg text-xs font-bold hover:bg-pmmg-border flex items-center gap-1 cursor-pointer">
+                        <button type="button" onclick="showView(window._azLastUnitListView || 'regioes')" class="px-3 py-1.5 bg-pmmg-card text-pmmg-khaki border border-pmmg-khaki/40 rounded-lg text-xs font-bold hover:bg-pmmg-border flex items-center gap-1 cursor-pointer">
                             <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>Voltar
                         </button>
                     </div>
@@ -16046,6 +16046,12 @@ if (viewId === 'gps' && window.azimuteGeoInvalidate) window.azimuteGeoInvalidate
                 }
             }
 
+            if (viewId === 'regioes' || viewId === 'rpm1' || viewId === 'rpm2' || viewId === 'rpm3' || viewId === 'especializadas') {
+                window._azLastUnitListView = viewId;
+                if (viewId === 'rpm1' && typeof window.azSyncRpm1BattalionCards === 'function') {
+                    window.azSyncRpm1BattalionCards();
+                }
+            }
             if (viewId === 'saude') {
                 if (typeof window.toggleSaudeSmartHospitalBox === 'function') window.toggleSaudeSmartHospitalBox(false);
                 if (typeof window.toggleOfflineAphGuideBox === 'function') window.toggleOfflineAphGuideBox(false);
@@ -18147,17 +18153,17 @@ if (viewId === 'gps' && window.azimuteGeoInvalidate) window.azimuteGeoInvalidate
                                 <span><strong>Endereço:</strong> ${c.endereco || ''}</span>
                                 ${c.endereco ? `<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(c.endereco + ' ' + currentDrawerUnit.cidade)}" target="_blank" class="text-[10px] font-bold text-pmmg-khaki underline shrink-0">Abrir no Maps</a>` : ''}
                             </p>
-                            ${allV.length > 0 ? `<div class="bg-pmmg-dark border border-pmmg-border rounded-lg p-2.5 space-y-1.5 text-[11px]"><strong class="text-pmmg-khaki block">Principais Corredores e Ruas:</strong><div class="flex flex-wrap gap-1">${allV.map(v => `<span class="px-2 py-0.5 bg-pmmg-card border border-pmmg-border rounded text-gray-200">${v}</span>`).join('')}</div></div>` : ''}
                             <div class="text-[11px] space-y-1.5">
                                 <div class="flex items-center justify-between">
                                     <strong class="text-pmmg-khaki">Principais Bairros:</strong>
                                     ${restB.length > 0 ? `<button type="button" onclick="toggleCiaMoreBairros('${dId}')" id="btnMoreBairros-${dId}" class="px-2 py-0.5 rounded bg-pmmg-dark hover:bg-pmmg-border text-pmmg-khaki border border-pmmg-gold/40 text-[10px] font-bold cursor-pointer">Ver mais (${restB.length})</button>` : ''}
                                 </div>
                                 <div class="flex flex-wrap gap-1">
-                                    ${primB.map(b => `<span class="px-2 py-0.5 bg-pmmg-dark border border-red-500/75 rounded text-gray-200 inline-flex items-center gap-1">${b}</span>`).join('')}
+                                    ${primB.map(b => `<span class="px-2 py-0.5 bg-pmmg-dark border border-pmmg-border rounded text-gray-200 inline-flex items-center gap-1">${b}</span>`).join('')}
                                 </div>
                                 ${restB.length > 0 ? `<div id="moreBairros-${dId}" class="hidden flex-wrap gap-1 pt-1 border-t border-pmmg-border/60">${restB.map(b => `<span class="px-2 py-0.5 bg-pmmg-dark border border-pmmg-border rounded text-gray-300 inline-flex items-center gap-1">${b}</span>`).join('')}</div>` : ''}
                             </div>
+                            ${allV.length > 0 ? `<div class="bg-pmmg-dark border border-pmmg-border rounded-lg p-2.5 space-y-1.5 text-[11px]"><strong class="text-pmmg-khaki block">Principais Corredores e Ruas:</strong><div class="flex flex-wrap gap-1">${allV.map(v => `<span class="px-2 py-0.5 bg-pmmg-card border border-pmmg-border rounded text-gray-200">${v}</span>`).join('')}</div></div>` : ''}
                         </div>`;
                     }).join('');
                 }
@@ -19364,9 +19370,9 @@ if (window.__azimuteGeoInitialized) {
       if (gpsArrowSvg) {
         const targetVisual = normalizeAngle(stableHeading - getMapBearing());
         const diff = shortestAngleDiff(animVisualAngle, targetVisual);
-        if (Math.abs(diff) > 0.2) {
-          animVisualAngle += diff * 0.2;
-          gpsArrowSvg.style.transform = `rotate(${animVisualAngle.toFixed(2)}deg)`;
+        if (Math.abs(diff) > 0.8) {
+          animVisualAngle = normalizeAngle(animVisualAngle + diff * 0.18);
+          gpsArrowSvg.style.transform = `rotate(${animVisualAngle.toFixed(1)}deg)`;
         }
       }
 
@@ -20176,7 +20182,8 @@ if (window.__azimuteGeoInitialized) {
 
   const plusFiltersBtn = document.getElementById("azGeoPlusFiltersBtn");
   if (plusFiltersBtn && layersBox) {
-    plusFiltersBtn.addEventListener("click", () => {
+    plusFiltersBtn.addEventListener("click", (ev) => {
+      ev.stopPropagation();
       const open = layersBox.classList.toggle("is-open");
       plusFiltersBtn.classList.toggle("is-active", open);
     });
@@ -21496,19 +21503,26 @@ if (window.__azimuteGeoInitialized) {
   });
 
   let compassListening = false;
+  let lastOrientationTickMs = 0;
   function handleOrientationEvent(e, isAbsolute) {
+    const nowMs = performance.now();
+    if (nowMs - lastOrientationTickMs < 65) return;
+
+    let incomingHeading = null;
     if (typeof e.webkitCompassHeading === "number" && !Number.isNaN(e.webkitCompassHeading)) {
       hasAbsoluteCompass = true;
-      rawCompassHeading = pushSmoothedCompass(normalizeAngle(e.webkitCompassHeading));
-      refreshStabilizedHeading(false);
+      incomingHeading = normalizeAngle(e.webkitCompassHeading);
+    } else if ((isAbsolute || e.absolute === true) && typeof e.alpha === "number" && !Number.isNaN(e.alpha)) {
+      hasAbsoluteCompass = true;
+      incomingHeading = normalizeAngle(360 - e.alpha);
+    } else {
       return;
     }
 
-    if (!isAbsolute && e.absolute !== true) return;
-
-    if (typeof e.alpha === "number" && !Number.isNaN(e.alpha)) {
-      hasAbsoluteCompass = true;
-      rawCompassHeading = pushSmoothedCompass(normalizeAngle(360 - e.alpha));
+    lastOrientationTickMs = nowMs;
+    const prevRaw = rawCompassHeading;
+    rawCompassHeading = pushSmoothedCompass(incomingHeading);
+    if (Math.abs(shortestAngleDiff(prevRaw, rawCompassHeading)) >= 3) {
       refreshStabilizedHeading(false);
     }
   }
@@ -22713,8 +22727,13 @@ if (document.readyState === "loading") {
     grid-template-columns: 1fr !important;
     overflow-y: auto !important;
   }
-  body.az-incursion-halfscreen.az-map-expanded #azGeoStage {
+  body.az-incursion-halfscreen #azGeoStage {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
     height: 46dvh !important;
+    z-index: 99980 !important;
   }
   #azTopHudShell.is-visible { display: flex !important; }
   #azTopHudShell > * { pointer-events: auto; }
@@ -23185,19 +23204,20 @@ if (document.readyState === "loading") {
       height: clamp(230px, 68dvh, 320px) !important;
     }
     #azGeoLeftOverlayCol {
-      top: 8px;
+      top: 14px;
       left: 8px;
       gap: 4px;
     }
     body.az-map-expanded #azGeoLeftOverlayCol {
       position: fixed !important;
-      top: var(--az-top-hud-safe, 48px) !important;
+      top: var(--az-top-hud-safe, 58px) !important;
       left: 8px !important;
       gap: 4px !important;
       z-index: 100044 !important;
     }
     #azGeoLeftOverlayCol #azHudSearchToggleBtn,
     #azGeoLeftOverlayCol #azSatToggleBtn,
+    #azGeoLeftOverlayCol #azGeoPlusFiltersBtn,
     #azLockMapDrawBtn {
       width: 32px !important;
       height: 32px !important;
@@ -23231,13 +23251,13 @@ if (document.readyState === "loading") {
     #azGeoNorthBadge {
       width: 30px;
       height: 30px;
-      top: 8px;
+      top: 14px;
       right: 8px;
       font-size: 10px;
     }
     #azGeoLockBadge {
       height: 30px;
-      top: 8px;
+      top: 14px;
       right: 44px;
       font-size: 9px;
       padding: 0 7px;
@@ -23245,14 +23265,14 @@ if (document.readyState === "loading") {
     #azGeoTiltBadge {
       width: 34px;
       height: 30px;
-      top: 42px;
+      top: 48px;
       right: 8px;
       font-size: 10px;
     }
     #azK9HudBtn {
       width: 32px !important;
       height: 28px !important;
-      top: 76px !important;
+      top: 82px !important;
       right: 8px !important;
     }
     #azK9HudBtn svg {
@@ -23260,19 +23280,19 @@ if (document.readyState === "loading") {
       height: 14px;
     }
     body.az-map-expanded #azGeoNorthBadge {
-      top: var(--az-top-hud-safe, 48px) !important;
+      top: var(--az-top-hud-safe, 58px) !important;
       right: 8px !important;
     }
     body.az-map-expanded #azGeoLockBadge {
-      top: var(--az-top-hud-safe, 48px) !important;
+      top: var(--az-top-hud-safe, 58px) !important;
       right: 44px !important;
     }
     body.az-map-expanded #azGeoTiltBadge {
-      top: calc(var(--az-top-hud-safe, 48px) + 34px) !important;
+      top: calc(var(--az-top-hud-safe, 58px) + 34px) !important;
       right: 8px !important;
     }
     body.az-map-expanded #azK9HudBtn {
-      top: calc(var(--az-top-hud-safe, 48px) + 68px) !important;
+      top: calc(var(--az-top-hud-safe, 58px) + 68px) !important;
       right: 8px !important;
     }
     #azK9Popover {
@@ -25802,7 +25822,9 @@ if (document.readyState === "loading") {
       <g id="azStealthMuteX" style="display:none;"><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></g>
     </svg>
   </button>
-  <button type="button" id="azAtakHamburgerBtn" title="Gaveta do Mapa" aria-label="Gaveta do Mapa" style="width:30px !important;height:26px !important;border-radius:6px !important;background:#141414 !important;border:1px solid #C5A869 !important;color:#C5A869 !important;font-size:11px !important;font-weight:900 !important;display:inline-flex !important;align-items:center !important;justify-content:center !important;cursor:pointer;flex-shrink:0;">▲</button>
+  <button type="button" class="az-hud-glass-btn" id="azAtakHamburgerBtn" title="Menu Principal" aria-label="Menu Principal">
+    <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
 </div>
 
 <!-- MODAL DE GRUPO (CHAT, FOTOS, COR EXCLUSIVA & PTT) -->
@@ -34152,10 +34174,10 @@ if (document.readyState === "loading") {
       const vvH = window.visualViewport ? window.visualViewport.height : window.innerHeight;
       document.documentElement.style.setProperty("--az-vv-h", Math.round(vvH) + "px");
       const topShell = document.getElementById("azTopHudShell");
-      let hudSafe = 52;
+      let hudSafe = 58;
       if (document.body.classList.contains("az-map-expanded") && topShell) {
         const rect = topShell.getBoundingClientRect();
-        if (rect.height > 0) hudSafe = Math.max(44, Math.ceil(rect.bottom + 6));
+        if (rect.height > 0) hudSafe = Math.max(58, Math.ceil(rect.bottom + 14));
       }
       document.documentElement.style.setProperty("--az-top-hud-safe", hudSafe + "px");
       clampFloatingPttIntoViewport();
