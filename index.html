@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>AZIMUTE - Sistema Geral de Consulta Rápida (PMMG)</title>
-    <link rel="manifest" id="azimuteManifestLink" href="manifest.json">
+    <link rel="manifest" id="azimuteManifestLink" href="manifest.webmanifest">
     <script>
       (function () {
         try {
@@ -20,7 +20,7 @@
           });
           var mLink = document.getElementById("azimuteManifestLink");
           if (mLink && location.protocol.indexOf("http") === 0 && typeof Blob !== "undefined" && URL && URL.createObjectURL) {
-            fetch("./manifest.json", { cache: "no-store" }).then(function (r) {
+            fetch("./manifest.webmanifest", { cache: "no-store" }).then(function (r) {
               return r.ok ? r.json() : null;
             }).then(function (m) {
               if (!m || typeof m !== "object") return;
@@ -221,7 +221,7 @@
     <!-- Lucide Icons -->
     <script defer src="https://unpkg.com/lucide@latest"></script>
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Teko:wght@600;700&display=swap"rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Teko:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
 <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
     <script>
@@ -23256,7 +23256,7 @@ if (document.readyState === "loading") {
     transform: translate(0px, 0px);
     transition: transform 0.08s ease-out;
   }
-  .az-drone-stick-pad.is-active .az-drone-stick-knob { transition: none; background: radial-gradient(circle at 35% 35%, #7DD3FC, #0284C7); }
+  .az-drone-stick-pad.is-active .az-drone-stick-knob { transition: none; background: #C5A869; border: 1.5px solid #0D0D0D; }
   #azDroneTypeSelect {
     height: 26px;
     background: #161616;
@@ -24152,40 +24152,37 @@ if (document.readyState === "loading") {
     cursor: pointer;
   }
 
-  /* Roda Radial ATAK (Ícones SVG Militares + Engrenagem) */
+  /* Menu Radial SVG Puro Sóbrio (60fps, sem blur) */
   #azRadialWheel {
     position: fixed !important;
     z-index: 100056 !important;
-    width: 244px;
-    height: 244px;
-    margin-left: -122px;
-    margin-top: -122px;
+    width: 280px;
+    height: 280px;
+    margin-left: -140px;
+    margin-top: -140px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(13,13,13,0.32) 25%, rgba(15,15,15,0.96) 27%);
-    border: 1.5px solid #C5A869;
+    background: transparent !important;
+    border: none !important;
     display: none;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.96);
+    opacity: 0;
+    transform: scale(0.92);
+    contain: layout paint;
+    box-shadow: none !important;
   }
-  #azRadialWheel.is-open { display: block !important; }
-  .az-wheel-slot {
-    position: absolute;
-    width: 48px;
-    height: 48px;
-    margin-left: -24px;
-    margin-top: -24px;
-    border-radius: 50% !important;
-    background: #0D0D0D !important;
-    border: 1.5px solid #C5A869 !important;
-    color: #F2F0EA !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    cursor: pointer;
-    padding: 0 2px !important;
-    line-height: 1.05;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.85);
+  #azRadialWheel.is-open {
+    display: block !important;
+    opacity: 1;
+    transform: scale(1);
+    transition: transform 130ms cubic-bezier(0.22, 1, 0.36, 1), opacity 110ms ease;
   }
+  .az-radial-slice { cursor: pointer; transition: fill 90ms ease; }
+  .az-radial-slice path.az-slice-bg { fill: rgba(13, 13, 13, 0.94); stroke: rgba(197, 168, 105, 0.34); stroke-width: 1.2; }
+  .az-radial-slice:hover path.az-slice-bg,
+  .az-radial-slice:active path.az-slice-bg { fill: rgba(197, 168, 105, 0.24); stroke: #C5A869; stroke-width: 1.8; }
+  .az-radial-center-btn { cursor: pointer; }
+  .az-radial-center-btn circle { fill: #161616; stroke: #C5A869; stroke-width: 1.8; }
+  .az-radial-center-btn:hover circle, .az-radial-center-btn:active circle { fill: #26231C; }
+  .az-wheel-slot { display: none !important; }
   .az-wheel-slot svg {
     width: 15px;
     height: 15px;
@@ -25138,7 +25135,67 @@ if (document.readyState === "loading") {
   body.az-perf-noblur.az-map-interacting #azDroneHudBar * {
     transition: none !important;
   }
+  /* Padronização Sóbria UI/UX, Ergonomia >=40px, Escala >=11px e Transições 60fps */
+  #azMapTransitionVeil {
+    position: fixed;
+    inset: 0;
+    z-index: 9000;
+    background: #0D0D0D;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 150ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  #azMapTransitionVeil.is-flash { opacity: 0.42; }
+  #azDroneHudBar, #azSectorAnalysisPanel, #azAtakDrawer, #azReconQMarkCard {
+    contain: layout paint;
+    transition: transform 160ms cubic-bezier(0.22, 1, 0.36, 1), opacity 140ms ease;
+  }
+  .az-drone-pill-btn {
+    min-height: 40px !important;
+    padding: 6px 10px !important;
+    font-size: 11px !important;
+    background-color: #161616 !important;
+    border-color: rgba(197, 168, 105, 0.42) !important;
+    color: #F2F0EA !important;
+    box-shadow: none !important;
+  }
+  .az-drone-pill-btn.is-sky {
+    background-color: #161616 !important;
+    border-color: #C5A869 !important;
+    color: #C5A869 !important;
+  }
+  .az-drone-pill-btn.is-active {
+    background-color: #C5A869 !important;
+    border-color: #C5A869 !important;
+    color: #0D0D0D !important;
+  }
+  .az-recon-step-head, .az-recon-eta-badge, #azReconCriteriaGrid {
+    font-size: 11px !important;
+  }
+  .az-recon-step-desc {
+    font-size: 11.5px !important;
+    color: #D1D5DB !important;
+  }
+  .az-sector-tab {
+    min-height: 40px !important;
+    font-size: 11px !important;
+    padding: 6px 8px !important;
+  }
+  .az-sector-tab.is-active {
+    background-color: #C5A869 !important;
+    color: #0D0D0D !important;
+    border-color: #C5A869 !important;
+  }
+  .az-sector-item {
+    min-height: 44px !important;
+    font-size: 12px !important;
+  }
+  #azSectorSummaryBox {
+    font-size: 12px !important;
+    line-height: 1.45 !important;
+  }
 </style>
+<div id="azMapTransitionVeil" aria-hidden="true"></div>
 
 <input type="file" id="azNativeCameraInput" accept="image/*" capture="environment" style="display:none;">
 <input type="file" id="azNativeGalleryInput" accept="image/*" style="display:none;">
@@ -26305,7 +26362,7 @@ if (document.readyState === "loading") {
       <span>DRONE</span>
     </button>
     <select id="azDroneTypeSelect" title="Tipo de Drone">
-      <option value="tatico">TÁTICO (VOO LIVRE)</option>
+      <option value="tatico">VOO LIVRE</option>
       <option value="escolta">ESCOLTA (EQUIPE)</option>
       <option value="recon">RECON (SETOR)</option>
     </select>
@@ -26444,19 +26501,23 @@ if (document.readyState === "loading") {
 
 <div id="azAllyFlyoverBanner" role="status" aria-live="polite"></div>
 
-<!-- Cartão compacto de inspeção do marcador ? (órbita de inspeção) -->
-<div id="azReconQMarkCard" style="display:none;position:fixed;bottom:92px;left:50%;transform:translateX(-50%);z-index:100068;width:305px;max-width:calc(100vw - 16px);background:#0D0D0D;border:1.5px solid #C5A869;border-radius:10px;padding:8px 10px;color:#F2F0EA;font-size:10px;flex-direction:column;gap:6px;">
+<!-- Cartão compacto de inspeção do marcador ? (permanente e editável) -->
+<div id="azReconQMarkCard" style="display:none;position:fixed;bottom:92px;left:50%;transform:translateX(-50%);z-index:100068;width:320px;max-width:calc(100vw - 16px);background:#0D0D0D;border:1.5px solid #C5A869;border-radius:10px;padding:10px 12px;color:#F2F0EA;font-size:12px;flex-direction:column;gap:8px;">
   <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;">
-    <span style="font-weight:900;color:#C5A869;letter-spacing:0.04em;">PONTO DE INSPEÇÃO (?)</span>
-    <button type="button" class="az-drone-pill-btn is-danger" id="azReconQMarkCloseBtn" style="padding:2px 6px;font-size:9px;">FECHAR</button>
+    <span style="font-weight:900;color:#C5A869;letter-spacing:0.04em;font-size:12px;">PONTO DE INSPEÇÃO (?)</span>
+    <button type="button" class="az-drone-pill-btn is-danger" id="azReconQMarkCloseBtn" style="min-height:36px !important;padding:4px 10px !important;font-size:11px !important;">FECHAR</button>
   </div>
-  <div id="azReconQMarkMeta" style="background:#161616;border:1px solid rgba(197,168,105,0.28);border-radius:7px;padding:6px;line-height:1.35;color:#E5E7EB;"></div>
-  <div style="display:flex;flex-wrap:wrap;gap:4px;">
-    <button type="button" class="az-drone-pill-btn" data-qm-class="Passagem confirmada" style="font-size:9px;">Passagem</button>
-    <button type="button" class="az-drone-pill-btn" data-qm-class="Edificação identificada" style="font-size:9px;">Edificação</button>
-    <button type="button" class="az-drone-pill-btn" data-qm-class="Via sem saída" style="font-size:9px;">Sem saída</button>
-    <button type="button" class="az-drone-pill-btn" data-qm-class="Área de atenção" style="font-size:9px;">Atenção</button>
-    <button type="button" class="az-drone-pill-btn is-danger" id="azReconQMarkRemoveBtn" style="font-size:9px;">Remover ?</button>
+  <div id="azReconQMarkMeta" style="background:#161616;border:1px solid rgba(197,168,105,0.28);border-radius:7px;padding:8px;line-height:1.4;color:#E5E7EB;font-size:12px;"></div>
+  <div style="display:flex;gap:6px;align-items:center;">
+    <input type="text" id="azReconQMarkEditInput" class="az-recon-input" style="flex:1;min-height:40px;font-size:12px;padding:6px 8px;" placeholder="Editar critério ou observação..." />
+    <button type="button" class="az-drone-pill-btn is-active" id="azReconQMarkSaveBtn" style="min-height:40px !important;">SALVAR</button>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:6px;">
+    <button type="button" class="az-drone-pill-btn" data-qm-class="Passagem confirmada">Passagem</button>
+    <button type="button" class="az-drone-pill-btn" data-qm-class="Edificação identificada">Edificação</button>
+    <button type="button" class="az-drone-pill-btn" data-qm-class="Via sem saída">Sem saída</button>
+    <button type="button" class="az-drone-pill-btn" data-qm-class="Ponto de atenção">Atenção</button>
+    <button type="button" class="az-drone-pill-btn is-danger" id="azReconQMarkRemoveBtn">Remover ?</button>
   </div>
 </div>
 
@@ -27681,8 +27742,49 @@ if (document.readyState === "loading") {
     if (satBtn) satBtn.classList.toggle("is-active", tac.satMode);
     const satTile = document.getElementById("azGridSatTile");
     if (satTile) satTile.classList.toggle("is-on", tac.satMode);
+    if (typeof window.azFlashMapLayerTransition === "function") window.azFlashMapLayerTransition();
     showToast(tac.satMode ? "Camada Satélite Híbrido ATIVADA" : "Mapa Padrão ATIVADO", 2200);
   }
+
+  window.azFlashMapLayerTransition = function () {
+    const veil = document.getElementById("azMapTransitionVeil");
+    if (!veil) return;
+    veil.classList.add("is-flash");
+    setTimeout(function () { veil.classList.remove("is-flash"); }, 150);
+  };
+  window.azToggleMonoTechMap = function () {
+    window.azFlashMapLayerTransition();
+    tac.monoTechMode = !tac.monoTechMode;
+    tac.maps.forEach(function (m) {
+      const style = m.getStyle && m.getStyle();
+      if (!style || !Array.isArray(style.layers)) return;
+      style.layers.forEach(function (layer) {
+        const lid = (layer.id || "").toLowerCase();
+        const sl = (layer["source-layer"] || "").toLowerCase();
+        try {
+          if (tac.monoTechMode) {
+            if (layer.type === "background") m.setPaintProperty(layer.id, "background-color", "#0D0D0D");
+            else if (layer.type === "fill" && (sl.includes("building") || lid.includes("building"))) m.setPaintProperty(layer.id, "fill-color", "#161616");
+            else if (layer.type === "fill") m.setPaintProperty(layer.id, "fill-color", "#111111");
+            else if (layer.type === "line" && (sl.includes("transportation") || lid.includes("road") || lid.includes("street"))) {
+              m.setPaintProperty(layer.id, "line-color", (lid.includes("motorway") || lid.includes("primary")) ? "#C5A869" : "#737373");
+            } else if (layer.type === "symbol") {
+              m.setPaintProperty(layer.id, "text-color", "#F2F0EA");
+              m.setPaintProperty(layer.id, "text-halo-color", "#0D0D0D");
+            }
+          }
+        } catch (_) {}
+      });
+    });
+    if (!tac.monoTechMode && typeof setupCustomMapLayers === "function") {
+      try {
+        const gm = window.azGeoMap;
+        if (gm) gm._azLastSetupStyle = null;
+        setupCustomMapLayers();
+      } catch (_) {}
+    }
+    showToast(tac.monoTechMode ? "Camada Técnica Monocromática ATIVADA" : "Camada Padrão Restaurada", 2000);
+  };
 
   function buildCircleGeoJson(lng, lat, rMeters) {
     const pts = 48, coords = [];
@@ -30337,50 +30439,120 @@ if (document.readyState === "loading") {
       if (items.length === 0) items = ALL_WHEEL_ACTIONS.slice(0, 4);
     }
 
-    const geom = getWheelGeometry(items.length);
-    const half = geom.diameter / 2;
-    wheel.style.width = `${geom.diameter}px`;
-    wheel.style.height = `${geom.diameter}px`;
-    wheel.style.marginLeft = `${-half}px`;
-    wheel.style.marginTop = `${-half}px`;
+    const size = 280;
+    const cx = 140, cy = 140, rIn = 46, rOut = 132, rMid = 90;
+    wheel.style.width = size + "px";
+    wheel.style.height = size + "px";
+    wheel.style.marginLeft = -(size / 2) + "px";
+    wheel.style.marginTop = -(size / 2) + "px";
+
+    const ns = "http://www.w3.org/2000/svg";
+    const svg = document.createElementNS(ns, "svg");
+    svg.setAttribute("viewBox", "0 0 280 280");
+    svg.setAttribute("width", "280");
+    svg.setAttribute("height", "280");
+    svg.style.display = "block";
+
+    const outerRing = document.createElementNS(ns, "circle");
+    outerRing.setAttribute("cx", cx); outerRing.setAttribute("cy", cy); outerRing.setAttribute("r", rOut);
+    outerRing.setAttribute("fill", "none"); outerRing.setAttribute("stroke", "#C5A869"); outerRing.setAttribute("stroke-width", "1.4");
+    svg.appendChild(outerRing);
+
+    const n = items.length;
+    const stepDeg = 360 / n;
+    const polar = function (r, deg) {
+      const rad = (deg * Math.PI) / 180;
+      return [cx + r * Math.cos(rad), cy + r * Math.sin(rad)];
+    };
 
     items.forEach(function (it, idx) {
-      const angleDeg = -90 + (360 / items.length) * idx;
-      const angle = (angleDeg * Math.PI) / 180;
-      const x = half + Math.cos(angle) * geom.radius;
-      const y = half + Math.sin(angle) * geom.radius;
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "az-wheel-slot" + (it.cls ? " " + it.cls : "");
-      btn.style.left = `${x}px`;
-      btn.style.top = `${y}px`;
-      btn.style.width = `${geom.slotSize}px`;
-      btn.style.height = `${geom.slotSize}px`;
-      btn.style.marginLeft = `${-(geom.slotSize / 2)}px`;
-      btn.style.marginTop = `${-(geom.slotSize / 2)}px`;
-      btn.innerHTML = `${it.svg}<span style="font-size:${geom.fontSize}px;">${it.label}</span>`;
-      btn.addEventListener("click", function (e) {
+      const a0 = -90 - stepDeg / 2 + stepDeg * idx;
+      const a1 = a0 + stepDeg;
+      const aMid = (a0 + a1) / 2;
+      const p1 = polar(rOut, a0), p2 = polar(rOut, a1);
+      const p3 = polar(rIn, a1), p4 = polar(rIn, a0);
+      const largeArc = stepDeg > 180 ? 1 : 0;
+      const d = `M ${p1[0].toFixed(2)} ${p1[1].toFixed(2)} A ${rOut} ${rOut} 0 ${largeArc} 1 ${p2[0].toFixed(2)} ${p2[1].toFixed(2)} L ${p3[0].toFixed(2)} ${p3[1].toFixed(2)} A ${rIn} ${rIn} 0 ${largeArc} 0 ${p4[0].toFixed(2)} ${p4[1].toFixed(2)} Z`;
+
+      const g = document.createElementNS(ns, "g");
+      g.setAttribute("class", "az-radial-slice");
+      const path = document.createElementNS(ns, "path");
+      path.setAttribute("class", "az-slice-bg");
+      path.setAttribute("d", d);
+      g.appendChild(path);
+
+      const midPt = polar(rMid, aMid);
+      const fo = document.createElementNS(ns, "foreignObject");
+      fo.setAttribute("x", String(midPt[0] - 28));
+      fo.setAttribute("y", String(midPt[1] - 20));
+      fo.setAttribute("width", "56");
+      fo.setAttribute("height", "40");
+      fo.style.pointerEvents = "none";
+      const wrap = document.createElement("div");
+      wrap.style.cssText = "width:56px;height:40px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#F2F0EA;text-align:center;";
+      wrap.innerHTML = `${it.svg}<span style="font-size:11px;font-weight:800;margin-top:2px;line-height:1.05;white-space:nowrap;max-width:54px;overflow:hidden;text-overflow:ellipsis;">${it.label}</span>`;
+      const svgIco = wrap.querySelector("svg");
+      if (svgIco) { svgIco.style.width = "16px"; svgIco.style.height = "16px"; svgIco.style.stroke = "#C5A869"; svgIco.style.fill = "none"; svgIco.style.strokeWidth = "2"; }
+      fo.appendChild(wrap);
+      g.appendChild(fo);
+
+      g.addEventListener("click", function (e) {
         e.stopPropagation();
         wheel.classList.remove("is-open");
         executeWheelSlotAction(it.id);
       });
-      wheel.appendChild(btn);
+      svg.appendChild(g);
     });
 
-    const centerGear = document.createElement("button");
-    centerGear.type = "button";
-    centerGear.className = "az-wheel-center-gear";
-    centerGear.style.left = `${half}px`;
-    centerGear.style.top = `${half}px`;
-    centerGear.title = "Personalizar Menu";
-    centerGear.innerHTML = SVG_ICONS.gear;
-    centerGear.addEventListener("click", function (e) {
+    // Disco central de retorno/fechar + atalho de configuração
+    const centerClose = document.createElementNS(ns, "g");
+    centerClose.setAttribute("class", "az-radial-center-btn");
+    const cCircle = document.createElementNS(ns, "circle");
+    cCircle.setAttribute("cx", cx); cCircle.setAttribute("cy", cy); cCircle.setAttribute("r", "38");
+    centerClose.appendChild(cCircle);
+    const cTxt = document.createElementNS(ns, "text");
+    cTxt.setAttribute("x", cx); cTxt.setAttribute("y", cy - 2);
+    cTxt.setAttribute("text-anchor", "middle");
+    cTxt.setAttribute("fill", "#C5A869");
+    cTxt.setAttribute("font-size", "16");
+    cTxt.setAttribute("font-weight", "900");
+    cTxt.textContent = "✕";
+    centerClose.appendChild(cTxt);
+    const cSub = document.createElementNS(ns, "text");
+    cSub.setAttribute("x", cx); cSub.setAttribute("y", cy + 14);
+    cSub.setAttribute("text-anchor", "middle");
+    cSub.setAttribute("fill", "#D1D5DB");
+    cSub.setAttribute("font-size", "9");
+    cSub.setAttribute("font-weight", "700");
+    cSub.textContent = "FECHAR";
+    centerClose.appendChild(cSub);
+    centerClose.addEventListener("click", function (e) {
+      e.stopPropagation();
+      wheel.classList.remove("is-open");
+    });
+    svg.appendChild(centerClose);
+
+    // Botão discreto de personalizar na base do anel interno
+    const cfgG = document.createElementNS(ns, "g");
+    cfgG.setAttribute("class", "az-radial-center-btn");
+    const cfgC = document.createElementNS(ns, "circle");
+    cfgC.setAttribute("cx", cx); cfgC.setAttribute("cy", cy + 38); cfgC.setAttribute("r", "12");
+    cfgG.appendChild(cfgC);
+    const cfgT = document.createElementNS(ns, "text");
+    cfgT.setAttribute("x", cx); cfgT.setAttribute("y", cy + 42);
+    cfgT.setAttribute("text-anchor", "middle"); cfgT.setAttribute("fill", "#C5A869");
+    cfgT.setAttribute("font-size", "11"); cfgT.setAttribute("font-weight", "900");
+    cfgT.textContent = "≡";
+    cfgG.appendChild(cfgT);
+    cfgG.addEventListener("click", function (e) {
       e.stopPropagation();
       wheel.classList.remove("is-open");
       openWheelConfigModal();
     });
-    wheel.appendChild(centerGear);
-    return geom;
+    svg.appendChild(cfgG);
+
+    wheel.appendChild(svg);
+    return { radius: rOut, slotSize: 48, fontSize: 11, diameter: size };
   }
 
   function openRadialWheelAt(clientX, clientY, mode) {
@@ -40182,10 +40354,14 @@ if (document.readyState === "loading") {
       drawReconSectorBoundary();
       const m = getActiveMap();
       if (m && typeof m.easeTo === "function") {
-        m.easeTo({ center: [hit.lng, hit.lat], zoom: 14.8, pitch: 25, duration: 500 });
+        m.easeTo({ center: [hit.lng, hit.lat], zoom: 15.6, pitch: 42, duration: 500 });
+      }
+      state.pattern = "perim";
+      if (tac.droneMode && tac.droneType !== "recon" && typeof startMapOrbitAround === "function") {
+        startMapOrbitAround(hit.lng, hit.lat);
       }
       setReconStatus("SETOR MARCADO", null);
-      showToast(`Área movida para ${hit.label}. Ajuste o tamanho e clique em SOLTAR.`);
+      showToast(`Área posicionada em ${hit.label}. Sobrevoo/órbita pronto para iniciar.`);
     }
 
     function setReconSectorActiveColor(isScanning) {
@@ -40792,6 +40968,12 @@ if (document.readyState === "loading") {
       });
     }
 
+    function saveQMarksToStorage() {
+      try {
+        localStorage.setItem("az_recon_qmarks_v1", JSON.stringify(Array.isArray(state.questionMarks) ? state.questionMarks : []));
+      } catch (_) {}
+    }
+
     function updateReconQuestionMarksLayer() {
       const m = getActiveMap();
       if (!m) return;
@@ -40809,23 +40991,36 @@ if (document.readyState === "loading") {
           };
         })
       });
+      saveQMarksToStorage();
     }
+
+    // Restaura marcadores ? permanentes ao carregar o mapa (mesmo fora do Modo Drone)
+    try {
+      const savedQ = JSON.parse(localStorage.getItem("az_recon_qmarks_v1") || "[]");
+      if (Array.isArray(savedQ) && savedQ.length > 0) {
+        state.questionMarks = savedQ;
+        setTimeout(updateReconQuestionMarksLayer, 1200);
+      }
+    } catch (_) {}
 
     (function bindReconQMarkInteractions() {
       const m = getActiveMap();
       let activeQmId = null;
       const card = document.getElementById("azReconQMarkCard");
       const meta = document.getElementById("azReconQMarkMeta");
+      const editInp = document.getElementById("azReconQMarkEditInput");
       const openQMarkCard = function (qmId) {
         const qm = (state.questionMarks || []).find(function (q) { return q.id === qmId; });
         if (!qm || !card || !meta) return;
         activeQmId = qm.id;
         const opRef = (tac.myPos && typeof tac.myPos.lat === "number") ? tac.myPos : (state.center || { lat: qm.lat, lng: qm.lng });
         const db = calcDistAndBearing(opRef.lat, opRef.lng, qm.lat, qm.lng);
+        const criterioTxt = qm.criterio || qm.motivo || "Ponto sem classificação";
         meta.innerHTML =
-          `<div><b>Motivo:</b> ${qm.motivo}</div>` +
+          `<div><b>Critério da marcação:</b> ${criterioTxt}</div>` +
           `<div><b>Coord:</b> ${qm.lat.toFixed(5)}, ${qm.lng.toFixed(5)}</div>` +
-          `<div><b>Operador:</b> ${Math.round(db.dist)}m • Azimute ${Math.round((db.bearing + 360) % 360)}° • <b>Status:</b> ${qm.status}</div>`;
+          `<div><b>Distância:</b> ${Math.round(db.dist)}m • Azimute ${Math.round((db.bearing + 360) % 360)}° • <b>Status:</b> ${qm.status}</div>`;
+        if (editInp) editInp.value = criterioTxt;
         card.style.display = "flex";
       };
       if (m && typeof m.on === "function" && !m._azQMarkClickBound) {
@@ -40836,11 +41031,28 @@ if (document.readyState === "loading") {
         });
       }
       onClick("azReconQMarkCloseBtn", function () { if (card) card.style.display = "none"; });
+      onClick("azReconQMarkSaveBtn", function () {
+        const qm = (state.questionMarks || []).find(function (q) { return q.id === activeQmId; });
+        if (!qm || !editInp) return;
+        const nextTxt = editInp.value.trim();
+        if (nextTxt) {
+          qm.criterio = nextTxt;
+          qm.motivo = nextTxt;
+        }
+        updateReconQuestionMarksLayer();
+        renderSectorAnalysisPanel();
+        openQMarkCard(qm.id);
+        showToast("Critério da marcação atualizado.");
+      });
       document.querySelectorAll("[data-qm-class]").forEach(function (btn) {
         btn.addEventListener("click", function () {
           const qm = (state.questionMarks || []).find(function (q) { return q.id === activeQmId; });
           if (!qm) return;
           qm.status = btn.getAttribute("data-qm-class") || "Confirmado";
+          if (editInp && editInp.value.trim()) {
+            qm.criterio = editInp.value.trim();
+            qm.motivo = qm.criterio;
+          }
           updateReconQuestionMarksLayer();
           renderSectorAnalysisPanel();
           if (card) card.style.display = "none";

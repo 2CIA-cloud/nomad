@@ -1,31 +1,21 @@
-{
+﻿{
   "name": "AZIMUTE",
   "short_name": "AZIMUTE",
-  "description": "Plataforma de navegação, orientação territorial e consulta de informações para apoio à atividade policial.",
-  "start_url": "./",
+  "description": "Sistema de navegação, reconhecimento territorial e apoio em campo AZIMUTE",
+  "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
+  "orientation": "any",
   "theme_color": "#0D0D0D",
   "background_color": "#0D0D0D",
-  "orientation": "any",
   "icons": [
     {
-      "src": "./icon-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
+      "src": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='96' fill='%230D0D0D'/><circle cx='256' cy='256' r='190' fill='%23161616' stroke='%23C5A869' stroke-width='16'/><polygon points='256,82 296,256 256,220 216,256' fill='%23C5A869'/><polygon points='256,430 296,256 256,292 216,256' fill='%239E9A8F'/><circle cx='256' cy='256' r='22' fill='%230D0D0D' stroke='%23C5A869' stroke-width='10'/></svg>",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
     },
-    {
-      "src": "./icon-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "./icon-maskable-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
-    }
+    { "src": "icon-192x192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512x512.png", "sizes": "512x512", "type": "image/png" }
   ]
 }
