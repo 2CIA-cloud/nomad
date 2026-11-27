@@ -1,0 +1,3429 @@
+/* AZIMUTE — css/modules.css (Mapa, ORBE, Unidades, Grupo, Funcoes e Drones) */
+
+    .az-geo-module {
+      --geo-bg: #0D0D0D;
+      --geo-panel: #161616;
+      --geo-border: #28271F;
+      --geo-gold: #C5A869;
+      --geo-gold-soft: rgba(197, 168, 105, 0.16);
+      --geo-blue: #2563EB;
+      --geo-green: #16A34A;
+      --geo-text: #F2F0EA;
+      --geo-muted: #9E9A8F;
+      background: var(--geo-bg);
+      color: var(--geo-text);
+      border: 1px solid var(--geo-border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin: 0 12px;
+      font-family: inherit;
+    }
+
+    .az-geo-drawer-btn {
+      width: 100%;
+      background: var(--geo-panel);
+      color: var(--geo-gold);
+      border: 0;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .az-geo-drawer-body {
+      display: none;
+      padding: 10px;
+      border-top: 1px solid var(--geo-border);
+    }
+
+    .az-geo-drawer-body.is-open {
+      display: block;
+    }
+
+    .az-geo-topbar {
+      display: none !important;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .az-geo-search-wrap {
+      display: flex;
+      flex: 1;
+      gap: 6px;
+    }
+
+    .az-geo-input {
+      flex: 1;
+      min-width: 0;
+      background: var(--geo-panel);
+      color: #FFFFFF;
+      border: 1px solid var(--geo-border);
+      border-radius: 8px;
+      padding: 9px 10px;
+      font-size: 13px;
+      outline: none;
+    }
+
+    .az-geo-input:focus {
+      border-color: var(--geo-gold);
+    }
+
+    .az-geo-results {
+      display: none;
+      flex-direction: column;
+      background: var(--geo-panel);
+      border: 1px solid var(--geo-gold);
+      border-radius: 8px;
+      margin-bottom: 8px;
+      max-height: 230px;
+      overflow-y: auto;
+    }
+
+    .az-geo-results.is-open {
+      display: flex;
+    }
+
+    .az-geo-result-item {
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      color: var(--geo-text);
+      border: 0;
+      border-bottom: 1px solid var(--geo-border);
+      padding: 9px 11px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .az-geo-result-item:last-child {
+      border-bottom: 0;
+    }
+
+    .az-geo-result-item:hover,
+    .az-geo-result-item:active {
+      background: var(--geo-gold-soft);
+    }
+
+    .az-geo-result-info {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .az-geo-result-title {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--geo-gold);
+    }
+
+    .az-geo-result-sub {
+      display: block;
+      font-size: 11px;
+      color: var(--geo-muted);
+      margin-top: 2px;
+    }
+
+    .az-geo-result-dist {
+      flex-shrink: 0;
+      font-size: 11px;
+      font-weight: 700;
+      color: #F2F0EA;
+      background: #0D0D0D;
+      border: 1px solid #C5A869;
+      border-radius: 6px;
+      padding: 3px 7px;
+      white-space: nowrap;
+      text-align: right;
+    }
+
+    .az-geo-tbt-bar {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: rgba(13, 13, 13, 0.96);
+      border: 1.5px solid var(--geo-green);
+      border-radius: 8px;
+      padding: 8px 10px;
+      margin-bottom: 8px;
+    }
+
+    .az-geo-tbt-bar.is-active {
+      display: flex;
+    }
+
+    .az-geo-tbt-main {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .az-geo-tbt-next {
+      font-size: 13px;
+      font-weight: 800;
+      color: #4ADE80;
+      line-height: 1.25;
+      word-break: break-word;
+    }
+
+    .az-geo-tbt-current {
+      font-size: 11px;
+      color: var(--geo-muted);
+      margin-top: 2px;
+      word-break: break-word;
+    }
+
+    .az-geo-stage {
+      position: relative;
+      width: 100%;
+      height: 325px;
+      min-height: 220px;
+      border: 1px solid var(--geo-border);
+      border-radius: 8px;
+      background: #121519;
+      overflow: hidden;
+      margin-bottom: 8px;
+      touch-action: none;
+      overscroll-behavior: contain;
+      transition: none !important;
+    }
+
+    @media (orientation: landscape) and (max-height: 520px) {
+      .az-geo-stage {
+        height: 230px;
+      }
+    }
+
+    #azGeoMap {
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      touch-action: none;
+      transition: none !important;
+    }
+
+    .maplibregl-ctrl-bottom-left,
+    .maplibregl-ctrl-bottom-right {
+      display: none !important;
+    }
+
+    #azGeoMap,
+    #azGeoMap .maplibregl-canvas-container,
+    #azGeoMap .maplibregl-canvas {
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+    }
+    #azGeoLeftOverlayCol {
+      position: absolute;
+      left: 10px;
+      top: 10px;
+      z-index: 650;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+      pointer-events: none;
+    }
+    #azGeoLeftOverlayCol > * {
+      pointer-events: auto;
+    }
+    #azGeoLeftOverlayCol .az-geo-zoom-stack {
+      position: relative;
+      left: auto;
+      top: auto;
+    }
+    #azGeoLeftOverlayCol #azHudSearchToggleBtn,
+    #azGeoLeftOverlayCol #azSatToggleBtn {
+      width: 38px !important;
+      height: 38px !important;
+      border-radius: 9px !important;
+      border: 1px solid var(--geo-border) !important;
+      background: rgba(13, 13, 13, 0.94) !important;
+      color: var(--geo-gold) !important;
+    }
+    #azGeoLeftOverlayCol #azHudSearchToggleBtn svg,
+    #azGeoLeftOverlayCol #azSatToggleBtn svg {
+      width: 19px !important;
+      height: 19px !important;
+    }
+    #azGeoLeftOverlayCol #azHudSearchToggleBtn.is-active,
+    #azGeoLeftOverlayCol #azSatToggleBtn.is-active {
+      background: #C5A869 !important;
+      color: #0D0D0D !important;
+      border-color: #FFFFFF !important;
+    }
+
+    .az-geo-zoom-stack {
+      position: absolute;
+      left: 10px;
+      top: 10px;
+      z-index: 600;
+      display: flex;
+      flex-direction: column;
+      border-radius: 9px;
+      overflow: hidden;
+      border: 1px solid var(--geo-border);
+      background: rgba(13, 13, 13, 0.94);
+    }
+
+    .az-geo-zoom-stack button {
+      width: 38px;
+      height: 36px;
+      background: transparent;
+      color: var(--geo-gold);
+      border: 0;
+      border-bottom: 1px solid var(--geo-border);
+      font-size: 20px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .az-geo-zoom-stack button:last-child {
+      border-bottom: 0;
+    }
+
+    /* BOTÃO CENTRALIZAR BLINDADO PARA VERTICAL E HORIZONTAL */
+    .az-geo-locate-fab {
+      position: absolute !important;
+      right: 12px !important;
+      bottom: 24px !important;
+      left: auto !important;
+      top: auto !important;
+      z-index: 750 !important;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: rgba(13, 13, 13, 0.94);
+      border: 1.5px solid rgba(197, 168, 105, 0.95);
+      color: #C5A869;
+      display: flex !important;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.78);
+    }
+
+    .az-geo-locate-fab svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .az-geo-locate-fab.is-heading-up {
+      background: rgba(37, 99, 235, 0.92);
+      border-color: #93C5FD;
+      color: #FFFFFF;
+    }
+
+    .az-geo-locate-fab.is-pulse {
+      transform: scale(0.92);
+      box-shadow: 0 0 0 6px rgba(197, 168, 105, 0.35);
+    }
+
+    .az-geo-compass-badge {
+      position: absolute;
+      right: 12px;
+      top: 12px;
+      z-index: 600;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(13, 13, 13, 0.94);
+      border: 1px solid #C5A869;
+      color: #F2F0EA;
+      font-size: 11px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .az-geo-tilt-badge {
+      position: absolute;
+      right: 12px;
+      top: 54px;
+      z-index: 600;
+      width: 40px;
+      height: 36px;
+      border-radius: 9px;
+      background: rgba(13, 13, 13, 0.94);
+      border: 1px solid var(--geo-border);
+      color: var(--geo-gold);
+      font-size: 11.5px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .az-geo-tilt-badge.is-3d {
+      background: rgba(197, 168, 105, 0.92);
+      border-color: #FFFFFF;
+      color: #0D0D0D;
+    }
+
+    .az-geo-lock-badge {
+      position: absolute;
+      right: 54px;
+      top: 12px;
+      z-index: 600;
+      height: 34px;
+      padding: 0 9px;
+      border-radius: 17px;
+      background: rgba(13, 13, 13, 0.94);
+      border: 1px solid var(--geo-border);
+      color: var(--geo-muted);
+      font-size: 10px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+    }
+
+    .az-geo-lock-badge.is-locked {
+      background: rgba(180, 83, 9, 0.92);
+      border-color: #FBBF24;
+      color: #FFFFFF;
+    }
+
+    .az-geo-btn {
+      background: var(--geo-gold);
+      color: #0D0D0D;
+      border: 1px solid var(--geo-gold);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .az-geo-btn.subtle {
+      background: var(--geo-panel);
+      color: var(--geo-text);
+      border-color: var(--geo-border);
+    }
+
+    .az-geo-btn.active {
+      background: var(--geo-gold);
+      color: #0D0D0D;
+      border-color: var(--geo-gold);
+    }
+
+    .az-geo-btn.blue {
+      background: var(--geo-blue);
+      color: #FFFFFF;
+      border-color: var(--geo-blue);
+    }
+
+    .az-geo-btn.green {
+      background: var(--geo-green);
+      color: #FFFFFF;
+      border-color: #22C55E;
+      font-weight: 800;
+    }
+
+    .az-geo-btn.incursion {
+      background: #1C1912;
+      color: #C5A869;
+      border: 1.5px solid #C5A869;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+    }
+
+    .az-geo-btn.mini {
+      padding: 6px 8px;
+      font-size: 11px;
+    }
+
+    .az-geo-layer-chip {
+      background: var(--geo-bg);
+      color: var(--geo-muted);
+      border: 1px solid var(--geo-border);
+      border-radius: 8px;
+      padding: 6px 9px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .az-geo-layer-chip .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+      opacity: 0.45;
+    }
+
+    .az-geo-layer-chip.is-on {
+      color: #F2F0EA;
+      border-color: #C5A869;
+      background: #1C1B16;
+    }
+
+    .az-geo-layer-chip.is-on .dot {
+      opacity: 1;
+      box-shadow: 0 0 6px currentColor;
+    }
+
+    .az-geo-layer-count {
+      font-size: 10px;
+      color: var(--geo-muted);
+      font-family: monospace;
+    }
+
+    .az-geo-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 8px;
+      align-items: center;
+    }
+
+    .az-geo-collapsible {
+      display: none;
+      background: var(--geo-panel);
+      border: 1px solid var(--geo-border);
+      border-radius: 8px;
+      padding: 9px 10px;
+      margin-bottom: 8px;
+    }
+
+    .az-geo-collapsible.is-open {
+      display: block;
+    }
+
+    .az-geo-scroll-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .az-geo-scroll-btn {
+      background: var(--geo-bg);
+      color: var(--geo-gold);
+      border: 1px solid var(--geo-border);
+      border-radius: 8px;
+      width: 28px;
+      height: 30px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .az-geo-cities {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      flex: 1;
+      padding: 2px 0;
+    }
+
+    .az-geo-cities::-webkit-scrollbar {
+      display: none;
+    }
+
+    .az-geo-cfg-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--geo-border);
+    }
+
+    .az-geo-cfg-row:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .az-geo-cal-box {
+      background: #0D0D0D;
+      border: 1px solid #C5A869;
+      border-radius: 8px;
+      padding: 9px 10px;
+      margin: 6px 0;
+    }
+
+    .az-geo-cal-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      margin-bottom: 7px;
+    }
+
+    .az-geo-cal-mode-pill {
+      font-size: 10px;
+      font-weight: 800;
+      color: #0D0D0D;
+      background: #C5A869;
+      padding: 2px 7px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .az-geo-cal-readout {
+      font-family: monospace;
+      font-size: 11px;
+      color: #F2F0EA;
+      background: #161616;
+      border: 1px solid #28271F;
+      border-radius: 6px;
+      padding: 5px 8px;
+      margin-bottom: 7px;
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .az-geo-cal-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .az-geo-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      align-items: center;
+    }
+
+    .az-geo-label {
+      font-size: 11px;
+      color: var(--geo-muted);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .az-geo-swatch {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid #28271F;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .az-geo-swatch.is-selected {
+      border-color: #FFFFFF;
+      transform: scale(1.12);
+    }
+
+    .az-geo-pin-form {
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      background: var(--geo-panel);
+      border: 1px solid var(--geo-gold);
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 8px;
+    }
+
+    .az-geo-pin-form.is-open {
+      display: flex;
+    }
+
+    .az-geo-status-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 6px;
+      background: var(--geo-panel);
+      border: 1px solid var(--geo-border);
+      border-radius: 8px;
+      padding: 7px 10px;
+      font-size: 12px;
+      color: var(--geo-muted);
+    }
+
+    .az-geo-status-bar strong {
+      color: var(--geo-gold);
+    }
+
+    .maplibregl-popup-content {
+      background: #161616 !important;
+      color: #F2F0EA !important;
+      border: 1px solid #C5A869 !important;
+      border-radius: 8px !important;
+      padding: 10px !important;
+    }
+
+    .maplibregl-popup-tip {
+      border-top-color: #C5A869 !important;
+    }
+
+    .maplibregl-popup-close-button {
+      color: #C5A869 !important;
+      font-size: 16px !important;
+    }
+
+    .az-geo-popup-card {
+      min-width: 195px;
+      color: #F2F0EA;
+    }
+
+    .az-geo-popup-badge {
+      display: inline-block;
+      font-size: 9px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-bottom: 4px;
+      background: #0D0D0D;
+      border: 1px solid currentColor;
+    }
+
+    .az-geo-popup-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .az-geo-popup-actions a,
+    .az-geo-popup-actions button {
+      display: block;
+      width: 100%;
+      text-align: center;
+      box-sizing: border-box;
+      color: #0D0D0D;
+      background: #C5A869;
+      border: 0;
+      padding: 6px 8px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 11px;
+      line-height: 1.2;
+      cursor: pointer;
+    }
+
+    .az-geo-popup-actions button.primary-route {
+      background: #2563EB;
+      color: #FFFFFF;
+    }
+
+    .az-geo-popup-actions button.start-nav {
+      background: #16A34A;
+      color: #FFFFFF;
+    }
+
+    .az-geo-popup-actions button.danger {
+      grid-column: span 2;
+      background: #7F1D1D;
+      color: #F2F0EA;
+    }
+
+    /* ORBE • PERCEPÇÃO ESPACIAL RADIAL 360° (VETORIAL + SONAR PULSE) */
+    .az-quad-inline-card {
+      margin-top: 10px;
+      margin-bottom: 10px;
+      background: #0D0D0D;
+      border: 1px solid #C5A869;
+      border-radius: 10px;
+      padding: 9px 10px;
+      cursor: pointer;
+    }
+
+    .az-quad-inline-card:active {
+      background: #161616;
+    }
+
+    .az-quad-inline-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      border-bottom: 1px solid #28271F;
+      padding-bottom: 6px;
+      margin-bottom: 6px;
+    }
+
+    .az-quad-inline-title {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: #C5A869;
+      text-transform: uppercase;
+    }
+
+    .az-quad-inline-hint {
+      font-size: 10px;
+      color: #9E9A8F;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* BOTÃO SONAR ANIMADO COM ONDAS CIRCULARES NO ORBE */
+    .az-orbe-sonar-btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      background: #161616;
+      color: #C5A869;
+      border: 1px solid #C5A869;
+      border-radius: 14px;
+      padding: 3px 9px;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      cursor: pointer;
+      overflow: visible;
+    }
+
+    .az-orbe-sonar-dot {
+      position: relative;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #C5A869;
+      display: inline-block;
+    }
+
+    .az-orbe-sonar-dot::before,
+    .az-orbe-sonar-dot::after {
+      content: "";
+      position: absolute;
+      inset: -3px;
+      border-radius: 50%;
+      border: 1.5px solid #C5A869;
+      animation: azOrbeSonarWave 2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+      pointer-events: none;
+    }
+
+    .az-orbe-sonar-dot::after {
+      animation-delay: 1s;
+    }
+
+    .az-orbe-sonar-btn.is-pinging .az-orbe-sonar-dot::before,
+    .az-orbe-sonar-btn.is-pinging .az-orbe-sonar-dot::after {
+      border-color: #4ADE80;
+      animation-duration: 0.65s;
+    }
+
+    @keyframes azOrbeSonarWave {
+      0% { transform: scale(0.7); opacity: 0.95; }
+      100% { transform: scale(2.6); opacity: 0; }
+    }
+
+    .az-quad-corner-banner {
+      display: none;
+      background: rgba(197, 168, 105, 0.16);
+      border: 1px solid #C5A869;
+      border-radius: 6px;
+      padding: 4px 8px;
+      margin-bottom: 6px;
+      font-size: 11px;
+      font-weight: 800;
+      color: #F8DE94;
+      text-align: center;
+    }
+
+    .az-quad-corner-banner.is-visible {
+      display: block;
+    }
+
+    .az-quad-ring-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+
+    #azQuadRingCanvas {
+      width: 100%;
+      max-width: 360px;
+      height: 260px;
+      display: block;
+    }
+
+    .az-quad-ring-legend {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 4px;
+      font-size: 9px;
+      color: #9E9A8F;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .az-quad-ring-legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .az-quad-ring-legend i {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    @keyframes azQuadPulseAnim {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.25; }
+    }
+
+    .az-quad-searching {
+      color: #C5A869 !important;
+      font-weight: 700;
+      animation: azQuadPulseAnim 1s ease-in-out infinite;
+    }
+
+    .az-quad-pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #C5A869;
+      display: inline-block;
+    }
+
+    /* MODO INCURSAO (100% VIEWPORT SEM BARRA INFERIOR) */
+    body.az-incursion-fullscreen nav,
+    body.az-incursion-fullscreen footer,
+    body.az-incursion-fullscreen #bottomNav,
+    body.az-incursion-fullscreen .bottom-nav {
+      display: none !important;
+    }
+
+    .az-inc-overlay {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100dvh;
+      z-index: 99999;
+      background: #0A0A0A;
+      color: #F2F0EA;
+      display: none;
+      flex-direction: column;
+      padding: 6px;
+      gap: 6px;
+      overflow: hidden;
+      transition: none !important;
+    }
+
+    .az-inc-overlay.is-open {
+      display: flex;
+    }
+
+    .az-inc-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: #141414;
+      border: 1px solid #28271F;
+      border-radius: 8px;
+      padding: 4px 10px;
+      flex-shrink: 0;
+    }
+
+    .az-inc-title {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      color: #C5A869;
+      text-transform: uppercase;
+    }
+
+    .az-inc-telemetry {
+      font-size: 11px;
+      font-family: monospace;
+      color: #D4D0C5;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .az-inc-body {
+      flex: 1;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 2.15fr 1fr;
+      gap: 6px;
+    }
+
+    @media (orientation: portrait) {
+      .az-inc-body {
+        grid-template-columns: 1fr;
+        grid-template-rows: 1.55fr 1fr;
+      }
+    }
+
+    .az-inc-quad-frame {
+      display: grid;
+      grid-template-rows: 26px 1fr 26px;
+      grid-template-columns: 26px 1fr 26px;
+      background: #111111;
+      border: 1.5px solid #C5A869;
+      border-radius: 10px;
+      overflow: hidden;
+      min-height: 0;
+      min-width: 0;
+    }
+
+    .az-inc-edge-top {
+      grid-column: 1 / 4;
+      grid-row: 1;
+      background: #161616;
+      border-bottom: 1px solid #28271F;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 0 8px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .az-inc-edge-bottom {
+      grid-column: 1 / 4;
+      grid-row: 3;
+      background: #161616;
+      border-top: 1px solid #28271F;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 0 8px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .az-inc-edge-left {
+      grid-column: 1;
+      grid-row: 2;
+      background: #161616;
+      border-right: 1px solid #28271F;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .az-inc-edge-right {
+      grid-column: 3;
+      grid-row: 2;
+      background: #161616;
+      border-left: 1px solid #28271F;
+      writing-mode: vertical-rl;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .az-inc-edge-top:active,
+    .az-inc-edge-bottom:active,
+    .az-inc-edge-left:active,
+    .az-inc-edge-right:active {
+      background: rgba(197, 168, 105, 0.22);
+    }
+
+    .az-inc-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      background: #60A5FA;
+    }
+
+    .az-inc-dot.up { background: #4ADE80; }
+    .az-inc-dot.down { background: #F87171; }
+
+    .az-inc-map-slot {
+      grid-column: 2;
+      grid-row: 2;
+      position: relative;
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      min-width: 0;
+      background: #121519;
+      overflow: hidden;
+      transition: none !important;
+    }
+
+    .az-inc-sidebar {
+      display: grid;
+      grid-template-rows: 1.15fr 1fr;
+      gap: 6px;
+      min-height: 0;
+      min-width: 0;
+    }
+
+    @media (orientation: portrait) {
+      .az-inc-sidebar {
+        grid-template-rows: 1fr;
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .az-inc-card {
+      background: #141414;
+      border: 1px solid #28271F;
+      border-radius: 10px;
+      padding: 6px 8px;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .az-inc-card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+      font-size: 10px;
+      font-weight: 800;
+      color: #C5A869;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border-bottom: 1px solid #28271F;
+      padding-bottom: 4px;
+      margin-bottom: 4px;
+      flex-shrink: 0;
+    }
+
+    .az-inc-canvas-box {
+      position: relative;
+      flex: 1;
+      width: 100%;
+      min-height: 0;
+      border-radius: 6px;
+      background: #0A0A0A;
+      overflow: hidden;
+    }
+
+    #azIncReliefCanvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .az-inc-pins-list {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 5px;
+    }
+
+    .az-inc-pin-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      background: #0D0D0D;
+      border: 1px solid #28271F;
+      border-radius: 6px;
+      padding: 5px 7px;
+      font-size: 11px;
+      cursor: pointer;
+    }
+
+    .az-inc-pin-row:active {
+      border-color: #C5A869;
+    }
+
+    .az-inc-pin-name {
+      color: #F2F0EA;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .az-inc-pin-dist {
+      color: #C5A869;
+      font-family: monospace;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    /* ESPECTRO • INTERPRETAÇÃO ALTIMÉTRICA 3D ANIMADA */
+    .az-terrain-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 9995;
+      background: rgba(0, 0, 0, 0.85);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+    }
+
+    .az-terrain-modal.is-open {
+      display: flex;
+    }
+
+    .az-terrain-sheet {
+      width: 100%;
+      max-width: 440px;
+      max-height: 92vh;
+      overflow-y: auto;
+      background: #0D0D0D;
+      border: 1.5px solid #C5A869;
+      border-radius: 14px;
+      padding: 12px;
+      color: #F2F0EA;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.92);
+    }
+
+    .az-terrain-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #28271F;
+      padding-bottom: 8px;
+      margin-bottom: 10px;
+    }
+
+    .az-terrain-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #C5A869;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .az-terrain-canvas-wrap {
+      background: #121212;
+      border: 1px solid #28271F;
+      border-radius: 10px;
+      padding: 6px;
+      margin-bottom: 10px;
+    }
+
+    .az-terrain-sublabel {
+      font-size: 10px;
+      font-weight: 700;
+      color: #9E9A8F;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    #azTerrain3dCanvas {
+      width: 100%;
+      height: 220px;
+      display: block;
+      border-radius: 6px;
+      background: #0A0A0A;
+    }
+
+    #azTerrainSideCanvas {
+      width: 100%;
+      height: 145px;
+      display: block;
+      border-radius: 6px;
+      background: #0A0A0A;
+    }
+
+    .az-radar-hud {
+      position: fixed;
+      right: 12px;
+      bottom: 76px;
+      z-index: 9970;
+      width: 168px;
+      background: rgba(13, 13, 13, 0.94);
+      border: 1.5px solid #C5A869;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.85);
+      display: none;
+    }
+
+    .az-radar-hud.is-visible {
+      display: block;
+    }
+
+    .az-radar-hud-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #161616;
+      padding: 4px 8px;
+      border-bottom: 1px solid #28271F;
+      font-size: 9px;
+      font-weight: 700;
+      color: #C5A869;
+      letter-spacing: 0.06em;
+    }
+
+    .az-radar-hud-head button {
+      background: transparent;
+      border: 0;
+      color: #F2F0EA;
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 0 2px;
+    }
+
+    #azRadarMiniMap {
+      width: 100%;
+      height: 112px;
+      background: #121519;
+    }
+
+    .az-radar-hud-foot {
+      padding: 5px 7px;
+      font-size: 10px;
+      line-height: 1.25;
+      color: #F2F0EA;
+      border-top: 1px solid #28271F;
+    }
+
+    .az-radar-hud-foot strong {
+      color: #4ADE80;
+      display: block;
+    }
+
+  /* Botão K9 compacto (só aparece quando há 1+ alvo ou aliado selecionado) */
+  #azK9HudBtn {
+    position: absolute !important;
+    top: 98px !important;
+    right: 12px !important;
+    z-index: 650 !important;
+    width: 34px !important;
+    height: 32px !important;
+    padding: 0 !important;
+    border-radius: 8px !important;
+    background: rgba(13, 13, 13, 0.94) !important;
+    color: #C5A869 !important;
+    border: 1px solid var(--geo-border, #28271F) !important;
+    display: none !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.72) !important;
+  }
+  #azK9HudBtn.has-targets {
+    display: inline-flex !important;
+    border-color: #F97316 !important;
+    color: #F97316 !important;
+    background: rgba(24, 15, 10, 0.96) !important;
+  }
+  /* Alças editáveis (pontos brancos nas extremidades) e centro arrastável das geometrias + Bandeira */
+  .az-geom-handle {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #FFFFFF;
+    border: 2px solid #0D0D0D;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.85);
+    cursor: grab;
+    touch-action: none;
+  }
+  .az-geom-move-grip {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(13, 13, 13, 0.92);
+    border: 2px solid #C5A869;
+    color: #C5A869;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: move;
+    touch-action: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);
+  }
+  .az-trace-mid-handle {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(197, 168, 105, 0.85);
+    border: 1.5px solid #0D0D0D;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.85);
+    cursor: pointer;
+    touch-action: none;
+  }
+  .az-flag-pin {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+  }
+  .az-flag-badge {
+    background: rgba(13, 13, 13, 0.94);
+    border: 1.5px solid var(--flag-color, #C5A869);
+    color: #FFFFFF;
+    font-size: 9px;
+    font-weight: 900;
+    padding: 1px 5px;
+    border-radius: 4px;
+    white-space: nowrap;
+    margin-bottom: 2px;
+  }
+  #azK9HudBtn.is-open {
+    background: #C5A869 !important;
+    color: #0D0D0D !important;
+    border-color: #FFFFFF !important;
+  }
+  #azK9CountBadge {
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    min-width: 15px;
+    height: 15px;
+    padding: 0 4px;
+    border-radius: 999px;
+    background: #F97316;
+    color: #0D0D0D;
+    border: 1.5px solid #0D0D0D;
+    font-size: 9px;
+    font-weight: 900;
+    line-height: 12px;
+    text-align: center;
+  }
+  body.az-map-expanded #azK9HudBtn {
+    position: fixed !important;
+    top: calc(var(--az-top-hud-safe, 52px) + 84px) !important;
+    right: 10px !important;
+    z-index: 100044 !important;
+  }
+  #azK9Popover {
+    position: absolute !important;
+    top: 90px !important;
+    right: 52px !important;
+    z-index: 100046 !important;
+    width: min(260px, calc(100vw - 74px));
+    background: rgba(13, 13, 13, 0.97) !important;
+    border: 1.5px solid #C5A869 !important;
+    border-radius: 10px;
+    padding: 8px;
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.92);
+  }
+  #azK9Popover.is-open { display: flex !important; }
+  body.az-map-expanded #azK9Popover {
+    position: fixed !important;
+    top: calc(var(--az-top-hud-safe, 52px) + 72px) !important;
+    right: 50px !important;
+    z-index: 100048 !important;
+  }
+  .az-k9-pop-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    border-bottom: 1px solid #28271F;
+    padding-bottom: 5px;
+    font-size: 10px;
+    font-weight: 900;
+    color: #C5A869;
+    letter-spacing: 0.4px;
+  }
+  .az-k9-mini-btn {
+    background: #161616;
+    border: 1px solid rgba(197, 168, 105, 0.5);
+    color: #F2F0EA;
+    border-radius: 5px;
+    padding: 2px 6px;
+    font-size: 9px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+  .az-k9-mini-btn.is-danger {
+    border-color: rgba(239, 68, 68, 0.65);
+    color: #FCA5A5;
+  }
+  .az-k9-pop-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    max-height: 175px;
+    overflow-y: auto;
+  }
+  .az-k9-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    background: #161616;
+    border: 1px solid #28271F;
+    border-radius: 7px;
+    padding: 5px 7px;
+  }
+  .az-k9-item-main {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    flex: 1;
+  }
+  .az-k9-swatch {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    border: 1px solid #FFFFFF;
+  }
+  .az-k9-meta {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .az-k9-name {
+    font-size: 10px;
+    font-weight: 800;
+    color: #FFFFFF;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .az-k9-stats {
+    font-size: 9.5px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    color: #C5A869;
+  }
+  .az-k9-empty {
+    font-size: 10px;
+    color: #9E9A8F;
+    padding: 4px 2px;
+  }
+
+  /* Indicador no botão Hambúrguer quando há ferramenta tática armada */
+  #azAtakHamburgerBtn {
+    position: relative;
+  }
+  #azAtakHamburgerBtn.has-armed-tool {
+    border-color: #C5A869 !important;
+    box-shadow: 0 0 0 1px rgba(197, 168, 105, 0.55) inset !important;
+  }
+  #azAtakHamburgerBtn.has-armed-tool::after {
+    content: "";
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #C5A869;
+  }
+
+  /* Busca Lupa */
+  #azMapSearchOverlay {
+    position: fixed !important;
+    top: calc(96px + env(safe-area-inset-top, 0px)) !important;
+    left: 8px !important;
+    right: 8px !important;
+    z-index: 100047 !important;
+    background: #0D0D0D !important;
+    border: 1.5px solid #C5A869 !important;
+    border-radius: 10px;
+    padding: 8px;
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.96);
+  }
+  body.az-map-expanded #azMapSearchOverlay {
+    top: calc(48px + env(safe-area-inset-top, 0px)) !important;
+  }
+  #azMapSearchOverlay.is-open { display: flex !important; }
+  .az-search-results-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: 170px;
+    overflow-y: auto;
+  }
+  .az-search-res-item {
+    background: #161616;
+    border: 1px solid #28271F;
+    border-radius: 6px;
+    padding: 6px 8px;
+    color: #F2F0EA;
+    font-size: 10px;
+    font-weight: 700;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  /* Cadeado Travar Tela abaixo de Camadas na coluna esquerda */
+  #azLockMapDrawBtn {
+    position: relative !important;
+    top: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: auto !important;
+    z-index: 650 !important;
+    width: 38px !important;
+    height: 38px !important;
+    padding: 0 !important;
+    border-radius: 9px !important;
+    background: rgba(13, 13, 13, 0.94) !important;
+    color: #C5A869 !important;
+    border: 1px solid #C5A869 !important;
+    font-size: 10px !important;
+    font-weight: 900 !important;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    opacity: 1 !important;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.72) !important;
+  }
+  #azLockMapDrawBtn.is-visible { display: inline-flex !important; }
+  #azLockMapDrawBtn.is-locked {
+    background: #C5A869 !important;
+    color: #0D0D0D !important;
+    border-color: #FFFFFF !important;
+  }
+
+  /* Barras flutuantes de Caneta/Régua ocultadas: controle centralizado no Menu Hambúrguer */
+  #azLeftControlsRow,
+  #azLeftControlsRow.is-visible {
+    display: none !important;
+    pointer-events: none !important;
+  }
+
+
+  /* Ajuste Fino Quadrado 8 Direções (Parte 1) + Propriedades (Parte 2) */
+  #azRemoteFineTunePad {
+    position: fixed !important;
+    bottom: calc(132px + env(safe-area-inset-bottom, 0px)) !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 100055 !important;
+    width: 224px;
+    background: #141414 !important;
+    border: 1.5px solid #C5A869 !important;
+    border-radius: 12px;
+    padding: 8px;
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    color: #FFFFFF;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.96);
+    user-select: none;
+  }
+  .az-remote-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+  }
+  .az-remote-tab-btn {
+    height: 23px;
+    border-radius: 6px;
+    border: 1px solid #2A2920;
+    background: #0D0D0D;
+    color: #9E9A8F;
+    font-size: 8.5px;
+    font-weight: 900;
+    cursor: pointer;
+  }
+  .az-remote-tab-btn.is-active {
+    background: #241F13;
+    border-color: #C5A869;
+    color: #C5A869;
+  }
+  #azPenActiveChipBar {
+    position: fixed !important;
+    bottom: calc(70px + env(safe-area-inset-bottom, 0px)) !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 100046 !important;
+    width: 312px;
+    max-width: calc(100vw - 16px);
+    background: rgba(13, 13, 13, 0.95) !important;
+    border: 1.5px solid #C5A869 !important;
+    border-radius: 10px;
+    padding: 6px 8px;
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    color: #FFFFFF;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.88);
+  }
+  #azPenActiveChipBar.is-open { display: flex !important; }
+  #azActiveRouteClearPill {
+    position: fixed !important;
+    top: calc(var(--az-top-hud-safe, 54px) + 4px) !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 100044 !important;
+    background: rgba(28, 12, 12, 0.94) !important;
+    border: 1.5px solid #EF4444 !important;
+    color: #FCA5A5 !important;
+    border-radius: 999px;
+    padding: 4px 12px;
+    font-size: 9.5px;
+    font-weight: 900;
+    display: none;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.82);
+  }
+  #azActiveRouteClearPill.is-open { display: inline-flex !important; }
+  #azOrbitStopPill {
+    position: fixed !important;
+    bottom: calc(82px + env(safe-area-inset-bottom, 0px)) !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 100060 !important;
+    background: rgba(13, 13, 13, 0.96) !important;
+    border: 1.5px solid #28271F !important;
+    color: #D4D0C7 !important;
+    border-radius: 999px;
+    padding: 5px 8px;
+    max-width: calc(100vw - 12px);
+    display: none;
+    align-items: center;
+    gap: 5px;
+    pointer-events: auto !important;
+    touch-action: manipulation !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.92);
+  }
+  #azOrbitStopPill.is-open { display: inline-flex !important; }
+  .az-orbit-ico-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid #2A2920;
+    background: #161616;
+    color: #C8C4B8;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    cursor: pointer;
+    flex-shrink: 0;
+    touch-action: manipulation;
+    user-select: none;
+    transition: transform 0.1s ease, border-color 0.14s ease, background 0.14s ease, color 0.14s ease;
+  }
+  .az-orbit-ico-btn:active { transform: scale(0.9); }
+  .az-orbit-ico-btn svg {
+    width: 15px;
+    height: 15px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.1;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    pointer-events: none;
+  }
+  .az-orbit-ico-btn.is-active {
+    border-color: #C5A869;
+    background: rgba(197, 168, 105, 0.24);
+    color: #C5A869;
+  }
+  .az-orbit-ico-btn.is-run {
+    border-color: #38BDF8;
+    background: rgba(56, 189, 248, 0.2);
+    color: #38BDF8;
+  }
+  .az-orbit-ico-btn.is-close {
+    border-color: rgba(239, 68, 68, 0.5);
+    color: #F87171;
+  }
+  .az-orbit-sep {
+    width: 1px;
+    height: 18px;
+    background: #28271F;
+    margin: 0 1px;
+    flex-shrink: 0;
+  }
+
+  /* ==================== MODO DRONE (BARRA RECOLHÍVEL, EDITÁVEL, GIMBAL & STICKS) ==================== */
+  #azDroneHudBar {
+    position: fixed !important;
+    top: calc(50px + env(safe-area-inset-top, 0px)) !important;
+    left: 8px !important;
+    transform: none !important;
+    z-index: 100055 !important;
+    width: 320px;
+    max-width: calc(100vw - 16px);
+    max-height: calc(100vh - 140px);
+    overflow-y: auto;
+    background: #0D0D0D !important;
+    border: 1.5px solid #C5A869 !important;
+    border-radius: 12px;
+    padding: 7px 8px;
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    box-shadow: none !important;
+    color: #F2F0EA;
+  }
+  #azDroneHudBar.is-open { display: flex !important; }
+  #azDroneHudBar.is-pick-hidden { display: none !important; }
+  #azDroneHudBar.is-collapsed {
+    width: auto !important;
+    top: auto !important;
+    bottom: 88px !important;
+    left: 8px !important;
+    transform: none !important;
+    padding: 5px 10px !important;
+    border-radius: 999px !important;
+  }
+  .az-recon-step-box {
+    width: 100%;
+    background: #161616;
+    border: 1px solid rgba(197, 168, 105, 0.3);
+    border-radius: 8px;
+    padding: 6px 7px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .az-recon-step-head {
+    font-size: 9.5px;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    color: #C5A869;
+    text-transform: uppercase;
+  }
+  .az-recon-step-desc {
+    font-size: 9px;
+    line-height: 1.25;
+    color: #E5E7EB;
+    border-top: 1px solid rgba(197, 168, 105, 0.16);
+    padding-top: 3px;
+  }
+  #azDroneHudBar.is-collapsed #azDroneTargetSelect,
+  #azDroneHudBar.is-collapsed #azDroneControlToggleBtn,
+  #azDroneHudBar.is-collapsed #azDroneSettingsBtn,
+  #azDroneHudBar.is-collapsed #azDroneCollapseBtn,
+  #azDroneHudBar.is-collapsed #azDroneMainToolsRow,
+  #azDroneHudBar.is-collapsed #azDroneGimbalSubpanel {
+    display: none !important;
+  }
+  .az-drone-top-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  .az-drone-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 9px;
+    font-weight: 900;
+    color: #38BDF8;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+  .az-drone-badge svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; }
+  #azDroneTargetSelect {
+    flex: 1;
+    min-width: 0;
+    height: 26px;
+    background: #161616;
+    color: #F2F0EA;
+    border: 1px solid #2A2920;
+    border-radius: 6px;
+    padding: 0 6px;
+    font-size: 9.5px;
+    font-weight: 800;
+  }
+  .az-drone-act-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 1px;
+  }
+  .az-drone-act-row::-webkit-scrollbar { display: none; }
+  .az-drone-custom-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+  .az-drone-pill-btn {
+    height: 26px;
+    padding: 0 7px;
+    border-radius: 6px;
+    border: 1px solid #2E2D24;
+    background: #161616;
+    color: #E5E1D8;
+    font-size: 8.5px;
+    font-weight: 900;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    cursor: pointer;
+    flex-shrink: 0;
+    touch-action: manipulation;
+  }
+  .az-drone-pill-btn svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2.1; pointer-events: none; }
+  .az-drone-pill-btn.is-active {
+    border-color: #C5A869;
+    background: rgba(197, 168, 105, 0.22);
+    color: #C5A869;
+  }
+  .az-drone-pill-btn.is-sky {
+    border-color: #38BDF8;
+    background: rgba(56, 189, 248, 0.18);
+    color: #38BDF8;
+  }
+  .az-drone-pill-btn.is-red-dot {
+    border-color: rgba(239, 68, 68, 0.6);
+    color: #F87171;
+  }
+  .az-drone-pill-btn.is-danger {
+    border-color: rgba(239, 68, 68, 0.55);
+    color: #F87171;
+    margin-left: auto;
+  }
+  #azDroneGimbalSubpanel {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    background: #141414;
+    border: 1px solid #28271F;
+    border-radius: 8px;
+    padding: 6px 8px;
+  }
+  #azDroneGimbalSubpanel.is-open { display: flex !important; }
+  .az-gimbal-row {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    justify-content: space-between;
+  }
+  .az-drone-popover {
+    position: fixed !important;
+    top: calc(122px + env(safe-area-inset-top, 0px)) !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 100062 !important;
+    width: 318px;
+    max-width: calc(100vw - 16px);
+    max-height: 62vh;
+    overflow-y: auto;
+    background: #141414 !important;
+    border: 1.5px solid #C5A869 !important;
+    border-radius: 12px;
+    padding: 10px;
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    color: #F2F0EA;
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.95);
+  }
+  .az-drone-popover.is-open { display: flex !important; }
+  .az-drone-sens-row {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    background: #0D0D0D;
+    border: 1px solid #28271F;
+    border-radius: 7px;
+    padding: 5px 7px;
+  }
+  .az-drone-sens-head {
+    display: flex;
+    justify-content: space-between;
+    font-size: 9px;
+    font-weight: 800;
+    color: #D4D0C7;
+  }
+  .az-drone-sens-head strong { color: #C5A869; font-family: monospace; }
+  #azDroneReticle {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 34px;
+    height: 34px;
+    z-index: 100040 !important;
+    pointer-events: none !important;
+    display: none;
+    color: rgba(56, 189, 248, 0.85);
+    filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.9));
+  }
+  #azDroneReticle.is-open { display: block !important; }
+  #azDroneSticksLayer {
+    position: fixed !important;
+    left: 0;
+    right: 0;
+    bottom: calc(64px + env(safe-area-inset-bottom, 0px)) !important;
+    height: 118px;
+    z-index: 100053 !important;
+    pointer-events: none;
+    display: none;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 12px;
+  }
+  #azDroneSticksLayer.is-open { display: flex !important; }
+  .az-drone-stick-pad {
+    pointer-events: auto;
+    touch-action: none;
+    user-select: none;
+    width: 108px;
+    height: 108px;
+    border-radius: 50%;
+    background: rgba(13, 13, 13, 0.72);
+    border: 1.5px solid rgba(197, 168, 105, 0.65);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.85), inset 0 0 14px rgba(0, 0, 0, 0.65);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .az-drone-stick-ring {
+    position: absolute;
+    inset: 14px;
+    border-radius: 50%;
+    border: 1px dashed rgba(197, 168, 105, 0.32);
+    pointer-events: none;
+  }
+  .az-drone-stick-axis-lbl {
+    position: absolute;
+    font-size: 7px;
+    font-weight: 900;
+    color: rgba(197, 168, 105, 0.78);
+    pointer-events: none;
+    letter-spacing: 0.03em;
+  }
+  .az-drone-stick-knob {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #D9BF84, #9E8248);
+    border: 2px solid #0D0D0D;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.9);
+    pointer-events: none;
+    transform: translate(0px, 0px);
+    transition: transform 0.08s ease-out;
+  }
+  .az-drone-stick-pad.is-active .az-drone-stick-knob { transition: none; background: #C5A869; border: 1.5px solid #0D0D0D; }
+  #azDroneTypeSelect {
+    height: 26px;
+    background: #161616;
+    color: #C5A869;
+    border: 1px solid rgba(197, 168, 105, 0.55);
+    border-radius: 7px;
+    font-size: 9px;
+    font-weight: 900;
+    padding: 0 5px;
+    outline: none;
+    max-width: 112px;
+  }
+  #azDroneHudBar.is-collapsed #azDroneTypeSelect,
+  #azDroneHudBar.is-collapsed #azDroneReconRow,
+  #azDroneHudBar.is-collapsed #azDroneEscoltaRow { display: none !important; }
+  #azDroneHudBar.is-collapsed #azDroneCloseBtn { display: inline-flex !important; }
+  #azDroneReconRow, #azDroneEscoltaRow {
+    display: none;
+    align-items: center;
+    gap: 5px;
+    flex-wrap: wrap;
+    width: 100%;
+    padding-top: 4px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  #azDroneHudBar[data-drone-type="recon"] #azDroneReconRow { display: flex; }
+  #azDroneHudBar[data-drone-type="escolta"] #azDroneEscoltaRow { display: flex; }
+  #azDroneHudBar.is-gimbal #azDroneReconRow,
+  #azDroneHudBar.is-gimbal #azDroneEscoltaRow { display: none !important; }
+  .az-recon-radius-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #161616;
+    border: 1px solid rgba(197, 168, 105, 0.35);
+    border-radius: 7px;
+    padding: 2px 6px;
+    font-size: 9px;
+    font-weight: 800;
+    color: #C5A869;
+  }
+  .az-recon-radius-wrap input[type="range"] { width: 64px; accent-color: #C5A869; }
+  #azSectorAnalysisPanel {
+    position: fixed;
+    right: 10px;
+    bottom: 92px;
+    z-index: 100062;
+    width: 320px;
+    max-width: calc(100vw - 20px);
+    max-height: 58vh;
+    background: #0D0D0D;
+    border: 1.5px solid #C5A869;
+    border-radius: 12px;
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.94);
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    color: #F8FAFC;
+  }
+  #azSectorAnalysisPanel.is-open { display: flex; }
+  #azSectorAnalysisPanel.is-minimized .az-sector-body { display: none; }
+  .az-sector-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    padding: 8px 10px;
+    background: #161616;
+    border-bottom: 1px solid rgba(197, 168, 105, 0.25);
+    font-size: 10px;
+    font-weight: 900;
+    color: #C5A869;
+  }
+  .az-sector-body {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    padding: 8px 10px;
+    overflow: hidden;
+  }
+  .az-sector-summary {
+    background: #161616;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 6px 8px;
+    font-size: 9.5px;
+    line-height: 1.38;
+    color: #CBD5E1;
+  }
+  .az-sector-tabs {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+  }
+  .az-sector-tab {
+    background: #161616;
+    color: #94A3B8;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    padding: 4px 2px;
+    font-size: 9px;
+    font-weight: 900;
+    cursor: pointer;
+    text-align: center;
+  }
+  .az-sector-tab.is-active {
+    background: rgba(197, 168, 105, 0.18);
+    color: #C5A869;
+    border-color: #C5A869;
+  }
+  .az-sector-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    overflow-y: auto;
+    max-height: 210px;
+    padding-right: 2px;
+  }
+  .az-sector-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    padding: 6px 8px;
+    background: #161616;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .az-sector-item:hover { border-color: rgba(197, 168, 105, 0.55); }
+  #azAllyFlyoverBanner {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100066;
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    pointer-events: none;
+    display: none;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.85);
+    top: 112px;
+    background: #0D0D0D;
+    border: 1.5px solid #4ADE80;
+    color: #4ADE80;
+  }
+  #azAllyFlyoverBanner.is-open { display: inline-flex; align-items: center; gap: 6px; }
+  .az-recon-input {
+    height: 24px;
+    background: #161616;
+    color: #F8FAFC;
+    border: 1px solid rgba(197, 168, 105, 0.45);
+    border-radius: 6px;
+    padding: 0 6px;
+    font-size: 9.5px;
+    font-weight: 700;
+    outline: none;
+    min-width: 0;
+  }
+  .az-recon-eta-badge {
+    font-size: 9px;
+    font-weight: 900;
+    color: #38BDF8;
+    background: rgba(56, 189, 248, 0.14);
+    border: 1px solid rgba(56, 189, 248, 0.4);
+    border-radius: 6px;
+    padding: 2px 6px;
+    white-space: nowrap;
+  }
+  .az-sector-tabs {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 3px;
+  }
+  #azTeamCommsModal {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 100070 !important;
+    width: 334px;
+    max-width: calc(100vw - 16px);
+    max-height: 88vh;
+    overflow-y: auto;
+    background: #141414 !important;
+    border: 1.5px solid #C5A869 !important;
+    border-radius: 12px;
+    padding: 12px;
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    color: #FFFFFF;
+    box-shadow: 0 18px 46px rgba(0, 0, 0, 0.97);
+  }
+  #azTeamCommsModal.is-open { display: flex !important; }
+  #azRemoteFineTunePad.is-open { display: flex !important; }
+  .az-remote-top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 4px;
+    font-size: 9px;
+    font-weight: 900;
+    color: #C5A869;
+  }
+  .az-remote-mini-btn {
+    height: 22px !important;
+    padding: 0 7px !important;
+    border-radius: 6px !important;
+    background: #0D0D0D !important;
+    border: 1px solid #C5A869 !important;
+    color: #C5A869 !important;
+    font-size: 9px !important;
+    font-weight: 900 !important;
+    cursor: pointer;
+  }
+  .az-remote-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+  .az-remote-key {
+    height: 46px !important;
+    border-radius: 8px !important;
+    background: #0D0D0D !important;
+    border: 1.5px solid #2A2A24 !important;
+    color: #F2F0EA !important;
+    font-size: 14px !important;
+    font-weight: 900 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer;
+    padding: 0 !important;
+    touch-action: manipulation;
+  }
+  .az-remote-key.is-diag {
+    color: #C5A869 !important;
+    border-color: #363326 !important;
+  }
+  .az-remote-ok {
+    background: #C5A869 !important;
+    color: #0D0D0D !important;
+    border-color: #C5A869 !important;
+    font-size: 11px !important;
+  }
+  .az-remote-coord {
+    font-size: 8.5px;
+    font-family: monospace;
+    color: #9E9A8F;
+    text-align: center;
+  }
+
+  /* Ajuste de Raio do Círculo */
+  #azCircleRadiusPad {
+    position: fixed !important;
+    bottom: 164px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 100054 !important;
+    background: #141414 !important;
+    border: 1.5px solid #C5A869 !important;
+    border-radius: 10px;
+    padding: 8px 12px;
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    width: 274px;
+    color: #FFFFFF;
+  }
+  #azCircleRadiusPad.is-open { display: flex !important; }
+
+
+  /* Indicadores de Borda (Colegas e Alvos fora da tela) */
+  #azEdgeIndicatorsLayer {
+    position: fixed !important;
+    inset: 0 !important;
+    pointer-events: none !important;
+    z-index: 100038 !important;
+    display: none;
+  }
+  #azEdgeIndicatorsLayer.is-visible { display: block !important; }
+  .az-edge-arrow-pill {
+    position: fixed;
+    pointer-events: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 7px;
+    border-radius: 999px;
+    background: rgba(13, 13, 13, 0.94);
+    border: 1.5px solid #C5A869;
+    color: #FFFFFF;
+    font-size: 9px;
+    font-weight: 900;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.85);
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .az-edge-arrow-pill:active { transform: translate(-50%, -50%) scale(0.92); }
+
+  /* Marcadores WASP (Varredura Rápida Integrada) */
+  .az-wasp-pin {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    z-index: 6;
+  }
+  .az-wasp-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 6px;
+    border-radius: 7px;
+    background: rgba(13, 13, 13, 0.94);
+    border: 2px solid #94A3B8;
+    color: #FFFFFF;
+    font-size: 9.5px;
+    font-weight: 900;
+    white-space: nowrap;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.92);
+  }
+  .az-wasp-pill svg {
+    width: 11px;
+    height: 11px;
+    flex-shrink: 0;
+  }
+  .az-wasp-sub {
+    margin-top: 1px;
+    padding: 1px 5px;
+    border-radius: 4px;
+    background: rgba(13, 13, 13, 0.88);
+    color: #D6D3C9;
+    font-size: 7.5px;
+    font-weight: 800;
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .az-wasp-edit-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #1B1B17;
+    border: 1px solid #C5A869;
+    color: #C5A869;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 2px;
+    padding: 0;
+    cursor: pointer;
+  }
+  .az-wasp-edit-dot svg {
+    width: 9px;
+    height: 9px;
+  }
+  #azWaspHudBar {
+    position: fixed !important;
+    bottom: 72px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 9997 !important;
+    width: 326px;
+    max-width: calc(100vw - 16px);
+    background: rgba(13, 13, 13, 0.94) !important;
+    border: 1.5px solid #22C55E !important;
+    border-radius: 10px;
+    padding: 7px 9px;
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    color: #FFFFFF;
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.88);
+  }
+  #azWaspHudBar.is-open { display: flex !important; }
+  .az-wasp-progress-track {
+    width: 100%;
+    height: 4px;
+    background: #1F1F1B;
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .az-wasp-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: #22C55E;
+    transition: width 0.2s ease;
+  }
+  #azWaspDetailModal {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 100069 !important;
+    width: 318px;
+    max-width: calc(100vw - 16px);
+    max-height: 88vh;
+    overflow-y: auto;
+    background: #141414 !important;
+    border: 1.5px solid #C5A869 !important;
+    border-radius: 12px;
+    padding: 12px;
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    color: #FFFFFF;
+    box-shadow: 0 18px 46px rgba(0, 0, 0, 0.97);
+  }
+  #azWaspDetailModal.is-open { display: flex !important; }
+  .az-wasp-state-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 5px;
+  }
+  .az-wasp-st-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 7px;
+    border-radius: 7px;
+    background: #0D0D0D;
+    border: 1.5px solid #2A2A24;
+    color: #E5E7EB;
+    font-size: 9px;
+    font-weight: 900;
+    cursor: pointer;
+    text-align: left;
+  }
+  .az-wasp-st-btn.is-active {
+    background: #1B1912;
+  }
+  body.az-map-clean-eye .az-wasp-pin,
+  body.az-map-clean-eye #azWaspHudBar { display: none !important; }
+
+  /* Modal Grade Rápida (GRG) & Geometria */
+  #azGrgModal, #azGeomModal {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 100062 !important;
+    background: rgba(0, 0, 0, 0.78);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 14px;
+  }
+  #azGrgModal.is-open, #azGeomModal.is-open { display: flex !important; }
+  .az-grg-card {
+    width: 100%;
+    max-width: 340px;
+    background: #141414;
+    border: 1.5px solid #C5A869;
+    border-radius: 12px;
+    padding: 12px;
+    color: #F2F0EA;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.95);
+  }
+
+  /* Modo Tela Limpa (Botão Olhinho) */
+  body.az-map-clean-eye .az-tac-pin,
+  body.az-map-clean-eye .az-crumb-pin,
+  body.az-map-clean-eye .az-geo-zoom-stack,
+  body.az-map-clean-eye .az-geo-tilt-badge,
+  body.az-map-clean-eye .az-geo-lock-badge,
+  body.az-map-clean-eye #azLeftControlsRow,
+  body.az-map-clean-eye #azLockMapDrawBtn {
+    display: none !important;
+    pointer-events: none !important;
+  }
+  .az-grid-tile.is-prio svg { stroke: #EF4444; }
+  .az-grid-tile.is-eraser.is-on {
+    border-color: #EF4444 !important;
+    background: #2A0E0E !important;
+    color: #FCA5A5 !important;
+  }
+
+
+  /* Menu Radial SVG Puro Sóbrio (60fps, sem blur) */
+  #azRadialWheel {
+    position: fixed !important;
+    z-index: 100056 !important;
+    width: 280px;
+    height: 280px;
+    margin-left: -140px;
+    margin-top: -140px;
+    border-radius: 50%;
+    background: transparent !important;
+    border: none !important;
+    display: none;
+    opacity: 0;
+    transform: scale(0.92);
+    contain: layout paint;
+    box-shadow: none !important;
+  }
+  #azRadialWheel.is-open {
+    display: block !important;
+    opacity: 1;
+    transform: scale(1);
+    transition: transform 130ms cubic-bezier(0.22, 1, 0.36, 1), opacity 110ms ease;
+  }
+  .az-radial-slice { cursor: pointer; transition: fill 90ms ease; }
+  .az-radial-slice path.az-slice-bg { fill: #0D0D0D; fill-opacity: 1; stroke: rgba(197, 168, 105, 0.36); stroke-width: 1.2; }
+  .az-radial-slice:hover path.az-slice-bg,
+  .az-radial-slice:active path.az-slice-bg { fill: #161616; fill-opacity: 1; stroke: #C5A869; stroke-width: 2; }
+  .az-radial-center-btn { cursor: pointer; }
+  .az-radial-center-btn circle { fill: #161616; stroke: #C5A869; stroke-width: 1.8; }
+  .az-radial-center-btn:hover circle, .az-radial-center-btn:active circle { fill: #26231C; }
+  .az-wheel-slot { display: none !important; }
+  .az-wheel-slot svg {
+    width: 15px;
+    height: 15px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+    flex-shrink: 0;
+  }
+  .az-wheel-slot span {
+    font-size: 8.5px;
+    font-weight: 900;
+    margin-top: 2px;
+    letter-spacing: 0;
+    white-space: nowrap;
+  }
+  .az-wheel-center-gear {
+    position: absolute;
+    width: 34px;
+    height: 34px;
+    margin-left: -17px;
+    margin-top: -17px;
+    border-radius: 50% !important;
+    background: #16140E !important;
+    border: 1.5px solid #9E9A8F !important;
+    color: #C5A869 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
+  }
+  .az-wheel-center-gear svg {
+    width: 15px;
+    height: 15px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+  }
+  .az-wheel-slot.is-trash { border-color: #EF4444 !important; color: #FCA5A5 !important; }
+  .az-wheel-slot.is-gear  { border-color: #9E9A8F !important; color: #C5A869 !important; }
+  .az-wheel-slot.is-hunt  { border-color: #F97316 !important; color: #FDBA74 !important; }
+
+  /* Modais */
+  #azPinEditorModal,
+  #azPhotoPinModal,
+  #azPhotoViewerModal,
+  #azMateInspectModal,
+  #azWheelConfigModal,
+  #azFlagActionModal,
+  #azMyStatusModal,
+  #azTrailModal {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 100058 !important;
+    width: 306px;
+    max-width: calc(100vw - 18px);
+    max-height: 88vh;
+    overflow-y: auto;
+    background: #141414 !important;
+    border: 1.5px solid #C5A869 !important;
+    border-radius: 12px;
+    padding: 12px;
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    color: #FFFFFF;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.96);
+  }
+  #azPinEditorModal.is-open,
+  #azPhotoPinModal.is-open,
+  #azPhotoViewerModal.is-open,
+  #azMateInspectModal.is-open,
+  #azWheelConfigModal.is-open,
+  #azFlagActionModal.is-open,
+  #azMyStatusModal.is-open,
+  #azTrailModal.is-open { display: flex !important; }
+
+  #azEnlaceModal {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 100066 !important;
+    width: 312px;
+    max-width: calc(100vw - 18px);
+    max-height: 86vh;
+    overflow-y: auto;
+    background: #141414 !important;
+    border: 1.5px solid #C5A869 !important;
+    border-radius: 12px;
+    padding: 12px;
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    color: #FFFFFF;
+    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.96);
+  }
+  #azEnlaceModal.is-open { display: flex !important; }
+  #azPinnedComposerModal {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 100066 !important;
+    width: 312px;
+    max-width: calc(100vw - 18px);
+    background: #141414 !important;
+    border: 1.5px solid #C5A869 !important;
+    border-radius: 12px;
+    padding: 12px;
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    color: #FFFFFF;
+    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.96);
+  }
+  #azPinnedComposerModal.is-open { display: flex !important; }
+  #azRadioConvModal {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 100067 !important;
+    width: 332px;
+    max-width: calc(100vw - 16px);
+    max-height: 88vh;
+    overflow-y: auto;
+    background: #141414 !important;
+    border: 1.5px solid #C5A869 !important;
+    border-radius: 12px;
+    padding: 12px;
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    color: #FFFFFF;
+    box-shadow: 0 18px 46px rgba(0, 0, 0, 0.97);
+  }
+  #azRadioConvModal.is-open { display: flex !important; }
+  #azTraceDetailModal {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 100067 !important;
+    width: 316px;
+    max-width: calc(100vw - 16px);
+    max-height: 88vh;
+    overflow-y: auto;
+    background: #141414 !important;
+    border: 1.5px solid #C5A869 !important;
+    border-radius: 12px;
+    padding: 12px;
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    color: #FFFFFF;
+    box-shadow: 0 18px 46px rgba(0, 0, 0, 0.97);
+  }
+  #azTraceDetailModal.is-open { display: flex !important; }
+  .az-trace-tags-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  .az-trace-tag-chip {
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: #0D0D0D;
+    border: 1px solid #2A2A24;
+    color: #D6D3C9;
+    font-size: 9px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+  .az-trace-tag-chip.is-active {
+    background: #252014;
+    border-color: #C5A869;
+    color: #C5A869;
+  }
+  #azPlantaModal {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 100068 !important;
+    width: 344px;
+    max-width: calc(100vw - 14px);
+    max-height: 90vh;
+    overflow-y: auto;
+    background: #141414 !important;
+    border: 1.5px solid #C5A869 !important;
+    border-radius: 12px;
+    padding: 12px;
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    color: #FFFFFF;
+    box-shadow: 0 18px 46px rgba(0, 0, 0, 0.97);
+  }
+  #azPlantaModal.is-open { display: flex !important; }
+  .az-planta-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+  }
+  .az-planta-tab-btn {
+    height: 29px;
+    border-radius: 7px;
+    border: 1px solid #2A2A24;
+    background: #0D0D0D;
+    color: #D6D3C9;
+    font-size: 9px;
+    font-weight: 800;
+    cursor: pointer;
+    text-transform: uppercase;
+  }
+  .az-planta-tab-btn.is-active {
+    background: #252014;
+    border-color: #C5A869;
+    color: #C5A869;
+  }
+  .az-planta-checker {
+    background-color: #1A1A1A;
+    background-image:
+      linear-gradient(45deg, #242424 25%, transparent 25%),
+      linear-gradient(-45deg, #242424 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #242424 75%),
+      linear-gradient(-45deg, transparent 75%, #242424 75%);
+    background-size: 16px 16px;
+    background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+    border: 1px solid #36342A;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  #azPlantaSketchCanvas {
+    width: 100%;
+    height: 215px;
+    display: block;
+    touch-action: none;
+    cursor: crosshair;
+  }
+  #azPlantaPreviewCanvas {
+    width: 100%;
+    max-height: 170px;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+  }
+  .az-planta-list-item {
+    background: #0D0D0D;
+    border: 1px solid #2A2A24;
+    border-radius: 8px;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .az-planta-list-item.is-selected {
+    border-color: #C5A869;
+    background: #18150E;
+  }
+  #azPlantaAdjustBar {
+    position: fixed !important;
+    bottom: 72px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 9998 !important;
+    width: 332px;
+    max-width: calc(100vw - 16px);
+    background: rgba(13, 13, 13, 0.94) !important;
+    border: 1.5px solid #C5A869 !important;
+    border-radius: 10px;
+    padding: 8px 10px;
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    color: #FFFFFF;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.88);
+  }
+  #azPlantaAdjustBar.is-open { display: flex !important; }
+  .az-fp-handle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(13, 13, 13, 0.94);
+    border: 2px solid #C5A869;
+    color: #C5A869;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.82);
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+    z-index: 25 !important;
+    pointer-events: auto !important;
+  }
+  .az-fp-handle.is-rotate {
+    border-color: #38BDF8;
+    color: #38BDF8;
+  }
+  .az-fp-handle.is-scale {
+    border-color: #4ADE80;
+    color: #4ADE80;
+  }
+  .az-fp-lock-chip {
+    pointer-events: none !important;
+    background: rgba(13, 13, 13, 0.82);
+    border: 1px solid rgba(197, 168, 105, 0.75);
+    color: #C5A869;
+    font-size: 8.5px;
+    font-weight: 900;
+    padding: 2px 6px;
+    border-radius: 5px;
+    white-space: nowrap;
+    letter-spacing: 0.4px;
+  }
+  .az-radio-out-card {
+    background: #0D0D0D;
+    border: 1.5px solid #C5A869;
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  #azPinnedPollBanner {
+    position: fixed !important;
+    top: calc(var(--az-top-hud-safe, 52px) + 4px) !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 100063 !important;
+    width: 332px;
+    max-width: calc(100vw - 16px);
+    background: rgba(14, 14, 14, 0.97) !important;
+    border: 2px solid #C5A869 !important;
+    border-radius: 12px;
+    padding: 9px 10px;
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    color: #FFFFFF;
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.95);
+  }
+  #azPinnedPollBanner.is-open { display: flex !important; }
+  .az-pinned-vote-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 5px;
+  }
+  .az-pinned-vote-btn {
+    height: 30px;
+    border-radius: 7px;
+    font-size: 9.5px;
+    font-weight: 900;
+    cursor: pointer;
+    border: 1.5px solid #2A2A24;
+    background: #0D0D0D;
+    color: #F2F0EA;
+  }
+  .az-pinned-vote-btn.is-sim { border-color: #22C55E; color: #4ADE80; }
+  .az-pinned-vote-btn.is-nao { border-color: #EF4444; color: #FCA5A5; }
+  .az-pinned-vote-btn.is-aguarde { border-color: #F59E0B; color: #FBBF24; }
+  .az-pinned-vote-btn.is-imp { border-color: #A78BFA; color: #C4B5FD; }
+  .az-pinned-vote-btn.is-chosen { box-shadow: 0 0 0 2px #FFFFFF; background: #262217; }
+  .az-pinned-roster {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .az-pinned-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 6px;
+    border-radius: 6px;
+    font-size: 8.5px;
+    font-weight: 900;
+    background: #0D0D0D;
+    border: 1px solid #2A2A24;
+  }
+  .az-enlace-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 7px 9px;
+    border-radius: 8px;
+    background: #0D0D0D;
+    border: 1px solid #2A2A24;
+    font-size: 10px;
+  }
+  .az-enlace-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 9px;
+    font-weight: 900;
+    padding: 2px 7px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .az-enlace-badge.is-green { background: rgba(34, 197, 94, 0.16); color: #4ADE80; border: 1px solid #22C55E; }
+  .az-enlace-badge.is-amber { background: rgba(245, 158, 11, 0.16); color: #FBBF24; border: 1px solid #F59E0B; }
+  .az-enlace-badge.is-red { background: rgba(239, 68, 68, 0.16); color: #FCA5A5; border: 1px solid #EF4444; }
+  .az-enlace-badge.is-wait { background: rgba(148, 163, 184, 0.15); color: #CBD5E1; border: 1px solid #64748B; }
+
+  .az-self-status-badge {
+    position: absolute;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(13, 13, 13, 0.92);
+    color: #F2F0EA;
+    border: 1px solid #C5A869;
+    border-radius: 5px;
+    padding: 1px 5px;
+    font-size: 8.5px;
+    font-weight: 900;
+    white-space: nowrap;
+    pointer-events: none;
+    letter-spacing: 0.3px;
+  }
+  .az-mate-status-pill {
+    display: block;
+    margin-top: 2px;
+    background: rgba(13, 13, 13, 0.9);
+    border: 1px solid #C5A869;
+    color: #FDE047;
+    border-radius: 4px;
+    padding: 1px 4px;
+    font-size: 8px;
+    font-weight: 900;
+    white-space: nowrap;
+    text-align: center;
+  }
+  .az-status-chip-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+  .az-status-chip {
+    height: 34px;
+    border-radius: 8px;
+    background: #0D0D0D;
+    border: 1px solid #2A2A24;
+    color: #F2F0EA;
+    font-size: 9.5px;
+    font-weight: 900;
+    cursor: pointer;
+    padding: 0 6px;
+  }
+  .az-status-chip.is-active {
+    border-color: #C5A869;
+    background: #241F13;
+    color: #C5A869;
+  }
+
+  #azMapTextComposer {
+    position: fixed !important;
+    z-index: 100059 !important;
+    width: 258px;
+    max-width: calc(100vw - 16px);
+    background: rgba(14, 14, 14, 0.98) !important;
+    border: 1.5px solid #C5A869 !important;
+    border-radius: 12px;
+    padding: 10px;
+    display: none;
+    flex-direction: column;
+    gap: 7px;
+    color: #F2F0EA;
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.95);
+  }
+  #azMapTextComposer.is-open { display: flex !important; }
+  .az-text-size-row, .az-text-color-row {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-wrap: wrap;
+  }
+  .az-text-size-btn {
+    flex: 1;
+    height: 26px;
+    border-radius: 6px;
+    background: #0D0D0D;
+    border: 1px solid #2A2A24;
+    color: #D6D3C9;
+    font-size: 10px;
+    font-weight: 900;
+    cursor: pointer;
+  }
+  .az-text-size-btn.is-active {
+    border-color: #C5A869;
+    background: #252116;
+    color: #C5A869;
+  }
+  .az-text-color-swatch {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid #2A2A24;
+    cursor: pointer;
+    padding: 0;
+  }
+  .az-text-color-swatch.is-active {
+    border-color: #C5A869;
+    transform: scale(1.15);
+    box-shadow: 0 0 0 2px #0D0D0D;
+  }
+  .az-pegada-time-pin {
+    background: rgba(13, 13, 13, 0.9);
+    border: 1px solid var(--peg-col, #C5A869);
+    color: #F2F0EA;
+    font-size: 8.5px;
+    font-weight: 900;
+    padding: 1px 5px;
+    border-radius: 4px;
+    white-space: nowrap;
+    pointer-events: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.85);
+  }
+  .az-map-text-pin {
+    cursor: pointer;
+    user-select: none;
+    line-height: 1.15;
+  }
+  .az-map-text-inner {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 5px;
+    font-weight: 900;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
+    transform-origin: center center;
+  }
+  .az-flag-action-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+  .az-flag-action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 34px;
+    border-radius: 8px;
+    background: #0D0D0D;
+    border: 1px solid #2A2A24;
+    color: #F2F0EA;
+    font-size: 10px;
+    font-weight: 900;
+    cursor: pointer;
+  }
+  .az-flag-action-btn svg {
+    width: 14px;
+    height: 14px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+  }
+  .az-flag-action-btn.is-danger {
+    border-color: #7F1D1D;
+    color: #FCA5A5;
+    background: #1C0D0D;
+  }
+
+  #azPhotoTelestrateCanvas {
+    width: 100%;
+    max-height: 200px;
+    border-radius: 8px;
+    border: 1.5px solid #C5A869;
+    background: #0D0D0D;
+    touch-action: none;
+  }
+
+  /* Ícones Militares no Mapa + Migalhas de Pão + Ondas de Sinal + Afundamento Tátil */
+  .az-tac-pin {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    z-index: 60;
+    transition: transform 0.1s ease;
+  }
+  .az-tac-pin:active {
+    transform: scale(0.91);
+  }
+  .az-tac-pin-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--pin-color, #C5A869);
+    color: var(--pin-text-color, #0D0D0D);
+    border: 1.5px solid #0D0D0D;
+    border-radius: 5px;
+    padding: 2px 7px;
+    font-size: 9.5px;
+    font-weight: 900;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255, 255, 255, 0.35);
+  }
+  .az-tac-pin-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--pin-color, #C5A869);
+    border: 2px solid #0D0D0D;
+    box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.72);
+    margin-top: 2px;
+  }
+  .az-tac-pin-icon-wrap {
+    position: relative;
+    width: 26px;
+    height: 26px;
+    margin-top: 2px;
+    border-radius: 50%;
+    background: var(--pin-color, #C5A869);
+    color: var(--pin-text-color, #0D0D0D);
+    border: 2px solid #0D0D0D;
+    box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.75), 0 3px 8px rgba(0, 0, 0, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .az-tac-pin-icon-wrap svg {
+    width: 14px;
+    height: 14px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2.1;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    position: relative;
+    z-index: 2;
+  }
+  .az-cam-fov-cone {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 58px;
+    height: 58px;
+    margin-left: -29px;
+    margin-top: -29px;
+    pointer-events: none;
+    z-index: 1;
+    transform-origin: center center;
+  }
+  .az-pin-icon-cats {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+  .az-pin-icon-cat-btn {
+    padding: 3px 6px;
+    border-radius: 6px;
+    background: #0D0D0D;
+    border: 1px solid #2A2A24;
+    color: #9E9A8F;
+    font-size: 8px;
+    font-weight: 900;
+    cursor: pointer;
+  }
+  .az-pin-icon-cat-btn.is-active {
+    border-color: #C5A869;
+    color: #C5A869;
+    background: #211C12;
+  }
+  .az-pin-icon-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+    max-height: 152px;
+    overflow-y: auto;
+    padding: 2px;
+  }
+  .az-pin-icon-opt {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    padding: 5px 3px;
+    border-radius: 7px;
+    background: #0D0D0D;
+    border: 1px solid #2A2A24;
+    color: #E5E7EB;
+    font-size: 7.5px;
+    font-weight: 800;
+    text-align: center;
+    cursor: pointer;
+    line-height: 1.05;
+  }
+  .az-pin-icon-opt svg {
+    width: 15px;
+    height: 15px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .az-pin-icon-opt.is-active {
+    border-color: #C5A869;
+    background: #262013;
+    color: #C5A869;
+  }
+  .az-crumb-pin {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #0D0D0D;
+    border: 2px solid #38BDF8;
+    color: #38BDF8;
+    font-size: 9px;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.9);
+  }
+  .az-crumb-pin.is-active {
+    background: #38BDF8;
+    color: #0D0D0D;
+  }
+  .az-mate-arrow-wrap {
+    position: relative;
+    width: 24px;
+    height: 24px;
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: rotate(var(--mate-heading, 0deg));
+  }
+  .az-mate-arrow-svg {
+    width: 0;
+    height: 0;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-bottom: 16px solid var(--pin-color, #38BDF8);
+  }
+  .az-sig-wave {
+    position: absolute;
+    bottom: -4px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid var(--sig-color, #4ADE80);
+    opacity: var(--sig-opacity, 0.85);
+    animation: azSigPulse var(--sig-speed, 1.4s) ease-out infinite;
+    pointer-events: none;
+  }
+  .az-sig-wave.is-w2 { animation-delay: 0.45s; }
+  .az-sig-wave.is-w3 { animation-delay: 0.9s; }
+  @keyframes azSigPulse {
+    0% { transform: scale(0.65); opacity: var(--sig-opacity, 0.85); }
+    100% { transform: scale(2.1); opacity: 0; }
+  }
+  .az-tac-pin.is-ghost { opacity: 0.55; filter: grayscale(1); }
+  .az-tac-pin.is-gpe .az-tac-pin-badge { box-shadow: 0 0 0 2px #EF4444, 0 3px 10px rgba(0, 0, 0, 0.9); }
+  .az-tac-pin.is-photo-pin .az-tac-pin-badge { box-shadow: 0 0 0 2px #38BDF8, 0 3px 10px rgba(0, 0, 0, 0.9); }
+
+  #azActiveSpeakerBanner {
+    position: fixed !important;
+    top: 48px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 100048 !important;
+    background: #0D0D0D !important;
+    border: 1.5px solid #4ADE80 !important;
+    color: #FFFFFF !important;
+    border-radius: 999px !important;
+    padding: 5px 14px !important;
+    font-size: 11px !important;
+    font-weight: 900 !important;
+    display: none;
+    align-items: center;
+    gap: 6px;
+  }
+  #azActiveSpeakerBanner.is-on { display: inline-flex !important; }
+
+  #azNavChevronToggleBtn {
+    position: fixed !important;
+    bottom: calc(66px + env(safe-area-inset-bottom, 0px)) !important;
+    right: 8px !important;
+    z-index: 100046 !important;
+    width: 30px !important;
+    height: 26px !important;
+    border-radius: 6px !important;
+    background: #141414 !important;
+    border: 1px solid #C5A869 !important;
+    color: #C5A869 !important;
+    font-size: 11px !important;
+    font-weight: 900 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer;
+  }
+  body.az-map-fullscreen #azNavChevronToggleBtn {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+  body.az-nav-hidden nav,
+  body.az-nav-hidden .az-bottom-nav,
+  body.az-nav-hidden [class*="BottomNav"],
+  body.az-nav-hidden [class*="bottom-nav"],
+  body.az-nav-hidden #azBottomNav {
+    display: none !important;
+  }
+  body.az-nav-hidden #azNavChevronToggleBtn {
+    bottom: 10px !important;
+  }
+
+  #azTacHudToast {
+    position: fixed !important;
+    top: 48px !important;
+    left: 10px !important;
+    z-index: 100052 !important;
+    background: #141414 !important;
+    border: 1.5px solid #C5A869 !important;
+    color: #FFFFFF !important;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 11px;
+    font-weight: 800;
+    display: none;
+    max-width: calc(100vw - 20px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.92);
+  }
+  #azTacHudToast.is-alert {
+    background: #2A0E0E !important;
+    border-color: #EF4444 !important;
+    color: #FECACA !important;
+  }
