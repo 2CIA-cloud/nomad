@@ -2913,7 +2913,7 @@
         </div>
       </div>
       <div class="az-geo-cfg-row">
-        <span class="az-geo-label">Cor de Destaque sobre o Mapa:</span>
+        <span class="az-geo-label">Tema Geral do App:</span>
         <div class="az-geo-group" id="azGeoAccentColorGroup">
           <button type="button" class="az-geo-btn active" data-map-accent="#C5A869" style="display:inline-flex;align-items:center;gap:6px;"><span style="width:12px;height:12px;border-radius:3px;background:#C5A869;border:1px solid #0D0D0D;display:inline-block;"></span>Dourado</button>
           <button type="button" class="az-geo-btn subtle" data-map-accent="#6B7F54" style="display:inline-flex;align-items:center;gap:6px;"><span style="width:12px;height:12px;border-radius:3px;background:#6B7F54;border:1px solid #0D0D0D;display:inline-block;"></span>Verde Militar</button>
@@ -25296,6 +25296,43 @@ if (document.readyState === "loading") {
     color: #0D0D0D !important;
     font-weight: 900 !important;
   }
+  /* Tema Geral Dinâmico (Dourado #C5A869, Verde Militar #6B7F54, Cinza #9CA3AF) — 60fps sem blur */
+  :root {
+    --az-theme-accent: #C5A869;
+    --az-theme-accent-dim: rgba(197, 168, 105, 0.38);
+    --az-theme-surface: #161616;
+  }
+  body.az-theme-olive {
+    --az-theme-accent: #6B7F54;
+    --az-theme-accent-dim: rgba(107, 127, 84, 0.42);
+    --az-theme-surface: #141812;
+  }
+  body.az-theme-gray {
+    --az-theme-accent: #9CA3AF;
+    --az-theme-accent-dim: rgba(156, 163, 175, 0.38);
+    --az-theme-surface: #16181C;
+  }
+  body.az-theme-olive .text-pmmg-khaki, body.az-theme-olive .text-pmmg-gold,
+  body.az-theme-gray .text-pmmg-khaki, body.az-theme-gray .text-pmmg-gold { color: var(--az-theme-accent) !important; }
+  body.az-theme-olive .bg-pmmg-khaki, body.az-theme-gray .bg-pmmg-khaki { background-color: var(--az-theme-accent) !important; }
+  body.az-theme-olive .border-pmmg-gold, body.az-theme-olive .border-pmmg-khaki,
+  body.az-theme-gray .border-pmmg-gold, body.az-theme-gray .border-pmmg-khaki { border-color: var(--az-theme-accent-dim) !important; }
+  body.az-theme-olive .bg-pmmg-dark, body.az-theme-olive .bg-pmmg-card,
+  body.az-theme-gray .bg-pmmg-dark, body.az-theme-gray .bg-pmmg-card { background-color: var(--az-theme-surface) !important; }
+  body.az-theme-olive #azGeoCfgBox, body.az-theme-olive #azGeoLayersBox, body.az-theme-olive #azGeoMunBox,
+  body.az-theme-olive #azAtakDrawer, body.az-theme-olive #azDroneHudBar, body.az-theme-olive #azAtakHamburgerBtn,
+  body.az-theme-gray #azGeoCfgBox, body.az-theme-gray #azGeoLayersBox, body.az-theme-gray #azGeoMunBox,
+  body.az-theme-gray #azAtakDrawer, body.az-theme-gray #azDroneHudBar, body.az-theme-gray #azAtakHamburgerBtn {
+    border-color: var(--az-theme-accent) !important;
+  }
+  body.az-theme-olive .az-geo-label, body.az-theme-olive .az-recon-step-head,
+  body.az-theme-gray .az-geo-label, body.az-theme-gray .az-recon-step-head { color: var(--az-theme-accent) !important; }
+  body.az-theme-olive .az-geo-btn.active, body.az-theme-olive .az-atak-tool-btn.is-active, body.az-theme-olive .az-drone-pill-btn.is-active,
+  body.az-theme-gray .az-geo-btn.active, body.az-theme-gray .az-atak-tool-btn.is-active, body.az-theme-gray .az-drone-pill-btn.is-active {
+    background-color: var(--az-theme-accent) !important;
+    border-color: var(--az-theme-accent) !important;
+    color: #0D0D0D !important;
+  }
   #azMapSweepLine {
     position: fixed;
     left: 0;
@@ -25321,9 +25358,9 @@ if (document.readyState === "loading") {
     <div class="az-hud-line-top" id="azHudUnitNetLine">5º BPM A</div>
     <div class="az-hud-line-sub" id="azHudStreetLine">Localizando via...</div>
   </div>
-  <button type="button" class="az-hud-glass-btn" id="azWhatsappGroupOpenBtn" title="Especializadas / Equipe (Chat e PTT)" style="width:auto !important;padding:0 8px !important;gap:4px;font-size:11px;font-weight:900;color:#C5A869 !important;">
+  <button type="button" class="az-hud-glass-btn" id="azWhatsappGroupOpenBtn" title="Grupo da Equipe (Chat, Fotos e PTT)" style="width:auto !important;padding:0 8px !important;gap:4px;font-size:11px;font-weight:900;color:var(--az-theme-accent, #C5A869) !important;">
     <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-    <span id="azTopGroupBadge">ESPECIALIZADAS</span>
+    <span id="azTopGroupBadge">GRUPO</span>
   </button>
   <button type="button" class="az-hud-glass-btn" id="azHudStealthBtn" title="Modo Furtivo / Silêncio Total (Mutar todos os áudios)">
     <svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
@@ -25355,16 +25392,16 @@ if (document.readyState === "loading") {
     <div style="display:flex;align-items:center;gap:8px;min-width:0;">
       <button type="button" id="azCloseWaGroupBtn" class="az-atak-tool-btn" style="height:36px !important;">← VOLTAR</button>
       <div style="min-width:0;">
-        <div id="azWaGroupTitle" style="font-size:13px;font-weight:900;color:#C5A869;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">ESPECIALIZADAS AZIMUTE</div>
-        <div id="azWaGroupSubtitle" style="font-size:11px;color:#4ADE80;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Conecte-se a uma sala (ex: PMMG01)</div>
+        <div id="azWaGroupTitle" style="font-size:13px;font-weight:900;color:var(--az-theme-accent, #C5A869);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">GRUPO AZIMUTE</div>
+        <div id="azWaGroupSubtitle" style="font-size:11px;color:#D1D5DB;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Conecte-se a uma sala (ex: PMMG01)</div>
       </div>
     </div>
     <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
-      <button type="button" id="azWaEnlaceBtn" class="az-atak-tool-btn" style="height:32px !important;padding:0 8px !important;gap:4px;border-color:#C5A869 !important;color:#C5A869 !important;font-size:11px !important;" title="Testar sinal e áudio da equipe">
+      <button type="button" id="azWaEnlaceBtn" class="az-atak-tool-btn" style="height:32px !important;padding:0 8px !important;gap:4px;border-color:var(--az-theme-accent, #C5A869) !important;color:var(--az-theme-accent, #C5A869) !important;font-size:11px !important;" title="Testar sinal e áudio da equipe">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
         ENLACE
       </button>
-      <span id="azWaOnlinePill" style="font-size:11px;font-weight:900;background:#0D0D0D;border:1px solid #4ADE80;color:#4ADE80;padding:3px 8px;border-radius:999px;flex-shrink:0;">0 ONLINE</span>
+      <span id="azWaOnlinePill" style="font-size:11px;font-weight:900;background:#0D0D0D;border:1px solid var(--az-theme-accent, #C5A869);color:var(--az-theme-accent, #C5A869);padding:3px 8px;border-radius:999px;flex-shrink:0;">0 ONLINE</span>
     </div>
   </div>
 
@@ -25810,7 +25847,7 @@ if (document.readyState === "loading") {
     <summary>
       <span class="az-dock-group-summary-left">
         <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><circle cx="16.5" cy="7.5" r="2.2"/></svg>
-        <span>ESPECIALIZADAS (TURNO &amp; EQUIPE)</span>
+        <span>GRUPO (TURNO &amp; EQUIPE)</span>
       </span>
       <span style="display:inline-flex;align-items:center;gap:6px;">
         <span id="azLiveCountBadge" style="color:#4ADE80;font-size:9px;">0 ONLINE</span>
@@ -35789,7 +35826,7 @@ if (document.readyState === "loading") {
     });
     const totalOnline = getRoomOnlineCount();
     const topBadge = document.getElementById("azTopGroupBadge");
-    if (topBadge) topBadge.textContent = tac.roomCode ? `${tac.roomCode} (${totalOnline})` : "ESPECIALIZADAS";
+    if (topBadge) topBadge.textContent = tac.roomCode ? `${tac.roomCode} (${totalOnline})` : "GRUPO";
 
     const waModal = document.getElementById("azWhatsappGroupModal");
     if (!waModal || (!waModal.classList.contains("is-open") && waModal.style.display !== "flex")) return;
@@ -35800,7 +35837,7 @@ if (document.readyState === "loading") {
     const chips = document.getElementById("azWaMembersChips");
 
     if (pill) pill.textContent = `${totalOnline} ONLINE`;
-    if (title) title.textContent = tac.roomCode ? `ESPECIALIZADAS • ${tac.roomCode}` : "ESPECIALIZADAS AZIMUTE";
+    if (title) title.textContent = tac.roomCode ? `GRUPO • ${tac.roomCode}` : "GRUPO AZIMUTE";
     if (sub) {
       sub.textContent = mates.length > 0
         ? "Online: " + (tac.myQra ? tac.myQra + " (VOCÊ), " : "") + mates.map(function (m) { return m.qra; }).join(", ")
@@ -35955,10 +35992,14 @@ if (document.readyState === "loading") {
     if (mInp) mInp.value = "";
   });
 
-  // Seletor de 3 cores de destaque sobre o mapa (Dourado, Verde Militar, Cinza)
+  // Seletor do Tema Geral do App + Destaque no Mapa (Dourado, Verde Militar, Cinza)
   window.azApplyMapAccentColor = function (hex) {
     const valid = ["#C5A869", "#6B7F54", "#9CA3AF"].includes(hex) ? hex : "#C5A869";
     try { localStorage.setItem("az_map_accent_v1", valid); } catch (_) {}
+    if (document.body) {
+      document.body.classList.remove("az-theme-gold", "az-theme-olive", "az-theme-gray");
+      document.body.classList.add(valid === "#6B7F54" ? "az-theme-olive" : (valid === "#9CA3AF" ? "az-theme-gray" : "az-theme-gold"));
+    }
     document.querySelectorAll("#azGeoAccentColorGroup [data-map-accent]").forEach(function (b) {
       const on = b.getAttribute("data-map-accent") === valid;
       b.classList.toggle("active", on);
@@ -35982,7 +36023,7 @@ if (document.readyState === "loading") {
     btn.addEventListener("click", function () {
       const hex = btn.getAttribute("data-map-accent") || "#C5A869";
       window.azApplyMapAccentColor(hex);
-      showToast("Cor de destaque no mapa atualizada.", 1800);
+      showToast("Tema geral atualizado.", 1800);
     });
   });
   setTimeout(function () {
