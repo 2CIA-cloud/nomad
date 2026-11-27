@@ -2909,6 +2909,7 @@
           <button type="button" class="az-geo-btn active" data-theme="dark">Escuro</button>
           <button type="button" class="az-geo-btn subtle" data-theme="light">Claro</button>
           <button type="button" class="az-geo-btn subtle" data-theme="satellite">Satélite</button>
+          <button type="button" class="az-geo-btn subtle" data-theme="mono">Carta Escura</button>
         </div>
       </div>
       <div class="az-geo-cfg-row">
@@ -18203,7 +18204,8 @@ if (window.__azimuteGeoInitialized) {
   const STYLE_URLS = {
     dark: "https://tiles.openfreemap.org/styles/dark",
     light: "https://tiles.openfreemap.org/styles/liberty",
-    satellite: "https://tiles.openfreemap.org/styles/dark"
+    satellite: "https://tiles.openfreemap.org/styles/dark",
+    mono: "https://tiles.openfreemap.org/styles/dark"
   };
 
   const OVERPASS_MIRRORS = [
@@ -19485,8 +19487,15 @@ if (window.__azimuteGeoInitialized) {
         mapTheme = nextTheme;
         localStorage.setItem("az_geo_map_theme", mapTheme);
         syncThemeButtons();
+        if (typeof window.azFlashMapLayerTransition === "function") window.azFlashMapLayerTransition();
         map.setStyle(STYLE_URLS[mapTheme] || STYLE_URLS.dark);
         map.once("style.load", () => {
+          if (mapTheme === "mono" && typeof window.azToggleMonoTechMap === "function") {
+            tac.monoTechMode = false;
+            window.azToggleMonoTechMap();
+          } else {
+            tac.monoTechMode = false;
+          }
           if (typeof window.azimuteRefreshGrgTheme === "function") window.azimuteRefreshGrgTheme();
         });
         if (radarMap) {
@@ -25194,8 +25203,76 @@ if (document.readyState === "loading") {
     font-size: 12px !important;
     line-height: 1.45 !important;
   }
+  /* Ícone nítido e sólido do Menu Principal + Padrão Visual Instrumento de Precisão */
+  #azAtakHamburgerBtn {
+    opacity: 1 !important;
+    background-color: #161616 !important;
+    border: 1.5px solid #C5A869 !important;
+    color: #F2F0EA !important;
+  }
+  #azAtakHamburgerBtn svg {
+    opacity: 1 !important;
+    stroke: #F2F0EA !important;
+    stroke-width: 2.5 !important;
+  }
+  #azAtakHamburgerBtn.is-active, #azAtakHamburgerBtn.is-open {
+    background-color: #C5A869 !important;
+    color: #0D0D0D !important;
+  }
+  #azAtakHamburgerBtn.is-active svg, #azAtakHamburgerBtn.is-open svg {
+    stroke: #0D0D0D !important;
+  }
+  #azGeoCfgBox, #azGeoLayersBox, #azGeoMunBox, #azAtakDrawer, #azDroneSettingsPopover, #azWheelConfigModal {
+    background-color: #111111 !important;
+    border: 1px solid rgba(197, 168, 105, 0.42) !important;
+    border-radius: 8px !important;
+    color: #F2F0EA !important;
+    box-shadow: none !important;
+    contain: layout paint;
+  }
+  .az-geo-cal-box, .az-geo-cfg-row {
+    background-color: #161616 !important;
+    border: 1px solid #2A2A2A !important;
+    border-radius: 6px !important;
+    padding: 10px !important;
+    margin-bottom: 8px !important;
+  }
+  .az-geo-label, .az-geo-cal-head {
+    font-size: 11.5px !important;
+    letter-spacing: 0.04em !important;
+    color: #C5A869 !important;
+    font-weight: 800 !important;
+  }
+  .az-geo-btn, .az-atak-tool-btn, .az-org-mini-btn {
+    min-height: 42px !important;
+    font-size: 11.5px !important;
+    border-radius: 5px !important;
+    border: 1px solid rgba(197, 168, 105, 0.35) !important;
+    background-color: #161616 !important;
+    color: #F2F0EA !important;
+    box-shadow: none !important;
+  }
+  .az-geo-btn.active, .az-atak-tool-btn.is-active {
+    background-color: #C5A869 !important;
+    border-color: #C5A869 !important;
+    color: #0D0D0D !important;
+    font-weight: 900 !important;
+  }
+  #azMapSweepLine {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 3px;
+    z-index: 9001;
+    background: #C5A869;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate3d(0, -10px, 0);
+  }
 </style>
 <div id="azMapTransitionVeil" aria-hidden="true"></div>
+<div id="azMapSweepLine" aria-hidden="true"></div>
 
 <input type="file" id="azNativeCameraInput" accept="image/*" capture="environment" style="display:none;">
 <input type="file" id="azNativeGalleryInput" accept="image/*" style="display:none;">
@@ -25217,7 +25294,7 @@ if (document.readyState === "loading") {
     <svg viewBox="0 0 24 24"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
   </button>
   <button type="button" class="az-hud-glass-btn az-hud-hosp-btn" id="azQuickHospitalRouteBtn" title="Rota Hospital Próximo">+</button>
-  <button type="button" class="az-hud-glass-btn" id="azAtakHamburgerBtn" title="Menu Tático">
+  <button type="button" class="az-hud-glass-btn" id="azAtakHamburgerBtn" title="Menu Principal" aria-label="Menu Principal">
     <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
   </button>
 </div>
@@ -25228,7 +25305,7 @@ if (document.readyState === "loading") {
     <div style="display:flex;align-items:center;gap:8px;min-width:0;">
       <button type="button" id="azCloseWaGroupBtn" class="az-atak-tool-btn" style="height:30px !important;">← VOLTAR</button>
       <div style="min-width:0;">
-        <div id="azWaGroupTitle" style="font-size:13px;font-weight:900;color:#C5A869;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">GRUPO TÁTICO AZIMUTE</div>
+        <div id="azWaGroupTitle" style="font-size:13px;font-weight:900;color:#C5A869;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">GRUPO AZIMUTE</div>
         <div id="azWaGroupSubtitle" style="font-size:10px;color:#4ADE80;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Conecte-se a uma sala (ex: PMMG01)</div>
       </div>
     </div>
@@ -27748,9 +27825,28 @@ if (document.readyState === "loading") {
 
   window.azFlashMapLayerTransition = function () {
     const veil = document.getElementById("azMapTransitionVeil");
-    if (!veil) return;
-    veil.classList.add("is-flash");
-    setTimeout(function () { veil.classList.remove("is-flash"); }, 150);
+    const sweep = document.getElementById("azMapSweepLine");
+    if (veil) {
+      veil.classList.add("is-flash");
+      setTimeout(function () { veil.classList.remove("is-flash"); }, 180);
+    }
+    if (sweep && typeof requestAnimationFrame === "function") {
+      const t0 = performance.now();
+      const dur = 210;
+      const h = window.innerHeight || 720;
+      sweep.style.opacity = "0.9";
+      const stepSweep = function (now) {
+        const p = Math.min(1, (now - t0) / dur);
+        sweep.style.transform = `translate3d(0, ${Math.round(p * h)}px, 0)`;
+        if (p < 1) {
+          requestAnimationFrame(stepSweep);
+        } else {
+          sweep.style.opacity = "0";
+          sweep.style.transform = "translate3d(0, -10px, 0)";
+        }
+      };
+      requestAnimationFrame(stepSweep);
+    }
   };
   window.azToggleMonoTechMap = function () {
     window.azFlashMapLayerTransition();
@@ -30504,52 +30600,31 @@ if (document.readyState === "loading") {
       svg.appendChild(g);
     });
 
-    // Disco central de retorno/fechar + atalho de configuração
-    const centerClose = document.createElementNS(ns, "g");
-    centerClose.setAttribute("class", "az-radial-center-btn");
+    // Disco central abre CONFIGURAÇÕES (nunca fechar)
+    const centerCfg = document.createElementNS(ns, "g");
+    centerCfg.setAttribute("class", "az-radial-center-btn");
     const cCircle = document.createElementNS(ns, "circle");
-    cCircle.setAttribute("cx", cx); cCircle.setAttribute("cy", cy); cCircle.setAttribute("r", "38");
-    centerClose.appendChild(cCircle);
-    const cTxt = document.createElementNS(ns, "text");
-    cTxt.setAttribute("x", cx); cTxt.setAttribute("y", cy - 2);
-    cTxt.setAttribute("text-anchor", "middle");
-    cTxt.setAttribute("fill", "#C5A869");
-    cTxt.setAttribute("font-size", "16");
-    cTxt.setAttribute("font-weight", "900");
-    cTxt.textContent = "✕";
-    centerClose.appendChild(cTxt);
-    const cSub = document.createElementNS(ns, "text");
-    cSub.setAttribute("x", cx); cSub.setAttribute("y", cy + 14);
-    cSub.setAttribute("text-anchor", "middle");
-    cSub.setAttribute("fill", "#D1D5DB");
-    cSub.setAttribute("font-size", "9");
-    cSub.setAttribute("font-weight", "700");
-    cSub.textContent = "FECHAR";
-    centerClose.appendChild(cSub);
-    centerClose.addEventListener("click", function (e) {
-      e.stopPropagation();
-      wheel.classList.remove("is-open");
-    });
-    svg.appendChild(centerClose);
-
-    // Botão discreto de personalizar na base do anel interno
-    const cfgG = document.createElementNS(ns, "g");
-    cfgG.setAttribute("class", "az-radial-center-btn");
-    const cfgC = document.createElementNS(ns, "circle");
-    cfgC.setAttribute("cx", cx); cfgC.setAttribute("cy", cy + 38); cfgC.setAttribute("r", "12");
-    cfgG.appendChild(cfgC);
-    const cfgT = document.createElementNS(ns, "text");
-    cfgT.setAttribute("x", cx); cfgT.setAttribute("y", cy + 42);
-    cfgT.setAttribute("text-anchor", "middle"); cfgT.setAttribute("fill", "#C5A869");
-    cfgT.setAttribute("font-size", "11"); cfgT.setAttribute("font-weight", "900");
-    cfgT.textContent = "≡";
-    cfgG.appendChild(cfgT);
-    cfgG.addEventListener("click", function (e) {
+    cCircle.setAttribute("cx", cx); cCircle.setAttribute("cy", cy); cCircle.setAttribute("r", "40");
+    centerCfg.appendChild(cCircle);
+    const gearFo = document.createElementNS(ns, "foreignObject");
+    gearFo.setAttribute("x", String(cx - 32));
+    gearFo.setAttribute("y", String(cy - 22));
+    gearFo.setAttribute("width", "64");
+    gearFo.setAttribute("height", "44");
+    gearFo.style.pointerEvents = "none";
+    const gearWrap = document.createElement("div");
+    gearWrap.style.cssText = "width:64px;height:44px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#C5A869;";
+    gearWrap.innerHTML = `${SVG_ICONS.gear}<span style="font-size:10px;font-weight:900;margin-top:2px;letter-spacing:0.04em;color:#F2F0EA;">CONFIG</span>`;
+    const gSvg = gearWrap.querySelector("svg");
+    if (gSvg) { gSvg.style.width = "16px"; gSvg.style.height = "16px"; gSvg.style.stroke = "#C5A869"; }
+    gearFo.appendChild(gearWrap);
+    centerCfg.appendChild(gearFo);
+    centerCfg.addEventListener("click", function (e) {
       e.stopPropagation();
       wheel.classList.remove("is-open");
       openWheelConfigModal();
     });
-    svg.appendChild(cfgG);
+    svg.appendChild(centerCfg);
 
     wheel.appendChild(svg);
     return { radius: rOut, slotSize: 48, fontSize: 11, diameter: size };
