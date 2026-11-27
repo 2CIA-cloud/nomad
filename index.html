@@ -1342,6 +1342,24 @@
 
         <!-- ================= VIEW EXCLUSIVA: GEOLOCALIZAÇÃO ================= -->
         <section id="view-gps" class="hidden relative overflow-hidden rounded-2xl space-y-4 p-1">
+            <!-- CAIXA EXTERNA REDE DE RÁDIO (ABERTA NO MODO APP, TRANSPORTADA PARA O HUD AO EXPANDIR) -->
+            <div id="azExternalRadioWrap" class="relative z-10 px-3 pt-1">
+                <div class="bg-pmmg-card p-3.5 rounded-xl border border-pmmg-khaki/50 border-l-4 border-l-pmmg-gold flex flex-wrap items-center justify-between gap-3">
+                    <div class="flex items-center gap-2.5">
+                        <div class="p-2 rounded-lg bg-pmmg-dark text-pmmg-gold border border-pmmg-border">
+                            <i data-lucide="radio" class="w-4 h-4"></i>
+                        </div>
+                        <div>
+                            <span class="text-[10px] uppercase font-bold text-pmmg-gold block leading-none">Rede de Rádio</span>
+                            <strong id="hudRadioChannel" class="text-sm sm:text-base text-white font-mono block mt-1">Aguardando GPS</strong>
+                        </div>
+                    </div>
+                    <div class="text-left sm:text-right">
+                        <span class="text-[10px] uppercase font-bold text-pmmg-khaki block leading-none">Unidade / Área</span>
+                        <span id="hudUnitArea" class="text-xs sm:text-sm text-gray-200 font-bold block mt-1">Aguardando confirmação de bairro/GPS</span>
+                    </div>
+                </div>
+            </div>
 <div id="az-geo-module" class="az-geo-module relative z-10">
   <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" />
   <style>
@@ -2692,9 +2710,14 @@
     }
   </style>
 
-  <button type="button" id="azGeoDrawerToggle" class="az-geo-drawer-btn" aria-expanded="true" onclick="window.azimuteToggleGeoDrawer()">
-    <span>MAPA INTERATIVO</span>
-    <span id="azGeoDrawerArrow">FECHAR -</span>
+  <button type="button" id="azGeoDrawerToggle" class="az-geo-drawer-btn" aria-expanded="false" onclick="window.azimuteToggleGeoDrawer()">
+    <span style="display:inline-flex;align-items:center;gap:8px;">
+      <svg width="22" height="18" viewBox="0 0 800 650" aria-hidden="true" style="flex-shrink:0;">
+        <path d="M 380 45 L 445 38 L 510 55 L 555 48 L 620 82 L 695 110 L 735 162 L 718 225 L 742 280 L 710 345 L 685 415 L 650 468 L 592 515 L 535 552 L 472 588 L 415 605 L 362 572 L 325 530 L 285 495 L 252 442 L 210 425 L 155 438 L 95 422 L 42 395 L 35 355 L 88 325 L 145 318 L 195 332 L 235 292 L 222 230 L 245 168 L 285 122 L 330 78 Z" fill="rgba(197,168,105,0.14)" stroke="#C5A869" stroke-width="34" stroke-linejoin="round" stroke-linecap="round"/>
+      </svg>
+      <span>MAPA INTERATIVO</span>
+    </span>
+    <span id="azGeoDrawerArrow">ABRIR +</span>
   </button>
   <script>
     window.azimuteToggleGeoDrawer = function () {
@@ -2705,6 +2728,9 @@
       const open = body.classList.toggle("is-open");
       if (btn) btn.setAttribute("aria-expanded", open ? "true" : "false");
       if (arrow) arrow.textContent = open ? "FECHAR -" : "ABRIR +";
+      if (open && !document.body.classList.contains("az-map-expanded") && typeof window.azEnsureReducedLightMap === "function") {
+        window.azEnsureReducedLightMap();
+      }
       if (window.azimuteUpdateRadarHudVisibility) {
         window.azimuteUpdateRadarHudVisibility();
       }
@@ -2714,7 +2740,7 @@
     };
   </script>
 
-  <div id="azGeoDrawerBody" class="az-geo-drawer-body is-open">
+  <div id="azGeoDrawerBody" class="az-geo-drawer-body">
     <div class="az-geo-topbar">
       <div class="az-geo-search-wrap">
         <input id="azGeoSearchInput" class="az-geo-input" type="text" placeholder="Buscar rua, unidade, hospital, BSC, Deplan..." />
@@ -2737,6 +2763,9 @@
     <div class="az-geo-stage" id="azGeoStage">
       <div id="azGeoMap"></div>
       <div id="azGeoLeftOverlayCol">
+        <button type="button" class="az-hud-glass-btn" id="azMapControlsDrawerBtn" aria-label="Gaveta de Controles" title="Mostrar / Ocultar Controles do Mapa">
+          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="4" rx="1"/><rect x="3" y="10" width="18" height="4" rx="1"/><rect x="3" y="16" width="18" height="4" rx="1"/></svg>
+        </button>
         <button type="button" class="az-hud-glass-btn" id="azHudSearchToggleBtn" title="Buscar rua, unidade ou hospital">
           <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         </button>
@@ -2744,12 +2773,13 @@
           <button type="button" id="azGeoZoomInBtn" aria-label="Aproximar">+</button>
           <button type="button" id="azGeoZoomOutBtn" aria-label="Afastar">−</button>
         </div>
-        <button type="button" class="az-hud-glass-btn" id="azSatToggleBtn" aria-label="Alternar Mapa Comum e Satélite" title="Alternar Mapa Comum / Satélite">
+        <button type="button" class="az-hud-glass-btn" id="azSatToggleBtn" aria-label="Camadas (Toque: Satélite | Segure: Claro/Escuro)" title="Camadas (Toque: Satélite | Segure: Claro/Escuro)">
           <svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
         </button>
         <button type="button" id="azLockMapDrawBtn" aria-label="Travar movimento do mapa" title="Travar / Destravar movimento do mapa">
           <svg id="azLockMapIcon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>
         </button>
+        <button type="button" class="az-hud-glass-btn" id="azGeoPlusFiltersBtn" aria-label="Filtros de Camadas" title="Filtros do Mapa" style="font-size:18px;font-weight:900;color:#C5A869 !important;">+</button>
       </div>
       <button type="button" id="azGeoLockBadge" class="az-geo-lock-badge" title="Travar rumo do mapa e do Orbe ao manusear o celular">
         <span>RUMO LIVRE</span>
@@ -2813,16 +2843,12 @@
 
     <div class="az-geo-actions">
       <button type="button" id="azGeoIncursionBtn" class="az-geo-btn incursion">Incursão</button>
-      <button type="button" id="azGeoLayersToggleBtn" class="az-geo-btn">Filtros</button>
-      <button type="button" id="azGeoAddPinBtn" class="az-geo-btn subtle">+ Alfinete</button>
-      <button type="button" id="azGeoClearBtn" class="az-geo-btn subtle">Limpar</button>
       <button type="button" id="azGeoMunToggleBtn" class="az-geo-btn subtle">Municípios</button>
-      <button type="button" id="azGeoCfgToggleBtn" class="az-geo-btn subtle" aria-label="Configuracoes">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <button type="button" id="azGeoCfgToggleBtn" class="az-geo-btn subtle" aria-label="Calibrar Bússola / ORBE" title="Calibrar Bússola / ORBE" style="padding:0 10px;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="3"></circle>
           <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l-.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
         </svg>
-        <span>Configurações</span>
       </button>
     </div>
 
@@ -2904,15 +2930,6 @@
       </div>
 
       <div class="az-geo-cfg-row">
-        <span class="az-geo-label">Visual do Mapa:</span>
-        <div class="az-geo-group" id="azGeoMapThemes">
-          <button type="button" class="az-geo-btn active" data-theme="dark">Escuro</button>
-          <button type="button" class="az-geo-btn subtle" data-theme="light">Claro</button>
-          <button type="button" class="az-geo-btn subtle" data-theme="satellite">Satélite</button>
-          <button type="button" class="az-geo-btn subtle" data-theme="mono">Carta Escura</button>
-        </div>
-      </div>
-      <div class="az-geo-cfg-row">
         <span class="az-geo-label">Cor da Seta:</span>
         <div class="az-geo-group" id="azGeoArrowColors">
           <button type="button" class="az-geo-swatch is-selected" data-color="#C5A869" style="background:#C5A869;" aria-label="Caqui"></button>
@@ -2973,7 +2990,10 @@
   <div class="az-inc-topbar">
     <span class="az-inc-title">MODO INCURSÃO • ORBE INTEGRADO</span>
     <span class="az-inc-telemetry" id="azIncTelemetry">000° • GPS ---</span>
-    <button type="button" id="azIncCloseBtn" class="az-geo-btn subtle mini">Sair</button>
+    <div style="display:flex;gap:6px;align-items:center;">
+      <button type="button" id="azIncToggleFullBtn" class="az-geo-btn subtle mini">Tela Cheia</button>
+      <button type="button" id="azIncCloseBtn" class="az-geo-btn subtle mini">Sair</button>
+    </div>
   </div>
 
   <div class="az-inc-body">
@@ -3078,25 +3098,8 @@
             </div>
 
             <div id="azimuteLiveGpsHud" class="relative z-10 w-full space-y-3.5">
-                <!-- BLOCO COMPACTO DE REDE DE RÁDIO -->
-                <div class="bg-pmmg-card/95 backdrop-blur-sm p-3.5 rounded-xl border border-pmmg-khaki/50 border-l-4 border-l-pmmg-gold shadow-lg flex flex-wrap items-center justify-between gap-3">
-                    <div class="flex items-center gap-2.5">
-                        <div class="p-2 rounded-lg bg-pmmg-dark text-pmmg-gold border border-pmmg-border">
-                            <i data-lucide="radio" class="w-4 h-4"></i>
-                        </div>
-                        <div>
-                            <span class="text-[10px] uppercase font-bold text-pmmg-gold block leading-none">Rede de Rádio</span>
-                            <strong id="hudRadioChannel" class="text-sm sm:text-base text-white font-mono block mt-1">Aguardando GPS</strong>
-                        </div>
-                    </div>
-                    <div class="text-left sm:text-right">
-                        <span class="text-[10px] uppercase font-bold text-pmmg-khaki block leading-none">Unidade / Área</span>
-                        <span id="hudUnitArea" class="text-xs sm:text-sm text-gray-200 font-bold block mt-1">18º BPM • Contagem</span>
-                    </div>
-                </div>
-
                 <!-- CARD PRINCIPAL: LOCALIZAÇÃO (TÍTULO "Localização" + "Cia / Batalhão" NO CANTO DIREITO DO CABEÇALHO) -->
-                <div class="bg-pmmg-card/90 backdrop-blur-sm border-2 border-pmmg-khaki/60 rounded-2xl p-4 sm:p-5 shadow-2xl space-y-3.5">
+                <div class="bg-pmmg-card border-2 border-pmmg-khaki/60 rounded-2xl p-4 sm:p-5 space-y-3.5">
                     <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pmmg-border pb-2.5">
                         <div class="flex items-center gap-2 flex-wrap">
                             <span id="hudGpsBadge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-extrabold uppercase bg-emerald-950 text-emerald-400 border border-emerald-500/50">
@@ -13223,13 +13226,41 @@
                 lat: lat,
                 lon: lon
             };
+            // Hook público para troca de área de batalhão via GPS (pronto para acoplar áudios de voz futuramente)
+            if (typeof window.onBattalionAreaChange !== 'function') {
+                window.onBattalionAreaChange = function(novoBatalhao, anterior, novaRede) {
+                    const shortR = typeof formatShortRedeName === 'function' ? formatShortRedeName(novaRede) : (novaRede || novoBatalhao);
+                    const msg = 'Mudança de área: ' + novoBatalhao + ' (' + shortR + ') — Modular rádio HT';
+                    if (typeof showToast === 'function') {
+                        showToast(msg, 4200);
+                    }
+                    try {
+                        window.dispatchEvent(new CustomEvent('azimute:battalion-change', {
+                            detail: { novoBatalhao, anterior, novaRede: shortR, timestamp: Date.now() }
+                        }));
+                    } catch (_) {}
+                };
+            }
+            if (closestArea.confirmed && closestArea.battalion) {
+                if (window._azLastConfirmedBattalion && window._azLastConfirmedBattalion !== closestArea.battalion) {
+                    window.onBattalionAreaChange(closestArea.battalion, window._azLastConfirmedBattalion, closestArea.rede);
+                }
+                window._azLastConfirmedBattalion = closestArea.battalion;
+            }
+
+            const nowDt = new Date();
+            const dtCompact = nowDt.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }) + ' ' + nowDt.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
             const rChanEl = document.getElementById('hudRadioChannel');
             const rAreaEl = document.getElementById('hudUnitArea');
             const rCiaBpmBadge = document.getElementById('hudLocationCiaBpmBadge');
             const hudUnitLineEl = document.getElementById('azHudUnitNetLine');
+            const hudStreetLineEl = document.getElementById('azHudStreetLine');
             if (rChanEl) rChanEl.textContent = closestArea.rede;
             if (rAreaEl) rAreaEl.textContent = closestArea.unidade;
-            if (hudUnitLineEl) hudUnitLineEl.textContent = formatShortRedeName(closestArea.rede);
+            if (hudUnitLineEl) hudUnitLineEl.textContent = formatShortRedeName(closestArea.rede) + ' • ' + dtCompact;
+            if (hudStreetLineEl && azimuteLastStreet) {
+                hudStreetLineEl.textContent = azimuteLastStreet + (azimuteCurrentSuburb ? ' • ' + azimuteCurrentSuburb : '');
+            }
             if (rCiaBpmBadge) {
                 rCiaBpmBadge.textContent = closestArea.headerLabel;
             }
@@ -17819,8 +17850,119 @@ if (viewId === 'gps' && window.azimuteGeoInvalidate) window.azimuteGeoInvalidate
             };
         }
 
+        // Base embutida no padrão completo do 18º BPM para os batalhões da 1ª e 2ª RPM (sobrescrita automaticamente se JSON externo tiver mais Cias)
+        const AZIMUTE_EMBEDDED_BATTALIONS = [
+            {
+                nome: "22º BPM",
+                cidade: "Belo Horizonte",
+                regiao: "1ª RPM • Capital",
+                rede_radio: "REDE: 1ª RPM / 22º BPM A",
+                endereco_sede: "Avenida Arthur Bernardes, 1337 – Santa Lúcia, Belo Horizonte - MG",
+                telefone_sou: "(31) 2123-1800 / (31) 3284-8445",
+                companhias: [
+                    { nome: "124ª Cia PM", setor: "Santa Lúcia / Belvedere / Papagaio", endereco: "Avenida Arthur Bernardes, 1337 – Santa Lúcia", telefone: "(31) 2123-1809", bairros: ["Morro do Papagaio", "Santa Lúcia", "Santo Antônio", "Belvedere", "Santa Rita de Cássia", "Vila Barragem Santa Lúcia", "Vila Estrela", "Cidade Jardim", "São Bento", "São Pedro"], vias: ["Av. Raja Gabaglia", "Av. Nossa Senhora do Carmo", "Av. Arthur Bernardes", "Av. Luiz Paulo Franco"] },
+                    { nome: "125ª Cia PM", setor: "Prado / Gutierrez / Grajaú / Morro das Pedras", endereco: "Rua Oscar Trompowsky, 1396 - Grajaú", telefone: "(31) 3371-4488 / (31) 3332-4343", bairros: ["Prado", "Morro das Pedras", "Nova Suíssa", "Gutierrez", "Calafate", "Vila Santa Sofia", "Vila São Jorge", "Vila Leonina", "Jardim América", "Nova Granada", "Barroca", "Grajaú"], vias: ["Av. Silva Lobo", "Av. Francisco Sá", "Av. Barão Homem de Melo", "Av. Amazonas", "Av. Tereza Cristina"] },
+                    { nome: "127ª Cia PM", setor: "Serra / Sion / Cruzeiro / Mangabeiras", endereco: "Rua Trifana, 839 - Serra", telefone: "(31) 3282-7393", bairros: ["Aglomerado da Serra", "Serra", "Sion", "Cruzeiro", "Vila Nossa Senhora de Fátima", "Vila Marçola", "Vila Santana do Cafezal", "Mangabeiras", "São Lucas", "Carmo", "Anchieta"], vias: ["Av. Afonso Pena (trecho sul)", "Av. do Contorno", "Av. Prudente de Morais", "Av. Mem de Sá"] },
+                    { nome: "128ª Cia PM", setor: "Alto Vera Cruz / Taquaril / Santa Efigênia", endereco: "Região Leste / Centro-Sul - BH", telefone: "(31) 2123-1814", bairros: ["Alto Vera Cruz", "Paraíso", "Saudade", "Esplanada", "Conjunto Taquaril", "Santa Efigênia", "Pompéia"], vias: ["Av. dos Andradas", "Av. Mem de Sá", "Av. Jefferson Coelho da Silva"] }
+                ],
+                apoio_abastecimento: [
+                    { nome: "124ª Cia • Base Comunitária Belvedere", endereco: "Av. Luiz Paulo Franco (em frente ao nº 678) - Belvedere, BH", maps_url: "https://www.google.com/maps/search/?api=1&query=Avenida+Luiz+Paulo+Franco+678+Belvedere+BH" },
+                    { nome: "Sede 22º BPM (Santa Lúcia)", endereco: "Av. Arthur Bernardes, 1337 - Santa Lúcia, BH", maps_url: "https://www.google.com/maps/search/?api=1&query=Avenida+Arthur+Bernardes+1337+Santa+Lucia+BH" }
+                ],
+                divisas: "1º BPM (Santa Efigênia) • 5º BPM (Gameleira / Oeste) • 16º BPM (Santa Tereza / Leste) • 34º BPM (Caiçaras / Noroeste) • 41º BPM (Barreiro) • 61º BPM (Sabará) • 1ª Cia PM Ind (Nova Lima)",
+                saude_delegacias: [
+                    { tipo: "Saúde / Trauma", nome: "Hospital João XXIII (FHEMIG)", endereco: "Av. Professor Alfredo Balena, 400 - Santa Efigênia, BH", telefone: "(31) 3239-9200" },
+                    { tipo: "Saúde / Referência", nome: "Hospital Mater Dei Santo Agostinho", endereco: "Rua Mato Grosso, 1100 - Santo Agostinho, BH", telefone: "(31) 3339-9000" },
+                    { tipo: "Delegacia / CEFLAN", nome: "CEFLAN II / DEPLAN Centro-Sul", endereco: "Av. Barbacena, 288 - Barro Preto, BH", telefone: "(31) 3330-1600" }
+                ],
+                contatos: [
+                    { setor: "SOU / Sala de Operações 22º BPM", telefone: "(31) 2123-1800" },
+                    { setor: "22º BPM (Administração)", telefone: "(31) 3284-8445" },
+                    { setor: "124ª Cia PM (Santa Lúcia)", telefone: "(31) 2123-1809" },
+                    { setor: "125ª Cia PM (Grajaú / Prado)", telefone: "(31) 3371-4488" },
+                    { setor: "127ª Cia PM (Serra)", telefone: "(31) 3282-7393" },
+                    { setor: "128ª Cia PM (Alto Vera Cruz)", telefone: "(31) 2123-1814" }
+                ]
+            },
+            {
+                nome: "1º BPM", cidade: "Belo Horizonte", regiao: "1ª RPM • Capital", rede_radio: "REDE: 1ª RPM / 1º BPM",
+                endereco_sede: "Praça Floriano Peixoto, s/n - Santa Efigênia, Belo Horizonte/MG", telefone_sou: "COPOM 190 / 1ª RPM",
+                companhias: [{ nome: "Área Central / 1º BPM", setor: "Centro / Savassi / Funcionários / Barro Preto", endereco: "Praça Floriano Peixoto, s/n - Santa Efigênia", telefone: "190", bairros: ["Centro", "Savassi", "Funcionários", "Lourdes", "Barro Preto", "Carlos Prates", "Floresta", "Boa Viagem", "Lagoinha"], vias: ["Av. Afonso Pena", "Av. Amazonas", "Av. do Contorno", "Av. Cristiano Machado", "Av. Bias Fortes"] }],
+                apoio_abastecimento: [{ nome: "Sede 1º BPM", endereco: "Praça Floriano Peixoto, s/n - Santa Efigênia, BH", maps_url: "https://www.google.com/maps/search/?api=1&query=Praca+Floriano+Peixoto+Santa+Efigenia+BH" }],
+                divisas: "5º BPM (Oeste) • 16º BPM (Leste) • 22º BPM (Centro-Sul) • 34º BPM (Noroeste)",
+                saude_delegacias: [{ tipo: "Saúde / Trauma", nome: "Hospital João XXIII", endereco: "Av. Prof. Alfredo Balena, 400 - Santa Efigênia", telefone: "(31) 3239-9200" }, { tipo: "Delegacia / CEFLAN", nome: "CEFLAN Centro / Barreiro", endereco: "Rua Tupis, 149 - Centro, BH", telefone: "197" }],
+                contatos: [{ setor: "COPOM / 1ª RPM", telefone: "190" }]
+            },
+            {
+                nome: "5º BPM", cidade: "Belo Horizonte", regiao: "1ª RPM • Capital", rede_radio: "REDE: 1ª RPM / 5º BPM A",
+                endereco_sede: "Avenida Amazonas, 6455 - Gameleira, Belo Horizonte/MG", telefone_sou: "COPOM 190 / 1ª RPM",
+                companhias: [{ nome: "Área Oeste / 5º BPM", setor: "Gameleira / Padre Eustáquio / Betânia / Arena MRV", endereco: "Avenida Amazonas, 6455 - Gameleira", telefone: "190", bairros: ["Gameleira", "Nova Gameleira", "Califórnia", "Camargos", "Coração Eucarístico", "Dom Bosco", "Dom Cabral", "João Pinheiro", "Madre Gertrudes", "Minas Brasil", "Nova Cintra", "Padre Eustáquio", "Salgado Filho", "Betânia", "Cabana do Pai Tomás", "Estrela do Oriente", "Havaí", "Vista Alegre"], vias: ["Av. Amazonas", "Via Expressa", "Anel Rodoviário", "Av. Tereza Cristina"] }],
+                apoio_abastecimento: [{ nome: "Complexo Gameleira / 5º BPM", endereco: "Av. Amazonas, 6455 - Gameleira, BH", maps_url: "https://www.google.com/maps/search/?api=1&query=Avenida+Amazonas+6455+Gameleira+BH" }],
+                divisas: "1º BPM (Centro) • 22º BPM (Centro-Sul) • 34º BPM (Noroeste) • 41º BPM (Barreiro) • 39º BPM (Contagem)",
+                saude_delegacias: [{ tipo: "Saúde / UPA", nome: "UPA Oeste", endereco: "Av. Barão Homem de Melo, 1710 - Jardim América", telefone: "192" }, { tipo: "Delegacia / CEFLAN", nome: "CEFLAN Oeste / Barreiro", endereco: "Av. Amazonas, 6455 (Região Oeste)", telefone: "197" }],
+                contatos: [{ setor: "COPOM / 5º BPM", telefone: "190" }]
+            },
+            {
+                nome: "16º BPM", cidade: "Belo Horizonte", regiao: "1ª RPM • Capital", rede_radio: "REDE: 1ª RPM / 16º BPM A",
+                endereco_sede: "Rua Tenente Vitorino, 71 - Santa Tereza, Belo Horizonte/MG", telefone_sou: "COPOM 190 / 1ª RPM",
+                companhias: [{ nome: "Área Leste / 16º BPM", setor: "Santa Tereza / Horto / Sagrada Família / Independência", endereco: "Rua Tenente Vitorino, 71 - Santa Tereza", telefone: "190", bairros: ["Santa Tereza", "Horto", "Horto Florestal", "Sagrada Família", "Cidade Nova", "Silveira", "Nova Floresta", "União", "Bairro da Graça", "Colégio Batista", "Renascença", "São Geraldo", "Boa Vista", "Casa Branca", "Santa Inês"], vias: ["Av. dos Andradas", "Av. Silviano Brandão", "Av. José Cândido da Silveira", "Av. Cristiano Machado"] }],
+                apoio_abastecimento: [{ nome: "Sede 16º BPM", endereco: "Rua Tenente Vitorino, 71 - Santa Tereza, BH", maps_url: "https://www.google.com/maps/search/?api=1&query=Rua+Tenente+Vitorino+71+Santa+Tereza+BH" }],
+                divisas: "1º BPM (Centro) • 22º BPM (Centro-Sul) • 13º BPM (Norte) • 61º BPM (Sabará)",
+                saude_delegacias: [{ tipo: "Saúde / UPA", nome: "UPA Leste", endereco: "Av. dos Andradas, 7180 - Vera Cruz", telefone: "192" }],
+                contatos: [{ setor: "COPOM / 16º BPM", telefone: "190" }]
+            },
+            {
+                nome: "34º BPM", cidade: "Belo Horizonte", regiao: "1ª RPM • Capital", rede_radio: "REDE: 1ª RPM / 34º BPM B",
+                endereco_sede: "Avenida Américo Vespúcio, 2391 - Caiçara, Belo Horizonte/MG", telefone_sou: "COPOM 190 / 1ª RPM",
+                companhias: [{ nome: "Área Noroeste / Pampulha", setor: "Caiçara / Castelo / Pampulha / Mineirão", endereco: "Av. Américo Vespúcio, 2391 - Caiçara", telefone: "190", bairros: ["Caiçara", "Alípio de Melo", "Castelo", "Ouro Preto", "Paquetá", "São José", "Pampulha", "São Luiz", "Bandeirantes", "Santa Amélia", "Santa Branca", "Itapoã", "Jardim Atlântico", "Serrano", "Glória", "Coqueiros", "Pindorama"], vias: ["Av. Antônio Carlos", "Av. Pedro II", "Av. Carlos Luz", "Av. Portugal", "Anel Rodoviário"] }],
+                apoio_abastecimento: [{ nome: "Sede 34º BPM", endereco: "Av. Américo Vespúcio, 2391 - Caiçara, BH", maps_url: "https://www.google.com/maps/search/?api=1&query=Avenida+Americo+Vespucio+2391+Caicara+BH" }],
+                divisas: "1º BPM (Centro) • 5º BPM (Oeste) • 13º BPM (Norte) • 49º BPM (Venda Nova) • 18º BPM (Contagem)",
+                saude_delegacias: [{ tipo: "Saúde / UPA", nome: "UPA Pampulha / Odilon Behrens", endereco: "Av. Santa Rosa, 120 - São Luiz", telefone: "192" }],
+                contatos: [{ setor: "COPOM / 34º BPM", telefone: "190" }]
+            },
+            {
+                nome: "41º BPM", cidade: "Belo Horizonte", regiao: "1ª RPM • Capital", rede_radio: "REDE: 1ª RPM / 41º BPM",
+                endereco_sede: "Avenida Afonso Vaz de Melo, 650 - Barreiro, Belo Horizonte/MG", telefone_sou: "COPOM 190 / 1ª RPM",
+                companhias: [{ nome: "Área Barreiro / 41º BPM", setor: "Barreiro / Cardoso / Tirol / Jatobá", endereco: "Av. Afonso Vaz de Melo, 650 - Barreiro", telefone: "190", bairros: ["Barreiro", "Cardoso", "Diamante", "Milionários", "Lindéia", "Tirol", "Teixeira Dias", "Vila Pinho", "Vale do Jatobá", "Bonsucesso", "Olaria", "Santa Helena"], vias: ["Av. Afonso Vaz de Melo", "Av. Olinto Meireles", "Av. Sinfrônio Brochado", "Anel Rodoviário"] }],
+                apoio_abastecimento: [{ nome: "Sede 41º BPM", endereco: "Av. Afonso Vaz de Melo, 650 - Barreiro, BH", maps_url: "https://www.google.com/maps/search/?api=1&query=Avenida+Afonso+Vaz+de+Melo+650+Barreiro+BH" }],
+                divisas: "5º BPM (Oeste) • 22º BPM (Centro-Sul) • 39º BPM (Contagem) • 48º BPM (Ibirité)",
+                saude_delegacias: [{ tipo: "Saúde / UPA", nome: "UPA Barreiro / Hospital Metropolitano", endereco: "Av. Sinfrônio Brochado, 1170 - Barreiro", telefone: "192" }],
+                contatos: [{ setor: "COPOM / 41º BPM", telefone: "190" }]
+            },
+            {
+                nome: "13º BPM", cidade: "Belo Horizonte", regiao: "1ª RPM • Capital", rede_radio: "REDE: 1ª RPM / 13º BPM",
+                endereco_sede: "Avenida Dr. Cristiano Guimarães, 2300 - Planalto, Belo Horizonte/MG", telefone_sou: "COPOM 190 / 1ª RPM",
+                companhias: [{ nome: "Área Norte / Planalto", setor: "Planalto / Guarani / Tupi / Floramar", endereco: "Av. Dr. Cristiano Guimarães, 2300 - Planalto", telefone: "190", bairros: ["Planalto", "Guarani", "Tupi", "Aarão Reis", "Floramar", "Heliópolis", "Jaqueline", "Jardim Guanabara", "Providência", "São Bernardo", "Vila Clóris"], vias: ["Av. Cristiano Machado", "Av. Pedro I", "Av. Saramenha", "MG-020"] }],
+                apoio_abastecimento: [{ nome: "Sede 13º BPM", endereco: "Av. Dr. Cristiano Guimarães, 2300 - Planalto, BH", maps_url: "https://www.google.com/maps/search/?api=1&query=Avenida+Cristiano+Guimaraes+2300+Planalto+BH" }],
+                divisas: "16º BPM (Leste) • 34º BPM (Pampulha) • 49º BPM (Venda Nova) • 35º BPM (Santa Luzia)",
+                saude_delegacias: [{ tipo: "Saúde / Hospital", nome: "Hospital Risoleta Tolentino Neves", endereco: "Rua das Gabirobas, 1 - Vila Clóris, BH", telefone: "(31) 3459-3200" }],
+                contatos: [{ setor: "COPOM / 13º BPM", telefone: "190" }]
+            },
+            {
+                nome: "49º BPM", cidade: "Belo Horizonte", regiao: "1ª RPM • Capital", rede_radio: "REDE: 1ª RPM / 49º BPM",
+                endereco_sede: "Avenida Érico Veríssimo, 561 - Venda Nova, Belo Horizonte/MG", telefone_sou: "COPOM 190 / 1ª RPM",
+                companhias: [{ nome: "Área Venda Nova / 49º BPM", setor: "Venda Nova / Céu Azul / Justinópolis / Serra Verde", endereco: "Av. Érico Veríssimo, 561 - Venda Nova", telefone: "190", bairros: ["Venda Nova", "Céu Azul", "Copacabana", "Jardim dos Comerciários", "Letícia", "Mantiqueira", "Piratininga", "Rio Branco", "Santa Mônica", "São João Batista", "Serra Verde"], vias: ["Av. Vilarinho", "Av. Padre Pedro Pinto", "Av. Pedro I", "MG-010"] }],
+                apoio_abastecimento: [{ nome: "Sede 49º BPM", endereco: "Av. Érico Veríssimo, 561 - Venda Nova, BH", maps_url: "https://www.google.com/maps/search/?api=1&query=Avenida+Erico+Verissimo+561+Venda+Nova+BH" }],
+                divisas: "13º BPM (Norte) • 34º BPM (Pampulha) • 40º BPM (Ribeirão das Neves) • 36º BPM (Vespasiano)",
+                saude_delegacias: [{ tipo: "Saúde / UPA", nome: "UPA Venda Nova", endereco: "Rua Padre Pedro Pinto, 175 - Venda Nova", telefone: "192" }],
+                contatos: [{ setor: "COPOM / 49º BPM", telefone: "190" }]
+            },
+            {
+                nome: "39º BPM", cidade: "Contagem", regiao: "2ª RPM • RMBH", rede_radio: "REDE: 2ª RPM / 39º BPM",
+                endereco_sede: "Rua Tiradentes, 2750 - Industrial, Contagem/MG", telefone_sou: "2ª RPM / Contagem",
+                companhias: [{ nome: "Área Industrial / Eldorado", setor: "Industrial / Eldorado / Riacho das Pedras", endereco: "Rua Tiradentes, 2750 - Industrial, Contagem", telefone: "190", bairros: ["Eldorado", "Industrial", "Riacho das Pedras", "Novo Riacho", "Inconfidentes", "Água Branca", "Cidade Industrial", "Amazonas", "Bandeirantes", "Flamengo", "Monte Castelo", "Parque São João", "Santa Cruz Industrial"], vias: ["Av. João César de Oliveira", "Av. Cardeal Eugênio Pacelli", "Via Expressa", "BR-381"] }],
+                apoio_abastecimento: [{ nome: "Sede 39º BPM", endereco: "Rua Tiradentes, 2750 - Industrial, Contagem/MG", maps_url: "https://www.google.com/maps/search/?api=1&query=Rua+Tiradentes+2750+Industrial+Contagem+MG" }],
+                divisas: "18º BPM (Contagem) • 5º BPM (BH Oeste) • 41º BPM (Barreiro) • 48º BPM (Ibirité)",
+                saude_delegacias: [{ tipo: "Saúde / Hospital", nome: "Hospital Municipal de Contagem (HMC)", endereco: "Av. João César de Oliveira, 4495 - Contagem", telefone: "(31) 3363-5800" }],
+                contatos: [{ setor: "SOU / 2ª RPM", telefone: "190" }]
+            }
+        ];
+
         async function loadExternalDadosJson() {
             const mergedUnits = new Map();
+            AZIMUTE_EMBEDDED_BATTALIONS.forEach(u => {
+                mergedUnits.set(u.nome.toLowerCase(), normalizeBattalionRecord(u, u.cidade));
+            });
             try {
                 localStorage.removeItem('azimute_unified_units_cache_v1');
                 const cached = localStorage.getItem('azimute_unified_units_cache_v2');
@@ -17952,16 +18094,22 @@ if (viewId === 'gps' && window.azimuteGeoInvalidate) window.azimuteGeoInvalidate
                         const allB = c.bairros || [];
                         const primB = allB.slice(0, 5);
                         const restB = allB.slice(5);
+                        const allV = c.vias || [];
                         const dId = 'drawer_' + idx;
+                        const telClean = (c.telefone || '').split('/')[0].replace(/\D/g, '');
                         return `
                         <div class="bg-pmmg-card p-4 rounded-xl tactical-border space-y-2.5">
-                            <div class="flex justify-between items-center border-b border-pmmg-border pb-2">
-                                <h4 class="text-lg sm:text-xl font-military text-pmmg-khaki uppercase">${c.nome} • ${c.setor || ''}</h4>
+                            <div class="flex flex-wrap justify-between items-center gap-2 border-b border-pmmg-border pb-2">
+                                <h4 class="text-lg sm:text-xl font-military text-pmmg-khaki uppercase">${c.nome}${c.setor ? ' • ' + c.setor : ''}</h4>
                                 <div class="flex items-center gap-1.5">
-                                    <span class="text-xs font-mono font-bold text-white">${c.telefone || ''}</span>
+                                    ${telClean ? `<a href="tel:${telClean}" class="px-2 py-0.5 bg-pmmg-dark border border-pmmg-gold/40 rounded text-xs font-mono font-bold text-pmmg-gold hover:bg-pmmg-border">${c.telefone}</a>` : `<span class="text-xs font-mono font-bold text-white">${c.telefone || ''}</span>`}
                                 </div>
                             </div>
-                            <p class="text-xs text-gray-300"><strong>Endereço:</strong> ${c.endereco || ''}</p>
+                            <p class="text-xs text-gray-300 flex flex-wrap items-center justify-between gap-2">
+                                <span><strong>Endereço:</strong> ${c.endereco || ''}</span>
+                                ${c.endereco ? `<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(c.endereco + ' ' + currentDrawerUnit.cidade)}" target="_blank" class="text-[10px] font-bold text-pmmg-khaki underline shrink-0">Abrir no Maps</a>` : ''}
+                            </p>
+                            ${allV.length > 0 ? `<p class="text-[11px] text-gray-400"><strong class="text-pmmg-khaki">Principais Vias:</strong> ${allV.join(' • ')}</p>` : ''}
                             <div class="text-[11px] space-y-1.5">
                                 <div class="flex items-center justify-between">
                                     <strong class="text-pmmg-khaki">Principais Bairros:</strong>
@@ -18737,11 +18885,13 @@ if (window.__azimuteGeoInitialized) {
   if (incursionBtn) {
     incursionBtn.addEventListener("click", () => {
       try { requestCompassPermissionIfNeeded(); } catch (_) {}
+      if (incOverlay) incOverlay.classList.remove("is-halfscreen");
       window.azimuteToggleIncursionMode(true);
     });
   }
   if (incCloseBtn) {
     incCloseBtn.addEventListener("click", () => {
+      if (incOverlay) incOverlay.classList.remove("is-halfscreen");
       window.azimuteToggleIncursionMode(false);
     });
   }
@@ -19672,28 +19822,43 @@ if (window.__azimuteGeoInitialized) {
   }
   syncThemeButtons();
 
+  window.azApplyMapTheme = function (nextTheme) {
+    if (!nextTheme || nextTheme === mapTheme) return;
+    mapTheme = nextTheme;
+    localStorage.setItem("az_geo_map_theme", mapTheme);
+    if (typeof syncThemeButtons === "function") syncThemeButtons();
+    if (typeof window.azFlashMapLayerTransition === "function") window.azFlashMapLayerTransition();
+    map.setStyle(STYLE_URLS[mapTheme] || STYLE_URLS.dark);
+    map.once("style.load", () => {
+      if (mapTheme === "mono" && typeof window.azToggleMonoTechMap === "function") {
+        tac.monoTechMode = false;
+        window.azToggleMonoTechMap();
+      } else {
+        tac.monoTechMode = false;
+      }
+      if (typeof window.azimuteRefreshGrgTheme === "function") window.azimuteRefreshGrgTheme();
+    });
+    if (radarMap) {
+      radarMap.setStyle(STYLE_URLS[mapTheme] || STYLE_URLS.dark);
+    }
+  };
+  window.azToggleMapLightDark = function () {
+    const next = (mapTheme === "dark") ? "light" : "dark";
+    window.azApplyMapTheme(next);
+    if (typeof showToast === "function") {
+      showToast(next === "dark" ? "Modo Escuro do Mapa ATIVADO" : "Modo Claro do Mapa ATIVADO", 2000);
+    }
+  };
+  window.azEnsureReducedLightMap = function () {
+    if (mapTheme !== "light" && !tac.satMode) {
+      window.azApplyMapTheme("light");
+    }
+  };
+
   if (themesWrap) {
     themesWrap.querySelectorAll("button[data-theme]").forEach((btn) => {
       btn.addEventListener("click", () => {
-        const nextTheme = btn.getAttribute("data-theme") || "dark";
-        if (nextTheme === mapTheme) return;
-        mapTheme = nextTheme;
-        localStorage.setItem("az_geo_map_theme", mapTheme);
-        syncThemeButtons();
-        if (typeof window.azFlashMapLayerTransition === "function") window.azFlashMapLayerTransition();
-        map.setStyle(STYLE_URLS[mapTheme] || STYLE_URLS.dark);
-        map.once("style.load", () => {
-          if (mapTheme === "mono" && typeof window.azToggleMonoTechMap === "function") {
-            tac.monoTechMode = false;
-            window.azToggleMonoTechMap();
-          } else {
-            tac.monoTechMode = false;
-          }
-          if (typeof window.azimuteRefreshGrgTheme === "function") window.azimuteRefreshGrgTheme();
-        });
-        if (radarMap) {
-          radarMap.setStyle(STYLE_URLS[mapTheme] || STYLE_URLS.dark);
-        }
+        window.azApplyMapTheme(btn.getAttribute("data-theme") || "dark");
       });
     });
   }
@@ -19956,6 +20121,13 @@ if (window.__azimuteGeoInitialized) {
   window.azimuteRefreshGeoDatasets = loadRepositoryGeoDatasets;
   loadRepositoryGeoDatasets();
 
+  const plusFiltersBtn = document.getElementById("azGeoPlusFiltersBtn");
+  if (plusFiltersBtn && layersBox) {
+    plusFiltersBtn.addEventListener("click", () => {
+      const open = layersBox.classList.toggle("is-open");
+      plusFiltersBtn.classList.toggle("is-active", open);
+    });
+  }
   if (layersToggleBtn && layersBox) {
     layersToggleBtn.addEventListener("click", () => {
       const open = layersBox.classList.toggle("is-open");
@@ -20950,7 +21122,7 @@ if (window.__azimuteGeoInitialized) {
     if (followGps) setFollowState(false);
   });
 
-  clearBtn.addEventListener("click", () => {
+  if (clearBtn) clearBtn.addEventListener("click", () => {
     if (destMarker) {
       destMarker.remove();
       destMarker = null;
@@ -22307,15 +22479,29 @@ if (document.readyState === "loading") {
   /* 2. Tela Cheia do Mapa 100% isolada (sem vazar cards/ORBE/filtros por cima) */
   body.az-map-expanded header.sticky,
   body.az-map-expanded #mobileBottomNav,
+  body.az-map-expanded #azExternalRadioWrap,
   body.az-map-expanded #azimuteLiveGpsHud,
   body.az-map-expanded #azGeoDrawerToggle,
   body.az-map-expanded .az-geo-actions,
   body.az-map-expanded #azGeoRouteBox,
-  body.az-map-expanded #azGeoLayersBox,
+  body.az-map-expanded #azGeoLayersBox:not(.is-open),
   body.az-map-expanded #azGeoMunBox,
   body.az-map-expanded #azGeoCfgBox,
   body.az-map-expanded #azGeoStatus {
     display: none !important;
+  }
+  body.az-map-expanded #azGeoLayersBox.is-open {
+    display: block !important;
+    position: fixed !important;
+    left: 54px !important;
+    bottom: 72px !important;
+    right: 12px !important;
+    max-width: 340px !important;
+    z-index: 100050 !important;
+    background: #161616 !important;
+    border: 1.5px solid #C5A869 !important;
+    border-radius: 12px !important;
+    padding: 10px !important;
   }
   body.az-map-expanded #view-gps,
   body.az-map-expanded #az-geo-module,
@@ -22426,6 +22612,45 @@ if (document.readyState === "loading") {
     z-index: 20 !important;
     width: 100% !important;
     margin: 0 0 8px 0 !important;
+    justify-content: flex-end !important;
+  }
+  /* Versão reduzida do mapa: cabeçalho enxuto com APENAS Camadas e Expandir Tela */
+  body:not(.az-map-expanded) #azTopHudShell #azMicroTelemetryHud,
+  body:not(.az-map-expanded) #azTopHudShell #azQuickHospitalRouteBtn,
+  body:not(.az-map-expanded) #azTopHudShell #azWhatsappGroupOpenBtn,
+  body:not(.az-map-expanded) #azTopHudShell #azHudStealthBtn,
+  body:not(.az-map-expanded) #azTopHudShell #azAtakHamburgerBtn,
+  body:not(.az-map-expanded) #azGeoLeftOverlayCol {
+    display: none !important;
+  }
+  body.az-map-expanded #azTopHudShell #azSlimLayersBtn {
+    display: none !important;
+  }
+  #azMapControlsDrawerBtn {
+    display: none !important;
+  }
+  body.az-map-expanded #azMapControlsDrawerBtn {
+    display: inline-flex !important;
+  }
+  #azGeoLeftOverlayCol.az-controls-collapsed > *:not(#azMapControlsDrawerBtn) {
+    display: none !important;
+  }
+  /* Meia tela para Grupo e ORBE sobre o mapa */
+  #azWhatsappGroupModal.is-halfscreen {
+    top: 46% !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    border-top: 2px solid #C5A869 !important;
+    border-radius: 16px 16px 0 0 !important;
+  }
+  #azIncursionOverlay.is-halfscreen {
+    top: 46% !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    border-top: 2px solid #C5A869 !important;
+    border-radius: 16px 16px 0 0 !important;
   }
   #azTopHudShell.is-visible { display: flex !important; }
   #azTopHudShell > * { pointer-events: auto; }
@@ -25495,9 +25720,16 @@ if (document.readyState === "loading") {
     <div class="az-hud-line-top" id="azHudUnitNetLine">Aguardando GPS</div>
     <div class="az-hud-line-sub" id="azHudStreetLine">Localizando via...</div>
   </div>
+  <button type="button" class="az-hud-glass-btn az-hud-hosp-btn" id="azQuickHospitalRouteBtn" title="Rota Hospital Próximo">+</button>
   <button type="button" class="az-hud-glass-btn" id="azWhatsappGroupOpenBtn" title="Grupo da Equipe (Chat, Fotos e PTT)" style="width:auto !important;padding:0 8px !important;gap:4px;font-size:11px;font-weight:900;color:var(--az-theme-accent, #C5A869) !important;">
     <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
     <span id="azTopGroupBadge">GRUPO</span>
+  </button>
+  <button type="button" class="az-hud-glass-btn" id="azSlimLayersBtn" title="Camadas (Toque: Satélite | Segure: Claro/Escuro)" aria-label="Camadas">
+    <svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+  </button>
+  <button type="button" class="az-hud-glass-btn" id="azExpandMapScreenBtn" title="Expandir / Minimizar Mapa">
+    <svg viewBox="0 0 24 24"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
   </button>
   <button type="button" class="az-hud-glass-btn" id="azHudStealthBtn" title="Áudio Ativo (Toque para Mutar)">
     <svg viewBox="0 0 24 24">
@@ -25506,10 +25738,6 @@ if (document.readyState === "loading") {
       <g id="azStealthMuteX" style="display:none;"><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></g>
     </svg>
   </button>
-  <button type="button" class="az-hud-glass-btn" id="azExpandMapScreenBtn" title="Expandir / Minimizar Mapa">
-    <svg viewBox="0 0 24 24"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
-  </button>
-  <button type="button" class="az-hud-glass-btn az-hud-hosp-btn" id="azQuickHospitalRouteBtn" title="Rota Hospital Próximo">+</button>
   <button type="button" class="az-hud-glass-btn" id="azAtakHamburgerBtn" title="Menu Principal" aria-label="Menu Principal">
     <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
   </button>
@@ -25526,6 +25754,7 @@ if (document.readyState === "loading") {
       </div>
     </div>
     <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+      <button type="button" id="azWaToggleFullBtn" class="az-atak-tool-btn" style="height:32px !important;padding:0 8px !important;font-size:10px !important;" title="Alternar Meia Tela / Tela Cheia">TELA CHEIA</button>
       <button type="button" id="azWaEnlaceBtn" class="az-atak-tool-btn" style="height:32px !important;padding:0 8px !important;gap:4px;border-color:var(--az-theme-accent, #C5A869) !important;color:var(--az-theme-accent, #C5A869) !important;font-size:11px !important;" title="Testar sinal e áudio da equipe">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
         ENLACE
@@ -33719,15 +33948,20 @@ if (document.readyState === "loading") {
     const redeEl = _hudDomCache.redeText || (_hudDomCache.redeText = document.getElementById("statusBarRedeText"));
     const unitEl = _hudDomCache.unitLine || (_hudDomCache.unitLine = document.getElementById("azHudUnitNetLine"));
     const streetEl = _hudDomCache.streetLine || (_hudDomCache.streetLine = document.getElementById("azHudStreetLine"));
-    const redeBtnText = (redeEl?.textContent || "").trim() || "REDE LOCAL";
-    const nextUnit = tac.roomCode ? `${redeBtnText} • TURNO ${tac.roomCode}` : redeBtnText;
+    const redeBtnText = (redeEl?.textContent || "").trim() || "Aguardando GPS";
+    const nowDt = new Date();
+    const dtCompact = nowDt.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" }) + " " + nowDt.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+    const nextUnit = (tac.roomCode ? `${redeBtnText} • TURNO ${tac.roomCode}` : redeBtnText) + " • " + dtCompact;
     if (unitEl && _hudDomCache.lastUnitText !== nextUnit) {
       _hudDomCache.lastUnitText = nextUnit;
       unitEl.textContent = nextUnit;
     }
-    if (streetEl && tac.resolvedAddress && _hudDomCache.lastStreetText !== tac.resolvedAddress) {
-      _hudDomCache.lastStreetText = tac.resolvedAddress;
-      streetEl.textContent = tac.resolvedAddress;
+    const qthStreet = (typeof azimuteLastStreet === "string" && azimuteLastStreet && !/Sincronizando/i.test(azimuteLastStreet))
+      ? (azimuteLastStreet + (typeof azimuteCurrentSuburb === "string" && azimuteCurrentSuburb ? " • " + azimuteCurrentSuburb : ""))
+      : (tac.resolvedAddress || "");
+    if (streetEl && qthStreet && _hudDomCache.lastStreetText !== qthStreet) {
+      _hudDomCache.lastStreetText = qthStreet;
+      streetEl.textContent = qthStreet;
     }
     if (typeof window.azSyncExpandedViewportVars === "function") window.azSyncExpandedViewportVars();
 
@@ -36011,13 +36245,97 @@ if (document.readyState === "loading") {
     document.getElementById("azWaQraInput").value = tac.myQra || "";
     document.getElementById("azWaRoomInput").value = tac.roomCode || "PMMG01";
     syncWaGroupHeaderAndMembers();
+    modal.classList.add("is-halfscreen");
+    const toggleBtn = document.getElementById("azWaToggleFullBtn");
+    if (toggleBtn) toggleBtn.textContent = "TELA CHEIA";
     modal.style.display = "flex";
     syncSinglePttMode();
   });
 
+  onClick("azWaToggleFullBtn", function () {
+    const modal = document.getElementById("azWhatsappGroupModal");
+    if (!modal) return;
+    const isHalf = modal.classList.toggle("is-halfscreen");
+    this.textContent = isHalf ? "TELA CHEIA" : "MEIA TELA";
+  });
+
   onClick("azCloseWaGroupBtn", function () {
-    document.getElementById("azWhatsappGroupModal").style.display = "none";
+    const modal = document.getElementById("azWhatsappGroupModal");
+    if (modal) {
+      modal.classList.remove("is-halfscreen");
+      modal.style.display = "none";
+    }
     syncSinglePttMode();
+  });
+
+  // Gaveta de Controles do Mapa Expandido
+  onClick("azMapControlsDrawerBtn", function () {
+    const col = document.getElementById("azGeoLeftOverlayCol");
+    if (!col) return;
+    const collapsed = col.classList.toggle("az-controls-collapsed");
+    this.classList.toggle("is-active", !collapsed);
+  });
+
+  // Helper de Press & Hold reutilizável (60fps, sem poluir clique curto)
+  function bindAzPressAndHold(el, onHold, onTap) {
+    if (!el) return;
+    let holdTimer = null;
+    let didHold = false;
+    const clearT = function () {
+      if (holdTimer) { clearTimeout(holdTimer); holdTimer = null; }
+    };
+    el.addEventListener("pointerdown", function (ev) {
+      if (ev.button && ev.button !== 0) return;
+      didHold = false;
+      clearT();
+      holdTimer = setTimeout(function () {
+        didHold = true;
+        try { onHold(); } catch (_) {}
+      }, 450);
+    }, { passive: true });
+    el.addEventListener("pointerup", clearT, { passive: true });
+    el.addEventListener("pointercancel", clearT, { passive: true });
+    el.addEventListener("pointerleave", clearT, { passive: true });
+    el.addEventListener("click", function (ev) {
+      if (didHold) {
+        ev.preventDefault();
+        ev.stopImmediatePropagation();
+        didHold = false;
+        return;
+      }
+      if (typeof onTap === "function") onTap.call(this, ev);
+    }, true);
+  }
+
+  // Camadas: toque curto = Satélite/Comum, Press & Hold = Claro/Escuro
+  bindAzPressAndHold(document.getElementById("azSatToggleBtn"), function () {
+    if (typeof window.azToggleMapLightDark === "function") window.azToggleMapLightDark();
+  });
+  bindAzPressAndHold(document.getElementById("azSlimLayersBtn"), function () {
+    if (typeof window.azToggleMapLightDark === "function") window.azToggleMapLightDark();
+  }, function () {
+    const sat = document.getElementById("azSatToggleBtn");
+    if (sat) sat.click();
+  });
+
+  // Centralizar: Press & Hold abre o ORBE em meia tela sobre o mapa
+  bindAzPressAndHold(document.getElementById("azGeoCenterFab"), function () {
+    const inc = document.getElementById("azIncursionOverlay");
+    if (inc) inc.classList.add("is-halfscreen");
+    const tBtn = document.getElementById("azIncToggleFullBtn");
+    if (tBtn) tBtn.textContent = "Tela Cheia";
+    if (typeof window.azimuteToggleIncursionMode === "function") {
+      window.azimuteToggleIncursionMode(true);
+    }
+  });
+  onClick("azIncToggleFullBtn", function () {
+    const inc = document.getElementById("azIncursionOverlay");
+    if (!inc) return;
+    const isHalf = inc.classList.toggle("is-halfscreen");
+    this.textContent = isHalf ? "Tela Cheia" : "Meia Tela";
+    if (window.azGeoMap && typeof window.azGeoMap.resize === "function") {
+      setTimeout(function () { window.azGeoMap.resize(); }, 80);
+    }
   });
 
   // Atualiza PTT único e HUD imediatamente ao trocar de aba principal
